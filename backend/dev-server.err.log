@@ -1,0 +1,196 @@
+Forgot password error: Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-490afc41a61sm61467805e9.2 - gsmtp
+    at SMTPConnection._formatError (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\nodemailer\lib\smtp-connection\index.js:809:19)
+    at SMTPConnection._actionAUTHComplete (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\nodemailer\lib\smtp-connection\index.js:1617:34)
+    at SMTPConnection.<anonymous> (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\nodemailer\lib\smtp-connection\index.js:556:26)
+    at SMTPConnection._processResponse (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\nodemailer\lib\smtp-connection\index.js:993:20)
+    at SMTPConnection._onData (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\nodemailer\lib\smtp-connection\index.js:774:14)
+    at SMTPConnection._onSocketData (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\nodemailer\lib\smtp-connection\index.js:195:44)
+    at TLSSocket.emit (node:events:508:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5) {
+  code: 'EAUTH',
+  response: '535-5.7.8 Username and Password not accepted. For more information, go to\n' +
+    '535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-490afc41a61sm61467805e9.2 - gsmtp',
+  responseCode: 535,
+  command: 'AUTH PLAIN'
+}
+Forgot password error: Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-4601f3444fesm99787f8f.20 - gsmtp
+    at SMTPConnection._formatError (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\nodemailer\lib\smtp-connection\index.js:809:19)
+    at SMTPConnection._actionAUTHComplete (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\nodemailer\lib\smtp-connection\index.js:1617:34)
+    at SMTPConnection.<anonymous> (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\nodemailer\lib\smtp-connection\index.js:556:26)
+    at SMTPConnection._processResponse (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\nodemailer\lib\smtp-connection\index.js:993:20)
+    at SMTPConnection._onData (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\nodemailer\lib\smtp-connection\index.js:774:14)
+    at SMTPConnection._onSocketData (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\nodemailer\lib\smtp-connection\index.js:195:44)
+    at TLSSocket.emit (node:events:508:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5) {
+  code: 'EAUTH',
+  response: '535-5.7.8 Username and Password not accepted. For more information, go to\n' +
+    '535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-4601f3444fesm99787f8f.20 - gsmtp',
+  responseCode: 535,
+  command: 'AUTH PLAIN'
+}
+Forgot password error: Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-4601f35eff2sm122586f8f.31 - gsmtp
+    at SMTPConnection._formatError (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\nodemailer\lib\smtp-connection\index.js:809:19)
+    at SMTPConnection._actionAUTHComplete (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\nodemailer\lib\smtp-connection\index.js:1617:34)
+    at SMTPConnection.<anonymous> (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\nodemailer\lib\smtp-connection\index.js:556:26)
+    at SMTPConnection._processResponse (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\nodemailer\lib\smtp-connection\index.js:993:20)
+    at SMTPConnection._onData (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\nodemailer\lib\smtp-connection\index.js:774:14)
+    at SMTPConnection._onSocketData (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\nodemailer\lib\smtp-connection\index.js:195:44)
+    at TLSSocket.emit (node:events:508:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5) {
+  code: 'EAUTH',
+  response: '535-5.7.8 Username and Password not accepted. For more information, go to\n' +
+    '535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-4601f35eff2sm122586f8f.31 - gsmtp',
+  responseCode: 535,
+  command: 'AUTH PLAIN'
+}
+Forgot password error: Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-4601f35ee64sm188437f8f.30 - gsmtp
+    at SMTPConnection._formatError (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\nodemailer\lib\smtp-connection\index.js:809:19)
+    at SMTPConnection._actionAUTHComplete (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\nodemailer\lib\smtp-connection\index.js:1617:34)
+    at SMTPConnection.<anonymous> (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\nodemailer\lib\smtp-connection\index.js:556:26)
+    at SMTPConnection._processResponse (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\nodemailer\lib\smtp-connection\index.js:993:20)
+    at SMTPConnection._onData (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\nodemailer\lib\smtp-connection\index.js:774:14)
+    at SMTPConnection._onSocketData (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\nodemailer\lib\smtp-connection\index.js:195:44)
+    at TLSSocket.emit (node:events:508:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5) {
+  code: 'EAUTH',
+  response: '535-5.7.8 Username and Password not accepted. For more information, go to\n' +
+    '535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-4601f35ee64sm188437f8f.30 - gsmtp',
+  responseCode: 535,
+  command: 'AUTH PLAIN'
+}
+Forgot password error: Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-4601f3529e0sm192909f8f.28 - gsmtp
+    at SMTPConnection._formatError (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\nodemailer\lib\smtp-connection\index.js:809:19)
+    at SMTPConnection._actionAUTHComplete (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\nodemailer\lib\smtp-connection\index.js:1617:34)
+    at SMTPConnection.<anonymous> (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\nodemailer\lib\smtp-connection\index.js:556:26)
+    at SMTPConnection._processResponse (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\nodemailer\lib\smtp-connection\index.js:993:20)
+    at SMTPConnection._onData (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\nodemailer\lib\smtp-connection\index.js:774:14)
+    at SMTPConnection._onSocketData (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\nodemailer\lib\smtp-connection\index.js:195:44)
+    at TLSSocket.emit (node:events:508:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5) {
+  code: 'EAUTH',
+  response: '535-5.7.8 Username and Password not accepted. For more information, go to\n' +
+    '535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-4601f3529e0sm192909f8f.28 - gsmtp',
+  responseCode: 535,
+  command: 'AUTH PLAIN'
+}
+🔥 Global Server Error: SyntaxError: Expected property name or '}' in JSON at position 7 (line 2 column 5)
+    at JSON.parse (<anonymous>)
+    at parse (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\body-parser\lib\types\json.js:92:19)
+    at D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\body-parser\lib\read.js:128:18
+    at AsyncResource.runInAsyncScope (node:async_hooks:214:14)
+    at invokeCallback (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\raw-body\index.js:238:16)
+    at done (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\raw-body\index.js:227:7)
+    at IncomingMessage.onEnd (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\raw-body\index.js:287:7)
+    at IncomingMessage.emit (node:events:508:28)
+    at endReadableNT (node:internal/streams/readable:1701:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:89:21) {
+  expose: true,
+  statusCode: 400,
+  status: 400,
+  body: '{\r\n    email:  10usmanmalik@gmail.com\r\n}',
+  type: 'entity.parse.failed'
+}
+🔥 Global Server Error: SyntaxError: Expected property name or '}' in JSON at position 1 (line 1 column 2)
+    at JSON.parse (<anonymous>)
+    at parse (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\body-parser\lib\types\json.js:92:19)
+    at D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\body-parser\lib\read.js:128:18
+    at AsyncResource.runInAsyncScope (node:async_hooks:214:14)
+    at invokeCallback (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\raw-body\index.js:238:16)
+    at done (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\raw-body\index.js:227:7)
+    at IncomingMessage.onEnd (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\raw-body\index.js:287:7)
+    at IncomingMessage.emit (node:events:508:28)
+    at endReadableNT (node:internal/streams/readable:1701:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:89:21) {
+  expose: true,
+  statusCode: 400,
+  status: 400,
+  body: '{\\',
+  type: 'entity.parse.failed'
+}
+Forgot password error: Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-4909c11555csm104979425e9.26 - gsmtp
+    at SMTPConnection._formatError (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\nodemailer\lib\smtp-connection\index.js:809:19)
+    at SMTPConnection._actionAUTHComplete (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\nodemailer\lib\smtp-connection\index.js:1617:34)
+    at SMTPConnection.<anonymous> (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\nodemailer\lib\smtp-connection\index.js:556:26)
+    at SMTPConnection._processResponse (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\nodemailer\lib\smtp-connection\index.js:993:20)
+    at SMTPConnection._onData (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\nodemailer\lib\smtp-connection\index.js:774:14)
+    at SMTPConnection._onSocketData (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\nodemailer\lib\smtp-connection\index.js:195:44)
+    at TLSSocket.emit (node:events:508:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5) {
+  code: 'EAUTH',
+  response: '535-5.7.8 Username and Password not accepted. For more information, go to\n' +
+    '535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-4909c11555csm104979425e9.26 - gsmtp',
+  responseCode: 535,
+  command: 'AUTH PLAIN'
+}
+Forgot password error: Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-4601f344558sm257235f8f.18 - gsmtp
+    at SMTPConnection._formatError (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\nodemailer\lib\smtp-connection\index.js:809:19)
+    at SMTPConnection._actionAUTHComplete (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\nodemailer\lib\smtp-connection\index.js:1617:34)
+    at SMTPConnection.<anonymous> (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\nodemailer\lib\smtp-connection\index.js:556:26)
+    at SMTPConnection._processResponse (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\nodemailer\lib\smtp-connection\index.js:993:20)
+    at SMTPConnection._onData (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\nodemailer\lib\smtp-connection\index.js:774:14)
+    at SMTPConnection._onSocketData (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\nodemailer\lib\smtp-connection\index.js:195:44)
+    at TLSSocket.emit (node:events:508:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5) {
+  code: 'EAUTH',
+  response: '535-5.7.8 Username and Password not accepted. For more information, go to\n' +
+    '535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-4601f344558sm257235f8f.18 - gsmtp',
+  responseCode: 535,
+  command: 'AUTH PLAIN'
+}
+Forgot password error: Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-490b0e8efeesm66540615e9.15 - gsmtp
+    at SMTPConnection._formatError (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\nodemailer\lib\smtp-connection\index.js:809:19)
+    at SMTPConnection._actionAUTHComplete (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\nodemailer\lib\smtp-connection\index.js:1617:34)
+    at SMTPConnection.<anonymous> (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\nodemailer\lib\smtp-connection\index.js:556:26)
+    at SMTPConnection._processResponse (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\nodemailer\lib\smtp-connection\index.js:993:20)
+    at SMTPConnection._onData (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\nodemailer\lib\smtp-connection\index.js:774:14)
+    at SMTPConnection._onSocketData (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\nodemailer\lib\smtp-connection\index.js:195:44)
+    at TLSSocket.emit (node:events:508:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5) {
+  code: 'EAUTH',
+  response: '535-5.7.8 Username and Password not accepted. For more information, go to\n' +
+    '535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-490b0e8efeesm66540615e9.15 - gsmtp',
+  responseCode: 535,
+  command: 'AUTH PLAIN'
+}
+Forgot password error: Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-490b0e823f7sm84347725e9.13 - gsmtp
+    at SMTPConnection._formatError (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\nodemailer\lib\smtp-connection\index.js:809:19)
+    at SMTPConnection._actionAUTHComplete (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\nodemailer\lib\smtp-connection\index.js:1617:34)
+    at SMTPConnection.<anonymous> (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\nodemailer\lib\smtp-connection\index.js:556:26)
+    at SMTPConnection._processResponse (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\nodemailer\lib\smtp-connection\index.js:993:20)
+    at SMTPConnection._onData (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\nodemailer\lib\smtp-connection\index.js:774:14)
+    at SMTPConnection._onSocketData (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\nodemailer\lib\smtp-connection\index.js:195:44)
+    at TLSSocket.emit (node:events:508:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5) {
+  code: 'EAUTH',
+  response: '535-5.7.8 Username and Password not accepted. For more information, go to\n' +
+    '535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-490b0e823f7sm84347725e9.13 - gsmtp',
+  responseCode: 535,
+  command: 'AUTH PLAIN'
+}

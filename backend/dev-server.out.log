@@ -1,0 +1,429 @@
+
+> lms-backend@1.0.0 dev
+> nodemon server.js
+
+[33m[nodemon] 3.1.11[39m
+[33m[nodemon] to restart at any time, enter `rs`[39m
+[33m[nodemon] watching path(s): *.*[39m
+[33m[nodemon] watching extensions: js,mjs,cjs,json[39m
+[32m[nodemon] starting `node server.js`[39m
+
+========================================
+🔧 LMS BACKEND - Starting...
+========================================
+
+🚀 Server running on port 5000
+✅ MongoDB connected
+🔄 Running startup installment check...
+🔄 Starting installment generation check...
+✅ User Muhammad Amir has certificate for Office Work [IT] - skipping
+✅ User Amna Nargis has certificate for Graphic Designer - skipping
+✅ User Saiqa Yaseen has certificate for Graphic Designer - skipping
+✅ User Ahsaan-Ullah has certificate for Video Editing - skipping
+✅ User Muhammad Ali has certificate for Office Work [IT] - skipping
+✅ User Ahmad Hassan has certificate for Office Work [IT] - skipping
+✅ User Bisma Noor has certificate for Office Work [IT] - skipping
+✅ User Sami-Ullah has certificate for Office Work [IT] - skipping
+✅ User Syed Fyzan Gull has certificate for Office Work [IT] - skipping
+✅ User Muhammad Mudasir has certificate for Office Work [IT] - skipping
+✅ User Ali Ch has certificate for Office Work [IT] - skipping
+✅ User Ameer Hamza has certificate for Office Work [IT] - skipping
+✅ User Zia UR Rehman has certificate for Office Work [IT] - skipping
+✅ User Muhammad Shahbaz Habib has certificate for Video Editing - skipping
+✅ User Taimoor Saif has certificate for Office Work [IT] - skipping
+✅ User Aimen Irfan has certificate for Web Development   (Online) - skipping
+✅ User Muhammad Amin has certificate for Web Development   (Online) - skipping
+✅ User Umar Sajid has certificate for Office Work [IT] - skipping
+✅ User Sameer Qasim has certificate for Office Work [IT] - skipping
+✅ User Farhan Talib has certificate for Office Work [IT] - skipping
+✅ User Ayyaz Hussain has certificate for Office Work [IT] - skipping
+✅ User Zaighum Siddique has certificate for Graphic Designer - skipping
+✅ User Laiba Saleem has certificate for Office Work [IT] - skipping
+✅ User Aqsa Bibi has certificate for Office Work [IT] - skipping
+✅ User Farha Batool has certificate for Graphic Designer - skipping
+✅ User Arbab Ghafoor has certificate for Graphic Designer - skipping
+✅ User Aqsa Naseer has certificate for Office Work [IT] - skipping
+✅ User Talha Siyal has certificate for Web Development   (Online) - skipping
+✅ User Armeeza Siyal has certificate for Graphic Designer - skipping
+✅ User Ashna Zahid has certificate for Office Work [IT] - skipping
+✅ User Kainat Mehmood has certificate for Web Development   (Online) - skipping
+✅ User Ayesha Ishtiaq has certificate for Web Development   (Online) - skipping
+✅ User M. Zubair Younis has certificate for Graphic Designer - skipping
+✅ User Anza Aleem has certificate for Web Development   (Online) - skipping
+✅ User Muhammad Hashir has certificate for Graphic Designer - skipping
+✅ User Ahsan Abbas has certificate for Home Architecture   (Online) - skipping
+✅ User Abdullah Shahid has certificate for Graphic Designer - skipping
+✅ User Hammad Sadiq has certificate for Office Work [IT] - skipping
+✅ User Raqeeb Ullah has certificate for Graphic Designer - skipping
+✅ User Abdul Wahab has certificate for Office Work [IT] - skipping
+✅ User Salman Tariq has certificate for Office Work [IT] - skipping
+✅ User Ghulam Mustafa has certificate for Web Development   (Online) - skipping
+✅ User Muhammad Mohsin has certificate for Office Work [IT] - skipping
+✅ User Muhammad Hymn Abdullah Bukhari has certificate for Office Work [IT] - skipping
+✅ User Muhammad Aneeb Bukhari has certificate for Office Work [IT] - skipping
+✅ User Kashif Shah has certificate for Graphic Designer - skipping
+✅ User Zahra Baloch has certificate for Web Development   (Online) - skipping
+✅ User Tooba Adrees has certificate for Web Development - skipping
+✅ User Muhammad Arham Khalid has certificate for Office Work [IT] Documentation Management - skipping
+✅ User Muhammad Mohsin has certificate for Web Development - skipping
+✅ User Hadia Sarwar has certificate for Web Development - skipping
+✅ User Adil Asif has certificate for Web Development - skipping
+⚠️ Skipping fee 6983148804a102554fc15bb7 - no course data
+✅ User Moazzam Ali Zahid has certificate for Web Development - skipping
+✅ User Adil Asif has certificate for App Development - skipping
+✅ User Muntaha Fatima has certificate for Social media manager - skipping
+✅ User Husnain Abid has certificate for Web Development - skipping
+✅ User M.Ahsan has certificate for Graphic Designer - skipping
+✅ User Ali Raza has certificate for Graphic Designer - skipping
+✅ User Imran Patras has certificate for Video Editing - skipping
+✅ User Aliza Yasin has certificate for Video Editing - skipping
+✅ User Aliza Yasin has certificate for Office Work [IT] - skipping
+✅ User Aliza Yasin has certificate for Graphic Designer - skipping
+✅ User Adnan Ahmad has certificate for Video Editing - skipping
+✅ User Muhammad Umar has certificate for Video Editing - skipping
+✅ User Tooba Adrees has certificate for Social media manager - skipping
+✅ User Amna Bibi has certificate for YouTube Manager + Video Editor - skipping
+✅ User Amna Bibi has certificate for HR Manager - skipping
+✅ User Amna Bibi has certificate for Graphic Designer - skipping
+✅ User Hadia has certificate for HR Manager - skipping
+✅ User Hadia has certificate for Graphic Designer - skipping
+✅ User Muhammad Hamza Zakriya has certificate for Web Development - skipping
+✅ User Taimoor Saif has certificate for Web Development   (Online) - skipping
+✅ User Abdullah Shahid has certificate for Video Editing - skipping
+✅ User Mustafa Faraz has certificate for Video Editing - skipping
+✅ User Muhammad Shahbaz has certificate for Video Editing - skipping
+✅ User Waqas Anwar Khan has certificate for Office Work [IT] - skipping
+⏸️ Enrollment for M Aman Khan in Office Work [IT] is paused - skipping installment generation
+⏸️ Enrollment for Abdur Rahim in Office Work [IT] is paused - skipping installment generation
+⏸️ Enrollment for Anees Khan in Digital Marketing, Ads is paused - skipping installment generation
+⏸️ Enrollment for Muhammad Asjad in Basic Computer is paused - skipping installment generation
+⚠️ Skipping fee 69f1fea6121206442b785634 - no course data
+⏸️ Enrollment for Muhammad Rizwan in Basic Computer is paused - skipping installment generation
+✅ Installment generation complete. Generated 0 new installments.
+🔄 Updating enrollment active status...
+📝 Updated 697b03df43a797dbe61f7ed6 for course Video Editing - isActive: false
+📝 Updated 69caad1f63b8f921ac4721f2 for course Learn & Earn – Free Earning Training Program - isActive: false
+📝 Updated 69e1079db6b488953341c7a5 for course Basic Computer - isActive: false
+✅ Enrollment status update complete. Updated 3 enrollments.
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+
+========================================
+🔧 LMS BACKEND - Starting...
+========================================
+
+🚀 Server running on port 5000
+✅ MongoDB connected
+🔄 Running startup installment check...
+🔄 Starting installment generation check...
+✅ User Muhammad Amir has certificate for Office Work [IT] - skipping
+✅ User Amna Nargis has certificate for Graphic Designer - skipping
+✅ User Saiqa Yaseen has certificate for Graphic Designer - skipping
+✅ User Ahsaan-Ullah has certificate for Video Editing - skipping
+✅ User Muhammad Ali has certificate for Office Work [IT] - skipping
+✅ User Ahmad Hassan has certificate for Office Work [IT] - skipping
+✅ User Bisma Noor has certificate for Office Work [IT] - skipping
+✅ User Sami-Ullah has certificate for Office Work [IT] - skipping
+✅ User Syed Fyzan Gull has certificate for Office Work [IT] - skipping
+✅ User Muhammad Mudasir has certificate for Office Work [IT] - skipping
+✅ User Ali Ch has certificate for Office Work [IT] - skipping
+✅ User Ameer Hamza has certificate for Office Work [IT] - skipping
+✅ User Zia UR Rehman has certificate for Office Work [IT] - skipping
+✅ User Muhammad Shahbaz Habib has certificate for Video Editing - skipping
+✅ User Taimoor Saif has certificate for Office Work [IT] - skipping
+✅ User Aimen Irfan has certificate for Web Development   (Online) - skipping
+✅ User Muhammad Amin has certificate for Web Development   (Online) - skipping
+✅ User Umar Sajid has certificate for Office Work [IT] - skipping
+✅ User Sameer Qasim has certificate for Office Work [IT] - skipping
+✅ User Farhan Talib has certificate for Office Work [IT] - skipping
+✅ User Ayyaz Hussain has certificate for Office Work [IT] - skipping
+✅ User Zaighum Siddique has certificate for Graphic Designer - skipping
+✅ User Laiba Saleem has certificate for Office Work [IT] - skipping
+✅ User Aqsa Bibi has certificate for Office Work [IT] - skipping
+✅ User Farha Batool has certificate for Graphic Designer - skipping
+✅ User Arbab Ghafoor has certificate for Graphic Designer - skipping
+✅ User Aqsa Naseer has certificate for Office Work [IT] - skipping
+✅ User Talha Siyal has certificate for Web Development   (Online) - skipping
+✅ User Armeeza Siyal has certificate for Graphic Designer - skipping
+✅ User Ashna Zahid has certificate for Office Work [IT] - skipping
+✅ User Kainat Mehmood has certificate for Web Development   (Online) - skipping
+✅ User Ayesha Ishtiaq has certificate for Web Development   (Online) - skipping
+✅ User M. Zubair Younis has certificate for Graphic Designer - skipping
+✅ User Anza Aleem has certificate for Web Development   (Online) - skipping
+✅ User Muhammad Hashir has certificate for Graphic Designer - skipping
+✅ User Ahsan Abbas has certificate for Home Architecture   (Online) - skipping
+✅ User Abdullah Shahid has certificate for Graphic Designer - skipping
+✅ User Hammad Sadiq has certificate for Office Work [IT] - skipping
+✅ User Raqeeb Ullah has certificate for Graphic Designer - skipping
+✅ User Abdul Wahab has certificate for Office Work [IT] - skipping
+✅ User Salman Tariq has certificate for Office Work [IT] - skipping
+✅ User Ghulam Mustafa has certificate for Web Development   (Online) - skipping
+✅ User Muhammad Mohsin has certificate for Office Work [IT] - skipping
+✅ User Muhammad Hymn Abdullah Bukhari has certificate for Office Work [IT] - skipping
+✅ User Muhammad Aneeb Bukhari has certificate for Office Work [IT] - skipping
+✅ User Kashif Shah has certificate for Graphic Designer - skipping
+✅ User Zahra Baloch has certificate for Web Development   (Online) - skipping
+✅ User Tooba Adrees has certificate for Web Development - skipping
+✅ User Muhammad Arham Khalid has certificate for Office Work [IT] Documentation Management - skipping
+✅ User Muhammad Mohsin has certificate for Web Development - skipping
+✅ User Hadia Sarwar has certificate for Web Development - skipping
+✅ User Adil Asif has certificate for Web Development - skipping
+⚠️ Skipping fee 6983148804a102554fc15bb7 - no course data
+✅ User Moazzam Ali Zahid has certificate for Web Development - skipping
+✅ User Adil Asif has certificate for App Development - skipping
+✅ User Muntaha Fatima has certificate for Social media manager - skipping
+✅ User Husnain Abid has certificate for Web Development - skipping
+✅ User M.Ahsan has certificate for Graphic Designer - skipping
+✅ User Ali Raza has certificate for Graphic Designer - skipping
+✅ User Imran Patras has certificate for Video Editing - skipping
+✅ User Aliza Yasin has certificate for Video Editing - skipping
+✅ User Aliza Yasin has certificate for Office Work [IT] - skipping
+✅ User Aliza Yasin has certificate for Graphic Designer - skipping
+✅ User Adnan Ahmad has certificate for Video Editing - skipping
+✅ User Muhammad Umar has certificate for Video Editing - skipping
+✅ User Tooba Adrees has certificate for Social media manager - skipping
+✅ User Amna Bibi has certificate for YouTube Manager + Video Editor - skipping
+✅ User Amna Bibi has certificate for HR Manager - skipping
+✅ User Amna Bibi has certificate for Graphic Designer - skipping
+✅ User Hadia has certificate for HR Manager - skipping
+✅ User Hadia has certificate for Graphic Designer - skipping
+✅ User Muhammad Hamza Zakriya has certificate for Web Development - skipping
+✅ User Taimoor Saif has certificate for Web Development   (Online) - skipping
+✅ User Abdullah Shahid has certificate for Video Editing - skipping
+✅ User Mustafa Faraz has certificate for Video Editing - skipping
+✅ User Muhammad Shahbaz has certificate for Video Editing - skipping
+✅ User Waqas Anwar Khan has certificate for Office Work [IT] - skipping
+⏸️ Enrollment for M Aman Khan in Office Work [IT] is paused - skipping installment generation
+⏸️ Enrollment for Abdur Rahim in Office Work [IT] is paused - skipping installment generation
+⏸️ Enrollment for Anees Khan in Digital Marketing, Ads is paused - skipping installment generation
+⏸️ Enrollment for Muhammad Asjad in Basic Computer is paused - skipping installment generation
+⚠️ Skipping fee 69f1fea6121206442b785634 - no course data
+⏸️ Enrollment for Muhammad Rizwan in Basic Computer is paused - skipping installment generation
+✅ Installment generation complete. Generated 0 new installments.
+🔄 Updating enrollment active status...
+📝 Updated 697b03df43a797dbe61f7ed6 for course Video Editing - isActive: false
+📝 Updated 697fa91ef525fb948dcac612 for course Office Work [IT] - isActive: false
+📝 Updated 69e1079db6b488953341c7a5 for course UX/UI Designing - isActive: false
+📝 Updated 69e1079db6b488953341c7a5 for course App Dev Without Coding   (Online) - isActive: false
+📝 Updated 69ea1ed3542ba7f91db37ecc for course Basic Computer - isActive: false
+📝 Updated 69caad1f63b8f921ac4721f2 for course Learn & Earn – Free Earning Training Program - isActive: false
+📝 Updated 69e1079db6b488953341c7a5 for course Basic Computer - isActive: false
+✅ Enrollment status update complete. Updated 7 enrollments.
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+
+========================================
+🔧 LMS BACKEND - Starting...
+========================================
+
+🚀 Server running on port 5000
+✅ MongoDB connected
+🔄 Running startup installment check...
+🔄 Starting installment generation check...
+✅ User Muhammad Amir has certificate for Office Work [IT] - skipping
+✅ User Amna Nargis has certificate for Graphic Designer - skipping
+✅ User Saiqa Yaseen has certificate for Graphic Designer - skipping
+✅ User Ahsaan-Ullah has certificate for Video Editing - skipping
+✅ User Muhammad Ali has certificate for Office Work [IT] - skipping
+✅ User Ahmad Hassan has certificate for Office Work [IT] - skipping
+✅ User Bisma Noor has certificate for Office Work [IT] - skipping
+✅ User Sami-Ullah has certificate for Office Work [IT] - skipping
+✅ User Syed Fyzan Gull has certificate for Office Work [IT] - skipping
+✅ User Muhammad Mudasir has certificate for Office Work [IT] - skipping
+✅ User Ali Ch has certificate for Office Work [IT] - skipping
+✅ User Ameer Hamza has certificate for Office Work [IT] - skipping
+✅ User Zia UR Rehman has certificate for Office Work [IT] - skipping
+✅ User Muhammad Shahbaz Habib has certificate for Video Editing - skipping
+✅ User Taimoor Saif has certificate for Office Work [IT] - skipping
+✅ User Aimen Irfan has certificate for Web Development   (Online) - skipping
+✅ User Muhammad Amin has certificate for Web Development   (Online) - skipping
+✅ User Umar Sajid has certificate for Office Work [IT] - skipping
+✅ User Sameer Qasim has certificate for Office Work [IT] - skipping
+✅ User Farhan Talib has certificate for Office Work [IT] - skipping
+✅ User Ayyaz Hussain has certificate for Office Work [IT] - skipping
+✅ User Zaighum Siddique has certificate for Graphic Designer - skipping
+✅ User Laiba Saleem has certificate for Office Work [IT] - skipping
+✅ User Aqsa Bibi has certificate for Office Work [IT] - skipping
+✅ User Farha Batool has certificate for Graphic Designer - skipping
+✅ User Arbab Ghafoor has certificate for Graphic Designer - skipping
+✅ User Aqsa Naseer has certificate for Office Work [IT] - skipping
+✅ User Talha Siyal has certificate for Web Development   (Online) - skipping
+✅ User Armeeza Siyal has certificate for Graphic Designer - skipping
+✅ User Ashna Zahid has certificate for Office Work [IT] - skipping
+✅ User Kainat Mehmood has certificate for Web Development   (Online) - skipping
+✅ User Ayesha Ishtiaq has certificate for Web Development   (Online) - skipping
+✅ User M. Zubair Younis has certificate for Graphic Designer - skipping
+✅ User Anza Aleem has certificate for Web Development   (Online) - skipping
+✅ User Muhammad Hashir has certificate for Graphic Designer - skipping
+✅ User Ahsan Abbas has certificate for Home Architecture   (Online) - skipping
+✅ User Abdullah Shahid has certificate for Graphic Designer - skipping
+✅ User Hammad Sadiq has certificate for Office Work [IT] - skipping
+✅ User Raqeeb Ullah has certificate for Graphic Designer - skipping
+✅ User Abdul Wahab has certificate for Office Work [IT] - skipping
+✅ User Salman Tariq has certificate for Office Work [IT] - skipping
+✅ User Ghulam Mustafa has certificate for Web Development   (Online) - skipping
+✅ User Muhammad Mohsin has certificate for Office Work [IT] - skipping
+✅ User Muhammad Hymn Abdullah Bukhari has certificate for Office Work [IT] - skipping
+✅ User Muhammad Aneeb Bukhari has certificate for Office Work [IT] - skipping
+✅ User Kashif Shah has certificate for Graphic Designer - skipping
+✅ User Zahra Baloch has certificate for Web Development   (Online) - skipping
+✅ User Tooba Adrees has certificate for Web Development - skipping
+✅ User Muhammad Arham Khalid has certificate for Office Work [IT] Documentation Management - skipping
+✅ User Muhammad Mohsin has certificate for Web Development - skipping
+✅ User Hadia Sarwar has certificate for Web Development - skipping
+✅ User Adil Asif has certificate for Web Development - skipping
+⚠️ Skipping fee 6983148804a102554fc15bb7 - no course data
+✅ User Moazzam Ali Zahid has certificate for Web Development - skipping
+✅ User Adil Asif has certificate for App Development - skipping
+✅ User Muntaha Fatima has certificate for Social media manager - skipping
+✅ User Husnain Abid has certificate for Web Development - skipping
+✅ User M.Ahsan has certificate for Graphic Designer - skipping
+✅ User Ali Raza has certificate for Graphic Designer - skipping
+✅ User Imran Patras has certificate for Video Editing - skipping
+✅ User Aliza Yasin has certificate for Video Editing - skipping
+✅ User Aliza Yasin has certificate for Office Work [IT] - skipping
+✅ User Aliza Yasin has certificate for Graphic Designer - skipping
+✅ User Adnan Ahmad has certificate for Video Editing - skipping
+✅ User Muhammad Umar has certificate for Video Editing - skipping
+✅ User Tooba Adrees has certificate for Social media manager - skipping
+✅ User Amna Bibi has certificate for YouTube Manager + Video Editor - skipping
+✅ User Amna Bibi has certificate for HR Manager - skipping
+✅ User Amna Bibi has certificate for Graphic Designer - skipping
+✅ User Hadia has certificate for HR Manager - skipping
+✅ User Hadia has certificate for Graphic Designer - skipping
+✅ User Muhammad Hamza Zakriya has certificate for Web Development - skipping
+✅ User Taimoor Saif has certificate for Web Development   (Online) - skipping
+✅ User Abdullah Shahid has certificate for Video Editing - skipping
+✅ User Mustafa Faraz has certificate for Video Editing - skipping
+✅ User Muhammad Shahbaz has certificate for Video Editing - skipping
+✅ User Waqas Anwar Khan has certificate for Office Work [IT] - skipping
+⏸️ Enrollment for M Aman Khan in Office Work [IT] is paused - skipping installment generation
+⏸️ Enrollment for Abdur Rahim in Office Work [IT] is paused - skipping installment generation
+⏸️ Enrollment for Anees Khan in Digital Marketing, Ads is paused - skipping installment generation
+⏸️ Enrollment for Muhammad Asjad in Basic Computer is paused - skipping installment generation
+⚠️ Skipping fee 69f1fea6121206442b785634 - no course data
+⏸️ Enrollment for Muhammad Rizwan in Basic Computer is paused - skipping installment generation
+✅ Installment generation complete. Generated 0 new installments.
+🔄 Updating enrollment active status...
+✅ Enrollment status update complete. Updated 0 enrollments.
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+
+========================================
+🔧 LMS BACKEND - Starting...
+========================================
+
+🚀 Server running on port 5000
+✅ MongoDB connected
+🔄 Running startup installment check...
+🔄 Starting installment generation check...
+✅ User Muhammad Amir has certificate for Office Work [IT] - skipping
+✅ User Amna Nargis has certificate for Graphic Designer - skipping
+✅ User Saiqa Yaseen has certificate for Graphic Designer - skipping
+❌ Auth failed: No token provided for GET /api/users/pending-counts
+❌ Auth failed: No token provided for GET /api/stats/admin-dashboard?startDate=2026-06-01&endDate=2026-06-02
+❌ Auth failed: No token provided for GET /api/chat/conversations
+❌ Auth failed: No token provided for GET /api/chat/unread
+❌ Auth failed: No token provided for GET /api/user-notifications
+❌ Auth failed: No token provided for GET /api/user-notifications/unread-count
+❌ Auth failed: No token provided for GET /api/users/pending-counts
+❌ Auth failed: No token provided for GET /api/auth/available-roles
+❌ Auth failed: No token provided for GET /api/stats/admin-dashboard?startDate=2026-06-01&endDate=2026-06-02
+❌ Auth failed: No token provided for GET /api/chat/conversations
+❌ Auth failed: No token provided for GET /api/chat/unread
+❌ Auth failed: No token provided for GET /api/user-notifications
+❌ Auth failed: No token provided for GET /api/user-notifications/unread-count
+❌ Auth failed: No token provided for GET /api/auth/available-roles
+✅ User Ahsaan-Ullah has certificate for Video Editing - skipping
+✅ User Muhammad Ali has certificate for Office Work [IT] - skipping
+✅ User Ahmad Hassan has certificate for Office Work [IT] - skipping
+✅ User Bisma Noor has certificate for Office Work [IT] - skipping
+✅ User Sami-Ullah has certificate for Office Work [IT] - skipping
+✅ User Syed Fyzan Gull has certificate for Office Work [IT] - skipping
+✅ User Muhammad Mudasir has certificate for Office Work [IT] - skipping
+✅ User Ali Ch has certificate for Office Work [IT] - skipping
+✅ User Ameer Hamza has certificate for Office Work [IT] - skipping
+✅ User Zia UR Rehman has certificate for Office Work [IT] - skipping
+✅ User Muhammad Shahbaz Habib has certificate for Video Editing - skipping
+✅ User Taimoor Saif has certificate for Office Work [IT] - skipping
+✅ User Aimen Irfan has certificate for Web Development   (Online) - skipping
+✅ User Muhammad Amin has certificate for Web Development   (Online) - skipping
+✅ User Umar Sajid has certificate for Office Work [IT] - skipping
+✅ User Sameer Qasim has certificate for Office Work [IT] - skipping
+✅ User Farhan Talib has certificate for Office Work [IT] - skipping
+✅ User Ayyaz Hussain has certificate for Office Work [IT] - skipping
+✅ User Zaighum Siddique has certificate for Graphic Designer - skipping
+✅ User Laiba Saleem has certificate for Office Work [IT] - skipping
+✅ User Aqsa Bibi has certificate for Office Work [IT] - skipping
+✅ User Farha Batool has certificate for Graphic Designer - skipping
+✅ User Arbab Ghafoor has certificate for Graphic Designer - skipping
+✅ User Aqsa Naseer has certificate for Office Work [IT] - skipping
+✅ User Talha Siyal has certificate for Web Development   (Online) - skipping
+✅ User Armeeza Siyal has certificate for Graphic Designer - skipping
+✅ User Ashna Zahid has certificate for Office Work [IT] - skipping
+✅ User Kainat Mehmood has certificate for Web Development   (Online) - skipping
+✅ User Ayesha Ishtiaq has certificate for Web Development   (Online) - skipping
+✅ User M. Zubair Younis has certificate for Graphic Designer - skipping
+✅ User Anza Aleem has certificate for Web Development   (Online) - skipping
+✅ User Muhammad Hashir has certificate for Graphic Designer - skipping
+✅ User Ahsan Abbas has certificate for Home Architecture   (Online) - skipping
+✅ User Abdullah Shahid has certificate for Graphic Designer - skipping
+✅ User Hammad Sadiq has certificate for Office Work [IT] - skipping
+✅ User Raqeeb Ullah has certificate for Graphic Designer - skipping
+✅ User Abdul Wahab has certificate for Office Work [IT] - skipping
+✅ User Salman Tariq has certificate for Office Work [IT] - skipping
+✅ User Ghulam Mustafa has certificate for Web Development   (Online) - skipping
+✅ User Muhammad Mohsin has certificate for Office Work [IT] - skipping
+✅ User Muhammad Hymn Abdullah Bukhari has certificate for Office Work [IT] - skipping
+✅ User Muhammad Aneeb Bukhari has certificate for Office Work [IT] - skipping
+✅ User Kashif Shah has certificate for Graphic Designer - skipping
+✅ User Zahra Baloch has certificate for Web Development   (Online) - skipping
+✅ User Tooba Adrees has certificate for Web Development - skipping
+✅ User Muhammad Arham Khalid has certificate for Office Work [IT] Documentation Management - skipping
+✅ User Muhammad Mohsin has certificate for Web Development - skipping
+✅ User Hadia Sarwar has certificate for Web Development - skipping
+✅ User Adil Asif has certificate for Web Development - skipping
+⚠️ Skipping fee 6983148804a102554fc15bb7 - no course data
+✅ User Moazzam Ali Zahid has certificate for Web Development - skipping
+✅ User Adil Asif has certificate for App Development - skipping
+✅ User Muntaha Fatima has certificate for Social media manager - skipping
+✅ User Husnain Abid has certificate for Web Development - skipping
+✅ User M.Ahsan has certificate for Graphic Designer - skipping
+✅ User Ali Raza has certificate for Graphic Designer - skipping
+✅ User Imran Patras has certificate for Video Editing - skipping
+✅ User Aliza Yasin has certificate for Video Editing - skipping
+✅ User Aliza Yasin has certificate for Office Work [IT] - skipping
+✅ User Aliza Yasin has certificate for Graphic Designer - skipping
+✅ User Adnan Ahmad has certificate for Video Editing - skipping
+✅ User Muhammad Umar has certificate for Video Editing - skipping
+✅ User Tooba Adrees has certificate for Social media manager - skipping
+✅ User Amna Bibi has certificate for YouTube Manager + Video Editor - skipping
+✅ User Amna Bibi has certificate for HR Manager - skipping
+✅ User Amna Bibi has certificate for Graphic Designer - skipping
+✅ User Hadia has certificate for HR Manager - skipping
+✅ User Hadia has certificate for Graphic Designer - skipping
+✅ User Muhammad Hamza Zakriya has certificate for Web Development - skipping
+✅ User Taimoor Saif has certificate for Web Development   (Online) - skipping
+✅ User Abdullah Shahid has certificate for Video Editing - skipping
+✅ User Mustafa Faraz has certificate for Video Editing - skipping
+✅ User Muhammad Shahbaz has certificate for Video Editing - skipping
+✅ User Waqas Anwar Khan has certificate for Office Work [IT] - skipping
+⏸️ Enrollment for M Aman Khan in Office Work [IT] is paused - skipping installment generation
+⏸️ Enrollment for Abdur Rahim in Office Work [IT] is paused - skipping installment generation
+⏸️ Enrollment for Anees Khan in Digital Marketing, Ads is paused - skipping installment generation
+⏸️ Enrollment for Muhammad Asjad in Basic Computer is paused - skipping installment generation
+⚠️ Skipping fee 69f1fea6121206442b785634 - no course data
+⏸️ Enrollment for Muhammad Rizwan in Basic Computer is paused - skipping installment generation
+✅ Installment generation complete. Generated 0 new installments.
+🔄 Updating enrollment active status...
+✅ Enrollment status update complete. Updated 0 enrollments.

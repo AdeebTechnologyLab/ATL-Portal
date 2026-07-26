@@ -1,0 +1,447 @@
+⚠️ Replace placeholder EMAIL_USER / EMAIL_PASS in backend/.env with a real Gmail App Password.
+VAPID keys are not set. Push notifications will not work.
+VAPID keys are not set. Push notifications will not work.
+VAPID keys are not set. Push notifications will not work.
+VAPID keys are not set. Push notifications will not work.
+VAPID keys are not set. Push notifications will not work.
+VAPID keys are not set. Push notifications will not work.
+VAPID keys are not set. Push notifications will not work.
+VAPID keys are not set. Push notifications will not work.
+VAPID keys are not set. Push notifications will not work.
+VAPID keys are not set. Push notifications will not work.
+VAPID keys are not set. Push notifications will not work.
+VAPID keys are not set. Push notifications will not work.
+VAPID keys are not set. Push notifications will not work.
+VAPID keys are not set. Push notifications will not work.
+VAPID keys are not set. Push notifications will not work.
+VAPID keys are not set. Push notifications will not work.
+VAPID keys are not set. Push notifications will not work.
+VAPID keys are not set. Push notifications will not work.
+VAPID keys are not set. Push notifications will not work.
+VAPID keys are not set. Push notifications will not work.
+VAPID keys are not set. Push notifications will not work.
+VAPID keys are not set. Push notifications will not work.
+VAPID keys are not set. Push notifications will not work.
+VAPID keys are not set. Push notifications will not work.
+VAPID keys are not set. Push notifications will not work.
+VAPID keys are not set. Push notifications will not work.
+VAPID keys are not set. Push notifications will not work.
+VAPID keys are not set. Push notifications will not work.
+VAPID keys are not set. Push notifications will not work.
+VAPID keys are not set. Push notifications will not work.
+VAPID keys are not set. Push notifications will not work.
+VAPID keys are not set. Push notifications will not work.
+VAPID keys are not set. Push notifications will not work.
+VAPID keys are not set. Push notifications will not work.
+VAPID keys are not set. Push notifications will not work.
+VAPID keys are not set. Push notifications will not work.
+VAPID keys are not set. Push notifications will not work.
+VAPID keys are not set. Push notifications will not work.
+VAPID keys are not set. Push notifications will not work.
+VAPID keys are not set. Push notifications will not work.
+VAPID keys are not set. Push notifications will not work.
+VAPID keys are not set. Push notifications will not work.
+VAPID keys are not set. Push notifications will not work.
+VAPID keys are not set. Push notifications will not work.
+VAPID keys are not set. Push notifications will not work.
+VAPID keys are not set. Push notifications will not work.
+VAPID keys are not set. Push notifications will not work.
+VAPID keys are not set. Push notifications will not work.
+VAPID keys are not set. Push notifications will not work.
+VAPID keys are not set. Push notifications will not work.
+VAPID keys are not set. Push notifications will not work.
+VAPID keys are not set. Push notifications will not work.
+⚠️ Replace placeholder EMAIL_USER / EMAIL_PASS in backend/.env with a real Gmail App Password.
+⚠️ Replace placeholder EMAIL_USER / EMAIL_PASS in backend/.env with a real Gmail App Password.
+⚠️ Replace placeholder EMAIL_USER / EMAIL_PASS in backend/.env with a real Gmail App Password.
+⚠️ Replace placeholder EMAIL_USER / EMAIL_PASS in backend/.env with a real Gmail App Password.
+⚠️ Replace placeholder EMAIL_USER / EMAIL_PASS in backend/.env with a real Gmail App Password.
+⚠️ Replace placeholder EMAIL_USER / EMAIL_PASS in backend/.env with a real Gmail App Password.
+❌ Error fetching daily tasks for user: CastError: Cast to ObjectId failed for value "undefined" (type string) at path "course" for model "DailyTask"
+    at SchemaObjectId.cast (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\mongoose\lib\schema\objectId.js:253:11)
+    at SchemaType.applySetters (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\mongoose\lib\schemaType.js:1288:12)
+    at SchemaType.castForQuery (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\mongoose\lib\schemaType.js:1724:17)
+    at cast (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\mongoose\lib\query.js:5060:12)
+    at Query._castConditions (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\mongoose\lib\query.js:2374:10)
+    at model.Query._find (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\mongoose\lib\query.js:2401:8)
+    at model.Query.exec (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\mongoose\lib\query.js:4627:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async D:\Downloads\LMS-Adeeb-Technology-Lab\backend\routes\dailyTasks.js:169:23 {
+  stringValue: '"undefined"',
+  messageFormat: undefined,
+  kind: 'ObjectId',
+  value: 'undefined',
+  path: 'course',
+  reason: BSONError: input must be a 24 character hex string, 12 byte Uint8Array, or an integer
+      at new ObjectId (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\bson\lib\bson.cjs:2538:23)
+      at castObjectId (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\mongoose\lib\cast\objectid.js:25:12)
+      at SchemaObjectId.cast (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\mongoose\lib\schema\objectId.js:251:12)
+      at SchemaType.applySetters (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\mongoose\lib\schemaType.js:1288:12)
+      at SchemaType.castForQuery (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\mongoose\lib\schemaType.js:1724:17)
+      at cast (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\mongoose\lib\cast.js:390:32)
+      at Query.cast (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\mongoose\lib\query.js:5060:12)
+      at Query._castConditions (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\mongoose\lib\query.js:2374:10)
+      at model.Query._find (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\mongoose\lib\query.js:2401:8)
+      at model.Query.exec (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\mongoose\lib\query.js:4627:80),
+  valueType: 'string'
+}
+❌ Error fetching daily tasks for user: CastError: Cast to ObjectId failed for value "undefined" (type string) at path "course" for model "DailyTask"
+    at SchemaObjectId.cast (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\mongoose\lib\schema\objectId.js:253:11)
+    at SchemaType.applySetters (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\mongoose\lib\schemaType.js:1288:12)
+    at SchemaType.castForQuery (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\mongoose\lib\schemaType.js:1724:17)
+    at cast (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\mongoose\lib\query.js:5060:12)
+    at Query._castConditions (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\mongoose\lib\query.js:2374:10)
+    at model.Query._find (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\mongoose\lib\query.js:2401:8)
+    at model.Query.exec (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\mongoose\lib\query.js:4627:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async D:\Downloads\LMS-Adeeb-Technology-Lab\backend\routes\dailyTasks.js:169:23 {
+  stringValue: '"undefined"',
+  messageFormat: undefined,
+  kind: 'ObjectId',
+  value: 'undefined',
+  path: 'course',
+  reason: BSONError: input must be a 24 character hex string, 12 byte Uint8Array, or an integer
+      at new ObjectId (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\bson\lib\bson.cjs:2538:23)
+      at castObjectId (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\mongoose\lib\cast\objectid.js:25:12)
+      at SchemaObjectId.cast (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\mongoose\lib\schema\objectId.js:251:12)
+      at SchemaType.applySetters (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\mongoose\lib\schemaType.js:1288:12)
+      at SchemaType.castForQuery (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\mongoose\lib\schemaType.js:1724:17)
+      at cast (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\mongoose\lib\cast.js:390:32)
+      at Query.cast (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\mongoose\lib\query.js:5060:12)
+      at Query._castConditions (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\mongoose\lib\query.js:2374:10)
+      at model.Query._find (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\mongoose\lib\query.js:2401:8)
+      at model.Query.exec (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\mongoose\lib\query.js:4627:80),
+  valueType: 'string'
+}
+⚠️ Replace placeholder EMAIL_USER / EMAIL_PASS in backend/.env with a real Gmail App Password.
+⚠️ Replace placeholder EMAIL_USER / EMAIL_PASS in backend/.env with a real Gmail App Password.
+⚠️ Replace placeholder EMAIL_USER / EMAIL_PASS in backend/.env with a real Gmail App Password.
+⚠️ Push notifications disabled: VAPID keys missing in environment
+⚠️ Push notifications disabled: VAPID keys missing in environment
+⚠️ Push notifications disabled: VAPID keys missing in environment
+⚠️ Push notifications disabled: VAPID keys missing in environment
+⚠️ Push notifications disabled: VAPID keys missing in environment
+⚠️ Push notifications disabled: VAPID keys missing in environment
+⚠️ Push notifications disabled: VAPID keys missing in environment
+⚠️ Push notifications disabled: VAPID keys missing in environment
+⚠️ Push notifications disabled: VAPID keys missing in environment
+⚠️ Push notifications disabled: VAPID keys missing in environment
+⚠️ Push notifications disabled: VAPID keys missing in environment
+⚠️ Push notifications disabled: VAPID keys missing in environment
+⚠️ Replace placeholder EMAIL_USER / EMAIL_PASS in backend/.env with a real Gmail App Password.
+⚠️ Replace placeholder EMAIL_USER / EMAIL_PASS in backend/.env with a real Gmail App Password.
+⚠️ Replace placeholder EMAIL_USER / EMAIL_PASS in backend/.env with a real Gmail App Password.
+⚠️ Replace placeholder EMAIL_USER / EMAIL_PASS in backend/.env with a real Gmail App Password.
+⚠️ Replace placeholder EMAIL_USER / EMAIL_PASS in backend/.env with a real Gmail App Password.
+Google Drive upload error: GaxiosError: invalid_client
+    at Gaxios._request (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\googleapis-common\node_modules\gaxios\build\cjs\src\gaxios.js:155:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async OAuth2Client.refreshTokenNoCache (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\googleapis-common\node_modules\google-auth-library\build\src\auth\oauth2client.js:259:19)
+    at async OAuth2Client.getRequestMetadataAsync (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\googleapis-common\node_modules\google-auth-library\build\src\auth\oauth2client.js:372:17)
+    at async OAuth2Client.requestAsync (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\googleapis-common\node_modules\google-auth-library\build\src\auth\oauth2client.js:457:23)
+    at async createAPIRequestAsync (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\googleapis-common\build\src\apirequest.js:308:25)
+    at async getOrCreateFolder (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\utils\googleDrive.js:39:22)
+    at async uploadAssignmentFile (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\utils\googleDrive.js:59:24)
+    at async D:\Downloads\LMS-Adeeb-Technology-Lab\backend\routes\googleDrive.js:124:27 {
+  config: {
+    retry: true,
+    retryConfig: {
+      httpMethodsToRetry: [Array],
+      currentRetryAttempt: 0,
+      retry: 3,
+      noResponseRetries: 2,
+      retryDelayMultiplier: 2,
+      timeOfFirstRequest: 1784849423351,
+      totalTimeout: 9007199254740991,
+      maxRetryDelay: 9007199254740991,
+      statusCodesToRetry: [Array]
+    },
+    method: 'POST',
+    url: URL {
+      href: 'https://oauth2.googleapis.com/token',
+      origin: 'https://oauth2.googleapis.com',
+      protocol: 'https:',
+      username: '',
+      password: '',
+      host: 'oauth2.googleapis.com',
+      hostname: 'oauth2.googleapis.com',
+      port: '',
+      pathname: '/token',
+      search: '',
+      searchParams: URLSearchParams {},
+      hash: ''
+    },
+    data: URLSearchParams {
+      'refresh_token' => '1//058crHiar791UCgYIARAAGAUSNwF-L9Irf5E1TRT9jui82XxPhRdKfNoHdgvBk0dJ9IZsiIG9XTMdtIzmUAsQITbZKLySGq4S7sc',
+      'client_id' => '425625853967-8c6n2kt6hf5ms3uvlol6bauvpso6sbg1.apps.googleusercontent.com',
+      'client_secret' => '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+      'grant_type' => '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.' },
+    body: URLSearchParams {
+      'refresh_token' => '1//058crHiar791UCgYIARAAGAUSNwF-L9Irf5E1TRT9jui82XxPhRdKfNoHdgvBk0dJ9IZsiIG9XTMdtIzmUAsQITbZKLySGq4S7sc',
+      'client_id' => '425625853967-8c6n2kt6hf5ms3uvlol6bauvpso6sbg1.apps.googleusercontent.com',
+      'client_secret' => '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+      'grant_type' => '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.' },
+    validateStatus: [Function: validateStatus],
+    responseType: 'unknown',
+    errorRedactor: [Function: defaultErrorRedactor],
+    duplex: 'half',
+    headers: Headers {
+      'x-goog-api-client': 'gl-node/24.12.0',
+      'User-Agent': 'google-api-nodejs-client/10.5.0'
+    }
+  },
+  response: Response {
+    size: 0,
+    data: {
+      error: 'invalid_client',
+      error_description: 'The provided client secret is invalid.'
+    },
+    config: {
+      retry: true,
+      retryConfig: [Object],
+      method: 'POST',
+      url: URL {},
+      data: [Object],
+      body: [Object],
+      validateStatus: [Function: validateStatus],
+      responseType: 'unknown',
+      errorRedactor: [Function: defaultErrorRedactor],
+      duplex: 'half',
+      headers: Headers {
+        'x-goog-api-client': 'gl-node/24.12.0',
+        'User-Agent': 'google-api-nodejs-client/10.5.0'
+      }
+    },
+    Symbol(Body internals): {
+      body: [Gunzip],
+      stream: [Gunzip],
+      boundary: null,
+      disturbed: true,
+      error: null
+    },
+    Symbol(Response internals): {
+      type: 'default',
+      url: 'https://oauth2.googleapis.com/token',
+      status: 401,
+      statusText: 'Unauthorized',
+      headers: [Object],
+      counter: 0,
+      highWaterMark: 16384
+    }
+  },
+  code: 401,
+  status: 401,
+  error: undefined,
+  Symbol(gaxios-gaxios-error): '7.1.3',
+  [cause]: { message: 'invalid_client', code: 401, status: 'Unauthorized' }
+}
+Google Drive upload error: GaxiosError: invalid_client
+    at Gaxios._request (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\googleapis-common\node_modules\gaxios\build\cjs\src\gaxios.js:155:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async OAuth2Client.refreshTokenNoCache (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\googleapis-common\node_modules\google-auth-library\build\src\auth\oauth2client.js:259:19)
+    at async OAuth2Client.getRequestMetadataAsync (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\googleapis-common\node_modules\google-auth-library\build\src\auth\oauth2client.js:372:17)
+    at async OAuth2Client.requestAsync (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\googleapis-common\node_modules\google-auth-library\build\src\auth\oauth2client.js:457:23)
+    at async createAPIRequestAsync (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\googleapis-common\build\src\apirequest.js:308:25)
+    at async getOrCreateFolder (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\utils\googleDrive.js:39:22)
+    at async uploadAssignmentFile (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\utils\googleDrive.js:59:24)
+    at async D:\Downloads\LMS-Adeeb-Technology-Lab\backend\routes\googleDrive.js:124:27 {
+  config: {
+    retry: true,
+    retryConfig: {
+      httpMethodsToRetry: [Array],
+      currentRetryAttempt: 0,
+      retry: 3,
+      noResponseRetries: 2,
+      retryDelayMultiplier: 2,
+      timeOfFirstRequest: 1784849445301,
+      totalTimeout: 9007199254740991,
+      maxRetryDelay: 9007199254740991,
+      statusCodesToRetry: [Array]
+    },
+    method: 'POST',
+    url: URL {
+      href: 'https://oauth2.googleapis.com/token',
+      origin: 'https://oauth2.googleapis.com',
+      protocol: 'https:',
+      username: '',
+      password: '',
+      host: 'oauth2.googleapis.com',
+      hostname: 'oauth2.googleapis.com',
+      port: '',
+      pathname: '/token',
+      search: '',
+      searchParams: URLSearchParams {},
+      hash: ''
+    },
+    data: URLSearchParams {
+      'refresh_token' => '1//058crHiar791UCgYIARAAGAUSNwF-L9Irf5E1TRT9jui82XxPhRdKfNoHdgvBk0dJ9IZsiIG9XTMdtIzmUAsQITbZKLySGq4S7sc',
+      'client_id' => '425625853967-8c6n2kt6hf5ms3uvlol6bauvpso6sbg1.apps.googleusercontent.com',
+      'client_secret' => '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+      'grant_type' => '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.' },
+    body: URLSearchParams {
+      'refresh_token' => '1//058crHiar791UCgYIARAAGAUSNwF-L9Irf5E1TRT9jui82XxPhRdKfNoHdgvBk0dJ9IZsiIG9XTMdtIzmUAsQITbZKLySGq4S7sc',
+      'client_id' => '425625853967-8c6n2kt6hf5ms3uvlol6bauvpso6sbg1.apps.googleusercontent.com',
+      'client_secret' => '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+      'grant_type' => '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.' },
+    validateStatus: [Function: validateStatus],
+    responseType: 'unknown',
+    errorRedactor: [Function: defaultErrorRedactor],
+    duplex: 'half',
+    headers: Headers {
+      'x-goog-api-client': 'gl-node/24.12.0',
+      'User-Agent': 'google-api-nodejs-client/10.5.0'
+    }
+  },
+  response: Response {
+    size: 0,
+    data: {
+      error: 'invalid_client',
+      error_description: 'The provided client secret is invalid.'
+    },
+    config: {
+      retry: true,
+      retryConfig: [Object],
+      method: 'POST',
+      url: URL {},
+      data: [Object],
+      body: [Object],
+      validateStatus: [Function: validateStatus],
+      responseType: 'unknown',
+      errorRedactor: [Function: defaultErrorRedactor],
+      duplex: 'half',
+      headers: Headers {
+        'x-goog-api-client': 'gl-node/24.12.0',
+        'User-Agent': 'google-api-nodejs-client/10.5.0'
+      }
+    },
+    Symbol(Body internals): {
+      body: [Gunzip],
+      stream: [Gunzip],
+      boundary: null,
+      disturbed: true,
+      error: null
+    },
+    Symbol(Response internals): {
+      type: 'default',
+      url: 'https://oauth2.googleapis.com/token',
+      status: 401,
+      statusText: 'Unauthorized',
+      headers: [Object],
+      counter: 0,
+      highWaterMark: 16384
+    }
+  },
+  code: 401,
+  status: 401,
+  error: undefined,
+  Symbol(gaxios-gaxios-error): '7.1.3',
+  [cause]: { message: 'invalid_client', code: 401, status: 'Unauthorized' }
+}
+⚠️ Replace placeholder EMAIL_USER / EMAIL_PASS in backend/.env with a real Gmail App Password.
+⚠️ Replace placeholder EMAIL_USER / EMAIL_PASS in backend/.env with a real Gmail App Password.
+⚠️ Replace placeholder EMAIL_USER / EMAIL_PASS in backend/.env with a real Gmail App Password.
+Google Drive upload error: GaxiosError: invalid_client
+    at Gaxios._request (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\googleapis-common\node_modules\gaxios\build\cjs\src\gaxios.js:155:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async OAuth2Client.refreshTokenNoCache (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\googleapis-common\node_modules\google-auth-library\build\src\auth\oauth2client.js:259:19)
+    at async OAuth2Client.getRequestMetadataAsync (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\googleapis-common\node_modules\google-auth-library\build\src\auth\oauth2client.js:372:17)
+    at async OAuth2Client.requestAsync (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\googleapis-common\node_modules\google-auth-library\build\src\auth\oauth2client.js:457:23)
+    at async createAPIRequestAsync (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\node_modules\googleapis-common\build\src\apirequest.js:308:25)
+    at async getOrCreateFolder (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\utils\googleDrive.js:39:22)
+    at async uploadAssignmentFiles (D:\Downloads\LMS-Adeeb-Technology-Lab\backend\utils\googleDrive.js:59:24)
+    at async D:\Downloads\LMS-Adeeb-Technology-Lab\backend\routes\googleDrive.js:124:29 {
+  config: {
+    retry: true,
+    retryConfig: {
+      httpMethodsToRetry: [Array],
+      currentRetryAttempt: 0,
+      retry: 3,
+      noResponseRetries: 2,
+      retryDelayMultiplier: 2,
+      timeOfFirstRequest: 1784849826351,
+      totalTimeout: 9007199254740991,
+      maxRetryDelay: 9007199254740991,
+      statusCodesToRetry: [Array]
+    },
+    method: 'POST',
+    url: URL {
+      href: 'https://oauth2.googleapis.com/token',
+      origin: 'https://oauth2.googleapis.com',
+      protocol: 'https:',
+      username: '',
+      password: '',
+      host: 'oauth2.googleapis.com',
+      hostname: 'oauth2.googleapis.com',
+      port: '',
+      pathname: '/token',
+      search: '',
+      searchParams: URLSearchParams {},
+      hash: ''
+    },
+    data: URLSearchParams {
+      'refresh_token' => '1//058crHiar791UCgYIARAAGAUSNwF-L9Irf5E1TRT9jui82XxPhRdKfNoHdgvBk0dJ9IZsiIG9XTMdtIzmUAsQITbZKLySGq4S7sc',
+      'client_id' => '425625853967-8c6n2kt6hf5ms3uvlol6bauvpso6sbg1.apps.googleusercontent.com',
+      'client_secret' => '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+      'grant_type' => '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.' },
+    body: URLSearchParams {
+      'refresh_token' => '1//058crHiar791UCgYIARAAGAUSNwF-L9Irf5E1TRT9jui82XxPhRdKfNoHdgvBk0dJ9IZsiIG9XTMdtIzmUAsQITbZKLySGq4S7sc',
+      'client_id' => '425625853967-8c6n2kt6hf5ms3uvlol6bauvpso6sbg1.apps.googleusercontent.com',
+      'client_secret' => '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+      'grant_type' => '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.' },
+    validateStatus: [Function: validateStatus],
+    responseType: 'unknown',
+    errorRedactor: [Function: defaultErrorRedactor],
+    duplex: 'half',
+    headers: Headers {
+      'x-goog-api-client': 'gl-node/24.12.0',
+      'User-Agent': 'google-api-nodejs-client/10.5.0'
+    }
+  },
+  response: Response {
+    size: 0,
+    data: {
+      error: 'invalid_client',
+      error_description: 'The provided client secret is invalid.'
+    },
+    config: {
+      retry: true,
+      retryConfig: [Object],
+      method: 'POST',
+      url: URL {},
+      data: [Object],
+      body: [Object],
+      validateStatus: [Function: validateStatus],
+      responseType: 'unknown',
+      errorRedactor: [Function: defaultErrorRedactor],
+      duplex: 'half',
+      headers: Headers {
+        'x-goog-api-client': 'gl-node/24.12.0',
+        'User-Agent': 'google-api-nodejs-client/10.5.0'
+      }
+    },
+    Symbol(Body internals): {
+      body: [Gunzip],
+      stream: [Gunzip],
+      boundary: null,
+      disturbed: true,
+      error: null
+    },
+    Symbol(Response internals): {
+      type: 'default',
+      url: 'https://oauth2.googleapis.com/token',
+      status: 401,
+      statusText: 'Unauthorized',
+      headers: [Object],
+      counter: 0,
+      highWaterMark: 16384
+    }
+  },
+  code: 401,
+  status: 401,
+  error: undefined,
+  Symbol(gaxios-gaxios-error): '7.1.3',
+  [cause]: { message: 'invalid_client', code: 401, status: 'Unauthorized' }
+}
+⚠️ Replace placeholder EMAIL_USER / EMAIL_PASS in backend/.env with a real Gmail App Password.
