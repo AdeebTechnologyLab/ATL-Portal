@@ -1,5 +1,5 @@
-/** Live frontend (Vercel) — used in password-reset emails and notification links */
-const PRODUCTION_CLIENT_URL = 'https://lms-adeeb-technology-lab.vercel.app';
+/** Live frontend (Hostinger) — used in password-reset emails and notification links */
+const PRODUCTION_CLIENT_URL = 'https://darkorchid-salmon-191482.hostingersite.com';
 
 /**
  * Dynamically resolve the frontend URL.
