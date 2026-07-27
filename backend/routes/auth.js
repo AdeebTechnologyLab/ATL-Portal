@@ -837,5 +837,39 @@ router.post('/reset-password/:token', async (req, res) => {
     }
 });
 
+// @route   GET /api/auth/email-status
+// @desc    Check email configuration status (Admin diagnostic)
+// @access  Public (shows config status only, no secrets)
+router.get('/email-status', async (req, res) => {
+    const configured = isEmailConfigured();
+    const method = process.env.BREVO_API_KEY ? 'brevo' : (process.env.EMAIL_USER ? 'gmail-smtp' : 'none');
+    const hasBrevoKey = !!process.env.BREVO_API_KEY;
+    const hasEmailUser = !!process.env.EMAIL_USER;
+    const hasEmailPass = !!process.env.EMAIL_PASS;
+    const hasEmailFrom = !!process.env.EMAIL_FROM;
+    const isPlaceholder = /your_gmail|your_16_char|app_password/i.test(
+        (process.env.EMAIL_USER || '') + (process.env.EMAIL_PASS || '')
+    );
+    const clientUrl = getClientUrl(req);
+
+    res.json({
+        success: true,
+        emailConfigured: configured,
+        method,
+        details: {
+            BREVO_API_KEY: hasBrevoKey ? 'SET' : 'NOT SET',
+            EMAIL_USER: hasEmailUser ? (isPlaceholder ? 'PLACEHOLDER (not real)' : 'SET') : 'NOT SET',
+            EMAIL_PASS: hasEmailPass ? (isPlaceholder ? 'PLACEHOLDER (not real)' : 'SET') : 'NOT SET',
+            EMAIL_FROM: hasEmailFrom ? 'SET' : 'NOT SET',
+        },
+        resetLinkDomain: clientUrl,
+        issue: !configured
+            ? '❌ No email method configured. Set BREVO_API_KEY or EMAIL_USER+EMAIL_PASS in your .env'
+            : isPlaceholder
+                ? '⚠️ EMAIL_USER/EMAIL_PASS contain placeholder values. Replace with real credentials.'
+                : '✅ Email appears configured. If emails still fail, check server logs for errors.'
+    });
+});
+
 module.exports = router;
 
