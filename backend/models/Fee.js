@@ -74,4 +74,7 @@ feeSchema.methods.updateStatus = function () {
     }
 };
 
+feeSchema.index({ user: 1, course: 1 });
+feeSchema.index({ status: 1 });
+
 module.exports = mongoose.model('Fee', feeSchema);

@@ -1,74 +1,81 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { useSelector } from 'react-redux';
-import { useEffect } from 'react';
+import { useEffect, lazy, Suspense } from 'react';
 import store from './store/store';
 import { subscribeToPushNotifications } from './utils/pushNotifications';
 
-// Auth Pages
-import Login from './pages/auth/Login';
-import ForgotPassword from './pages/auth/ForgotPassword';
-import ResetPassword from './pages/auth/ResetPassword';
-import RoleSelection from './pages/auth/RoleSelection';
-import StudentRegister from './pages/auth/StudentRegister';
-import InternshipRegister from './pages/auth/InternshipRegister';
-import JobRegister from './pages/auth/JobRegister';
-import TeacherRegister from './pages/auth/TeacherRegister';
-
-// Original Student Pages (used by Intern)
-import StudentDashboard from './pages/student/StudentDashboard';
-import AssignmentSubmission from './pages/student/AssignmentSubmission';
-import MarksSheet from './pages/student/MarksSheet';
-
-// Layout
+// Layout (keep eagerly loaded - used on every authenticated page)
 import DashboardLayout from './components/layout/DashboardLayout';
 
-// Admin Pages
-import AdminDashboard from './pages/admin/AdminDashboard';
-import CourseManagement from './pages/admin/CourseManagement';
-import FeeVerification from './pages/admin/FeeVerification';
-import PaidTasksManagement from './pages/admin/PaidTasksManagement';
-import JobChat from './pages/shared/JobChat';
-import DiscussionRoom from './pages/shared/DiscussionRoom';
-import CertificateManagement from './pages/admin/CertificateManagement';
-import TeachersManagement from './pages/admin/TeachersManagement';
-import StudentsManagement from './pages/admin/StudentsManagement';
-import InternsManagement from './pages/admin/InternsManagement';
-import JobsManagement from './pages/admin/JobsManagement';
-import NotificationManagement from './pages/admin/NotificationManagement';
-import StudentDirectory from './pages/admin/StudentDirectory';
-import TeacherDirectory from './pages/admin/TeacherDirectory';
-import AttendanceSettings from './pages/admin/AttendanceSettings';
-import ExpenseManagement from './pages/admin/ExpenseManagement';
-import RegistrationPages from './pages/admin/RegistrationPages';
+// Loading fallback for lazy-loaded pages
+const PageLoader = () => (
+  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)' }}>
+    <div style={{ width: '40px', height: '40px', border: '3px solid rgba(99,102,241,0.3)', borderTopColor: '#6366f1', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+    <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+  </div>
+);
 
-// Teacher Pages (handles both Students and Interns)
-import TeacherProfile from './pages/teacher/TeacherProfile';
-import AttendanceSheet from './pages/teacher/AttendanceSheet';
-import TeacherCourses from './pages/teacher/TeacherCourses';
-import QuickAttendance from './pages/teacher/QuickAttendance';
+// Auth Pages (lazy loaded)
+const Login = lazy(() => import('./pages/auth/Login'));
+const ForgotPassword = lazy(() => import('./pages/auth/ForgotPassword'));
+const ResetPassword = lazy(() => import('./pages/auth/ResetPassword'));
+const RoleSelection = lazy(() => import('./pages/auth/RoleSelection'));
+const StudentRegister = lazy(() => import('./pages/auth/StudentRegister'));
+const InternshipRegister = lazy(() => import('./pages/auth/InternshipRegister'));
+const JobRegister = lazy(() => import('./pages/auth/JobRegister'));
+const TeacherRegister = lazy(() => import('./pages/auth/TeacherRegister'));
 
-// Job Pages (Paid Tasks System)
-import JobDashboard from './pages/job/JobDashboard';
-import BrowseTasks from './pages/job/BrowseTasks';
-import JobProfile from './pages/job/JobProfile';
+// Student Pages (lazy loaded)
+const StudentDashboard = lazy(() => import('./pages/student/StudentDashboard'));
+const AssignmentSubmission = lazy(() => import('./pages/student/AssignmentSubmission'));
+const MarksSheet = lazy(() => import('./pages/student/MarksSheet'));
+const StudentProfile = lazy(() => import('./pages/student/StudentProfile'));
+const BrowseCourses = lazy(() => import('./pages/student/BrowseCourses'));
+const FeeManagement = lazy(() => import('./pages/student/FeeManagement'));
 
-// Student Pages
-import StudentProfile from './pages/student/StudentProfile';
-import BrowseCourses from './pages/student/BrowseCourses';
-import FeeManagement from './pages/student/FeeManagement';
-import TeacherCertificates from './pages/teacher/TeacherCertificates';
+// Admin Pages (lazy loaded)
+const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'));
+const CourseManagement = lazy(() => import('./pages/admin/CourseManagement'));
+const FeeVerification = lazy(() => import('./pages/admin/FeeVerification'));
+const PaidTasksManagement = lazy(() => import('./pages/admin/PaidTasksManagement'));
+const CertificateManagement = lazy(() => import('./pages/admin/CertificateManagement'));
+const TeachersManagement = lazy(() => import('./pages/admin/TeachersManagement'));
+const StudentsManagement = lazy(() => import('./pages/admin/StudentsManagement'));
+const InternsManagement = lazy(() => import('./pages/admin/InternsManagement'));
+const JobsManagement = lazy(() => import('./pages/admin/JobsManagement'));
+const NotificationManagement = lazy(() => import('./pages/admin/NotificationManagement'));
+const StudentDirectory = lazy(() => import('./pages/admin/StudentDirectory'));
+const TeacherDirectory = lazy(() => import('./pages/admin/TeacherDirectory'));
+const AttendanceSettings = lazy(() => import('./pages/admin/AttendanceSettings'));
+const ExpenseManagement = lazy(() => import('./pages/admin/ExpenseManagement'));
+const RegistrationPages = lazy(() => import('./pages/admin/RegistrationPages'));
 
-// Public Pages
-import CertificateVerification from './pages/public/CertificateVerification';
+// Shared Pages (lazy loaded)
+const JobChat = lazy(() => import('./pages/shared/JobChat'));
+const DiscussionRoom = lazy(() => import('./pages/shared/DiscussionRoom'));
 
-// Settings Page
-import Settings from './pages/settings/Settings';
-import HelpSupport from './pages/support/HelpSupport';
+// Teacher Pages (lazy loaded)
+const TeacherProfile = lazy(() => import('./pages/teacher/TeacherProfile'));
+const AttendanceSheet = lazy(() => import('./pages/teacher/AttendanceSheet'));
+const TeacherCourses = lazy(() => import('./pages/teacher/TeacherCourses'));
+const QuickAttendance = lazy(() => import('./pages/teacher/QuickAttendance'));
+const TeacherCertificates = lazy(() => import('./pages/teacher/TeacherCertificates'));
 
-// Live Class Page
-import AdeebMeet from './pages/live/AdeebMeet';
+// Job Pages (lazy loaded)
+const JobDashboard = lazy(() => import('./pages/job/JobDashboard'));
+const BrowseTasks = lazy(() => import('./pages/job/BrowseTasks'));
+const JobProfile = lazy(() => import('./pages/job/JobProfile'));
 
+// Public Pages (lazy loaded)
+const CertificateVerification = lazy(() => import('./pages/public/CertificateVerification'));
+
+// Settings & Support (lazy loaded)
+const Settings = lazy(() => import('./pages/settings/Settings'));
+const HelpSupport = lazy(() => import('./pages/support/HelpSupport'));
+
+// Live Class (lazy loaded)
+const AdeebMeet = lazy(() => import('./pages/live/AdeebMeet'));
 
 // Protected Route Component
 const ProtectedRoute = ({ children, allowedRoles }) => {
@@ -256,7 +263,9 @@ function App() {
     <Provider store={store}>
       <Router>
         <Toaster position="top-right" reverseOrder={false} />
-        <AppRoutes />
+        <Suspense fallback={<PageLoader />}>
+          <AppRoutes />
+        </Suspense>
       </Router>
     </Provider>
   );

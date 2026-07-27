@@ -29,7 +29,7 @@ router.get('/admin-dashboard', protect, authorize('admin'), async (req, res) => 
         }
 
         // Fetch all fees (we filter per-installment in JS since installments is an embedded array)
-        const fees = await Fee.find({}).populate('user', 'name photo').populate('course', 'title');
+        const fees = await Fee.find({}).populate('user', 'name photo').populate('course', 'title').lean();
 
         let totalRevenue = 0;
         let recentSubmissions = [];
@@ -89,8 +89,8 @@ router.get('/admin-dashboard', protect, authorize('admin'), async (req, res) => 
 
         // 2. Student Statistics (including interns)
         const [allStudents, allEnrollments] = await Promise.all([
-            User.find({ role: { $in: ['student', 'intern'] } }),
-            Enrollment.find().populate('user')
+            User.find({ role: { $in: ['student', 'intern'] } }).select('_id').lean(),
+            Enrollment.find().populate('user', '_id').select('user status').lean()
         ]);
 
         const totalStudents = allStudents.length;
@@ -123,7 +123,7 @@ router.get('/admin-dashboard', protect, authorize('admin'), async (req, res) => 
         });
 
         // 3. Fee Status Graph Data
-        const allFees = await Fee.find();
+        const allFees = await Fee.find().select('installments').lean();
         let verifiedCount = 0;
         let pendingCount = 0;
         let rejectedCount = 0;

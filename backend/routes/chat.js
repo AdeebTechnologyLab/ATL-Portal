@@ -46,7 +46,8 @@ router.get('/messages/:otherUserId', protect, async (req, res) => {
         })
         .populate('sender', 'name role photo')
         .populate('recipient', 'name role photo')
-        .sort('createdAt');
+        .sort('createdAt')
+        .lean();
 
         res.json({ success: true, data: messages });
     } catch (error) {
@@ -173,7 +174,8 @@ router.get('/conversations', protect, authorize('admin'), async (req, res) => {
             .populate('sender', 'name role email photo phone rollNo')
             .populate('recipient', 'name role email photo phone rollNo')
             .sort('-createdAt')
-            .limit(1000);
+            .limit(1000)
+            .lean();
 
         const grouped = new Map();
         messages.forEach(message => {
@@ -337,7 +339,8 @@ router.get('/discussion', protect, async (req, res) => {
         })
             .populate('sender', 'name role email photo rollNo lastSeen')
             .sort('createdAt')
-            .limit(500);
+            .limit(500)
+            .lean();
 
         res.json({ success: true, data: messages });
     } catch (error) {

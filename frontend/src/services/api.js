@@ -3,7 +3,7 @@ import { getApiBaseUrl } from '../config/apiBaseUrl';
 
 // Create axios instance
 const api = axios.create({
-    timeout: 90000,
+    timeout: 15000,
     headers: {
         'Content-Type': 'application/json'
     }
@@ -15,9 +15,9 @@ api.interceptors.request.use((config) => {
     const token = localStorage.getItem('token') || sessionStorage.getItem('token');
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
-        console.log(`🔐 [API] Request: ${config.method.toUpperCase()} ${config.url} with token`);
+        if (import.meta.env.DEV) console.log(`🔐 [API] Request: ${config.method.toUpperCase()} ${config.url} with token`);
     } else {
-        console.warn(`⚠️ [API] Request: ${config.method.toUpperCase()} ${config.url} WITHOUT token`);
+        if (import.meta.env.DEV) console.warn(`⚠️ [API] Request: ${config.method.toUpperCase()} ${config.url} WITHOUT token`);
     }
     // Let the browser set multipart boundary (manual Content-Type breaks file uploads)
     if (config.data instanceof FormData) {
@@ -29,18 +29,18 @@ api.interceptors.request.use((config) => {
 // Handle response errors
 api.interceptors.response.use(
     (response) => {
-        console.log(`✅ [API] Response: ${response.config.method.toUpperCase()} ${response.config.url} - Status: ${response.status}`);
+        if (import.meta.env.DEV) console.log(`✅ [API] Response: ${response.config.method.toUpperCase()} ${response.config.url} - Status: ${response.status}`);
         return response;
     },
     (error) => {
-        console.error(`❌ [API] Error: ${error.config?.method?.toUpperCase()} ${error.config?.url}`);
-        console.error(`❌ [API] Status: ${error.response?.status}`);
-        console.error(`❌ [API] Message: ${error.response?.data?.message || error.message}`);
-        console.error(`❌ [API] Full Error:`, error.response?.data || error);
+        if (import.meta.env.DEV) console.error(`❌ [API] Error: ${error.config?.method?.toUpperCase()} ${error.config?.url}`);
+        if (import.meta.env.DEV) console.error(`❌ [API] Status: ${error.response?.status}`);
+        if (import.meta.env.DEV) console.error(`❌ [API] Message: ${error.response?.data?.message || error.message}`);
+        if (import.meta.env.DEV) console.error(`❌ [API] Full Error:`, error.response?.data || error);
 
         const isLoginRequest = error.config?.url === '/auth/login' || error.config?.url?.endsWith('/auth/login');
         if (error.response?.status === 401 && !isLoginRequest) {
-            console.warn('🚪 [API] 401 Unauthorized - Clearing session and redirecting to login');
+            if (import.meta.env.DEV) console.warn('🚪 [API] 401 Unauthorized - Clearing session and redirecting to login');
             localStorage.removeItem('token');
             localStorage.removeItem('user');
             sessionStorage.removeItem('token');
@@ -272,7 +272,7 @@ export const chatAPI = {
     markAsRead: (senderId) => api.put(`/chat/read/${senderId}`),
     getUnread: () => api.get('/chat/unread'),
     clearChatHistory: (userId) => {
-        console.log(`[API] Requesting to CLEAR CHAT HISTORY for user ${userId} via POST /chat/action/clear-messages/`);
+        if (import.meta.env.DEV) console.log(`[API] Requesting to CLEAR CHAT HISTORY for user ${userId} via POST /chat/action/clear-messages/`);
         return api.post(`/chat/action/clear-messages/${userId}`);
     },
     // Course-based chat APIs

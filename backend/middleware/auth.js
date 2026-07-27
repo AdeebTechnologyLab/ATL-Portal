@@ -10,7 +10,7 @@ const protect = async (req, res, next) => {
         try {
             token = req.headers.authorization.split(' ')[1];
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
-            const authenticatedUser = await User.findById(decoded.id).select('+password');
+            const authenticatedUser = await User.findById(decoded.id).select('name email role isVerified password lastSeen');
 
             if (!authenticatedUser) {
                 console.log(`❌ Auth failed: User not found for token`);
@@ -54,7 +54,7 @@ const protect = async (req, res, next) => {
                     .catch(err => console.error('Error updating lastSeen:', err));
             }
 
-            console.log(`🔐 Auth OK: ${req.user.name} (${req.user.role}) - ${req.method} ${req.originalUrl}`);
+            if (process.env.NODE_ENV !== 'production') console.log(`🔐 Auth OK: ${req.user.name} (${req.user.role}) - ${req.method} ${req.originalUrl}`);
             next();
         } catch (error) {
             console.log(`❌ Auth failed: Token verification error - ${error.message}`);

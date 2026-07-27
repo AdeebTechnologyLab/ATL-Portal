@@ -139,4 +139,9 @@ const paidTaskSchema = new mongoose.Schema({
     timestamps: true
 });
 
+paidTaskSchema.index({ status: 1, createdAt: -1 });
+paidTaskSchema.index({ assignedTo: 1 });
+paidTaskSchema.index({ createdBy: 1 });
+paidTaskSchema.index({ jobManagers: 1 });
+
 module.exports = mongoose.model('PaidTask', paidTaskSchema);

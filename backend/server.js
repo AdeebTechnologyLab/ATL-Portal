@@ -9,6 +9,7 @@ const cron = require('node-cron');
 const cloudinary = require('cloudinary').v2;
 const http = require('http');
 const { sendClassTimeReminders } = require('./utils/classTimeReminders');
+const compression = require('compression');
 
 // Load environment variables
 dotenv.config();
@@ -79,6 +80,7 @@ const server = http.createServer(app);
 const staticOrigins = [
     'https://lms-adeeb-technology-lab.vercel.app',
     'https://lms-adeeb-technology-lab.onrender.com',
+    'https://darkorchid-salmon-191482.hostingersite.com',
     'http://localhost:5173',
     'http://127.0.0.1:5173',
     'http://localhost:3000',
@@ -389,6 +391,7 @@ io.on('connection', (socket) => {
 });
 
 // Middleware
+app.use(compression());
 app.use(cors(corsOptions));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));

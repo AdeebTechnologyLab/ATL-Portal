@@ -67,4 +67,7 @@ notificationSchema.virtual('isCurrentlyEffective').get(function () {
     return now >= this.startDate && now <= this.endDate;
 });
 
+notificationSchema.index({ isActive: 1, showLifetime: 1 });
+notificationSchema.index({ targetAudience: 1 });
+
 module.exports = mongoose.model('Notification', notificationSchema);

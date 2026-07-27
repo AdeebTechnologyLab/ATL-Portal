@@ -17,6 +17,17 @@ export default defineConfig({
     },
   },
   build: {
-    chunkSizeWarningLimit: 3000, // Increase warning limit to 3MB
+    chunkSizeWarningLimit: 1000,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor-react': ['react', 'react-dom', 'react-router-dom', 'react-redux', '@reduxjs/toolkit'],
+          'vendor-ui': ['framer-motion', 'lucide-react', 'react-hot-toast'],
+          'vendor-charts': ['chart.js', 'react-chartjs-2'],
+          'vendor-editor': ['@tiptap/react', '@tiptap/starter-kit', '@tiptap/extension-link', '@tiptap/extension-underline', '@tiptap/extension-text-align'],
+          'vendor-pdf': ['jspdf', 'jspdf-autotable', 'html2canvas'],
+        }
+      }
+    },
   }
 })

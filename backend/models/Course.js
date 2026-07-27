@@ -107,4 +107,8 @@ const courseSchema = new mongoose.Schema({
     timestamps: true
 });
 
+courseSchema.index({ isActive: 1 });
+courseSchema.index({ targetAudience: 1, isActive: 1 });
+courseSchema.index({ teachers: 1 });
+
 module.exports = mongoose.model('Course', courseSchema);
