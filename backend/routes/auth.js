@@ -871,5 +871,33 @@ router.get('/email-status', async (req, res) => {
     });
 });
 
+// @route   POST /api/auth/test-email
+// @desc    Test email configuration by sending a test email (Admin diagnostic)
+// @access  Public (for debugging)
+router.post('/test-email', async (req, res) => {
+    const { to } = req.body;
+    if (!to) {
+        return res.status(400).json({ success: false, message: 'Please provide a "to" email address' });
+    }
+    
+    try {
+        const info = await sendEmail({
+            to,
+            subject: 'Test Email from ATL Portal',
+            text: 'This is a test email to verify configuration.',
+            html: '<p>This is a test email to verify configuration.</p>'
+        });
+        res.json({ success: true, message: 'Test email sent successfully', info });
+    } catch (error) {
+        const brevoBody = error.response?.data ? error.response.data : null;
+        res.status(500).json({ 
+            success: false, 
+            message: 'Failed to send test email', 
+            error: error.message,
+            brevoBody 
+        });
+    }
+});
+
 module.exports = router;
 
