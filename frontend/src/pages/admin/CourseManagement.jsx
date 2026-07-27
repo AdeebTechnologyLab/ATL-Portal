@@ -11,7 +11,9 @@ import {
     AlertCircle,
     Filter,
     X,
-    RefreshCw
+    RefreshCw,
+    Eye,
+    EyeOff
 } from 'lucide-react';
 import Badge from '../../components/ui/Badge';
 import Modal from '../../components/ui/Modal';
@@ -214,6 +216,15 @@ const CourseManagement = () => {
                 console.error('Error deleting course:', err);
                 alert(err.response?.data?.message || 'Failed to delete course');
             }
+        }
+    };
+
+    const handleToggleActive = async (course) => {
+        try {
+            await courseAPI.update(course._id, { isActive: !course.isActive });
+            setCourses(prev => prev.map(c => c._id === course._id ? { ...c, isActive: !c.isActive } : c));
+        } catch (err) {
+            console.error('Error toggling course:', err);
         }
     };
 
@@ -456,6 +467,17 @@ const CourseManagement = () => {
                             >
                                 <Edit className="w-4 h-4" />
                                 Edit
+                            </button>
+                            <button
+                                onClick={() => handleToggleActive(course)}
+                                className={`py-2.5 px-3 text-sm font-medium rounded-xl transition-colors flex items-center justify-center gap-1 ${
+                                    course.isActive
+                                        ? 'text-emerald-600 hover:bg-emerald-50'
+                                        : 'text-gray-400 hover:bg-gray-100'
+                                }`}
+                                title={course.isActive ? 'Hide from students' : 'Show to students'}
+                            >
+                                {course.isActive ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
                             </button>
                             <button
                                 onClick={() => handleDelete(course._id)}

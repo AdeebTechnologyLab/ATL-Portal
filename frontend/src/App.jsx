@@ -50,6 +50,7 @@ const TeacherDirectory = lazy(() => import('./pages/admin/TeacherDirectory'));
 const AttendanceSettings = lazy(() => import('./pages/admin/AttendanceSettings'));
 const ExpenseManagement = lazy(() => import('./pages/admin/ExpenseManagement'));
 const RegistrationPages = lazy(() => import('./pages/admin/RegistrationPages'));
+const AdminFeeMethods = lazy(() => import('./pages/admin/AdminFeeMethods'));
 
 // Shared Pages (lazy loaded)
 const JobChat = lazy(() => import('./pages/shared/JobChat'));
@@ -156,6 +157,7 @@ const AppRoutes = () => {
         <Route path="interns" element={<InternsManagement />} />
         <Route path="jobs" element={<JobsManagement />} />
         <Route path="fees" element={<FeeVerification />} />
+        <Route path="fee-methods" element={<AdminFeeMethods />} />
         <Route path="notifications" element={<NotificationManagement />} />
         <Route path="directory" element={<StudentDirectory />} />
         <Route path="teacher-directory" element={<TeacherDirectory />} />

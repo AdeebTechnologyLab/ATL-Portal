@@ -189,6 +189,8 @@ router.get('/', async (req, res) => {
                     }
                     // Enforce target audience based on role
                     query.targetAudience = user.role === 'student' ? 'students' : 'interns';
+                    // Students/interns only see active courses
+                    query.isActive = true;
                 }
             } catch (err) {
                 // Ignore auth error for public route

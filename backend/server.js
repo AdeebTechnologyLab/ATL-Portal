@@ -66,6 +66,7 @@ const financeRoutes = require('./routes/finance');
 const reportRoutes = require('./routes/reports');
 const registrationPageRoutes = require('./routes/registrationPages');
 const googleDriveRoutes = require('./routes/googleDrive');
+const paymentMethodRoutes = require('./routes/paymentMethods');
 
 // Import attendance lock function
 const { lockTodayAttendance } = require('./controllers/attendanceController');
@@ -474,6 +475,7 @@ app.use('/api/finance', financeRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/registration-pages', registrationPageRoutes);
 app.use('/api/google-drive', googleDriveRoutes);
+app.use('/api/payment-methods', paymentMethodRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

@@ -438,6 +438,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                 { id: 'interns', labelKey: 'nav.interns', icon: Users, path: '/admin/interns', badge: adminPendingCounts.internRegisteredNew },
                 { id: 'notifications', labelKey: 'nav.notifications', icon: Bell, path: '/admin/notifications' },
                 { id: 'fees', labelKey: 'nav.feeVerification', icon: CreditCard, path: '/admin/fees', badge: adminPendingCounts.fees },
+                { id: 'fee-methods', labelKey: 'Payment Methods', icon: Wallet, path: '/admin/fee-methods' },
                 { id: 'discussion-room', labelKey: 'Discussion Room', icon: MessageSquare, path: '/admin/discussion-room', badge: discussionUnread },
                 { id: 'attendance-settings', labelKey: 'nav.attendanceSettings', icon: ClipboardList, path: '/admin/attendance-settings' },
                 { id: 'registration-pages', labelKey: 'Registration Forms', icon: FileText, path: '/admin/registration-pages' },

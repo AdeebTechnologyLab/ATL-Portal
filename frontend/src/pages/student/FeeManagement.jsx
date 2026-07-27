@@ -9,7 +9,7 @@ import {
 import Badge from '../../components/ui/Badge';
 import Modal from '../../components/ui/Modal';
 import Loader, { ButtonLoader } from '../../components/ui/Loader';
-import { feeAPI, enrollmentAPI } from '../../services/api';
+import { feeAPI, enrollmentAPI, paymentMethodAPI } from '../../services/api';
 import { formatDate } from '../../utils/dateFormatter';
 
 const FeeManagement = () => {
@@ -29,6 +29,8 @@ const FeeManagement = () => {
     const [showSlipError, setShowSlipError] = useState(false);
     const [qrPreview, setQrPreview] = useState({ open: false, src: '', title: '' });
     const [previewUrl, setPreviewUrl] = useState(null);
+    const [paymentMethods, setPaymentMethods] = useState([]);
+    const [copiedId, setCopiedId] = useState(null);
 
     const navigate = useNavigate();
     const QR_LINKS = {
@@ -45,6 +47,7 @@ const FeeManagement = () => {
 
     useEffect(() => {
         fetchFees();
+        fetchPaymentMethods();
 
         // Initialize socket
         const SOCKET_URL = getSocketURL();
@@ -140,6 +143,21 @@ const FeeManagement = () => {
         } finally {
             setIsFetching(false);
         }
+    };
+
+    const fetchPaymentMethods = async () => {
+        try {
+            const res = await paymentMethodAPI.getPublic();
+            setPaymentMethods(res.data.data || []);
+        } catch (err) {
+            console.error('Error fetching payment methods:', err);
+        }
+    };
+
+    const handleCopyNumber = (text, id) => {
+        navigator.clipboard.writeText(text);
+        setCopiedId(id);
+        setTimeout(() => setCopiedId(null), 2000);
     };
 
     const handlePayClick = (fee, installment) => {
@@ -456,55 +474,117 @@ const FeeManagement = () => {
                     <h2 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">Payment Methods</h2>
                 </div>
 
-                <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-[minmax(0,1.15fr)_minmax(340px,0.85fr)] gap-4 items-stretch">
-                    {/* Easypaisa Card */}
-                    <motion.div
-                        whileHover={{ y: -5 }}
-                        className="relative overflow-hidden bg-gradient-to-br from-white to-emerald-50/70 dark:from-slate-900 dark:to-emerald-950/30 rounded-2xl sm:rounded-3xl p-4 sm:p-7 border border-emerald-200 dark:border-emerald-800/70 shadow-lg shadow-emerald-900/5 hover:shadow-xl transition-all flex flex-col h-full"
-                    >
-                        <div className="absolute -top-20 -right-20 w-48 h-48 rounded-full bg-emerald-400/10 pointer-events-none" />
-                        <div className="flex items-center justify-between gap-2 mb-4 sm:mb-6">
-                            <div className="p-2.5 bg-emerald-100 dark:bg-emerald-900/50 rounded-xl">
-                                <CreditCard className="w-5 h-5 text-emerald-600 dark:text-emerald-300" />
-                            </div>
-                            <span className="text-[8px] sm:text-[10px] font-black text-emerald-700 dark:text-emerald-300 uppercase tracking-wider sm:tracking-widest bg-emerald-100 dark:bg-emerald-900/50 px-2 sm:px-3 py-1.5 rounded-full">Official Mobile Wallet</span>
-                        </div>
-
-                        <div className="grid grid-cols-[1fr_auto] items-center justify-between gap-3 sm:gap-5 mb-4 sm:mb-6">
-                            <div className="space-y-4">
-                                <div>
-                                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">Provider</p>
-                                    <p className="font-black text-emerald-600 dark:text-emerald-300 text-xl sm:text-2xl">EASYPAISA</p>
-                                </div>
-                                <div>
-                                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">Account Name</p>
-                                    <p className="font-bold text-gray-900 dark:text-white text-sm sm:text-lg">Salman Yasin</p>
-                                </div>
-                            </div>
-                            <button
-                                type="button"
-                                onClick={() => setQrPreview({ open: true, src: QR_LINKS.easypaisa, title: 'Easypaisa QR Code' })}
-                                className="w-24 h-24 sm:w-32 sm:h-32 self-center rounded-xl sm:rounded-2xl overflow-hidden border-2 border-emerald-200 dark:border-emerald-700 bg-white hover:scale-105 transition-transform shadow-md flex-shrink-0 p-1.5 sm:p-2"
-                                title="Open Easypaisa QR"
-                            >
-                                <img src={QR_LINKS.easypaisa} alt="Easypaisa QR" className="w-full h-full object-contain" />
-                            </button>
-                        </div>
-
-                        <div className="mt-auto">
-                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-tighter mb-2">Transfer Number</p>
-                            <div
-                                onClick={() => {
-                                    navigator.clipboard.writeText('03441713141');
-                                    alert('Number copied!');
+                <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-[minmax(0,1.15fr)_minmax(340px,0.85fr)] gap-4 items-start">
+                    {/* Dynamic Payment Method Cards */}
+                    {paymentMethods.length > 0 ? (
+                        paymentMethods.map((method) => (
+                            <motion.div
+                                key={method._id}
+                                whileHover={{ y: -5 }}
+                                className="relative overflow-hidden rounded-2xl sm:rounded-3xl p-4 sm:p-7 border shadow-lg hover:shadow-xl transition-all flex flex-col"
+                                style={{
+                                    borderColor: method.color + '40',
+                                    background: `linear-gradient(135deg, ${method.color}05, ${method.color}12)`
                                 }}
-                                className="bg-white/90 dark:bg-slate-800 p-3 sm:p-4 rounded-2xl border border-emerald-200 dark:border-emerald-700 font-black text-emerald-600 dark:text-emerald-300 text-lg sm:text-2xl tracking-wider cursor-pointer hover:bg-emerald-50 dark:hover:bg-slate-700 transition-all select-all flex justify-between items-center gap-3 group/copy"
                             >
-                                <span className="min-w-0 break-all">03441713141</span>
-                                <span className="text-[10px] font-black text-emerald-700 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-900/60 px-3 py-1.5 rounded-xl border border-emerald-200 dark:border-emerald-700 group-hover/copy:bg-emerald-600 group-hover/copy:text-white transition-colors">COPY</span>
+                                <div className="absolute -top-20 -right-20 w-48 h-48 rounded-full pointer-events-none" style={{ backgroundColor: method.color + '10' }} />
+                                <div className="flex items-center justify-between gap-2 mb-4 sm:mb-6">
+                                    <div className="p-2.5 rounded-xl" style={{ backgroundColor: method.color + '20' }}>
+                                        <CreditCard className="w-5 h-5" style={{ color: method.color }} />
+                                    </div>
+                                    <span
+                                        className="text-[8px] sm:text-[10px] font-black uppercase tracking-wider sm:tracking-widest px-2 sm:px-3 py-1.5 rounded-full"
+                                        style={{ backgroundColor: method.color + '20', color: method.color }}
+                                    >
+                                        Payment Method
+                                    </span>
+                                </div>
+
+                                <div className="grid grid-cols-[1fr_auto] items-center justify-between gap-3 sm:gap-5 mb-4 sm:mb-6">
+                                    <div className="space-y-4">
+                                        <div>
+                                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">Bank Name</p>
+                                            <p className="font-black text-xl sm:text-2xl" style={{ color: method.color }}>{method.bankName}</p>
+                                        </div>
+                                        <div>
+                                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">Account Name</p>
+                                            <p className="font-bold text-gray-900 dark:text-white text-sm sm:text-lg">{method.accountName}</p>
+                                        </div>
+                                    </div>
+                                    {method.imageLink && (
+                                        <button
+                                            type="button"
+                                            onClick={() => setQrPreview({ open: true, src: method.imageLink, title: `${method.bankName} QR Code` })}
+                                            className="w-24 h-24 sm:w-32 sm:h-32 self-center rounded-xl sm:rounded-2xl overflow-hidden border-2 bg-white hover:scale-105 transition-transform shadow-md flex-shrink-0 p-1.5 sm:p-2"
+                                            style={{ borderColor: method.color + '40' }}
+                                            title={`Open ${method.bankName} QR`}
+                                        >
+                                            <img src={method.imageLink} alt={`${method.bankName} QR`} className="w-full h-full object-contain" />
+                                        </button>
+                                    )}
+                                </div>
+
+                                <div>
+                                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-tighter mb-2">Account Number</p>
+                                    <div
+                                        onClick={() => handleCopyNumber(method.accountNumber, method._id)}
+                                        className="bg-white/90 dark:bg-slate-800 p-3 sm:p-4 rounded-2xl border font-black text-lg sm:text-2xl tracking-wider cursor-pointer hover:bg-white dark:hover:bg-slate-700 transition-all select-all flex justify-between items-center gap-3 group/copy"
+                                        style={{ borderColor: method.color + '30', color: method.color }}
+                                    >
+                                        <span className="min-w-0 break-all">{method.accountNumber}</span>
+                                        <span
+                                            className="text-[10px] font-black px-3 py-1.5 rounded-xl border group-hover/copy:text-white transition-colors"
+                                            style={{ borderColor: method.color + '30', color: copiedId === method._id ? '#fff' : method.color, backgroundColor: copiedId === method._id ? method.color : method.color + '15' }}
+                                        >{copiedId === method._id ? 'COPIED!' : 'COPY'}</span>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        ))
+                    ) : (
+                        /* Fallback if no payment methods configured */
+                        <motion.div
+                            whileHover={{ y: -5 }}
+                            className="relative overflow-hidden bg-gradient-to-br from-white to-emerald-50/70 dark:from-slate-900 dark:to-emerald-950/30 rounded-2xl sm:rounded-3xl p-4 sm:p-7 border border-emerald-200 dark:border-emerald-800/70 shadow-lg shadow-emerald-900/5 hover:shadow-xl transition-all flex flex-col"
+                        >
+                            <div className="absolute -top-20 -right-20 w-48 h-48 rounded-full bg-emerald-400/10 pointer-events-none" />
+                            <div className="flex items-center justify-between gap-2 mb-4 sm:mb-6">
+                                <div className="p-2.5 bg-emerald-100 dark:bg-emerald-900/50 rounded-xl">
+                                    <CreditCard className="w-5 h-5 text-emerald-600 dark:text-emerald-300" />
+                                </div>
+                                <span className="text-[8px] sm:text-[10px] font-black text-emerald-700 dark:text-emerald-300 uppercase tracking-wider sm:tracking-widest bg-emerald-100 dark:bg-emerald-900/50 px-2 sm:px-3 py-1.5 rounded-full">Official Mobile Wallet</span>
                             </div>
-                        </div>
-                    </motion.div>
+                            <div className="grid grid-cols-[1fr_auto] items-center justify-between gap-3 sm:gap-5 mb-4 sm:mb-6">
+                                <div className="space-y-4">
+                                    <div>
+                                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">Bank Name</p>
+                                        <p className="font-black text-emerald-600 dark:text-emerald-300 text-xl sm:text-2xl">EASYPAISA</p>
+                                    </div>
+                                    <div>
+                                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">Account Name</p>
+                                        <p className="font-bold text-gray-900 dark:text-white text-sm sm:text-lg">Salman Yasin</p>
+                                    </div>
+                                </div>
+                                <button
+                                    type="button"
+                                    onClick={() => setQrPreview({ open: true, src: QR_LINKS.easypaisa, title: 'Easypaisa QR Code' })}
+                                    className="w-24 h-24 sm:w-32 sm:h-32 self-center rounded-xl sm:rounded-2xl overflow-hidden border-2 border-emerald-200 dark:border-emerald-700 bg-white hover:scale-105 transition-transform shadow-md flex-shrink-0 p-1.5 sm:p-2"
+                                    title="Open Easypaisa QR"
+                                >
+                                    <img src={QR_LINKS.easypaisa} alt="Easypaisa QR" className="w-full h-full object-contain" />
+                                </button>
+                            </div>
+                            <div className="mt-auto">
+                                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-tighter mb-2">Account Number</p>
+                                <div
+                                    onClick={() => handleCopyNumber('03092333121', 'fallback')}
+                                    className="bg-white/90 dark:bg-slate-800 p-3 sm:p-4 rounded-2xl border border-emerald-200 dark:border-emerald-700 font-black text-emerald-600 dark:text-emerald-300 text-lg sm:text-2xl tracking-wider cursor-pointer hover:bg-emerald-50 dark:hover:bg-slate-700 transition-all select-all flex justify-between items-center gap-3 group/copy"
+                                >
+                                    <span className="min-w-0 break-all">03092333121</span>
+                                    <span className={`text-[10px] font-black px-3 py-1.5 rounded-xl border border-emerald-200 dark:border-emerald-700 group-hover/copy:text-white transition-colors ${copiedId === 'fallback' ? 'bg-emerald-600 text-white' : 'text-emerald-700 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-900/60 group-hover/copy:bg-emerald-600'}`}>{copiedId === 'fallback' ? 'COPIED!' : 'COPY'}</span>
+                                </div>
+                            </div>
+                        </motion.div>
+                    )}
 
                     {/* Payment steps */}
                     <motion.div

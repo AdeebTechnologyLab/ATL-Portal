@@ -354,5 +354,14 @@ export const directoryAPI = {
     getAll: (filter, type) => api.get('/directory', { params: { filter, type } })
 };
 
+// Payment Methods API
+export const paymentMethodAPI = {
+    getPublic: () => api.get('/payment-methods/public'),
+    getAll: () => api.get('/payment-methods'),
+    create: (data) => api.post('/payment-methods', data),
+    update: (id, data) => api.put(`/payment-methods/${id}`, data),
+    delete: (id) => api.delete(`/payment-methods/${id}`)
+};
+
 export default api;
 
