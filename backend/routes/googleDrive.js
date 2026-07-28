@@ -46,13 +46,8 @@ router.get('/auth-url', protect, async (req, res) => {
             { expiresIn: '10m' }
         );
 
-        // Dynamically build the redirect URI based on the request
-        const protocol = req.protocol === 'https' ? 'https' : 'http';
-        const host = req.get('host');
-        const dynamicRedirectUri = `${protocol}://${host}/api/google-drive/callback`;
-
-        // Use dynamic URI if available, otherwise fall back to env
-        oauth2Client.redirectUri = dynamicRedirectUri || process.env.GOOGLE_DRIVE_REDIRECT_URI;
+        // Use the configured redirect URI from env to match Google Cloud Console
+        oauth2Client.redirectUri = process.env.GOOGLE_DRIVE_REDIRECT_URI;
 
         const url = oauth2Client.generateAuthUrl({
             access_type: 'offline',
@@ -80,10 +75,8 @@ router.get('/callback', async (req, res) => {
 
         const oauth2Client = getOAuthClient();
 
-        // Dynamically build the redirect URI to match auth-url
-        const protocol = req.protocol === 'https' ? 'https' : 'http';
-        const host = req.get('host');
-        oauth2Client.redirectUri = `${protocol}://${host}/api/google-drive/callback`;
+        // Use the configured redirect URI from env to match Google Cloud Console
+        oauth2Client.redirectUri = process.env.GOOGLE_DRIVE_REDIRECT_URI;
 
         const { tokens } = await oauth2Client.getToken(req.query.code);
         oauth2Client.setCredentials(tokens);
