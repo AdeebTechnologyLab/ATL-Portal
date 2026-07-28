@@ -3,11 +3,7 @@ import { useSelector } from 'react-redux';
 import { io } from 'socket.io-client';
 import { MessageSquare, Send, Trash2, Users, Loader2, Circle, BarChart3, Plus, X, Smile } from 'lucide-react';
 import { chatAPI } from '../../services/api';
-
-const getSocketURL = () => {
-    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
-    return apiUrl.replace('/api', '');
-};
+import { getSocketURL } from '../../config/apiBaseUrl';
 
 const isUserOnline = (lastSeen) => {
     if (!lastSeen) return false;

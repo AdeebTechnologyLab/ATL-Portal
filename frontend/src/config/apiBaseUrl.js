@@ -1,5 +1,6 @@
 /** Hostinger backend — direct URL */
-export const PRODUCTION_API = 'https://mediumslateblue-wolf-946223.hostingersite.com/api';
+export const PRODUCTION_API = 'https://darksalmon-grasshopper-335002.hostingersite.com/api';
+export const PRODUCTION_SOCKET = 'https://darksalmon-grasshopper-335002.hostingersite.com';
 
 const isLocalHost = (host) => host === 'localhost' || host === '127.0.0.1';
 
@@ -35,8 +36,13 @@ export const getBackendOrigin = () => {
         if (typeof window !== 'undefined' && isLocalHost(window.location.hostname)) {
             return 'http://localhost:5000';
         }
-        // Fallback for production
-        return 'https://mediumslateblue-wolf-946223.hostingersite.com';
+        return PRODUCTION_SOCKET;
     }
     return base.replace(/\/api\/?$/, '');
+};
+
+/** Socket URL for io() connections */
+export const getSocketURL = () => {
+    const rawUrl = import.meta.env.VITE_API_URL || (typeof window !== 'undefined' && !isLocalHost(window.location.hostname) ? PRODUCTION_API : 'http://localhost:5000/api');
+    return rawUrl === '/api' ? PRODUCTION_SOCKET : rawUrl.replace(/\/api\/?$/, '');
 };

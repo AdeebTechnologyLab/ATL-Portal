@@ -3,11 +3,7 @@ import { io } from 'socket.io-client';
 import { Send, User, ShieldCheck, Bell } from 'lucide-react';
 import { taskAPI } from '../../../services/api';
 import Loader, { ButtonLoader } from '../../../components/ui/Loader';
-
-const getSocketURL = () => {
-    const rawUrl = import.meta.env.VITE_API_URL || (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1' ? 'https://lms-adeeb-technology-lab.onrender.com/api' : 'http://localhost:5000/api');
-    return rawUrl === '/api' ? 'https://lms-adeeb-technology-lab.onrender.com' : rawUrl.replace(/\/api\/?$/, '');
-};
+import { getSocketURL } from '../../../config/apiBaseUrl';
 
 const SOCKET_URL = getSocketURL();
 

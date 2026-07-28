@@ -11,6 +11,7 @@ import Modal from '../../components/ui/Modal';
 import Loader, { ButtonLoader } from '../../components/ui/Loader';
 import { feeAPI, enrollmentAPI, paymentMethodAPI } from '../../services/api';
 import { formatDate } from '../../utils/dateFormatter';
+import { getSocketURL } from '../../config/apiBaseUrl';
 
 const FeeManagement = () => {
     const location = useLocation();
@@ -39,11 +40,6 @@ const FeeManagement = () => {
 
     const socketRef = useRef(null);
     const { user, role } = useSelector((state) => state.auth);
-
-    const getSocketURL = () => {
-    const rawUrl = import.meta.env.VITE_API_URL || (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1' ? 'https://lms-adeeb-technology-lab.onrender.com/api' : 'http://localhost:5000/api');
-    return rawUrl === '/api' ? 'https://lms-adeeb-technology-lab.onrender.com' : rawUrl.replace(/\/api\/?$/, '');
-};
 
     useEffect(() => {
         fetchFees();

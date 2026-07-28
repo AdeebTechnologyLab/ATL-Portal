@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useSelector } from 'react-redux';
 import { io } from 'socket.io-client';
+import { getSocketURL } from '../../config/apiBaseUrl';
 
 import {
     BookOpen, Users, Calendar, ArrowRight, ChevronLeft,
@@ -59,10 +60,6 @@ const TeacherCourses = ({ isDashboard = false, initialSearchMode = 'courses' }) 
     const [isCreatingLiveClass, setIsCreatingLiveClass] = useState(false);
 
     const socketRef = useRef(null);
-    const getSocketURL = () => {
-    const rawUrl = import.meta.env.VITE_API_URL || (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1' ? 'https://lms-adeeb-technology-lab.onrender.com/api' : 'http://localhost:5000/api');
-    return rawUrl === '/api' ? 'https://lms-adeeb-technology-lab.onrender.com' : rawUrl.replace(/\/api\/?$/, '');
-};
     const SOCKET_URL = getSocketURL();
 
     useEffect(() => {

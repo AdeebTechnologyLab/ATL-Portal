@@ -82,6 +82,7 @@ const staticOrigins = [
     'https://lms-adeeb-technology-lab.vercel.app',
     'https://lms-adeeb-technology-lab.onrender.com',
     'https://darkorchid-salmon-191482.hostingersite.com',
+    'https://darksalmon-grasshopper-335002.hostingersite.com',
     'http://localhost:5173',
     'http://127.0.0.1:5173',
     'http://localhost:3000',
