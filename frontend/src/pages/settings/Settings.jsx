@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Palette, Check, Layout, Sun, Moon, Sparkles } from 'lucide-react';
+import { Palette, Check, Layout, Sun, Moon, Sparkles, LogOut, HardDrive } from 'lucide-react';
+import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../context/ThemeContext';
 import { APP_THEMES } from '../../constants/themes';
 import LanguagePicker from '../../components/settings/LanguagePicker';
+import { googleDriveAPI } from '../../services/api';
 
 function ThemePreviewCard({ theme: themeData, isActive, onSelect, actionLabel }) {
     return (
@@ -145,7 +147,11 @@ function ThemePreviewCard({ theme: themeData, isActive, onSelect, actionLabel })
 const Settings = () => {
     const { t } = useTranslation();
     const { theme, setTheme, isDark, toggleTheme, dateFormat, setDateFormat, timeFormat, setTimeFormat } = useTheme();
+    const { role } = useSelector((state) => state.auth);
     const [showSuccess, setShowSuccess] = useState(false);
+    const [driveStatus, setDriveStatus] = useState({ configured: false, connected: false, googleEmail: '' });
+    const [isDisconnecting, setIsDisconnecting] = useState(false);
+    const [driveError, setDriveError] = useState('');
 
     const activeThemeMeta = APP_THEMES.find((t) => t.id === theme) || APP_THEMES[0];
 
@@ -153,6 +159,24 @@ const Settings = () => {
         setTheme(id);
         setShowSuccess(true);
         setTimeout(() => setShowSuccess(false), 3000);
+    };
+
+    useEffect(() => {
+        if (role === 'student' || role === 'intern') {
+            googleDriveAPI.getStatus()
+                .then(res => setDriveStatus(res.data))
+                .catch(() => {});
+        }
+    }, [role]);
+
+    const handleConnectGoogleDrive = async () => {
+        try {
+            setDriveError('');
+            const response = await googleDriveAPI.getAuthUrl();
+            window.location.assign(response.data.url);
+        } catch (error) {
+            setDriveError(error.response?.data?.message || 'Google Drive connection is not configured yet.');
+        }
     };
 
     return (
@@ -302,6 +326,89 @@ const Settings = () => {
                             </div>
                         </div>
                     </section>
+
+                    {(role === 'student' || role === 'intern') && (
+                        <section className="bg-white dark:bg-[#1a1f2e] rounded-2xl sm:rounded-[2rem] p-4 sm:p-6 md:p-8 border border-gray-100 dark:border-gray-800 shadow-xl shadow-gray-200/20 dark:shadow-none transition-all md:hover:shadow-2xl">
+                            <div className="space-y-6">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-12 h-12 bg-blue-50 dark:bg-blue-500/10 rounded-2xl flex items-center justify-center text-blue-500 shadow-inner">
+                                        <HardDrive className="w-6 h-6" />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-lg font-black text-gray-900 dark:text-white uppercase italic leading-none">
+                                            Google Drive
+                                        </h3>
+                                        <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-1">
+                                            {driveStatus.connected ? 'Connected' : 'Not Connected'}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                {driveStatus.connected ? (
+                                    <div className="space-y-3">
+                                        <div className="flex items-center gap-3 p-3 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl border border-emerald-200 dark:border-emerald-800/50">
+                                            <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center shrink-0">
+                                                <Check className="w-4 h-4 text-white" />
+                                            </div>
+                                            <div className="min-w-0 flex-1">
+                                                <p className="text-xs font-black text-emerald-700 dark:text-emerald-300 uppercase tracking-wide">Connected</p>
+                                                <p className="text-[11px] text-emerald-600 dark:text-emerald-400 truncate">{driveStatus.googleEmail}</p>
+                                            </div>
+                                        </div>
+                                        <button
+                                            onClick={async () => {
+                                                if (!window.confirm('Google Drive disconnect karne se uploads band ho jayenge. Kya aap continue karna chahte hain?')) return;
+                                                setIsDisconnecting(true);
+                                                try {
+                                                    await googleDriveAPI.disconnect();
+                                                    setDriveStatus(prev => ({ ...prev, connected: false, googleEmail: '' }));
+                                                } catch (err) {
+                                                    console.error('Disconnect failed:', err);
+                                                } finally {
+                                                    setIsDisconnecting(false);
+                                                }
+                                            }}
+                                            disabled={isDisconnecting}
+                                            className="w-full py-2.5 px-4 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 border border-red-200 dark:border-red-800/50 text-red-600 dark:text-red-400 text-[10px] sm:text-xs font-black uppercase tracking-widest rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                                        >
+                                            <LogOut className="w-4 h-4" />
+                                            {isDisconnecting ? 'Disconnecting...' : 'Sign Out'}
+                                        </button>
+                                        <p className="text-[10px] text-gray-400 font-medium leading-relaxed">
+                                            Drive full hai? Sign out karke naya Google account connect kar sakte hain.
+                                        </p>
+                                    </div>
+                                ) : (
+                                    <div className="space-y-3">
+                                        <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
+                                            <div className="w-8 h-8 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center shrink-0">
+                                                <HardDrive className="w-4 h-4 text-white" />
+                                            </div>
+                                            <div>
+                                                <p className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-wide">Not Connected</p>
+                                                <p className="text-[11px] text-gray-400">Assignment upload ke liye Google Drive connect karein</p>
+                                            </div>
+                                        </div>
+                                        <button
+                                            onClick={handleConnectGoogleDrive}
+                                            disabled={!driveStatus.configured}
+                                            className="w-full py-2.5 px-4 bg-primary hover:bg-orange-600 text-white text-[10px] sm:text-xs font-black uppercase tracking-widest rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/25 disabled:opacity-50 disabled:cursor-not-allowed"
+                                        >
+                                            Connect Google Drive
+                                        </button>
+                                        {driveError && (
+                                            <p className="text-[11px] font-semibold text-red-500 dark:text-red-400">{driveError}</p>
+                                        )}
+                                        {!driveStatus.configured && (
+                                            <p className="text-[10px] text-amber-500 dark:text-amber-400 font-medium">
+                                                Google Drive setup is awaiting administrator configuration.
+                                            </p>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+                        </section>
+                    )}
 
                     <div className="bg-primary/5 dark:bg-primary/5 rounded-2xl sm:rounded-[2rem] p-5 sm:p-8 border-2 border-dashed border-primary/20 flex flex-col items-center text-center space-y-3 sm:space-y-4">
                         <div className="w-12 h-12 rounded-full bg-white dark:bg-gray-800 flex items-center justify-center shadow-lg">
