@@ -34,6 +34,38 @@ const getOAuthClient = () => {
 
 const escapeDriveQuery = (value) => String(value).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
 
+/**
+ * Ensures a Drive file/folder has "Anyone with the link can view" permission.
+ * - If the permission already exists, does nothing.
+ * - If missing, adds type: 'anyone', role: 'reader'.
+ */
+const ensurePublicLinkPermission = async (drive, fileId) => {
+    try {
+        const { data: { permissions = [] } } = await drive.permissions.list({
+            fileId,
+            fields: 'permissions(id,type,role)',
+            supportsAllDrives: true
+        });
+
+        const alreadyPublic = permissions.some(
+            (p) => p.type === 'anyone' && p.role === 'reader'
+        );
+        if (alreadyPublic) return;
+
+        await drive.permissions.create({
+            fileId,
+            supportsAllDrives: true,
+            requestBody: {
+                type: 'anyone',
+                role: 'reader'
+            }
+        });
+        console.log(`Made Drive file public with link: ${fileId}`);
+    } catch (error) {
+        console.warn(`Could not set public link permission on ${fileId}:`, error.message);
+    }
+};
+
 const getOrCreateFolder = async (drive, name, parentId = null) => {
     const parentQuery = parentId ? `'${parentId}' in parents` : "'root' in parents";
     const response = await drive.files.list({
@@ -57,6 +89,10 @@ const getOrCreateFolder = async (drive, name, parentId = null) => {
 const uploadAssignmentFiles = async ({ auth, files, courseTitle, assignmentTitle, teacherEmails }) => {
     const drive = google.drive({ version: 'v3', auth });
     const rootFolder = await getOrCreateFolder(drive, 'Adeeb LMS');
+
+    // Make root folder publicly accessible via link so teachers can open assignment links
+    await ensurePublicLinkPermission(drive, rootFolder);
+
     const courseFolder = await getOrCreateFolder(drive, courseTitle, rootFolder);
     const assignmentFolder = await getOrCreateFolder(drive, assignmentTitle, courseFolder);
 
