@@ -474,7 +474,9 @@ const FeeManagement = () => {
                     <h2 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">Payment Methods</h2>
                 </div>
 
-                <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-[minmax(0,1.15fr)_minmax(340px,0.85fr)] gap-4 items-start">
+                <div className="max-w-5xl mx-auto space-y-5">
+                    {/* Payment Method Cards */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {/* Dynamic Payment Method Cards */}
                     {paymentMethods.length > 0 ? (
                         paymentMethods.map((method) => (
@@ -586,43 +588,52 @@ const FeeManagement = () => {
                         </motion.div>
                     )}
 
-                    {/* Payment steps */}
+                    </div>
+
+                    {/* Payment Steps */}
                     <motion.div
-                        whileHover={{ y: -5 }}
-                        className="bg-gradient-to-br from-slate-900 to-slate-800 dark:from-slate-900 dark:to-slate-950 rounded-2xl sm:rounded-3xl p-4 sm:p-7 border border-slate-700 shadow-lg text-white flex flex-col"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2 }}
+                        className="relative overflow-hidden bg-gradient-to-br from-[var(--bg-sidebar)] to-[var(--bg-sidebar-light)] rounded-2xl sm:rounded-3xl p-5 sm:p-8 border border-white/10 shadow-xl"
                     >
-                        <div className="flex items-center gap-3 mb-5">
-                            <div className="p-2.5 bg-primary/15 rounded-xl border border-primary/20">
-                                <AlertCircle className="w-5 h-5 text-primary" />
-                            </div>
-                            <div>
-                                <p className="text-[10px] font-black uppercase tracking-[0.18em] text-primary">How to Pay</p>
-                                <h3 className="font-black text-lg">Complete in 3 steps</h3>
-                            </div>
-                        </div>
+                        <div className="absolute -top-16 -right-16 w-40 h-40 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
+                        <div className="absolute -bottom-16 -left-16 w-40 h-40 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
 
-                        <div className="space-y-3 flex-1">
-                            {[
-                                ['1', 'Transfer', 'Send the required amount to the EasyPaisa number.'],
-                                ['2', 'Screenshot', 'Take a clear screenshot of the successful payment.'],
-                                ['3', 'Upload', 'Click “Pay Now” and upload your payment proof.']
-                            ].map(([number, title, description]) => (
-                                <div key={number} className="flex gap-3 p-3 rounded-xl bg-white/5 border border-white/10">
-                                    <span className="w-7 h-7 rounded-lg bg-primary text-white flex items-center justify-center text-xs font-black shrink-0">
-                                        {number}
-                                    </span>
-                                    <div>
-                                        <p className="text-xs font-black uppercase tracking-wide">{title}</p>
-                                        <p className="text-[11px] leading-relaxed text-slate-400 mt-0.5">{description}</p>
-                                    </div>
+                        <div className="relative z-10">
+                            <div className="flex items-center gap-3 mb-6">
+                                <div className="p-2.5 bg-white/10 rounded-xl border border-white/15">
+                                    <AlertCircle className="w-5 h-5 text-primary" />
                                 </div>
-                            ))}
-                        </div>
+                                <div>
+                                    <p className="text-[10px] font-black uppercase tracking-[0.18em] text-primary">How to Pay</p>
+                                    <h3 className="font-black text-lg text-white">Complete in 3 steps</h3>
+                                </div>
+                            </div>
 
-                        <div className="mt-4 p-3 rounded-xl bg-amber-500/10 border border-amber-400/20">
-                            <p className="text-[10px] leading-relaxed text-amber-200 font-bold">
-                                Please ensure the Slip ID is correct before submitting for verification.
-                            </p>
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                {[
+                                    ['1', 'Transfer', 'Send the required amount to the EasyPaisa number.'],
+                                    ['2', 'Screenshot', 'Take a clear screenshot of the successful payment.'],
+                                    ['3', 'Upload', 'Click "Pay Now" and upload your payment proof.']
+                                ].map(([number, title, description]) => (
+                                    <div key={number} className="flex sm:flex-col gap-3 sm:gap-0 p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors group">
+                                        <span className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-primary text-white flex items-center justify-center text-sm font-black shrink-0 sm:mb-3 group-hover:scale-110 transition-transform">
+                                            {number}
+                                        </span>
+                                        <div>
+                                            <p className="text-xs font-black uppercase tracking-wide text-white">{title}</p>
+                                            <p className="text-[11px] leading-relaxed text-slate-400 mt-1">{description}</p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <div className="mt-5 p-3.5 rounded-xl bg-amber-500/10 border border-amber-400/20">
+                                <p className="text-[11px] leading-relaxed text-amber-200 font-bold">
+                                    Please ensure the Slip ID is correct before submitting for verification.
+                                </p>
+                            </div>
                         </div>
                     </motion.div>
                 </div>

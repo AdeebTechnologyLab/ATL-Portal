@@ -384,7 +384,7 @@ const StudentDashboard = () => {
                         </div>
                         <div className="grid grid-cols-2 sm:flex gap-2">
                             <button
-                                onClick={() => navigate(`/${role}/attendance`)}
+                                onClick={() => navigate(`/${role}/assignments`, { state: { tab: 'attendance' } })}
                                 className="px-3.5 sm:px-5 py-2.5 bg-white/10 hover:bg-white/20 rounded-xl font-black text-[9px] sm:text-[10px] uppercase tracking-widest transition-all duration-300 border border-white/20"
                             >
                                 Attendance
