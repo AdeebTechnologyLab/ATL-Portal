@@ -532,7 +532,7 @@ const DashboardLayout = () => {
                                                 <div className={`my-1 border-t ${isDark ? 'border-white/10' : 'border-gray-100'}`} />
                                                 
                                                 <button
-                                                    onClick={() => { handleLogout(); setShowUserMenu(false); }}
+                                                    onClick={() => { dispatch(logout()); navigate('/login'); setShowUserMenu(false); }}
                                                     className={`w-full flex items-center gap-3 p-2.5 rounded-xl text-sm font-medium transition-colors ${isDark ? 'text-red-400 hover:bg-red-500/10 hover:text-red-300' : 'text-red-600 hover:bg-red-50'}`}
                                                 >
                                                     <LogOut className="w-4 h-4" /> {t('layout.signOut')}

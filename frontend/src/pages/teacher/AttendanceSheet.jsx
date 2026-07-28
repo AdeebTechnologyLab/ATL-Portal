@@ -13,6 +13,8 @@ import { courseAPI, enrollmentAPI, chatAPI, assignmentAPI, testAPI } from '../..
 import { getSocketURL } from '../../config/apiBaseUrl';
 import { getCourseIcon, getCourseStyle } from '../../utils/courseIcons';
 
+const SOCKET_URL = getSocketURL();
+
 // Tab Components
 import AttendanceTab from './components/AttendanceTab';
 import DailyTasksTab from './components/DailyTasksTab';
