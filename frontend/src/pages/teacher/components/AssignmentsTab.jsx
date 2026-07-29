@@ -1124,6 +1124,52 @@ const AssignmentsTab = ({ course, students }) => { // Accept students prop
                 title={`Submissions: ${selectedAssignment?.title}`}
                 size="xl"
             >
+                {/* Assignment Info Header */}
+                {selectedAssignment && (
+                    <div className="bg-primary/5 border border-primary/10 rounded-xl p-4 mb-4">
+                        <div className="flex items-start justify-between gap-4">
+                            <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+                                    <span className="text-[9px] font-black text-primary bg-primary/10 px-2 py-0.5 rounded-md uppercase tracking-widest">
+                                        Assignment #{assignments.indexOf(selectedAssignment) + 1}
+                                    </span>
+                                    {selectedAssignment.course?.title && (
+                                        <span className="text-[9px] font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md uppercase tracking-widest">
+                                            {selectedAssignment.course.title}
+                                        </span>
+                                    )}
+                                </div>
+                                <h4 className="text-sm font-black text-gray-900 dark:text-white uppercase tracking-tight truncate">
+                                    {selectedAssignment.title}
+                                </h4>
+                                {selectedAssignment.description && (
+                                    <div className="mt-1.5">
+                                        <RichTextContent html={selectedAssignment.description} className="text-[11px] text-gray-500 line-clamp-3" />
+                                    </div>
+                                )}
+                            </div>
+                            <div className="text-right shrink-0">
+                                <p className="text-lg font-black text-primary">{selectedAssignment.totalMarks}<span className="text-xs text-gray-400"> Marks</span></p>
+                                <p className="text-[10px] text-gray-400 font-bold mt-0.5">Due: {formatDate(selectedAssignment.dueDate)}</p>
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-3 mt-3 pt-3 border-t border-primary/10">
+                            <div className="flex items-center gap-1.5 text-[10px] font-bold text-gray-500">
+                                <Users className="w-3.5 h-3.5" />
+                                <span>{selectedAssignment.submissions?.length || 0} Submissions</span>
+                            </div>
+                            <div className="flex items-center gap-1.5 text-[10px] font-bold text-green-600">
+                                <CheckCircle className="w-3.5 h-3.5" />
+                                <span>{selectedAssignment.submissions?.filter(s => s.status === 'graded').length || 0} Graded</span>
+                            </div>
+                            <div className="flex items-center gap-1.5 text-[10px] font-bold text-amber-600">
+                                <Clock className="w-3.5 h-3.5" />
+                                <span>{selectedAssignment.submissions?.filter(s => s.status !== 'graded' && s.status !== 'rejected').length || 0} Pending</span>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
                 <div className="space-y-4 max-h-[60vh] overflow-y-auto">
                     {selectedAssignment?.submissions && selectedAssignment.submissions.length > 0 ? (
                         [...selectedAssignment.submissions].sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt)).map((submission) => (
