@@ -18,6 +18,7 @@ import { formatDate } from '../../utils/dateFormatter';
 const StudentsManagement = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [students, setStudents] = useState([]);
+    const [allFees, setAllFees] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isProcessing, setIsProcessing] = useState(false);
     const [modal, setModal] = useState({ open: false, data: null });
@@ -51,6 +52,7 @@ const StudentsManagement = () => {
         fetchStudents();
         fetchSettings();
         fetchCourses();
+        fetchAllFees();
     }, []);
 
     const fetchCourses = async () => {
@@ -95,6 +97,29 @@ const StudentsManagement = () => {
         }
     };
 
+    const fetchAllFees = async () => {
+        try {
+            const res = await feeAPI.getAll();
+            setAllFees(res.data.data || []);
+        } catch (error) {
+            console.error('Error fetching fees:', error);
+        }
+    };
+
+    const hasPaidFee = (userId) => {
+        return allFees.some(fee => {
+            const feeUserId = fee.user?._id || fee.user;
+            return feeUserId === userId && fee.installments?.some(inst => inst.status === 'verified');
+        });
+    };
+
+    const hasFeeRecord = (userId) => {
+        return allFees.some(fee => {
+            const feeUserId = fee.user?._id || fee.user;
+            return feeUserId === userId;
+        });
+    };
+
     const handleMoveToOld = async (student) => {
         try {
             const newVal = !student.registeredOld;
@@ -105,8 +130,34 @@ const StudentsManagement = () => {
         }
     };
 
-    const handleReminder = (student) => {
-        if (getStudentStatus(student) === 'Enrolled (Active)') {
+    const getFeeReminderMessage = (student) => {
+        const campus = student.location ? `Adeeb Technology Lab ${student.location.charAt(0).toUpperCase() + student.location.slice(1)}` : 'Adeeb Technology Lab';
+        return `*Course Fee Reminder*\n*${campus}*\n*Digital Tech Expert Software House*\n\n*Name:* ${student.name || 'N/A'}\n*Roll No:* ${student.rollNo || 'N/A'}\n*Course:* ${student.enrolledCourseName || 'N/A'}\n\nAap ne course enroll kar liya hai, lekin abhi tak fee submit nahi ki. Meherbani karke apni pending fee jald se jald pay kar dein.\n\n⚠️ *Important:* Fee pay karne ke baad *payment slip* ya *screenshot* ko **LMS Portal** par upload karna lazmi hai. Verification ke baad hi payment confirm hogi.\n\n*LMS Portal:*\nhttps://darkorchid-salmon-191482.hostingersite.com/\n\n*Note:* Agar fee waqt par submit nahi ki gayi to aapki course enrollment **temporarily suspend** ya **cancel** ki ja sakti hai.\n\n*Regards,*\n*HR Department*\n*Adeeb Technology Lab*`;
+    };
+
+    const getFeeReminderGuardianMessage = (student) => {
+        const campus = student.location ? `Adeeb Technology Lab ${student.location.charAt(0).toUpperCase() + student.location.slice(1)}` : 'Adeeb Technology Lab';
+        return `*Course Fee Reminder*\n*${campus}*\n*Digital Tech Expert Software House*\n\n*Name:* ${student.name || 'N/A'}\n*Roll No:* ${student.rollNo || 'N/A'}\n*Course:* ${student.enrolledCourseName || 'N/A'}\n\nAap ke ward ne course enroll kar liya hai, lekin abhi tak fee submit nahi ki. Meherbani karke apni pending fee jald se jald pay kar dein.\n\n⚠️ *Important:* Fee pay karne ke baad *payment slip* ya *screenshot* ko **LMS Portal** par upload karna lazmi hai. Verification ke baad hi payment confirm hogi.\n\n*LMS Portal:*\nhttps://darkorchid-salmon-191482.hostingersite.com/\n\n*Note:* Agar fee waqt par submit nahi ki gayi to course enrollment **temporarily suspend** ya **cancel** ki ja sakti hai.\n\n*Regards,*\n*HR Department*\n*Adeeb Technology Lab*`;
+    };
+
+    const handleReminder = async (student) => {
+        if (getStudentStatus(student) === 'Active' && !hasPaidFee(student._id)) {
+            const phoneNumber = student.phone;
+            if (!phoneNumber) { alert("WhatsApp number not found for this user."); return; }
+            let cleanPhone = phoneNumber.replace(/[^0-9+]/g, '');
+            if (cleanPhone.startsWith('0')) cleanPhone = '92' + cleanPhone.slice(1);
+            try {
+                const enrollRes = await enrollmentAPI.getUserEnrollments(student._id);
+                const enrollments = enrollRes.data.data || [];
+                const courseNames = enrollments.map(e => e.course?.title).filter(Boolean).join(', ') || 'N/A';
+                student.enrolledCourseName = courseNames;
+            } catch (e) { console.error(e); }
+            const message = getFeeReminderMessage(student);
+            const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
+            window.open(waUrl, '_blank');
+            return;
+        }
+        if (getStudentStatus(student) === 'Active') {
             handleStudentStrikeOffWhatsApp(student, student.phone);
             return;
         }
@@ -125,13 +176,27 @@ const StudentsManagement = () => {
         window.open(waUrl, '_blank');
     };
 
-    const handleGuardianReminder = (student) => {
+    const handleGuardianReminder = async (student) => {
         const phoneNumber = student.guardianPhone || student.parentPhone;
         if (!phoneNumber) {
             alert("Guardian WhatsApp number not found for this user.");
             return;
         }
-        if (getStudentStatus(student) === 'Enrolled (Active)') {
+        if (getStudentStatus(student) === 'Active' && !hasPaidFee(student._id)) {
+            let cleanPhone = phoneNumber.replace(/[^0-9+]/g, '');
+            if (cleanPhone.startsWith('0')) cleanPhone = '92' + cleanPhone.slice(1);
+            try {
+                const enrollRes = await enrollmentAPI.getUserEnrollments(student._id);
+                const enrollments = enrollRes.data.data || [];
+                const courseNames = enrollments.map(e => e.course?.title).filter(Boolean).join(', ') || 'N/A';
+                student.enrolledCourseName = courseNames;
+            } catch (e) { console.error(e); }
+            const message = getFeeReminderGuardianMessage(student);
+            const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
+            window.open(waUrl, '_blank');
+            return;
+        }
+        if (getStudentStatus(student) === 'Active') {
             handleStudentStrikeOffWhatsApp(student, phoneNumber);
             return;
         }
@@ -365,10 +430,10 @@ const StudentsManagement = () => {
         const paused = s.pausedEnrollments || 0;
 
         if (total > 0 && total === completed) return 'Completed';
-        if (total > 0 && completed < total && (total - completed) === paused) return 'Enrolled (Inactive)';
-        if (total > 0 && completed < total && (total - completed - paused) > 0) return 'Enrolled (Active)';
-        if ((total === 0 || !total) && s.registeredOld) return 'Registered (Old)';
-        if ((total === 0 || !total) && !s.registeredOld) return 'Registered (New)';
+        if (total > 0 && completed < total && (total - completed) === paused) return 'Inactive';
+        if (total > 0 && completed < total && (total - completed - paused) > 0) return 'Active';
+        if ((total === 0 || !total) && s.registeredOld) return 'Old';
+        if ((total === 0 || !total) && !s.registeredOld) return 'New';
 
         return s.isVerified ? 'Verified' : 'Pending';
     };
@@ -408,7 +473,7 @@ const StudentsManagement = () => {
         let finalExportStudents = students;
         
         if (status === 'active') {
-            finalExportStudents = finalExportStudents.filter(s => getStudentStatus(s) === 'Enrolled (Active)');
+            finalExportStudents = finalExportStudents.filter(s => getStudentStatus(s) === 'Active');
         } else if (status === 'certified') {
             finalExportStudents = finalExportStudents.filter(s => getStudentStatus(s) === 'Completed');
         }
@@ -748,12 +813,20 @@ const StudentsManagement = () => {
         // "Registered Old" = No enrollments AND marked as old by admin
         if (filterStatus === 'registeredOld') return (s.totalEnrollments || 0) === 0 && s.registeredOld;
 
-        // "Enrolled" (Active) = Has enrollments, not all completed, AND at least one is NOT paused
+        // "Enrolled" (Active) = Has enrollments, not all completed, AND at least one is NOT paused AND has paid fee
         if (filterStatus === 'enrolled') {
             const total = s.totalEnrollments || 0;
             const completed = s.completedEnrollments || 0;
             const paused = s.pausedEnrollments || 0;
-            return total > 0 && completed < total && (total - completed - paused) > 0;
+            return total > 0 && completed < total && (total - completed - paused) > 0 && hasPaidFee(s._id);
+        }
+
+        // "No Fee Pay" = Enrolled active but no fee paid
+        if (filterStatus === 'noFeePay') {
+            const total = s.totalEnrollments || 0;
+            const completed = s.completedEnrollments || 0;
+            const paused = s.pausedEnrollments || 0;
+            return total > 0 && completed < total && (total - completed - paused) > 0 && !hasPaidFee(s._id);
         }
 
         // "Enrolled" (Inactive) = Has enrollments, not all completed, AND ALL non-completed are paused
@@ -771,14 +844,8 @@ const StudentsManagement = () => {
             return total > 0 && total === completed;
         }
 
-        if (filterStatus === 'verified') return s.isVerified;
-        if (filterStatus === 'pending') return !s.isVerified;
-
         return true;
     });
-
-    const verifiedCount = students.filter(s => s.isVerified).length;
-    const pendingCount = students.filter(s => !s.isVerified).length;
 
     if (isLoading && students.length === 0) {
         return (
@@ -836,27 +903,37 @@ const StudentsManagement = () => {
                         { id: 'all', label: 'All', count: students.length },
                         {
                             id: 'registered',
-                            label: 'Registered (New)',
+                            label: 'New',
                             count: students.filter(s => (s.totalEnrollments || 0) === 0 && !s.registeredOld).length
                         },
                         {
                             id: 'registeredOld',
-                            label: 'Registered (Old)',
+                            label: 'Old',
                             count: students.filter(s => (s.totalEnrollments || 0) === 0 && s.registeredOld).length
                         },
                         {
                             id: 'enrolled',
-                            label: 'Enrolled (Active)',
+                            label: 'Active',
                             count: students.filter(s => {
                                 const total = s.totalEnrollments || 0;
                                 const completed = s.completedEnrollments || 0;
                                 const paused = s.pausedEnrollments || 0;
-                                return total > 0 && completed < total && (total - completed - paused) > 0;
+                                return total > 0 && completed < total && (total - completed - paused) > 0 && hasPaidFee(s._id);
+                            }).length
+                        },
+                        {
+                            id: 'noFeePay',
+                            label: 'No Fee Pay',
+                            count: students.filter(s => {
+                                const total = s.totalEnrollments || 0;
+                                const completed = s.completedEnrollments || 0;
+                                const paused = s.pausedEnrollments || 0;
+                                return total > 0 && completed < total && (total - completed - paused) > 0 && !hasPaidFee(s._id);
                             }).length
                         },
                         {
                             id: 'enrolledInactive',
-                            label: 'Enrolled (Inactive)',
+                            label: 'Inactive',
                             count: students.filter(s => {
                                 const total = s.totalEnrollments || 0;
                                 const completed = s.completedEnrollments || 0;
@@ -872,9 +949,7 @@ const StudentsManagement = () => {
                                 const completed = s.completedEnrollments || 0;
                                 return total > 0 && total === completed;
                             }).length
-                        },
-                        { id: 'verified', label: 'Verified', count: verifiedCount },
-                        { id: 'pending', label: 'Pending', count: pendingCount }
+                        }
                     ].map((tab) => (
                         <button
                             key={tab.id}
@@ -984,7 +1059,7 @@ const StudentsManagement = () => {
                                     {/* Action Buttons */}
                                     <div className="w-full border-t border-gray-100 pt-3 dark:border-slate-700 sm:pt-4">
                                         <div className="grid w-full min-w-0 grid-cols-4 items-center gap-2 sm:flex sm:flex-wrap sm:justify-end">
-                                            {(((student.totalEnrollments || 0) === 0 && !student.registeredOld) || getStudentStatus(student) === 'Enrolled (Active)') && (
+                                            {(((student.totalEnrollments || 0) === 0 && !student.registeredOld) || getStudentStatus(student) === 'Active') && (
                                                 <button
                                                     onClick={() => handleReminder(student)}
                                                     className="h-10 w-full p-0 sm:h-auto sm:w-auto sm:px-3 sm:py-1.5 bg-[#25D366] hover:bg-[#128C7E] text-white rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-1.5 transition-all shadow-sm shadow-green-200"
@@ -996,7 +1071,7 @@ const StudentsManagement = () => {
                                                     <span className="hidden sm:inline">Reminder</span>
                                                 </button>
                                             )}
-                                            {(student.guardianPhone || student.parentPhone) && (((student.totalEnrollments || 0) === 0 && !student.registeredOld) || getStudentStatus(student) === 'Enrolled (Active)') && (
+                                            {(student.guardianPhone || student.parentPhone) && (((student.totalEnrollments || 0) === 0 && !student.registeredOld) || getStudentStatus(student) === 'Active') && (
                                                 <button
                                                     onClick={() => handleGuardianReminder(student)}
                                                     className="h-10 w-full p-0 sm:h-auto sm:w-auto sm:px-3 sm:py-1.5 bg-rose-500 hover:bg-rose-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-1.5 transition-all shadow-sm shadow-rose-200"
@@ -1008,10 +1083,26 @@ const StudentsManagement = () => {
                                                     <span className="hidden sm:inline">Guardian Reminder</span>
                                                 </button>
                                             )}
-                                            {student.email && (((student.totalEnrollments || 0) === 0 && !student.registeredOld) || getStudentStatus(student) === 'Enrolled (Active)') && (
-                                                <a
-                                                    href={`https://mail.google.com/mail/?view=cm&fs=1&to=${student.email}&su=${encodeURIComponent(`Important Update - LMS Adeeb Technology Lab`)}&body=${encodeURIComponent(`Assalam-o-Alaikum ${student.name},\n\nThis is a reminder from LMS Adeeb Technology Lab${student.location ? ` ${student.location.charAt(0).toUpperCase() + student.location.slice(1)}` : ''}.\n\nAapne abhi tak koi course join nahi kiya. Baraye meharbani portal par login karein aur "My Courses" section se enroll karein.\n\n*Agar aap course join nahi karna chahte, toh baraye meharbani humein bata dein taake aapki application cancel kardi jaye.*\n\nPortal: https://darkorchid-salmon-191482.hostingersite.com/\n\nThank you!`)}`}
-                                                    onClick={(event) => getStudentStatus(student) === 'Enrolled (Active)' && handleStudentStrikeOffEmail(event, student)}
+                                            {student.email && (((student.totalEnrollments || 0) === 0 && !student.registeredOld) || getStudentStatus(student) === 'Active') && (
+                                                <button
+                                                    onClick={async (event) => {
+                                                        if (getStudentStatus(student) === 'Active' && !hasPaidFee(student._id)) {
+                                                            event.preventDefault();
+                                                            try {
+                                                                const enrollRes = await enrollmentAPI.getUserEnrollments(student._id);
+                                                                const enrollments = enrollRes.data.data || [];
+                                                                const courseNames = enrollments.map(e => e.course?.title).filter(Boolean).join(', ') || 'N/A';
+                                                                student.enrolledCourseName = courseNames;
+                                                            } catch (e) { console.error(e); }
+                                                            const body = getFeeReminderMessage(student).replaceAll('*', '');
+                                                            window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${student.email}&su=${encodeURIComponent('Course Fee Reminder - Adeeb Technology Lab')}&body=${encodeURIComponent(body)}`, '_blank');
+                                                            return;
+                                                        }
+                                                        if (getStudentStatus(student) === 'Active') {
+                                                            handleStudentStrikeOffEmail(event, student);
+                                                            return;
+                                                        }
+                                                    }}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
                                                     className="h-10 w-full p-0 sm:h-auto sm:w-auto sm:px-3 sm:py-1.5 bg-sky-500 hover:bg-sky-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-1.5 transition-all shadow-sm shadow-sky-100"
@@ -1019,7 +1110,7 @@ const StudentsManagement = () => {
                                                 >
                                                     <Mail className="w-3.5 h-3.5" />
                                                     <span className="hidden sm:inline">Email</span>
-                                                </a>
+                                                </button>
                                             )}
                                             {(student.totalEnrollments || 0) === 0 && (
                                                 <button

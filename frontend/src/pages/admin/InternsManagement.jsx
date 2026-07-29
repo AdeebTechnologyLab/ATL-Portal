@@ -17,6 +17,7 @@ import ImageCropper from '../../components/ui/ImageCropper';
 const InternsManagement = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [interns, setInterns] = useState([]);
+    const [allFees, setAllFees] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [filterStatus, setFilterStatus] = useState('registered');
     const [confirmModal, setConfirmModal] = useState({ open: false, action: null, user: null });
@@ -49,6 +50,7 @@ const InternsManagement = () => {
         fetchInterns();
         fetchSettings();
         fetchCourses();
+        fetchAllFees();
     }, []);
 
     const fetchCourses = async () => {
@@ -93,6 +95,22 @@ const InternsManagement = () => {
         }
     };
 
+    const fetchAllFees = async () => {
+        try {
+            const res = await feeAPI.getAll();
+            setAllFees(res.data.data || []);
+        } catch (error) {
+            console.error('Error fetching fees:', error);
+        }
+    };
+
+    const hasPaidFee = (userId) => {
+        return allFees.some(fee => {
+            const feeUserId = fee.user?._id || fee.user;
+            return feeUserId === userId && fee.installments?.some(inst => inst.status === 'verified');
+        });
+    };
+
     const handleMoveToOld = async (intern) => {
         try {
             const newVal = !intern.registeredOld;
@@ -103,8 +121,34 @@ const InternsManagement = () => {
         }
     };
 
-    const handleReminder = (intern) => {
-        if (getInternStatus(intern) === 'Enrolled (Active)') {
+    const getFeeReminderMessage = (intern) => {
+        const campus = intern.location ? `Adeeb Technology Lab ${intern.location.charAt(0).toUpperCase() + intern.location.slice(1)}` : 'Adeeb Technology Lab';
+        return `*Course Fee Reminder*\n*${campus}*\n*Digital Tech Expert Software House*\n\n*Name:* ${intern.name || 'N/A'}\n*Roll No:* ${intern.rollNo || 'N/A'}\n*Course:* ${intern.enrolledCourseName || 'N/A'}\n\nAap ne course enroll kar liya hai, lekin abhi tak fee submit nahi ki. Meherbani karke apni pending fee jald se jald pay kar dein.\n\n⚠️ *Important:* Fee pay karne ke baad *payment slip* ya *screenshot* ko **LMS Portal** par upload karna lazmi hai. Verification ke baad hi payment confirm hogi.\n\n*LMS Portal:*\nhttps://darkorchid-salmon-191482.hostingersite.com/\n\n*Note:* Agar fee waqt par submit nahi ki gayi to aapki course enrollment **temporarily suspend** ya **cancel** ki ja sakti hai.\n\n*Regards,*\n*HR Department*\n*Adeeb Technology Lab*`;
+    };
+
+    const getFeeReminderGuardianMessage = (intern) => {
+        const campus = intern.location ? `Adeeb Technology Lab ${intern.location.charAt(0).toUpperCase() + intern.location.slice(1)}` : 'Adeeb Technology Lab';
+        return `*Course Fee Reminder*\n*${campus}*\n*Digital Tech Expert Software House*\n\n*Name:* ${intern.name || 'N/A'}\n*Roll No:* ${intern.rollNo || 'N/A'}\n*Course:* ${intern.enrolledCourseName || 'N/A'}\n\nAap ke ward ne course enroll kar liya hai, lekin abhi tak fee submit nahi ki. Meherbani karke apni pending fee jald se jald pay kar dein.\n\n⚠️ *Important:* Fee pay karne ke baad *payment slip* ya *screenshot* ko **LMS Portal** par upload karna lazmi hai. Verification ke baad hi payment confirm hogi.\n\n*LMS Portal:*\nhttps://darkorchid-salmon-191482.hostingersite.com/\n\n*Note:* Agar fee waqt par submit nahi ki gayi to course enrollment **temporarily suspend** ya **cancel** ki ja sakti hai.\n\n*Regards,*\n*HR Department*\n*Adeeb Technology Lab*`;
+    };
+
+    const handleReminder = async (intern) => {
+        if (getInternStatus(intern) === 'Active' && !hasPaidFee(intern._id)) {
+            const phoneNumber = intern.phone;
+            if (!phoneNumber) { alert("WhatsApp number not found for this user."); return; }
+            let cleanPhone = phoneNumber.replace(/[^0-9+]/g, '');
+            if (cleanPhone.startsWith('0')) cleanPhone = '92' + cleanPhone.slice(1);
+            try {
+                const enrollRes = await enrollmentAPI.getUserEnrollments(intern._id);
+                const enrollments = enrollRes.data.data || [];
+                const courseNames = enrollments.map(e => e.course?.title).filter(Boolean).join(', ') || 'N/A';
+                intern.enrolledCourseName = courseNames;
+            } catch (e) { console.error(e); }
+            const message = getFeeReminderMessage(intern);
+            const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
+            window.open(waUrl, '_blank');
+            return;
+        }
+        if (getInternStatus(intern) === 'Active') {
             handleAcademicReportWhatsApp(intern);
             return;
         }
@@ -123,13 +167,27 @@ const InternsManagement = () => {
         window.open(waUrl, '_blank');
     };
 
-    const handleGuardianReminder = (intern) => {
+    const handleGuardianReminder = async (intern) => {
         const phoneNumber = intern.guardianPhone || intern.parentPhone;
         if (!phoneNumber) {
             alert("Guardian WhatsApp number not found for this user.");
             return;
         }
-        if (getInternStatus(intern) === 'Enrolled (Active)') {
+        if (getInternStatus(intern) === 'Active' && !hasPaidFee(intern._id)) {
+            let cleanPhone = phoneNumber.replace(/[^0-9+]/g, '');
+            if (cleanPhone.startsWith('0')) cleanPhone = '92' + cleanPhone.slice(1);
+            try {
+                const enrollRes = await enrollmentAPI.getUserEnrollments(intern._id);
+                const enrollments = enrollRes.data.data || [];
+                const courseNames = enrollments.map(e => e.course?.title).filter(Boolean).join(', ') || 'N/A';
+                intern.enrolledCourseName = courseNames;
+            } catch (e) { console.error(e); }
+            const message = getFeeReminderGuardianMessage(intern);
+            const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
+            window.open(waUrl, '_blank');
+            return;
+        }
+        if (getInternStatus(intern) === 'Active') {
             handleAcademicReportWhatsApp(intern, phoneNumber);
             return;
         }
@@ -138,7 +196,7 @@ const InternsManagement = () => {
             cleanPhone = '92' + cleanPhone.slice(1);
         }
         const userLocation = intern.location ? ` ${intern.location.charAt(0).toUpperCase() + intern.location.slice(1)}` : '';
-        const isActive = getInternStatus(intern) === 'Enrolled (Active)';
+        const isActive = getInternStatus(intern) === 'Active';
         const message = isActive
             ? `Assalam-o-Alaikum,\n\nThis is an academic update from LMS Adeeb Technology Lab${userLocation} regarding ${intern.name}.\n\nPlease contact us if you would like to receive or discuss their latest academic report.\n\nPortal: https://darkorchid-salmon-191482.hostingersite.com/\n\nThank you!`
             : `Assalam-o-Alaikum,\n\nThis is a reminder from LMS Adeeb Technology Lab${userLocation} regarding ${intern.name}.\n\nThey have not selected any skill yet. Please log in and enroll via the "My Skills" section.\n\n*If they do not wish to continue, kindly let us know so we can cancel their application.*\n\nPortal: https://darkorchid-salmon-191482.hostingersite.com/\n\nThank you!`;
@@ -147,7 +205,7 @@ const InternsManagement = () => {
     };
 
     const getInternEmailHref = (intern) => {
-        const isActive = getInternStatus(intern) === 'Enrolled (Active)';
+        const isActive = getInternStatus(intern) === 'Active';
         const subject = isActive ? 'Academic Report Update - LMS Adeeb Technology Lab' : 'Important Update - LMS Adeeb Technology Lab';
         const body = isActive
             ? `Assalam-o-Alaikum ${intern.name},\n\nYour latest academic report from LMS Adeeb Technology Lab is ready. Please contact the administration to receive or discuss the report.\n\nPortal: https://darkorchid-salmon-191482.hostingersite.com/\n\nThank you!`
@@ -284,10 +342,10 @@ const InternsManagement = () => {
         const paused = i.pausedEnrollments || 0;
 
         if (total > 0 && total === completed) return 'Completed';
-        if (total > 0 && completed < total && (total - completed) === paused) return 'Enrolled (Inactive)';
-        if (total > 0 && completed < total && (total - completed - paused) > 0) return 'Enrolled (Active)';
-        if ((total === 0 || !total) && i.registeredOld) return 'Registered (Old)';
-        if ((total === 0 || !total) && !i.registeredOld) return 'Registered (New)';
+        if (total > 0 && completed < total && (total - completed) === paused) return 'Inactive';
+        if (total > 0 && completed < total && (total - completed - paused) > 0) return 'Active';
+        if ((total === 0 || !total) && i.registeredOld) return 'Old';
+        if ((total === 0 || !total) && !i.registeredOld) return 'New';
 
         return i.isVerified ? 'Verified' : 'Pending';
     };
@@ -327,7 +385,7 @@ const InternsManagement = () => {
         let finalExportInterns = interns;
 
         if (status === 'active') {
-            finalExportInterns = finalExportInterns.filter(i => getInternStatus(i) === 'Enrolled (Active)');
+            finalExportInterns = finalExportInterns.filter(i => getInternStatus(i) === 'Active');
         } else if (status === 'certified') {
             finalExportInterns = finalExportInterns.filter(i => getInternStatus(i) === 'Completed');
         }
@@ -785,12 +843,20 @@ const InternsManagement = () => {
         // "Registered Old" = No enrollments AND marked as old by admin
         if (filterStatus === 'registeredOld') return (i.totalEnrollments || 0) === 0 && i.registeredOld;
 
-        // "Enrolled" (Active) = Has enrollments, not all completed, AND at least one is NOT paused
+        // "Enrolled" (Active) = Has enrollments, not all completed, AND at least one is NOT paused AND has paid fee
         if (filterStatus === 'enrolled') {
             const total = i.totalEnrollments || 0;
             const completed = i.completedEnrollments || 0;
             const paused = i.pausedEnrollments || 0;
-            return total > 0 && completed < total && (total - completed - paused) > 0;
+            return total > 0 && completed < total && (total - completed - paused) > 0 && hasPaidFee(i._id);
+        }
+
+        // "No Fee Pay" = Enrolled active but no fee paid
+        if (filterStatus === 'noFeePay') {
+            const total = i.totalEnrollments || 0;
+            const completed = i.completedEnrollments || 0;
+            const paused = i.pausedEnrollments || 0;
+            return total > 0 && completed < total && (total - completed - paused) > 0 && !hasPaidFee(i._id);
         }
 
         // "Enrolled" (Inactive) = Has enrollments, not all completed, AND ALL non-completed are paused
@@ -808,13 +874,8 @@ const InternsManagement = () => {
             return total > 0 && total === completed;
         }
 
-        if (filterStatus === 'verified') return i.isVerified;
-        if (filterStatus === 'pending') return !i.isVerified;
         return true;
     });
-
-    const verifiedCount = interns.filter(i => i.isVerified).length;
-    const pendingCount = interns.filter(i => !i.isVerified).length;
 
     if (isLoading && interns.length === 0) {
         return (
@@ -872,27 +933,37 @@ const InternsManagement = () => {
                         { id: 'all', label: 'All', count: interns.length },
                         {
                             id: 'registered',
-                            label: 'Registered (New)',
+                            label: 'New',
                             count: interns.filter(i => (i.totalEnrollments || 0) === 0 && !i.registeredOld).length
                         },
                         {
                             id: 'registeredOld',
-                            label: 'Registered (Old)',
+                            label: 'Old',
                             count: interns.filter(i => (i.totalEnrollments || 0) === 0 && i.registeredOld).length
                         },
                         {
                             id: 'enrolled',
-                            label: 'Enrolled (Active)',
+                            label: 'Active',
                             count: interns.filter(i => {
                                 const total = i.totalEnrollments || 0;
                                 const completed = i.completedEnrollments || 0;
                                 const paused = i.pausedEnrollments || 0;
-                                return total > 0 && completed < total && (total - completed - paused) > 0;
+                                return total > 0 && completed < total && (total - completed - paused) > 0 && hasPaidFee(i._id);
+                            }).length
+                        },
+                        {
+                            id: 'noFeePay',
+                            label: 'No Fee Pay',
+                            count: interns.filter(i => {
+                                const total = i.totalEnrollments || 0;
+                                const completed = i.completedEnrollments || 0;
+                                const paused = i.pausedEnrollments || 0;
+                                return total > 0 && completed < total && (total - completed - paused) > 0 && !hasPaidFee(i._id);
                             }).length
                         },
                         {
                             id: 'enrolledInactive',
-                            label: 'Enrolled (Inactive)',
+                            label: 'Inactive',
                             count: interns.filter(i => {
                                 const total = i.totalEnrollments || 0;
                                 const completed = i.completedEnrollments || 0;
@@ -908,9 +979,7 @@ const InternsManagement = () => {
                                 const completed = i.completedEnrollments || 0;
                                 return total > 0 && total === completed;
                             }).length
-                        },
-                        { id: 'verified', label: 'Verified', count: verifiedCount },
-                        { id: 'pending', label: 'Pending', count: pendingCount }
+                        }
                     ].map((tab) => (
                         <button
                             key={tab.id}
@@ -1063,7 +1132,7 @@ const InternsManagement = () => {
                                     {/* Actions */}
                                     <div className="w-full border-t border-gray-100 pt-3 dark:border-slate-700 sm:pt-4">
                                         <div className="grid w-full min-w-0 grid-cols-4 items-center gap-2 sm:flex sm:flex-wrap sm:justify-end">
-                                            {(((intern.totalEnrollments || 0) === 0 && !intern.registeredOld) || getInternStatus(intern) === 'Enrolled (Active)') && (
+                                            {(((intern.totalEnrollments || 0) === 0 && !intern.registeredOld) || getInternStatus(intern) === 'Active') && (
                                                 <button
                                                     onClick={() => handleReminder(intern)}
                                                     className="h-10 w-full p-0 sm:h-auto sm:w-auto sm:px-3 sm:py-1.5 bg-[#25D366] hover:bg-[#128C7E] text-white rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-1.5 transition-all shadow-sm shadow-green-200"
@@ -1075,7 +1144,7 @@ const InternsManagement = () => {
                                                     <span className="hidden sm:inline">Reminder</span>
                                                 </button>
                                             )}
-                                            {(intern.guardianPhone || intern.parentPhone) && (((intern.totalEnrollments || 0) === 0 && !intern.registeredOld) || getInternStatus(intern) === 'Enrolled (Active)') && (
+                                            {(intern.guardianPhone || intern.parentPhone) && (((intern.totalEnrollments || 0) === 0 && !intern.registeredOld) || getInternStatus(intern) === 'Active') && (
                                                 <button
                                                     onClick={() => handleGuardianReminder(intern)}
                                                     className="h-10 w-full p-0 sm:h-auto sm:w-auto sm:px-3 sm:py-1.5 bg-rose-500 hover:bg-rose-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-1.5 transition-all shadow-sm shadow-rose-200"
@@ -1087,10 +1156,26 @@ const InternsManagement = () => {
                                                     <span className="hidden sm:inline">Guardian Reminder</span>
                                                 </button>
                                             )}
-                                            {intern.email && (((intern.totalEnrollments || 0) === 0 && !intern.registeredOld) || getInternStatus(intern) === 'Enrolled (Active)') && (
-                                                <a
-                                                    href={getInternEmailHref(intern)}
-                                                    onClick={(event) => getInternStatus(intern) === 'Enrolled (Active)' && handleInternStrikeOffEmail(event, intern)}
+                                            {intern.email && (((intern.totalEnrollments || 0) === 0 && !intern.registeredOld) || getInternStatus(intern) === 'Active') && (
+                                                <button
+                                                    onClick={async (event) => {
+                                                        if (getInternStatus(intern) === 'Active' && !hasPaidFee(intern._id)) {
+                                                            event.preventDefault();
+                                                            try {
+                                                                const enrollRes = await enrollmentAPI.getUserEnrollments(intern._id);
+                                                                const enrollments = enrollRes.data.data || [];
+                                                                const courseNames = enrollments.map(e => e.course?.title).filter(Boolean).join(', ') || 'N/A';
+                                                                intern.enrolledCourseName = courseNames;
+                                                            } catch (e) { console.error(e); }
+                                                            const body = getFeeReminderMessage(intern).replaceAll('*', '');
+                                                            window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${intern.email}&su=${encodeURIComponent('Course Fee Reminder - Adeeb Technology Lab')}&body=${encodeURIComponent(body)}`, '_blank');
+                                                            return;
+                                                        }
+                                                        if (getInternStatus(intern) === 'Active') {
+                                                            handleInternStrikeOffEmail(event, intern);
+                                                            return;
+                                                        }
+                                                    }}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
                                                     className="h-10 w-full p-0 sm:h-auto sm:w-auto sm:px-3 sm:py-1.5 bg-sky-500 hover:bg-sky-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-1.5 transition-all shadow-sm shadow-sky-100"
@@ -1098,7 +1183,7 @@ const InternsManagement = () => {
                                                 >
                                                     <Mail className="w-3.5 h-3.5" />
                                                     <span className="hidden sm:inline">Email</span>
-                                                </a>
+                                                </button>
                                             )}
                                             {(intern.totalEnrollments || 0) === 0 && (
                                                 <button
