@@ -25,7 +25,8 @@ const registrationPageSchema = new mongoose.Schema({
         dateValue: { type: String, default: 'Always Open' }
     },
     typeBadge: {
-        text: { type: String, default: 'Type: On-Site / Remote' },
+        classMode: { type: String, enum: ['Onsite', 'Online', 'Both'], default: 'Both' },
+        campusLocation: { type: String, enum: ['Islamabad', 'Bahawalpur'], default: 'Islamabad' },
         color: { type: String, default: 'primary' }
     },
     sections: [sectionSchema],

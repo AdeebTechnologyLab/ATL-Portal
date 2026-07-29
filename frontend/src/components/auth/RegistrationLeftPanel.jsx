@@ -53,7 +53,9 @@ const RegistrationLeftPanel = ({ formType, mobileOpen = false, onMobileClose }) 
     if (loading) {
         return (
             <div className={`${mobileOpen ? 'flex' : 'hidden'} fixed inset-0 z-[100] items-center justify-center bg-black/60 p-4 backdrop-blur-sm lg:static lg:z-auto lg:flex lg:w-1/2 lg:h-screen lg:p-0 lg:bg-gray-50 lg:backdrop-blur-none`}>
-                <Loader2 className="w-8 h-8 text-primary animate-spin" />
+                <div className="bg-white rounded-2xl p-6 shadow-xl">
+                    <Loader2 className="w-8 h-8 text-primary animate-spin" />
+                </div>
             </div>
         );
     }
@@ -75,8 +77,8 @@ const RegistrationLeftPanel = ({ formType, mobileOpen = false, onMobileClose }) 
             <div className={`hidden lg:block absolute top-0 left-0 w-full h-2 bg-gradient-to-r ${gradient}`} />
 
             {/* Content */}
-            <div className="relative z-10 flex w-full max-w-lg flex-col items-center justify-start lg:justify-center lg:w-full lg:h-full lg:max-w-none lg:p-12 lg:overflow-y-auto no-scrollbar">
-                <div className="relative my-14 w-full max-w-lg rounded-3xl border border-gray-200 bg-white p-6 shadow-2xl sm:p-8 lg:my-0 lg:rounded-[2rem] lg:p-10 lg:shadow-xl">
+            <div className="relative z-10 flex w-full max-w-lg flex-col items-center justify-start my-auto lg:my-0 lg:justify-center lg:w-full lg:h-full lg:max-w-none lg:p-12 lg:overflow-y-auto no-scrollbar">
+                <div className="relative w-full max-w-lg rounded-3xl border border-gray-200 bg-white p-6 shadow-2xl sm:p-8 lg:rounded-[2rem] lg:p-10 lg:shadow-xl">
                     {/* Logo */}
                     <div className="mb-8 flex items-center justify-between gap-3">
                         <div className="flex min-w-0 items-center gap-3">
@@ -135,10 +137,15 @@ const RegistrationLeftPanel = ({ formType, mobileOpen = false, onMobileClose }) 
 
                     {/* Type Badge */}
                     {pageData.typeBadge && (
-                        <div className="mb-6">
-                            <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold border ${badgeColorMap[pageData.typeBadge.color] || badgeColorMap.primary}`}>
-                                {pageData.typeBadge.text}
+                        <div className="mb-6 grid grid-cols-2 gap-2">
+                            <span className={`inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-bold border text-center ${badgeColorMap[pageData.typeBadge.color] || badgeColorMap.primary}`}>
+                                {pageData.typeBadge.classMode === 'Both' ? 'Onsite & Online' : pageData.typeBadge.classMode || 'Onsite'}
                             </span>
+                            {pageData.typeBadge.campusLocation && (
+                                <span className={`inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-bold border text-center ${badgeColorMap[pageData.typeBadge.color] || badgeColorMap.primary}`}>
+                                    {pageData.typeBadge.campusLocation}
+                                </span>
+                            )}
                         </div>
                     )}
 

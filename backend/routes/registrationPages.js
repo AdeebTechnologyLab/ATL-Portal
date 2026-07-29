@@ -18,7 +18,7 @@ const defaultData = {
             dateLabel: 'Last Date',
             dateValue: 'Always Open'
         },
-        typeBadge: { text: 'Type: On-Site / Remote', color: 'primary' },
+        typeBadge: { classMode: 'Both', campusLocation: 'Islamabad', color: 'primary' },
         sections: [
             {
                 title: 'What We Offer',
@@ -50,7 +50,7 @@ const defaultData = {
             dateLabel: 'Last Date',
             dateValue: '06/06/2026'
         },
-        typeBadge: { text: 'Type: On-Site / Remote', color: 'blue' },
+        typeBadge: { classMode: 'Both', campusLocation: 'Islamabad', color: 'blue' },
         sections: [
             {
                 title: 'Internship Requirements',
@@ -82,7 +82,7 @@ const defaultData = {
             dateLabel: 'Last Date To Apply',
             dateValue: 'Always Open'
         },
-        typeBadge: { text: 'Type: On-Site / Remote', color: 'fuchsia' },
+        typeBadge: { classMode: 'Both', campusLocation: 'Islamabad', color: 'fuchsia' },
         sections: [
             {
                 title: 'Why Join Our Team?',
@@ -109,7 +109,7 @@ const defaultData = {
             dateLabel: 'Last Date To Apply',
             dateValue: '22/04/2026'
         },
-        typeBadge: { text: 'Type: On-Site / Remote', color: 'primary' },
+        typeBadge: { classMode: 'Both', campusLocation: 'Islamabad', color: 'primary' },
         sections: [
             {
                 title: 'Why Join Our Team?',

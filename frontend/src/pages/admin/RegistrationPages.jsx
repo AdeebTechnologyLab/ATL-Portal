@@ -285,17 +285,28 @@ const RegistrationPages = () => {
                         <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-5">
                             <h3 className="font-bold text-gray-900 dark:text-white mb-4">Type Badge</h3>
                             <div className="grid grid-cols-2 gap-3">
-                                <div className="col-span-2">
-                                    <label className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1 block">Text</label>
+                                <div>
+                                    <label className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1 block">Class Mode</label>
                                     <input
                                         type="text"
-                                        value={currentPage.typeBadge?.text || ''}
-                                        onChange={(e) => updateField('typeBadge.text', e.target.value)}
+                                        value={currentPage.typeBadge?.classMode || ''}
+                                        onChange={(e) => updateField('typeBadge.classMode', e.target.value)}
+                                        placeholder="e.g. Onsite & Online"
                                         className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-primary/50 focus:border-primary"
                                     />
                                 </div>
                                 <div>
-                                    <label className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1 block">Color</label>
+                                    <label className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1 block">Campus Location</label>
+                                    <input
+                                        type="text"
+                                        value={currentPage.typeBadge?.campusLocation || ''}
+                                        onChange={(e) => updateField('typeBadge.campusLocation', e.target.value)}
+                                        placeholder="e.g. Islamabad"
+                                        className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-primary/50 focus:border-primary"
+                                    />
+                                </div>
+                                <div className="col-span-2">
+                                    <label className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1 block">Badge Color</label>
                                     <select
                                         value={currentPage.typeBadge?.color || 'primary'}
                                         onChange={(e) => updateField('typeBadge.color', e.target.value)}

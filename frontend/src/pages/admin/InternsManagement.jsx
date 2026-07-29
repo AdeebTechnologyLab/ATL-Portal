@@ -1186,6 +1186,7 @@ const InternsManagement = () => {
                 onClose={() => setEnrollModal({ open: false, user: null })}
                 title={`Manage Enrollments — ${enrollModal.user?.name || ''}`}
                 size="md"
+                centerOnMobile
             >
                 <div className="space-y-4">
                     {enrollToast && (
@@ -1343,6 +1344,7 @@ const InternsManagement = () => {
                 onClose={() => setViewFeeModal({ open: false, userId: null, internName: '' })}
                 title={`Fee Challans — ${viewFeeModal.internName}`}
                 size="lg"
+                centerOnMobile
             >
                 <div className="space-y-4">
                     {feeLoading ? (
@@ -1408,6 +1410,7 @@ const InternsManagement = () => {
                 onClose={() => setEditModal({ open: false, user: null })}
                 title="Edit Intern Bio"
                 size="lg"
+                centerOnMobile
             >
                 <form onSubmit={handleUpdate} className="space-y-4">
                     {/* Profile Picture Section */}

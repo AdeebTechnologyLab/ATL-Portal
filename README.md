@@ -19,10 +19,21 @@ Frontend: https://darkorchid-salmon-191482.hostingersite.com
 
 
 student stukoff acadmic repost jenrat link
-interni stukoff acadmic repost janrat link
-
 StudentsManagement.jsx:648 - https://darkorchid-salmon-191482.hostingersite.com${response.data.path}
+
+interni stukoff acadmic repost janrat link
 InternsManagement.jsx:553 - https://darkorchid-salmon-191482.hostingersite.com${response.data.path}
+
+
+new register may jo msg ha ha riminder ka cours select kary
+All message links updated. The remaining one in server.js:82 is a CORS config origin, not a user-facing link — that's fine to keep.
+Files updated:
+- StudentsManagement.jsx — 3 portal links replaced
+- InternsManagement.jsx — 6 portal links replaced
+- FeeVerification.jsx — 6 portal links replaced
+All now point to https://darkorchid-salmon-191482.hostingersite.com/.
+
+
 
 
 Open http://localhost:5173 — the frontend proxies `/api` to the backend (port 5000).

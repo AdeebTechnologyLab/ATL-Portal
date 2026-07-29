@@ -1098,6 +1098,7 @@ const StudentsManagement = () => {
                 onClose={() => setEnrollModal({ open: false, user: null })}
                 title={`Manage Enrollments — ${enrollModal.user?.name || ''}`}
                 size="md"
+                centerOnMobile
             >
                 <div className="space-y-4">
                     {/* Toast */}
@@ -1263,6 +1264,7 @@ const StudentsManagement = () => {
                 onClose={() => setViewFeeModal({ open: false, userId: null, studentName: '' })}
                 title={`Fee Challans — ${viewFeeModal.studentName}`}
                 size="lg"
+                centerOnMobile
             >
                 <div className="space-y-4">
                     {feeLoading ? (
@@ -1330,6 +1332,7 @@ const StudentsManagement = () => {
                 onClose={() => setEditModal({ open: false, user: null })}
                 title="Edit Student Bio"
                 size="lg"
+                centerOnMobile
             >
                 <form onSubmit={handleUpdate} className="space-y-4">
                     {/* Profile Picture Section */}
