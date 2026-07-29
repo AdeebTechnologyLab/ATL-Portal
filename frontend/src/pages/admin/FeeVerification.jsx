@@ -611,7 +611,7 @@ const FeeVerification = () => {
                                                             onClick={() => {
                                                                 const phone = (fee.user?.phone || '').replace(/[^0-9]/g, '');
                                                                 const formattedPhone = phone.startsWith('0') ? '92' + phone.substring(1) : phone;
-                                                                const portalLink = "http://lms-adeeb-technology-lab.vercel.app/";
+                                                                const portalLink = "https://darkorchid-salmon-191482.hostingersite.com/";
                                                                 const userLoc = fee.course?.city || fee.user?.location;
                                                                 const locString = userLoc ? ` ${userLoc.charAt(0).toUpperCase() + userLoc.slice(1)}` : '';
                                                                 const msg = `Assalam-o-Alaikum ${fee.user.name},\n\nThis is a reminder from *LMS Adeeb Technology Lab${locString}* regarding your course fee for *${fee.course?.title}*.\n\n*Status:* ${inst.status}\n*Amount:* Rs ${inst.amount?.toLocaleString()}\n*Due Date:* ${formatDate(inst.dueDate)}\n\nPlease submit your fee and upload the receipt on the portal: ${portalLink}\n\nThank you!`;
@@ -635,7 +635,7 @@ const FeeVerification = () => {
                                                                 }
                                                                 const phone = rawPhone.replace(/[^0-9]/g, '');
                                                                 const formattedPhone = phone.startsWith('0') ? '92' + phone.substring(1) : phone;
-                                                                const portalLink = "http://lms-adeeb-technology-lab.vercel.app/";
+                                                                const portalLink = "https://darkorchid-salmon-191482.hostingersite.com/";
                                                                 const userLoc = fee.course?.city || fee.user?.location;
                                                                 const locString = userLoc ? ` ${userLoc.charAt(0).toUpperCase() + userLoc.slice(1)}` : '';
                                                                 const msg = `Assalam-o-Alaikum ${fee.user.name},\n\nThis is a reminder from *LMS Adeeb Technology Lab${locString}* regarding your course fee for *${fee.course?.title}*.\n\n*Status:* ${inst.status}\n*Amount:* Rs ${inst.amount?.toLocaleString()}\n*Due Date:* ${formatDate(inst.dueDate)}\n\nPlease submit your fee and upload the receipt on the portal: ${portalLink}\n\nThank you!`;
@@ -652,7 +652,7 @@ const FeeVerification = () => {
 
                                                         {fee.user?.email ? (
                                                             <a
-                                                                href={`https://mail.google.com/mail/?view=cm&fs=1&to=${fee.user.email}&su=${encodeURIComponent(`Fee Payment Reminder - ${fee.course?.title || 'LMS Adeeb Technology Lab'}`)}&body=${encodeURIComponent(`Assalam-o-Alaikum ${fee.user.name},\n\nThis is a reminder from LMS Adeeb Technology Lab${fee.course?.city || fee.user?.location ? ` ${fee.course?.city || fee.user?.location}` : ''} regarding your course fee for ${fee.course?.title}.\n\nStatus: ${inst.status}\nAmount: Rs ${inst.amount?.toLocaleString()}\nDue Date: ${formatDate(inst.dueDate)}\n\nPlease submit your fee and upload the receipt on the portal: http://lms-adeeb-technology-lab.vercel.app/\n\nThank you!`)}`}
+                                                                href={`https://mail.google.com/mail/?view=cm&fs=1&to=${fee.user.email}&su=${encodeURIComponent(`Fee Payment Reminder - ${fee.course?.title || 'LMS Adeeb Technology Lab'}`)}&body=${encodeURIComponent(`Assalam-o-Alaikum ${fee.user.name},\n\nThis is a reminder from LMS Adeeb Technology Lab${fee.course?.city || fee.user?.location ? ` ${fee.course?.city || fee.user?.location}` : ''} regarding your course fee for ${fee.course?.title}.\n\nStatus: ${inst.status}\nAmount: Rs ${inst.amount?.toLocaleString()}\nDue Date: ${formatDate(inst.dueDate)}\n\nPlease submit your fee and upload the receipt on the portal: https://darkorchid-salmon-191482.hostingersite.com/\n\nThank you!`)}`}
                                                                 target="_blank"
                                                                 rel="noopener noreferrer"
                                                                 className="h-9 w-9 p-0 sm:h-auto sm:w-auto sm:px-3 sm:py-1.5 bg-sky-500 hover:bg-sky-600 text-white rounded-lg text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-1.5 transition-all shadow-sm shadow-sky-100"
@@ -751,7 +751,7 @@ const FeeVerification = () => {
                                                         onClick={() => {
                                                             const phone = fee.user.phone.replace(/[^0-9]/g, '');
                                                             const formattedPhone = phone.startsWith('0') ? '92' + phone.substring(1) : phone;
-                                                            const portalLink = "http://lms-adeeb-technology-lab.vercel.app/";
+                                                            const portalLink = "https://darkorchid-salmon-191482.hostingersite.com/";
                                                             const userLoc = fee.course?.city || fee.user?.location;
                                                             const locString = userLoc ? ` ${userLoc.charAt(0).toUpperCase() + userLoc.slice(1)}` : '';
                                                             const msg = `Assalam-o-Alaikum ${fee.user.name},\n\nThis is a reminder from *LMS Adeeb Technology Lab${locString}* regarding your course fee for *${fee.course?.title}*.\n\n*Status:* Pending\n*Amount:* Rs ${inst.amount?.toLocaleString()}\n*Due Date:* ${formatDate(inst.dueDate)}\n\nPlease submit your fee and upload the receipt on the portal: ${portalLink}\n\nThank you!`;
@@ -774,7 +774,7 @@ const FeeVerification = () => {
                                                             }
                                                             const phone = rawPhone.replace(/[^0-9]/g, '');
                                                             const formattedPhone = phone.startsWith('0') ? '92' + phone.substring(1) : phone;
-                                                            const portalLink = "http://lms-adeeb-technology-lab.vercel.app/";
+                                                            const portalLink = "https://darkorchid-salmon-191482.hostingersite.com/";
                                                             const userLoc = fee.course?.city || fee.user?.location;
                                                             const locString = userLoc ? ` ${userLoc.charAt(0).toUpperCase() + userLoc.slice(1)}` : '';
                                                             const msg = `Assalam-o-Alaikum ${fee.user.name},\n\nThis is a reminder from *LMS Adeeb Technology Lab${locString}* regarding your course fee for *${fee.course?.title}*.\n\n*Status:* ${inst.status}\n*Amount:* Rs ${inst.amount?.toLocaleString()}\n*Due Date:* ${formatDate(inst.dueDate)}\n\nPlease submit your fee and upload the receipt on the portal: ${portalLink}\n\nThank you!`;
@@ -790,7 +790,7 @@ const FeeVerification = () => {
                                                     </button>
                                                     {fee.user?.email ? (
                                                         <a
-                                                            href={`https://mail.google.com/mail/?view=cm&fs=1&to=${fee.user.email}&su=${encodeURIComponent(`Fee Payment Reminder - ${fee.course?.title || 'LMS Adeeb Technology Lab'}`)}&body=${encodeURIComponent(`Assalam-o-Alaikum ${fee.user.name},\n\nThis is a reminder from LMS Adeeb Technology Lab${fee.course?.city || fee.user?.location ? ` ${fee.course?.city || fee.user?.location}` : ''} regarding your course fee for ${fee.course?.title}.\n\nStatus: Pending\nAmount: Rs ${inst.amount?.toLocaleString()}\nDue Date: ${formatDate(inst.dueDate)}\n\nPlease submit your fee and upload the receipt on the portal: http://lms-adeeb-technology-lab.vercel.app/\n\nThank you!`)}`}
+                                                            href={`https://mail.google.com/mail/?view=cm&fs=1&to=${fee.user.email}&su=${encodeURIComponent(`Fee Payment Reminder - ${fee.course?.title || 'LMS Adeeb Technology Lab'}`)}&body=${encodeURIComponent(`Assalam-o-Alaikum ${fee.user.name},\n\nThis is a reminder from LMS Adeeb Technology Lab${fee.course?.city || fee.user?.location ? ` ${fee.course?.city || fee.user?.location}` : ''} regarding your course fee for ${fee.course?.title}.\n\nStatus: Pending\nAmount: Rs ${inst.amount?.toLocaleString()}\nDue Date: ${formatDate(inst.dueDate)}\n\nPlease submit your fee and upload the receipt on the portal: https://darkorchid-salmon-191482.hostingersite.com/\n\nThank you!`)}`}
                                                             target="_blank"
                                                             rel="noopener noreferrer"
                                                             className="h-9 w-9 p-0 sm:h-auto sm:w-auto sm:px-3 sm:py-1.5 bg-sky-500 hover:bg-sky-600 text-white rounded-lg text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-1.5 transition-all shadow-sm shadow-sky-100"

@@ -118,7 +118,7 @@ const InternsManagement = () => {
             cleanPhone = '92' + cleanPhone.slice(1);
         }
         const userLocation = intern.location ? ` ${intern.location.charAt(0).toUpperCase() + intern.location.slice(1)}` : '';
-        const message = `Assalam-o-Alaikum ${intern.name},\n\nThis is a reminder from LMS Adeeb Technology Lab${userLocation}.\n\nYou have not selected any skill yet. Please log in and enroll via the "My Skills" section.\n\n*If you do not wish to continue, kindly let us know so we can cancel your application.*\n\nPortal: https://lms-adeeb-technology-lab.vercel.app/\n\nThank you!`;
+        const message = `Assalam-o-Alaikum ${intern.name},\n\nThis is a reminder from LMS Adeeb Technology Lab${userLocation}.\n\nYou have not selected any skill yet. Please log in and enroll via the "My Skills" section.\n\n*If you do not wish to continue, kindly let us know so we can cancel your application.*\n\nPortal: https://darkorchid-salmon-191482.hostingersite.com/\n\nThank you!`;
         const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
         window.open(waUrl, '_blank');
     };
@@ -140,8 +140,8 @@ const InternsManagement = () => {
         const userLocation = intern.location ? ` ${intern.location.charAt(0).toUpperCase() + intern.location.slice(1)}` : '';
         const isActive = getInternStatus(intern) === 'Enrolled (Active)';
         const message = isActive
-            ? `Assalam-o-Alaikum,\n\nThis is an academic update from LMS Adeeb Technology Lab${userLocation} regarding ${intern.name}.\n\nPlease contact us if you would like to receive or discuss their latest academic report.\n\nPortal: https://lms-adeeb-technology-lab.vercel.app/\n\nThank you!`
-            : `Assalam-o-Alaikum,\n\nThis is a reminder from LMS Adeeb Technology Lab${userLocation} regarding ${intern.name}.\n\nThey have not selected any skill yet. Please log in and enroll via the "My Skills" section.\n\n*If they do not wish to continue, kindly let us know so we can cancel their application.*\n\nPortal: https://lms-adeeb-technology-lab.vercel.app/\n\nThank you!`;
+            ? `Assalam-o-Alaikum,\n\nThis is an academic update from LMS Adeeb Technology Lab${userLocation} regarding ${intern.name}.\n\nPlease contact us if you would like to receive or discuss their latest academic report.\n\nPortal: https://darkorchid-salmon-191482.hostingersite.com/\n\nThank you!`
+            : `Assalam-o-Alaikum,\n\nThis is a reminder from LMS Adeeb Technology Lab${userLocation} regarding ${intern.name}.\n\nThey have not selected any skill yet. Please log in and enroll via the "My Skills" section.\n\n*If they do not wish to continue, kindly let us know so we can cancel their application.*\n\nPortal: https://darkorchid-salmon-191482.hostingersite.com/\n\nThank you!`;
         const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
         window.open(waUrl, '_blank');
     };
@@ -150,8 +150,8 @@ const InternsManagement = () => {
         const isActive = getInternStatus(intern) === 'Enrolled (Active)';
         const subject = isActive ? 'Academic Report Update - LMS Adeeb Technology Lab' : 'Important Update - LMS Adeeb Technology Lab';
         const body = isActive
-            ? `Assalam-o-Alaikum ${intern.name},\n\nYour latest academic report from LMS Adeeb Technology Lab is ready. Please contact the administration to receive or discuss the report.\n\nPortal: https://lms-adeeb-technology-lab.vercel.app/\n\nThank you!`
-            : `Assalam-o-Alaikum ${intern.name},\n\nThis is a reminder from LMS Adeeb Technology Lab${intern.location ? ` ${intern.location.charAt(0).toUpperCase() + intern.location.slice(1)}` : ''}.\n\nYou have not selected any skill yet. Please log in and enroll via the "My Skills" section.\n\n*If you do not wish to continue, kindly let us know so we can cancel your application.*\n\nPortal: https://lms-adeeb-technology-lab.vercel.app/\n\nThank you!`;
+            ? `Assalam-o-Alaikum ${intern.name},\n\nYour latest academic report from LMS Adeeb Technology Lab is ready. Please contact the administration to receive or discuss the report.\n\nPortal: https://darkorchid-salmon-191482.hostingersite.com/\n\nThank you!`
+            : `Assalam-o-Alaikum ${intern.name},\n\nThis is a reminder from LMS Adeeb Technology Lab${intern.location ? ` ${intern.location.charAt(0).toUpperCase() + intern.location.slice(1)}` : ''}.\n\nYou have not selected any skill yet. Please log in and enroll via the "My Skills" section.\n\n*If you do not wish to continue, kindly let us know so we can cancel your application.*\n\nPortal: https://darkorchid-salmon-191482.hostingersite.com/\n\nThank you!`;
         return `https://mail.google.com/mail/?view=cm&fs=1&to=${intern.email}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     };
 

@@ -120,7 +120,7 @@ const StudentsManagement = () => {
             cleanPhone = '92' + cleanPhone.slice(1);
         }
         const userLocation = student.location ? ` ${student.location.charAt(0).toUpperCase() + student.location.slice(1)}` : '';
-        const message = `Assalam-o-Alaikum ${student.name},\n\nThis is a reminder from LMS Adeeb Technology Lab${userLocation}.\n\nAapne abhi tak koi course join nahi kiya. Baraye meharbani portal par login karein aur "My Courses" section se enroll karein.\n\n*Agar aap course join nahi karna chahte, toh baraye meharbani humein bata dein taake aapki application cancel kardi jaye.*\n\nPortal: https://lms-adeeb-technology-lab.vercel.app/\n\nThank you!`;
+        const message = `Assalam-o-Alaikum ${student.name},\n\nThis is a reminder from LMS Adeeb Technology Lab${userLocation}.\n\nAapne abhi tak koi course join nahi kiya. Baraye meharbani portal par login karein aur "My Courses" section se enroll karein.\n\n*Agar aap course join nahi karna chahte, toh baraye meharbani humein bata dein taake aapki application cancel kardi jaye.*\n\nPortal: https://darkorchid-salmon-191482.hostingersite.com/\n\nThank you!`;
         const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
         window.open(waUrl, '_blank');
     };
@@ -140,7 +140,7 @@ const StudentsManagement = () => {
             cleanPhone = '92' + cleanPhone.slice(1);
         }
         const userLocation = student.location ? ` ${student.location.charAt(0).toUpperCase() + student.location.slice(1)}` : '';
-        const message = `Assalam-o-Alaikum,\n\nThis is a reminder from LMS Adeeb Technology Lab${userLocation} regarding ${student.name}.\n\nInhon ne abhi tak koi course join nahi kiya. Baraye meharbani portal par login karein aur "My Courses" section se enroll karein.\n\n*Agar inhon ne course join nahi karna toh baraye meharbani humein bata dein taake application cancel kardi jaye.*\n\nPortal: https://lms-adeeb-technology-lab.vercel.app/\n\nThank you!`;
+        const message = `Assalam-o-Alaikum,\n\nThis is a reminder from LMS Adeeb Technology Lab${userLocation} regarding ${student.name}.\n\nInhon ne abhi tak koi course join nahi kiya. Baraye meharbani portal par login karein aur "My Courses" section se enroll karein.\n\n*Agar inhon ne course join nahi karna toh baraye meharbani humein bata dein taake application cancel kardi jaye.*\n\nPortal: https://darkorchid-salmon-191482.hostingersite.com/\n\nThank you!`;
         const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
         window.open(waUrl, '_blank');
     };
@@ -1010,7 +1010,7 @@ const StudentsManagement = () => {
                                             )}
                                             {student.email && (((student.totalEnrollments || 0) === 0 && !student.registeredOld) || getStudentStatus(student) === 'Enrolled (Active)') && (
                                                 <a
-                                                    href={`https://mail.google.com/mail/?view=cm&fs=1&to=${student.email}&su=${encodeURIComponent(`Important Update - LMS Adeeb Technology Lab`)}&body=${encodeURIComponent(`Assalam-o-Alaikum ${student.name},\n\nThis is a reminder from LMS Adeeb Technology Lab${student.location ? ` ${student.location.charAt(0).toUpperCase() + student.location.slice(1)}` : ''}.\n\nAapne abhi tak koi course join nahi kiya. Baraye meharbani portal par login karein aur "My Courses" section se enroll karein.\n\n*Agar aap course join nahi karna chahte, toh baraye meharbani humein bata dein taake aapki application cancel kardi jaye.*\n\nPortal: https://lms-adeeb-technology-lab.vercel.app/\n\nThank you!`)}`}
+                                                    href={`https://mail.google.com/mail/?view=cm&fs=1&to=${student.email}&su=${encodeURIComponent(`Important Update - LMS Adeeb Technology Lab`)}&body=${encodeURIComponent(`Assalam-o-Alaikum ${student.name},\n\nThis is a reminder from LMS Adeeb Technology Lab${student.location ? ` ${student.location.charAt(0).toUpperCase() + student.location.slice(1)}` : ''}.\n\nAapne abhi tak koi course join nahi kiya. Baraye meharbani portal par login karein aur "My Courses" section se enroll karein.\n\n*Agar aap course join nahi karna chahte, toh baraye meharbani humein bata dein taake aapki application cancel kardi jaye.*\n\nPortal: https://darkorchid-salmon-191482.hostingersite.com/\n\nThank you!`)}`}
                                                     onClick={(event) => getStudentStatus(student) === 'Enrolled (Active)' && handleStudentStrikeOffEmail(event, student)}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
