@@ -645,7 +645,7 @@ const StudentsManagement = () => {
         formData.append('report', generated.blob, generated.fileName);
         const response = await reportAPI.uploadStudentReport(student._id, formData);
         return {
-            reportUrl: `https://lms-adeeb-technology-lab.vercel.app${response.data.path}`,
+            reportUrl: `https://darkorchid-salmon-191482.hostingersite.com${response.data.path}`,
             enrollments
         };
     };

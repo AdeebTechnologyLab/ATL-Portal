@@ -12,6 +12,19 @@ npm install
 npm run dev
 ```
 
+new server
+
+fronted link 
+backend link
+
+
+student stukoff acadmic repost jenrat link
+interni stukoff acadmic repost janrat link
+
+StudentsManagement.jsx:648 - https://darkorchid-salmon-191482.hostingersite.com${response.data.path}
+InternsManagement.jsx:553 - https://darkorchid-salmon-191482.hostingersite.com${response.data.path}
+
+
 Open http://localhost:5173 — the frontend proxies `/api` to the backend (port 5000).
 
 ## Forgot password / reset email
