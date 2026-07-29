@@ -1139,12 +1139,12 @@ const AssignmentsTab = ({ course, students }) => { // Accept students prop
                                         </span>
                                     )}
                                 </div>
-                                <h4 className="text-sm font-black text-gray-900 dark:text-white uppercase tracking-tight truncate">
+                                <h4 className="text-sm font-black text-gray-900 dark:text-white uppercase tracking-tight">
                                     {selectedAssignment.title}
                                 </h4>
                                 {selectedAssignment.description && (
                                     <div className="mt-1.5">
-                                        <RichTextContent html={selectedAssignment.description} className="text-[11px] text-gray-500 line-clamp-3" />
+                                        <RichTextContent html={selectedAssignment.description} className="text-[11px] text-gray-500" />
                                     </div>
                                 )}
                             </div>
