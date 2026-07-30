@@ -48,6 +48,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
     const [adminPendingCounts, setAdminPendingCounts] = useState({});
     const [teacherSubmissionCount, setTeacherSubmissionCount] = useState(0);
     const [jobChatSummary, setJobChatSummary] = useState({ totalUnread: 0, totalApplicants: 0, totalAssigned: 0, totalSubmitted: 0 });
+    const [jobPostingCounts, setJobPostingCounts] = useState({ totalAssigned: 0, totalSubmitted: 0 });
     const [jobApplicationCount, setJobApplicationCount] = useState(0);
     const [jobAssignedCount, setJobAssignedCount] = useState(0);
     const [jobAvailableCount, setJobAvailableCount] = useState(0);
@@ -62,12 +63,19 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         if (!['admin', 'teacher', 'job'].includes(role)) return;
         const loadJobSummary = async () => {
             try {
-                const res = await chatAPI.getJobChats();
+                const [chatRes, countsRes] = await Promise.all([
+                    chatAPI.getJobChats(),
+                    taskAPI.getCounts()
+                ]);
                 setJobChatSummary({
-                    totalUnread: res.data.totalUnread || 0,
-                    totalApplicants: res.data.totalApplicants || 0,
-                    totalAssigned: res.data.totalAssigned || 0,
-                    totalSubmitted: res.data.totalSubmitted || 0
+                    totalUnread: chatRes.data.totalUnread || 0,
+                    totalApplicants: chatRes.data.totalApplicants || 0,
+                    totalAssigned: chatRes.data.totalAssigned || 0,
+                    totalSubmitted: chatRes.data.totalSubmitted || 0
+                });
+                setJobPostingCounts({
+                    totalAssigned: countsRes.data.data?.totalAssigned || 0,
+                    totalSubmitted: countsRes.data.data?.totalSubmitted || 0
                 });
             } catch (_) { /* no job chats yet */ }
         };
@@ -430,7 +438,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                 { id: 'courses', labelKey: 'nav.courses', icon: BookOpen, path: '/admin/courses' },
                 { id: 'certificates', labelKey: 'nav.certificates', icon: Award, path: '/admin/certificates' },
                 { id: 'students', labelKey: 'nav.students', icon: Users, path: '/admin/students', badge: adminPendingCounts.studentRegisteredNew },
-                { id: 'teachers', labelKey: 'nav.teachers', icon: GraduationCap, path: '/admin/teachers', badge: adminPendingCounts.teacherRegisteredNew },
+                { id: 'teachers', labelKey: 'nav.teachers', icon: GraduationCap, path: '/admin/teachers', badge: adminPendingCounts.teacherActive },
                 { id: 'interns', labelKey: 'nav.interns', icon: Users, path: '/admin/interns', badge: adminPendingCounts.internRegisteredNew },
                 { id: 'notifications', labelKey: 'nav.notifications', icon: Bell, path: '/admin/notifications' },
                 { id: 'fees', labelKey: 'nav.feeVerification', icon: CreditCard, path: '/admin/fees', badge: adminPendingCounts.fees },
@@ -451,7 +459,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                 { id: 'student-search', labelKey: 'Students', icon: Search, path: '/teacher/student-search' },
                 { id: 'attendance', labelKey: 'nav.attendance', icon: Calendar, path: '/teacher/quick-attendance' },
                 { id: 'certificates', labelKey: 'nav.certificates', icon: Award, path: '/teacher/certificates' },
-                { id: 'jobs', labelKey: 'Job Posting', icon: Briefcase, path: '/teacher/jobs' },
+                { id: 'jobs', labelKey: 'Job Posting', icon: Briefcase, path: '/teacher/jobs', badge: (jobPostingCounts.totalAssigned || 0) + (jobPostingCounts.totalSubmitted || 0) },
                 ...(jobChatSummary.totalAssigned > 0 ? [{ id: 'job-chat', labelKey: 'Applicant Chats', icon: MessageSquare, path: '/teacher/job-chat', badge: jobChatSummary.totalUnread }] : []),
                 { id: 'discussion-room', labelKey: 'Discussion Room', icon: MessageSquare, path: '/teacher/discussion-room', badge: discussionUnread },
             ],

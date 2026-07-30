@@ -216,6 +216,27 @@ router.get('/pending-counts', protect, authorize('admin'), async (req, res) => {
         result.teacherRegisteredNew = await countRegisteredNew('teacher');
         result.internRegisteredNew = await countRegisteredNew('intern');
 
+        // Count active teachers (teachers with active enrollments or assigned jobs)
+        const activeTeacherAgg = await User.aggregate([
+            { $match: { role: 'teacher', isActive: { $ne: false } } },
+            {
+                $lookup: {
+                    from: 'courses',
+                    let: { teacherId: '$_id' },
+                    pipeline: [
+                        { $match: { $expr: { $in: ['$$teacherId', '$teachers'] } } },
+                        { $project: { _id: 1 } }
+                    ],
+                    as: 'assignedCourses'
+                }
+            },
+            {
+                $match: { 'assignedCourses.0': { $exists: true } }
+            },
+            { $count: 'count' }
+        ]);
+        result.teacherActive = activeTeacherAgg.length > 0 ? activeTeacherAgg[0].count : 0;
+
         // Count total applicants across all paid tasks (new/unassigned applicants)
         const allTasks = await PaidTask.find({}, { applicants: 1, assignedTo: 1 });
         let totalNewApplicants = 0;

@@ -54,6 +54,7 @@ const CourseManagement = () => {
         bookLink: '',
         image: null,
     });
+    const [teacherSearch, setTeacherSearch] = useState('');
 
     // Filters State
     const [selectedRoles, setSelectedRoles] = useState([]); // 'students', 'interns'
@@ -496,7 +497,7 @@ const CourseManagement = () => {
                 isOpen={isModalOpen}
                 onClose={handleCloseModal}
                 title={editingCourse ? 'Edit Course' : 'Create New Course'}
-                size="lg"
+                size="xl"
             >
                 <form onSubmit={handleSubmit} className="space-y-5">
                     {/* Error in modal */}
@@ -584,49 +585,105 @@ const CourseManagement = () => {
                         />
                     </div>
 
-                    {/* Assign Teachers (Checkboxes) */}
+                    {/* Assign Teachers - Card Grid Selection */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-sm font-bold text-gray-800 dark:text-gray-100 mb-2">
                             Assign Teachers <span className="text-red-500">*</span>
                         </label>
-                        <div className="border border-gray-200 dark:border-slate-700 rounded-xl p-4 max-h-48 overflow-y-auto bg-gray-50 dark:bg-slate-800">
+                        <div className="border border-gray-200 dark:border-slate-700 rounded-xl p-4 bg-gray-50 dark:bg-slate-800">
                             {teachers.length === 0 ? (
                                 <p className="text-sm text-gray-400">No teachers available</p>
                             ) : (
-                                <div className="space-y-2">
-                                    {teachers.map((teacher) => (
-                                        <label key={teacher._id} className="flex items-center gap-3 p-2 hover:bg-white dark:hover:bg-slate-700 rounded-lg cursor-pointer transition-colors">
-                                            <input
-                                                type="checkbox"
-                                                checked={formData.teachers.some(id => id.toString() === teacher._id.toString())}
-                                                onChange={(e) => {
-                                                    if (e.target.checked) {
-                                                        setFormData({ ...formData, teachers: [...formData.teachers, teacher._id.toString()] });
-                                                    } else {
-                                                        setFormData({ ...formData, teachers: formData.teachers.filter(id => id.toString() !== teacher._id.toString()) });
-                                                    }
-                                                }}
-                                                className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
-                                            />
-                                            {teacher.photo ? (
-                                                <img src={teacher.photo} alt={teacher.name} className="w-8 h-8 rounded-full object-cover mr-2" />
-                                            ) : (
-                                                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-xs font-bold mr-2">
-                                                    {teacher.name.charAt(0)}
+                                (() => {
+                                    const filteredTeachers = teachers.filter(t =>
+                                        t.name?.toLowerCase().includes(teacherSearch.toLowerCase()) ||
+                                        (t.specialization || '').toLowerCase().includes(teacherSearch.toLowerCase()) ||
+                                        (t.email || '').toLowerCase().includes(teacherSearch.toLowerCase())
+                                    );
+                                    return (
+                                        <>
+                                            {/* Search & Actions */}
+                                            <div className="flex items-center gap-3 mb-4">
+                                                <div className="flex-1 relative">
+                                                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                                                    </span>
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Search by name or specialization..."
+                                                        value={teacherSearch}
+                                                        onChange={(e) => setTeacherSearch(e.target.value)}
+                                                        className="w-full pl-10 pr-4 py-2 border border-gray-200 dark:border-slate-600 rounded-lg text-sm bg-white dark:bg-slate-700 text-gray-800 dark:text-gray-100 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                                                    />
                                                 </div>
-                                            )}
-                                            <div className="flex-1">
-                                                <span className="text-sm font-medium text-gray-700 dark:text-gray-200">{teacher.name}</span>
-                                                <span className="text-xs text-gray-500 dark:text-gray-400 ml-2">({teacher.specialization || teacher.email})</span>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setFormData({ ...formData, teachers: filteredTeachers.map(t => t._id.toString()) })}
+                                                    className="px-3 py-2 text-sm font-semibold text-primary hover:text-primary-dark transition-colors"
+                                                >
+                                                    Select All
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setFormData({ ...formData, teachers: [] })}
+                                                    className="px-3 py-2 text-sm font-semibold text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors border border-gray-200 dark:border-slate-600 rounded-lg"
+                                                >
+                                                    Clear
+                                                </button>
                                             </div>
-                                        </label>
-                                    ))}
-                                </div>
+
+                                            {/* Teacher Cards - Auto Width */}
+                                            <div className="flex flex-wrap gap-3">
+                                                {filteredTeachers.map((teacher) => {
+                                                    const isSelected = formData.teachers.some(id => id.toString() === teacher._id.toString());
+                                                    const spec = teacher.specialization || teacher.email || '';
+                                                    return (
+                                                        <label
+                                                            key={teacher._id}
+                                                            className={`inline-flex items-center gap-3 px-4 py-3 rounded-xl border-2 cursor-pointer transition-all ${
+                                                                isSelected
+                                                                    ? 'border-primary bg-primary/5'
+                                                                    : 'border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-700 hover:border-gray-300 dark:hover:border-slate-500'
+                                                            }`}
+                                                        >
+                                                            <input
+                                                                type="checkbox"
+                                                                checked={isSelected}
+                                                                onChange={(e) => {
+                                                                    if (e.target.checked) {
+                                                                        setFormData({ ...formData, teachers: [...formData.teachers, teacher._id.toString()] });
+                                                                    } else {
+                                                                        setFormData({ ...formData, teachers: formData.teachers.filter(id => id.toString() !== teacher._id.toString()) });
+                                                                    }
+                                                                }}
+                                                                className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
+                                                            />
+                                                            {teacher.photo ? (
+                                                                <img src={teacher.photo} alt={teacher.name} className="w-10 h-10 rounded-full object-cover shrink-0" />
+                                                            ) : (
+                                                                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary text-sm font-bold shrink-0">
+                                                                    {teacher.name.charAt(0)}
+                                                                </div>
+                                                            )}
+                                                            <div className="relative">
+                                                                <p className="text-sm font-semibold text-gray-800 dark:text-gray-100 whitespace-nowrap">{teacher.name}</p>
+                                                                {spec && <p className="text-xs text-gray-500 dark:text-gray-400 truncate absolute top-[22px] left-0 right-0">{spec}</p>}
+                                                            </div>
+                                                        </label>
+                                                    );
+                                                })}
+                                            </div>
+
+                                            {/* Footer */}
+                                            <div className="flex items-center justify-between mt-4 pt-3 border-t border-gray-200 dark:border-slate-700">
+                                                <span className="text-xs text-gray-500 dark:text-gray-400">{filteredTeachers.length} total teacher(s)</span>
+                                                <span className="text-xs font-semibold text-primary">{formData.teachers.length} selected</span>
+                                            </div>
+                                        </>
+                                    );
+                                })()
                             )}
                         </div>
-                        <p className="text-xs text-gray-500 mt-1">
-                            {formData.teachers.length} teacher(s) selected
-                        </p>
                     </div>
 
                     {/* Fee and Duration Row */}

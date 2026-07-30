@@ -17,6 +17,32 @@ const User = require('../models/User');
 const UserNotification = require('../models/UserNotification');
 const { sendPushNotification } = require('../utils/pushHelper');
 
+// @route   GET /api/tasks/counts
+// @desc    Get assigned and submitted counts for teacher's jobs
+// @access  Private/Admin, Teacher
+router.get('/counts', protect, async (req, res) => {
+    try {
+        let taskQuery = {};
+        if (req.user.role === 'teacher') {
+            taskQuery.$or = [
+                { jobManagers: req.user._id },
+                { jobManager: req.user._id },
+                { createdBy: req.user._id }
+            ];
+        }
+        const allTasks = await PaidTask.find(taskQuery).select('assignedTo submissions status');
+        const assignedTasks = allTasks.filter(t => t.status === 'assigned' || t.status === 'submitted');
+        const totalAssigned = assignedTasks.reduce((sum, task) => sum + (task.assignedTo?.length || 0), 0);
+        const totalSubmitted = allTasks.reduce((sum, task) => {
+            const uniqueUsers = new Set((task.submissions || []).map(s => String(s.user?._id || s.user)));
+            return sum + uniqueUsers.size;
+        }, 0);
+        res.json({ success: true, data: { totalAssigned, totalSubmitted } });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+});
+
 // @route   GET /api/tasks
 // @desc    Get all tasks
 // @access  Public (for browsing), but different views based on role

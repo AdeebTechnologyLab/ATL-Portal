@@ -17,7 +17,7 @@ const TeachersManagement = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [teachers, setTeachers] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [filterStatus, setFilterStatus] = useState('all'); // all, verified, pending
+    const [filterStatus, setFilterStatus] = useState('enrolled');
     const [confirmModal, setConfirmModal] = useState({ open: false, action: null, teacher: null });
     const [editModal, setEditModal] = useState({ open: false, user: null });
     const [editForm, setEditForm] = useState({});
@@ -445,7 +445,7 @@ const TeachersManagement = () => {
                     activeEnrollments: nextStatus ? (item.activeEnrollments || 0) : 0,
                     pausedEnrollments: nextStatus ? (item.pausedEnrollments || 0) : 0,
                     assignedJobCount: nextStatus ? (item.assignedJobCount || 0) : 0,
-                    ...(nextStatus ? {} : { courseData: [] })
+                    ...(nextStatus ? {} : { courseData: [], paidTaskData: [] })
                 }
                 : item
             ));
@@ -464,7 +464,7 @@ const TeachersManagement = () => {
         (teacher.totalEnrollments || 0) + (teacher.assignedJobCount || 0);
 
     const isEnrolledActive = (teacher) =>
-        teacher.isActive !== false && getActiveAssignmentCount(teacher) > 0;
+        teacher.isActive !== false && (teacher.courseData || []).length > 0;
 
     const isEnrolledInactive = (teacher) =>
         teacher.isActive === false ||
@@ -584,31 +584,29 @@ const TeachersManagement = () => {
                         { id: 'all', label: 'All', count: teachers.length },
                         {
                             id: 'registered',
-                            label: 'Registered (New)',
+                            label: 'New',
                             count: teachers.filter(t => isUnassignedTeacher(t) && !t.registeredOld).length
                         },
                         {
                             id: 'registeredOld',
-                            label: 'Registered (Old)',
+                            label: 'Old',
                             count: teachers.filter(t => isUnassignedTeacher(t) && t.registeredOld).length
                         },
                         {
                             id: 'enrolled',
-                            label: 'Enrolled (Active)',
+                            label: 'Active',
                             count: teachers.filter(isEnrolledActive).length
                         },
                         {
                             id: 'enrolledInactive',
-                            label: 'Enrolled (Inactive)',
+                            label: 'Inactive',
                             count: teachers.filter(isEnrolledInactive).length
                         },
                         {
                             id: 'completed',
                             label: 'Completed',
                             count: teachers.filter(t => (t.certificateCount || 0) > 0).length
-                        },
-                        { id: 'verified', label: 'Verified', count: verifiedCount },
-                        { id: 'pending', label: 'Pending', count: pendingCount }
+                        }
                     ].map((tab) => (
                         <button
                             key={tab.id}
