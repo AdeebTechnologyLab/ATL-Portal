@@ -59,6 +59,10 @@ const AdminDashboard = () => {
         endDate: getLocalDateString(today)
     });
     const [dateRangeType, setDateRangeType] = useState('current_month');
+    const [selectedMonth, setSelectedMonth] = useState(() => {
+        const d = new Date();
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+    });
     const [showFullHistory, setShowFullHistory] = useState(false);
     const [isDownloading, setIsDownloading] = useState(false);
     const [slipModal, setSlipModal] = useState({ open: false, url: null, student: '' });
@@ -95,22 +99,25 @@ const AdminDashboard = () => {
     useEffect(() => {
         if (dateRangeType === 'custom') return;
 
-        const today = new Date();
-        const endStr = getLocalDateString(today);
-        const start = new Date(today);
-
-        if (dateRangeType === 'current_month') {
-            start.setFullYear(today.getFullYear(), today.getMonth(), 1);
-        } else if (dateRangeType === '1m') {
-            start.setMonth(start.getMonth() - 1);
-        } else if (dateRangeType === '2m') {
-            start.setMonth(start.getMonth() - 2);
-        } else if (dateRangeType === '3m') {
-            start.setMonth(start.getMonth() - 3);
+        if (dateRangeType === 'all') {
+            setFilters({ month: '', startDate: '', endDate: '' });
+            return;
         }
 
+        if (dateRangeType === 'current_month' && selectedMonth) {
+            const [year, monthNum] = selectedMonth.split('-').map(Number);
+            const start = new Date(year, monthNum - 1, 1);
+            const end = new Date(year, monthNum, 0);
+            setFilters({ month: '', startDate: getLocalDateString(start), endDate: getLocalDateString(end) });
+            return;
+        }
+
+        const todayDate = new Date();
+        const endStr = getLocalDateString(todayDate);
+        const start = new Date(todayDate);
+        start.setMonth(start.getMonth() - 1);
         setFilters({ month: '', startDate: getLocalDateString(start), endDate: endStr });
-    }, [dateRangeType]);
+    }, [dateRangeType, selectedMonth]);
 
     const fetchStats = async () => {
         setIsLoading(true);
@@ -434,13 +441,22 @@ const AdminDashboard = () => {
                                                 onChange={(e) => setDateRangeType(e.target.value)}
                                                 className="bg-transparent border-none text-sm font-black uppercase tracking-widest focus:ring-0 cursor-pointer px-3 outline-none"
                                             >
-                                                <option value="current_month">Current Month</option>
-                                                <option value="1m">1 Month</option>
-                                                <option value="2m">2 Months</option>
-                                                <option value="3m">3 Months</option>
-                                                <option value="custom">Custom Range</option>
+                                                <option value="current_month">Month</option>
+                                                <option value="custom">Date Range</option>
+                                                <option value="all">All Time</option>
                                             </select>
                                         </div>
+                                        {dateRangeType === 'current_month' && (
+                                            <div className="flex items-center gap-2 bg-white p-2.5 rounded-2xl border-2 border-primary/10 shadow-sm hover:border-primary/30 transition-colors">
+                                                <input
+                                                    type="month"
+                                                    value={selectedMonth}
+                                                    max={getLocalDateString(new Date()).slice(0, 7)}
+                                                    onChange={(e) => setSelectedMonth(e.target.value)}
+                                                    className="bg-transparent border-none text-sm font-black focus:ring-0 cursor-pointer outline-none"
+                                                />
+                                            </div>
+                                        )}
                                         {isLoading && <ButtonLoader isLoading={true} className="w-6 h-6" />}
                                     </div>
 

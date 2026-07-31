@@ -9,13 +9,14 @@ import autoTable from 'jspdf-autotable';
 import { financeAPI } from '../../services/api';
 import Loader from '../../components/ui/Loader';
 
-const categories = ['Rent', 'Salaries', 'Bills', 'Marketing', 'Equipment', 'Internet', 'Maintenance', 'Transport', 'Food', 'Pocket Money', 'Guest', 'Sim Balance', 'Shopping', 'Project', 'Other'];
+const categories = ['Rent', 'Salaries', 'Bills', 'Marketing', 'Equipment', 'Internet', 'Maintenance', 'Transport', 'Food', 'Pocket Money', 'Guest', 'Sim Balance', 'Shopping', 'Project', 'Loan', 'Other'];
 const categoryIcons = { 'Office Rent': '🏢', Salaries: '👥', Utilities: '💡', Marketing: '📣', Equipment: '💻', Internet: '🌐', Maintenance: '🛠️', Transport: '🚗', Food: '🍽️', Refreshment: '☕', 'Pocket Money': '👛', Guest: '🤝', Clean: '🧹', 'Sim Balance': '📶', Shopping: '🛍️', 'Course Income': '🎓', 'IOT Project': '📡', 'Website Project': '🌐', 'App Project': '📱', Other: '📦' };
 const newCategoryIcons = {
     Rent: '🏢',
     Salaries: '💵',
     Bills: '🧾',
     Project: '📁',
+    Loan: '💰',
     Video: '🎬',
     Audio: '🎧',
     Graphics: '🎨',
@@ -30,8 +31,6 @@ const formatAmountInput = value => {
     return digits ? Number(digits).toLocaleString() : '';
 };
 const fieldClass = 'w-full px-3 py-3 rounded-xl bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-600 text-gray-900 dark:text-white outline-none focus:border-primary';
-const today = new Date().toISOString().slice(0, 10);
-const currentMonth = today.slice(0, 7);
 const monthRange = month => {
     const [year, monthNumber] = month.split('-').map(Number);
     return { startDate: `${month}-01`, endDate: `${month}-${String(new Date(year, monthNumber, 0).getDate()).padStart(2, '0')}` };
@@ -43,10 +42,16 @@ const multiMonthRange = (month, count) => {
     const toDate = date => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
     return { startDate: toDate(start), endDate: toDate(end) };
 };
-const emptyForm = { type: 'expense', title: '', amount: '', category: 'Rent', customCategory: '', project: '', paymentTarget: '', description: '', transactionDate: today };
+const freshToday = () => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+};
+const freshCurrentMonth = () => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+};
 const emptyDeveloper = () => ({ name: '', designation: '', percentage: '', totalPayable: '', paidAmount: '' });
 const emptyCompany = () => ({ name: '', designation: '', percentage: '', totalPayable: '', paidAmount: '' });
-const emptyProject = () => ({ name: '', clientName: '', clientPhone: '', clientTotal: '', clientReceived: '', developers: [emptyDeveloper()], companies: [emptyCompany()], status: 'processing', startDate: today, completionDate: '', description: '' });
 
 const Metric = ({ label, value, tone = 'text-gray-900 dark:text-white' }) => (
     <div className="rounded-xl bg-gray-50 dark:bg-slate-800 p-3">
@@ -70,17 +75,17 @@ const ExpenseManagement = () => {
     const [categoryFilter, setCategoryFilter] = useState('all');
     const [historyProjectFilter, setHistoryProjectFilter] = useState('all');
     const [expandedProjects, setExpandedProjects] = useState([]);
-    const [periodMode, setPeriodMode] = useState('month1');
-    const [selectedMonth, setSelectedMonth] = useState(currentMonth);
-    const [startDate, setStartDate] = useState(`${currentMonth}-01`);
-    const [endDate, setEndDate] = useState(today);
-    const [form, setForm] = useState(emptyForm);
-    const [projectForm, setProjectForm] = useState(emptyProject());
+    const [periodMode, setPeriodMode] = useState('month');
+    const [selectedMonth, setSelectedMonth] = useState(freshCurrentMonth);
+    const [startDate, setStartDate] = useState(() => `${freshCurrentMonth()}-01`);
+    const [endDate, setEndDate] = useState(freshToday);
+    const [form, setForm] = useState(() => ({ type: 'expense', title: '', amount: '', category: 'Project', customCategory: '', project: '', paymentTarget: '', description: '', transactionDate: freshToday() }));
+    const [projectForm, setProjectForm] = useState(() => ({ name: '', clientName: '', clientPhone: '', clientTotal: '', clientReceived: '', developers: [emptyDeveloper()], companies: [emptyCompany()], status: 'processing', startDate: freshToday(), completionDate: '', description: '' }));
 
     const loadData = async () => {
         try {
             let params = {};
-            if (periodMode.startsWith('month')) params = multiMonthRange(selectedMonth, Number(periodMode.replace('month', '')) || 1);
+            if (periodMode === 'month') params = monthRange(selectedMonth);
             if (periodMode === 'custom') params = { startDate, endDate };
             const [financeRes, projectsRes] = await Promise.all([financeAPI.getAll(params), financeAPI.getProjects()]);
             setEntries(financeRes.data.data || []);
@@ -93,7 +98,11 @@ const ExpenseManagement = () => {
 
     useEffect(() => { loadData(); }, [periodMode, selectedMonth, startDate, endDate]);
 
-    const availableCategories = useMemo(() => [...new Set([...categories, ...entries.map(entry => entry.category)])].sort(), [entries]);
+    const availableCategories = useMemo(() => {
+        const counts = {};
+        entries.forEach(entry => { counts[entry.category] = (counts[entry.category] || 0) + 1; });
+        return [...new Set([...categories, ...entries.map(entry => entry.category)])].sort().map(cat => ({ name: cat, count: counts[cat] || 0 }));
+    }, [entries]);
     const filteredEntries = useMemo(() => {
         const query = searchQuery.trim().toLowerCase();
         return entries.filter(entry => {
@@ -105,10 +114,48 @@ const ExpenseManagement = () => {
                 (!query || searchableText.includes(query));
         });
     }, [entries, filter, categoryFilter, historyProjectFilter, searchQuery]);
+    const filteredTotal = useMemo(() => filteredEntries.reduce((sum, entry) => sum + Number(entry.amount || 0), 0), [filteredEntries]);
+    const filteredIncome = useMemo(() => filteredEntries.filter(e => e.type === 'income').reduce((sum, e) => sum + Number(e.amount || 0), 0), [filteredEntries]);
+    const filteredExpense = useMemo(() => filteredEntries.filter(e => e.type === 'expense').reduce((sum, e) => sum + Number(e.amount || 0), 0), [filteredEntries]);
     const activeProjects = useMemo(() => projects.filter(project => project.status !== 'completed'), [projects]);
-    const completedProjects = useMemo(() => projects.filter(project => project.status === 'completed'), [projects]);
+    const completedProjects = useMemo(() => {
+        if (periodMode === 'all') return projects.filter(project => project.status === 'completed');
+        const range = periodMode === 'month' ? monthRange(selectedMonth) : { startDate, endDate };
+        const start = new Date(`${range.startDate}T00:00:00`);
+        const end = new Date(`${range.endDate}T23:59:59`);
+        return projects.filter(project => {
+            if (project.status !== 'completed') return false;
+            const d = new Date(project.completionDate || project.startDate);
+            return d >= start && d <= end;
+        });
+    }, [projects, periodMode, selectedMonth, startDate, endDate]);
     const filteredProjects = activeProjects;
-    const visibleCompanyProfit = useMemo(() => projects.reduce((total, project) => total + Number(project.metrics?.companyTotal || 0), 0), [projects]);
+    const visibleCompanyProfit = useMemo(() => {
+        if (periodMode === 'all') return projects.reduce((total, project) => total + Number(project.metrics?.companyTotal || 0), 0);
+        const range = periodMode === 'month' ? monthRange(selectedMonth) : { startDate, endDate };
+        const start = new Date(`${range.startDate}T00:00:00`);
+        const end = new Date(`${range.endDate}T23:59:59`);
+        return projects.filter(project => {
+            if (project.status === 'completed') {
+                const d = new Date(project.completionDate || project.startDate);
+                return d >= start && d <= end;
+            }
+            return true;
+        }).reduce((total, project) => total + Number(project.metrics?.companyTotal || 0), 0);
+    }, [projects, periodMode, selectedMonth, startDate, endDate]);
+    const visibleProjectCash = useMemo(() => {
+        if (periodMode === 'all') return projects.reduce((total, project) => total + Number(project.clientReceived || 0), 0);
+        const range = periodMode === 'month' ? monthRange(selectedMonth) : { startDate, endDate };
+        const start = new Date(`${range.startDate}T00:00:00`);
+        const end = new Date(`${range.endDate}T23:59:59`);
+        return projects.filter(project => {
+            if (project.status === 'completed') {
+                const d = new Date(project.completionDate || project.startDate);
+                return d >= start && d <= end;
+            }
+            return true;
+        }).reduce((total, project) => total + Number(project.clientReceived || 0), 0);
+    }, [projects, periodMode, selectedMonth, startDate, endDate]);
     const selectedPaymentProject = useMemo(() => projects.find(project => project._id === form.project), [projects, form.project]);
     const projectRemainingValue = useMemo(() => {
         const teamTotal = projectForm.developers.reduce((total, member) => total + parseAmount(member.totalPayable), 0);
@@ -116,7 +163,7 @@ const ExpenseManagement = () => {
         return parseAmount(projectForm.clientTotal) - teamTotal - companyTotal;
     }, [projectForm.clientTotal, projectForm.developers, projectForm.companies]);
 
-    const openNew = () => { setEditingId(null); setForm(emptyForm); setShowForm(true); };
+    const openNew = () => { setEditingId(null); setForm({ type: 'expense', title: '', amount: '', category: 'Project', customCategory: '', project: '', paymentTarget: '', description: '', transactionDate: freshToday() }); setShowForm(true); };
     const openEdit = entry => {
         const standard = categories.includes(entry.category);
         setEditingId(entry._id);
@@ -163,7 +210,7 @@ const ExpenseManagement = () => {
         await financeAPI.delete(id); await loadData();
     };
 
-    const openNewProject = () => { setEditingProjectId(null); setProjectForm(emptyProject()); setShowProjectForm(true); };
+    const openNewProject = () => { setEditingProjectId(null); setProjectForm({ name: '', clientName: '', clientPhone: '', clientTotal: '', clientReceived: '', developers: [emptyDeveloper()], companies: [emptyCompany()], status: 'processing', startDate: freshToday(), completionDate: '', description: '' }); setShowProjectForm(true); };
     const openEditProject = project => {
         setEditingProjectId(project._id);
         setProjectForm({
@@ -249,8 +296,8 @@ const ExpenseManagement = () => {
             const pageWidth = doc.internal.pageSize.getWidth();
             const reportPeriod = periodMode === 'all'
                 ? 'All Time'
-                : periodMode.startsWith('month')
-                    ? `${periodMode.replace('month', '')} Month${periodMode === 'month1' ? '' : 's'} ending ${new Date(`${selectedMonth}-01T00:00:00`).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}`
+                : periodMode === 'month'
+                    ? `Month ending ${new Date(`${selectedMonth}-01T00:00:00`).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}`
                     : `${startDate} to ${endDate}`;
             const formatDate = value => value ? new Date(value).toLocaleDateString('en-GB') : '-';
             const pdfMoney = value => `Rs ${Number(value || 0).toLocaleString()}`;
@@ -296,8 +343,8 @@ const ExpenseManagement = () => {
 
             autoTable(doc, {
                 startY: 35,
-                head: [['Total Income', 'Total Expenses', 'Available Balance', 'Verified Fee Income', 'Project Cash Profit']],
-                body: [[pdfMoney(summary.totalIncome), pdfMoney(summary.totalExpenses), pdfMoney(summary.balance), pdfMoney(summary.feeIncome), pdfMoney(visibleCompanyProfit)]],
+                head: [['Total Income', 'Total Expenses', 'Available Balance', 'Verified Fee Income', 'Project Total Cash', 'Project Cash Profit']],
+                body: [[pdfMoney(summary.totalIncome), pdfMoney(summary.totalExpenses), pdfMoney(summary.balance), pdfMoney(summary.feeIncome), pdfMoney(visibleProjectCash), pdfMoney(visibleCompanyProfit)]],
                 ...tableTheme,
                 bodyStyles: { fontSize: 11, fontStyle: 'bold', textColor: [15, 23, 42], cellPadding: 4 }
             });
@@ -332,11 +379,12 @@ const ExpenseManagement = () => {
             });
 
             nextY = addSectionTitle('PROJECT PROFITABILITY', doc.lastAutoTable.finalY + 10);
+            const reportProjects = [...filteredProjects, ...completedProjects];
             autoTable(doc, {
                 startY: nextY,
                 head: [['#', 'Project', 'Client', 'Status', 'Project Value', 'Received', 'Client Due', 'Team Cost', 'Team Paid', 'Company Profit', 'Current Cash']],
-                body: projects.length
-                    ? projects.map((project, index) => {
+                body: reportProjects.length
+                    ? reportProjects.map((project, index) => {
                         const metrics = project.metrics || {};
                         return [
                             index + 1,
@@ -357,7 +405,7 @@ const ExpenseManagement = () => {
                 styles: { ...tableTheme.styles, fontSize: 7.3 }
             });
 
-            projects.forEach((project, projectIndex) => {
+            reportProjects.forEach((project, projectIndex) => {
                 const members = [
                     ...(project.developers || []).map(member => ({
                         kind: 'Team Member',
@@ -429,18 +477,14 @@ const ExpenseManagement = () => {
 
             <div className="rounded-xl border border-gray-100 bg-white p-3 shadow-sm dark:border-slate-700 dark:bg-slate-900">
                 <div className="flex flex-col gap-3 md:flex-row md:items-end">
-                    <div className="md:w-48"><label className="mb-1.5 block text-[9px] font-black uppercase tracking-wider text-gray-400">View Data By</label><select value={periodMode} onChange={event => setPeriodMode(event.target.value)} className={`${fieldClass} py-2.5 text-sm font-bold`}><option value="month1">1 Month</option><option value="month2">2 Months</option><option value="month3">3 Months</option><option value="custom">Custom Date Range</option><option value="all">All Time</option></select></div>
-                    {periodMode.startsWith('month') && <div className="md:w-52"><label className="mb-1.5 block text-[9px] font-black uppercase tracking-wider text-gray-400">Ending Month</label><input type="month" value={selectedMonth} max={currentMonth} onChange={event => setSelectedMonth(event.target.value)} className={`${fieldClass} py-2.5 text-sm font-bold`} /></div>}
-                    {periodMode === 'custom' && <><div className="md:w-48"><label className="mb-1.5 block text-[9px] font-black uppercase tracking-wider text-gray-400">Start Date</label><input type="date" value={startDate} max={endDate || today} onChange={event => setStartDate(event.target.value)} className={`${fieldClass} py-2.5 text-sm font-bold`} /></div><div className="md:w-48"><label className="mb-1.5 block text-[9px] font-black uppercase tracking-wider text-gray-400">End Date</label><input type="date" value={endDate} min={startDate} max={today} onChange={event => setEndDate(event.target.value)} className={`${fieldClass} py-2.5 text-sm font-bold`} /></div></>}
-                    <div className="flex min-h-10 items-center gap-2 rounded-lg border border-primary/15 bg-primary/[0.08] px-3 py-2 text-[10px] font-black text-primary md:ml-auto md:max-w-xs">
-                        <Clock3 className="h-3.5 w-3.5 shrink-0" />
-                        <span>{periodMode === 'all' ? 'All Time Data' : periodMode.startsWith('month') ? `${periodMode.replace('month', '')} Month${periodMode === 'month1' ? '' : 's'} ending ${new Date(`${selectedMonth}-01T00:00:00`).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}` : `${startDate} to ${endDate}`}</span>
-                    </div>
+                    <div className="md:w-44"><label className="mb-1.5 block text-[9px] font-black uppercase tracking-wider text-gray-400">View Data By</label><select value={periodMode} onChange={event => setPeriodMode(event.target.value)} className={`${fieldClass} py-2.5 text-sm font-bold`}><option value="month">Month</option><option value="custom">Date Range</option><option value="all">All Time</option></select></div>
+                    {periodMode === 'month' && <div className="md:w-52"><label className="mb-1.5 block text-[9px] font-black uppercase tracking-wider text-gray-400">Select Month</label><input type="month" value={selectedMonth} max={freshCurrentMonth()} onChange={event => setSelectedMonth(event.target.value)} className={`${fieldClass} py-2.5 text-sm font-bold`} /></div>}
+                    {periodMode === 'custom' && <><div className="md:w-48"><label className="mb-1.5 block text-[9px] font-black uppercase tracking-wider text-gray-400">Start Date</label><input type="date" value={startDate} max={endDate || freshToday()} onChange={event => setStartDate(event.target.value)} className={`${fieldClass} py-2.5 text-sm font-bold`} /></div><div className="md:w-48"><label className="mb-1.5 block text-[9px] font-black uppercase tracking-wider text-gray-400">End Date</label><input type="date" value={endDate} min={startDate} max={freshToday()} onChange={event => setEndDate(event.target.value)} className={`${fieldClass} py-2.5 text-sm font-bold`} /></div></>}
                 </div>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-2">
-                {[{ label: 'Total Income', value: summary.totalIncome, icon: TrendingUp, tone: 'text-emerald-500', iconBg: 'bg-emerald-500/10' }, { label: 'Total Expenses', value: summary.totalExpenses, icon: TrendingDown, tone: 'text-rose-500', iconBg: 'bg-rose-500/10' }, { label: 'Available Balance', value: summary.balance, icon: Wallet, tone: 'text-blue-500', iconBg: 'bg-blue-500/10' }, { label: 'Verified Fee Income', value: summary.feeIncome, icon: Landmark, tone: 'text-amber-500', iconBg: 'bg-amber-500/10' }, { label: 'Project Cash Profit', value: visibleCompanyProfit, icon: BriefcaseBusiness, tone: 'text-violet-500', iconBg: 'bg-violet-500/10' }].map(card => (
+            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-2">
+                {[{ label: 'Total Income', value: summary.totalIncome, icon: TrendingUp, tone: 'text-emerald-500', iconBg: 'bg-emerald-500/10' }, { label: 'Total Expenses', value: summary.totalExpenses, icon: TrendingDown, tone: 'text-rose-500', iconBg: 'bg-rose-500/10' }, { label: 'Available Balance', value: summary.balance, icon: Wallet, tone: 'text-blue-500', iconBg: 'bg-blue-500/10' }, { label: 'Verified Fee Income', value: summary.feeIncome, icon: Landmark, tone: 'text-amber-500', iconBg: 'bg-amber-500/10' }, { label: 'Project Total Cash', value: visibleProjectCash, icon: CircleDollarSign, tone: 'text-cyan-600', iconBg: 'bg-cyan-500/10' }, { label: 'Project Cash Profit', value: visibleCompanyProfit, icon: BriefcaseBusiness, tone: 'text-violet-500', iconBg: 'bg-violet-500/10' }].map(card => (
                     <div key={card.label} className="flex min-w-0 items-center gap-2.5 rounded-xl border border-gray-100 bg-white p-2.5 shadow-sm dark:border-slate-700 dark:bg-slate-900 sm:p-3">
                         <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${card.iconBg}`}>
                             <card.icon className={`h-4 w-4 ${card.tone}`} />
@@ -466,7 +510,7 @@ const ExpenseManagement = () => {
                             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-4"><Metric label="Total Cost" value={project.clientTotal} /><Metric label="Team Cost" value={metrics.developerTotal} /><Metric label="Company Profit" value={metrics.companyTotal} tone="text-emerald-600" /><Metric label="Current Cash" value={metrics.currentCash} tone={metrics.currentCash >= 0 ? 'text-blue-600' : 'text-rose-600'} /></div>
                             <div className="mt-4 space-y-3"><div><div className="flex justify-between text-[10px] font-bold mb-1"><span className="text-gray-500">Client received {money(project.clientReceived)}</span><span className="text-red-600">Client pending {money(metrics.clientDue)}</span></div><div className="h-2 rounded-full bg-gray-100 dark:bg-slate-800 overflow-hidden"><div className="h-full bg-emerald-500 rounded-full transition-all duration-700 ease-out" style={{ width: `${clientProgress}%` }} /></div></div><div><div className="flex justify-between text-[10px] font-bold mb-1"><span className="text-gray-500">Team paid {money(metrics.developerPaid)}</span><span className="text-red-600">Team pending {money(metrics.developerDue)}</span></div><div className="h-2 rounded-full bg-gray-100 dark:bg-slate-800 overflow-hidden"><div className="h-full bg-violet-500 rounded-full transition-all duration-700 ease-out" style={{ width: `${developerProgress}%` }} /></div></div></div>
                             <button onClick={() => setExpandedProjects(previous => expanded ? previous.filter(projectId => projectId !== project._id) : [...previous, project._id])} className="mt-4 w-full flex items-center justify-between text-xs font-black text-gray-500 hover:text-primary"><span className="flex items-center gap-2"><Users className="w-4 h-4" /> {project.developers?.length || 0} Team Member(s) • {project.companies?.length || 0} Company(s)</span>{expanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}</button>
-                            {expanded && <div className="mt-3 space-y-3"><div className="space-y-2"><p className="text-[10px] font-black uppercase text-gray-400">Team Members</p>{(project.developers || []).map(developer => <div key={developer._id || developer.name} className="flex items-center justify-between rounded-xl bg-gray-50 dark:bg-slate-800 p-3"><div><p className="text-sm font-bold dark:text-white">{developer.name}</p>{developer.designation && <p className="text-[10px] font-bold text-primary">{developer.designation}</p>}<p className="text-[10px] text-gray-400">Payable {money(developer.totalPayable)}{developer.percentage ? ` • ${developer.percentage}%` : ''}</p></div><div className="text-right"><p className="text-xs font-black text-emerald-600">Paid {money(developer.paidAmount)}</p><p className="text-[10px] text-amber-600">Due {money(Math.max(0, developer.totalPayable - developer.paidAmount))}</p></div></div>)}</div>{(project.companies || []).length > 0 && <div className="space-y-2"><p className="text-[10px] font-black uppercase text-gray-400">Companies</p>{project.companies.map(company => <div key={company._id || company.name} className="rounded-xl bg-orange-50 dark:bg-slate-800 p-3"><p className="text-sm font-bold dark:text-white">{company.name}</p>{company.designation && <p className="text-[10px] font-bold text-orange-600">{company.designation}</p>}<p className="text-[10px] text-gray-400">Profit {money(company.totalPayable)}{company.percentage ? ` • ${company.percentage}%` : ''}</p></div>)}</div>}</div>}
+                            {expanded && <div className="mt-3 space-y-3"><div className="space-y-2"><p className="text-[10px] font-black uppercase text-gray-400 dark:text-slate-300">Team Members</p>{(project.developers || []).map(developer => <div key={developer._id || developer.name} className="flex items-center justify-between rounded-xl bg-gray-50 dark:bg-slate-800 p-3"><div><p className="text-sm font-bold dark:text-white">{developer.name}</p>{developer.designation && <p className="text-[10px] font-bold text-primary">{developer.designation}</p>}<p className="text-[10px] text-gray-400">Payable {money(developer.totalPayable)}{developer.percentage ? ` • ${developer.percentage}%` : ''}</p></div><div className="text-right"><p className="text-xs font-black text-emerald-600">Paid {money(developer.paidAmount)}</p><p className="text-[10px] text-amber-600">Due {money(Math.max(0, developer.totalPayable - developer.paidAmount))}</p></div></div>)}</div>{(project.companies || []).length > 0 && <div className="space-y-2"><p className="text-[10px] font-black uppercase text-gray-400 dark:text-slate-300">Companies</p>{project.companies.map(company => <div key={company._id || company.name} className="rounded-xl bg-orange-50 dark:bg-slate-800 p-3"><p className="text-sm font-bold text-gray-900 dark:text-white">{company.name}</p>{company.designation && <p className="text-[10px] font-bold text-orange-600 dark:text-orange-400">{company.designation}</p>}<p className="text-[10px] text-gray-500 dark:text-slate-300">Profit {money(company.totalPayable)}{company.percentage ? ` • ${company.percentage}%` : ''}</p></div>)}</div>}</div>}
                         </article>;
                     })}
                 </div>
@@ -486,7 +530,7 @@ const ExpenseManagement = () => {
             </div>
 
             <div>
-                <div className="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-700 rounded-2xl overflow-hidden"><div className="p-4 border-b border-gray-100 dark:border-slate-700 flex flex-col md:flex-row md:items-center justify-between gap-3"><h2 className="font-black text-gray-900 dark:text-white">Transaction History</h2><div className="flex gap-2"><select value={filter} onChange={event => setFilter(event.target.value)} className="px-3 py-2 rounded-xl bg-gray-50 dark:bg-slate-800 dark:text-white border border-gray-200 dark:border-slate-600 text-xs font-bold"><option value="all">All Records</option><option value="income">Income</option><option value="expense">Expenses</option></select><select value={categoryFilter} onChange={event => setCategoryFilter(event.target.value)} className="px-3 py-2 rounded-xl bg-gray-50 dark:bg-slate-800 dark:text-white border border-gray-200 dark:border-slate-600 text-xs font-bold"><option value="all">All Categories</option>{availableCategories.map(category => <option key={category} value={category}>{category}</option>)}</select></div></div><div className="overflow-x-auto"><table className="w-full text-sm"><thead className="bg-gray-50 dark:bg-slate-800 text-gray-500"><tr><th className="p-3 text-left">Date</th><th className="p-3 text-left">Details</th><th className="p-3 text-left">Category</th><th className="p-3 text-right">Amount</th><th className="p-3" /></tr></thead><tbody className="divide-y divide-gray-100 dark:divide-slate-700">{filteredEntries.map(entry => <tr key={entry._id} className="dark:text-slate-200"><td className="p-3 whitespace-nowrap">{new Date(entry.transactionDate).toLocaleDateString('en-GB')}</td><td className="p-3"><p className="font-bold">{entry.title}</p><p className="text-xs text-gray-400">{entry.description || 'No description'}</p></td><td className="p-3"><span className="inline-flex items-center gap-2"><span>{getCategoryIcon(entry.category)}</span>{entry.category}</span></td><td className={`p-3 text-right font-black ${entry.type === 'income' ? 'text-emerald-600' : 'text-rose-600'}`}>{entry.type === 'income' ? '+' : '-'} {money(entry.amount)}</td><td className="p-3"><div className="flex justify-end gap-1"><button onClick={() => openEdit(entry)} className="p-2 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg"><Pencil className="w-4 h-4" /></button><button onClick={() => removeEntry(entry._id)} className="p-2 text-rose-500 hover:bg-rose-50 rounded-lg"><Trash2 className="w-4 h-4" /></button></div></td></tr>)}</tbody></table>{!filteredEntries.length && <p className="p-10 text-center text-gray-400">No records match these filters.</p>}</div></div>
+                <div className="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-700 rounded-2xl overflow-hidden"><div className="p-4 border-b border-gray-100 dark:border-slate-700 flex flex-col md:flex-row md:items-center justify-between gap-3"><div className="flex items-center gap-3"><h2 className="font-black text-gray-900 dark:text-white">Transaction History</h2>{filteredEntries.length > 0 && <span className="inline-flex items-center gap-1.5 rounded-lg bg-gray-100 dark:bg-slate-800 px-2.5 py-1 text-[10px] font-black text-gray-500">{filteredEntries.length} records</span>}</div><div className="flex items-center gap-3">{filteredEntries.length > 0 && <div className="flex items-center gap-2 text-[10px] font-black"><span className="text-emerald-600">+{money(filteredIncome)}</span><span className="text-gray-300">|</span><span className="text-rose-600">-{money(filteredExpense)}</span><span className="text-gray-300">|</span><span className="text-blue-600">{money(filteredTotal)}</span></div>}<div className="flex gap-2"><select value={filter} onChange={event => setFilter(event.target.value)} className="px-3 py-2 rounded-xl bg-gray-50 dark:bg-slate-800 dark:text-white border border-gray-200 dark:border-slate-600 text-xs font-bold"><option value="all">All Records</option><option value="income">Income</option><option value="expense">Expenses</option></select><select value={categoryFilter} onChange={event => setCategoryFilter(event.target.value)} className="px-3 py-2 rounded-xl bg-gray-50 dark:bg-slate-800 dark:text-white border border-gray-200 dark:border-slate-600 text-xs font-bold"><option value="all">All Categories</option>{availableCategories.map(category => <option key={category.name} value={category.name}>{category.name} ({category.count})</option>)}</select></div></div></div><div className="overflow-x-auto"><table className="w-full text-sm"><thead className="bg-gray-50 dark:bg-slate-800 text-gray-500"><tr><th className="p-3 text-left">Date</th><th className="p-3 text-left">Details</th><th className="p-3 text-left">Category</th><th className="p-3 text-right">Amount</th><th className="p-3" /></tr></thead><tbody className="divide-y divide-gray-100 dark:divide-slate-700">{filteredEntries.map(entry => <tr key={entry._id} className="dark:text-slate-200"><td className="p-3 whitespace-nowrap">{new Date(entry.transactionDate).toLocaleDateString('en-GB')}</td><td className="p-3"><p className="font-bold">{entry.title}</p><p className="text-xs text-gray-400">{entry.description || 'No description'}</p></td><td className="p-3"><span className="inline-flex items-center gap-2"><span>{getCategoryIcon(entry.category)}</span>{entry.category}</span></td><td className={`p-3 text-right font-black ${entry.type === 'income' ? 'text-emerald-600' : 'text-rose-600'}`}>{entry.type === 'income' ? '+' : '-'} {money(entry.amount)}</td><td className="p-3"><div className="flex justify-end gap-1"><button onClick={() => openEdit(entry)} className="p-2 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg"><Pencil className="w-4 h-4" /></button><button onClick={() => removeEntry(entry._id)} className="p-2 text-rose-500 hover:bg-rose-50 rounded-lg"><Trash2 className="w-4 h-4" /></button></div></td></tr>)}</tbody></table>{!filteredEntries.length && <p className="p-10 text-center text-gray-400">No records match these filters.</p>}</div></div>
             </div>
 
             <section className="space-y-3">

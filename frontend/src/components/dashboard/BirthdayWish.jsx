@@ -96,7 +96,7 @@ const BirthdayWish = () => {
                 <motion.div className="absolute inset-0 bg-white/5 pointer-events-none" />
 
                 <div className="relative z-10 flex flex-col sm:flex-row sm:items-center gap-3 px-4 py-3">
-                    {/* Compact header */}
+                    {/* Header */}
                     <div className="flex items-center gap-2.5 shrink-0 sm:pr-3 sm:border-r sm:border-white/20">
                         <div className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
                             <Cake className="w-[18px] h-[18px] text-white" />
@@ -112,8 +112,8 @@ const BirthdayWish = () => {
                         </div>
                     </div>
 
-                    {/* Birthday people — horizontal scroll on small screens */}
-                    <div className="flex flex-1 gap-2 overflow-x-auto pb-0.5 sm:pb-0 scrollbar-thin justify-end">
+                    {/* Birthday people */}
+                    <div className="flex flex-1 gap-2 overflow-x-auto pb-0.5 sm:pb-0 scrollbar-thin">
                         {birthdays.map((person) => {
                             const currentYear = new Date().getFullYear();
                             const hasWished = person.birthdayWishes?.some(
@@ -128,7 +128,7 @@ const BirthdayWish = () => {
                             return (
                                 <div
                                     key={person._id}
-                                    className="flex items-center gap-2.5 bg-white/15 hover:bg-white/20 border border-white/15 rounded-xl px-3 py-2.5 shrink-0 transition-colors min-h-[52px]"
+                                    className="flex items-center gap-2.5 bg-white/15 hover:bg-white/20 border border-white/15 rounded-xl px-3 py-2.5 transition-colors"
                                 >
                                     {person.photo ? (
                                         <img
@@ -142,7 +142,7 @@ const BirthdayWish = () => {
                                         </div>
                                     )}
 
-                                    <div className="min-w-0 max-w-[150px]">
+                                    <div className="min-w-0">
                                         <p className="text-white font-semibold text-sm truncate leading-tight">{person.name}</p>
                                         <p className="text-white/55 text-[10px] uppercase tracking-wide truncate mt-0.5">
                                             {roleLabel}
