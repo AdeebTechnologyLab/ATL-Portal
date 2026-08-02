@@ -230,8 +230,12 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
             };
         } else if (role === 'admin') {
             fetchAdminPendingCounts();
+            window.addEventListener('admin-pending-counts-changed', fetchAdminPendingCounts);
             const interval = setInterval(fetchAdminPendingCounts, 2 * 60 * 1000); // Admin refresh more frequent
-            return () => clearInterval(interval);
+            return () => {
+                clearInterval(interval);
+                window.removeEventListener('admin-pending-counts-changed', fetchAdminPendingCounts);
+            };
         } else if (role === 'teacher') {
             fetchTeacherSubmissionCount();
             const interval = setInterval(fetchTeacherSubmissionCount, 5 * 60 * 1000);
@@ -442,7 +446,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                 { id: 'teachers', labelKey: 'nav.teachers', icon: GraduationCap, path: '/admin/teachers', badge: adminPendingCounts.teacherActive },
                 { id: 'interns', labelKey: 'nav.interns', icon: Users, path: '/admin/interns', badge: adminPendingCounts.internRegisteredNew },
                 { id: 'notifications', labelKey: 'nav.notifications', icon: Bell, path: '/admin/notifications' },
-                { id: 'fees', labelKey: 'nav.feeVerification', icon: CreditCard, path: '/admin/fees', badge: adminPendingCounts.fees },
+                { id: 'fees', labelKey: 'nav.feeVerification', icon: CreditCard, path: '/admin/fees', badge: adminPendingCounts.fees, secondaryBadge: adminPendingCounts.feesAwaiting },
                 { id: 'fee-methods', labelKey: 'Payment Methods', icon: Wallet, path: '/admin/fee-methods' },
                 { id: 'discussion-room', labelKey: 'Discussion Room', icon: MessageSquare, path: '/admin/discussion-room', badge: discussionUnread },
                 { id: 'attendance-settings', labelKey: 'nav.attendanceSettings', icon: ClipboardList, path: '/admin/attendance-settings' },
@@ -699,10 +703,20 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                                         <motion.span
                                             initial={{ scale: 0 }}
                                             animate={{ scale: 1 }}
-                                            className={`${item.id === 'discussion-room' ? 'bg-red-500 shadow-red-500/20' : 'bg-primary shadow-primary/20'} text-white text-[10px] font-black min-w-5 h-5 px-1 rounded-full flex items-center justify-center shadow-lg`}
+                                            className={`${item.id === 'fees' ? 'bg-emerald-500 shadow-emerald-500/20' : item.id === 'discussion-room' ? 'bg-red-500 shadow-red-500/20' : 'bg-primary shadow-primary/20'} text-white text-[10px] font-black min-w-5 h-5 px-1 rounded-full flex items-center justify-center shadow-lg`}
                                             title="Notifications"
                                         >
                                             {item.badge > 99 ? '99+' : item.badge}
+                                        </motion.span>
+                                    )}
+                                    {item.secondaryBadge > 0 && (
+                                        <motion.span
+                                            initial={{ scale: 0 }}
+                                            animate={{ scale: 1 }}
+                                            className="bg-primary text-white text-[10px] font-black min-w-5 h-5 px-1 rounded-full flex items-center justify-center shadow-lg shadow-primary/20"
+                                            title="Awaiting Payment"
+                                        >
+                                            {item.secondaryBadge > 99 ? '99+' : item.secondaryBadge}
                                         </motion.span>
                                     )}
                                     {/* Badge for teacher pending (ungraded) submissions (red) */}

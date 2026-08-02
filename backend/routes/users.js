@@ -178,15 +178,22 @@ router.get('/pending-counts', protect, authorize('admin'), async (req, res) => {
             return acc;
         }, {});
 
-        // Count pending fees (installments that are 'submitted', 'pending', 'rejected', or 'overdue')
+        // Sidebar fee badge mirrors the "Submitted for Review" list exactly.
         const feeCounts = await Fee.aggregate([
             { $unwind: '$installments' },
-            { $match: { 'installments.status': { $in: ['submitted', 'pending', 'rejected', 'overdue'] } } },
+            { $match: { 'installments.status': 'submitted' } },
             { $count: 'count' }
         ]);
 
         // Add to result (default to 0 if no results)
         result.fees = feeCounts.length > 0 ? feeCounts[0].count : 0;
+
+        const awaitingFeeCounts = await Fee.aggregate([
+            { $unwind: '$installments' },
+            { $match: { 'installments.status': 'pending' } },
+            { $count: 'count' }
+        ]);
+        result.feesAwaiting = awaitingFeeCounts.length > 0 ? awaitingFeeCounts[0].count : 0;
 
         // Count Registered (New) for each role
         // Registered (New) = totalEnrollments === 0 && registeredOld === false

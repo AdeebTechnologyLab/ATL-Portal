@@ -197,6 +197,7 @@ const FeeVerification = () => {
                     return fee;
                 }));
                 showToast.success('Receipt Rejected', 'The student has been notified to re-upload their receipt.');
+                window.dispatchEvent(new Event('admin-pending-counts-changed'));
             }
             fetchAllFees();
         } catch (error) {
@@ -328,6 +329,7 @@ const FeeVerification = () => {
         setError('');
         try {
             await feeAPI.verify(feeId, installmentId);
+            window.dispatchEvent(new Event('admin-pending-counts-changed'));
             setIsImageModalOpen(false);
             setSelectedInstallment(null);
             if (activeTab === 'pending') fetchPendingFees();
@@ -606,7 +608,7 @@ const FeeVerification = () => {
                                                     </button>
 
                                                     {/* Reminder Buttons */}
-                                                    <div className="flex flex-wrap items-center gap-2">
+                                                    <div className="hidden" aria-hidden="true">
                                                         <button
                                                             onClick={() => {
                                                                 const phone = (fee.user?.phone || '').replace(/[^0-9]/g, '');
