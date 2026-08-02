@@ -169,7 +169,7 @@ const BrowseTasks = () => {
     );
 
     // Get tasks I've applied to (from my tasks)
-    const appliedTasks = myTasks.filter(t => getCurrentApplication(t)?.status === 'applied' && !isAssignedToMe(t));
+    const appliedTasks = myTasks.filter(t => hasApplied(t) && !isAssignedToMe(t));
 
     // Get tasks assigned to me (in progress - not yet submitted, pending payment, or awaiting feedback)
     const assignedTasks = myTasks.filter(t =>
@@ -179,9 +179,9 @@ const BrowseTasks = () => {
             (t.status === 'completed' && t.paymentSent && !hasCurrentFeedback(t)))
     );
 
-    // Get completed tasks (payment received AND feedback submitted)
+    // Get completed tasks (only show tasks where payment has been received)
     const completedTasks = myTasks.filter(t =>
-        t.feedback?.some(f => String(f.user?._id || f.user) === String(user?.id || user?._id))
+        (t.paymentHistory || []).some(p => String(p.user?._id || p.user) === String(user?.id || user?._id))
     );
 
     // Get expired tasks (deadline passed without assignment)

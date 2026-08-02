@@ -274,10 +274,10 @@ const TeacherProjects = () => {
                                     {(project.companies || []).length > 0 && <div className="space-y-2">
                                         <p className="text-[10px] font-black uppercase text-gray-400">Companies</p>
                                         {project.companies.map(company => (
-                                            <div key={company._id || company.name} className="rounded-xl bg-orange-50 dark:bg-slate-800 border border-orange-100 p-3">
-                                                <p className="text-sm font-extrabold text-gray-900">{company.name}</p>
-                                                {company.designation && <p className="mt-0.5 text-[10px] font-black uppercase tracking-wide text-orange-600">{company.designation}</p>}
-                                                <p className="mt-1 text-[11px] font-bold text-gray-700"><span className="text-emerald-700">Profit</span> {money(company.totalPayable)}{company.percentage ? <span className="text-gray-500"> {`• ${company.percentage}%`}</span> : ''}</p>
+                                            <div key={company._id || company.name} className="rounded-xl bg-orange-50 dark:!bg-slate-800 border border-orange-100 dark:!border-emerald-500/40 p-3 shadow-sm">
+                                                <p className="text-sm font-extrabold text-gray-900 dark:!text-emerald-200">{company.name}</p>
+                                                {company.designation && <p className="mt-0.5 text-[10px] font-black uppercase tracking-wide text-orange-600 dark:!text-amber-300">{company.designation}</p>}
+                                                <p className="mt-1 text-[11px] font-bold text-gray-700 dark:!text-slate-100"><span className="text-emerald-700 dark:!text-emerald-300">Profit</span> {money(company.totalPayable)}{company.percentage ? <span className="text-gray-500 dark:!text-slate-300"> {`• ${company.percentage}%`}</span> : ''}</p>
                                             </div>
                                         ))}
                                     </div>}
