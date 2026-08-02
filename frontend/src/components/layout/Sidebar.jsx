@@ -452,9 +452,10 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                 { id: 'attendance-settings', labelKey: 'nav.attendanceSettings', icon: ClipboardList, path: '/admin/attendance-settings' },
                 { id: 'registration-pages', labelKey: 'Registration Forms', icon: FileText, path: '/admin/registration-pages' },
                 { id: 'job-section-label', type: 'section', label: 'Job' },
-                { id: 'paid-tasks', labelKey: 'nav.paidTasks', icon: Briefcase, path: '/admin/paid-tasks' },
+                { id: 'paid-tasks', labelKey: 'nav.paidTasks', icon: Briefcase, path: '/admin/paid-tasks', counters: { assigned: jobPostingCounts.totalAssigned || 0, submitted: jobPostingCounts.totalSubmitted || 0 } },
                 ...(jobChatSummary.totalAssigned > 0 ? [{ id: 'job-chat', labelKey: 'Job Chats', icon: MessageSquare, path: '/admin/job-chat', badge: jobChatSummary.totalUnread }] : []),
                 { id: 'jobs', labelKey: 'nav.freelancers', icon: Briefcase, path: '/admin/jobs', badge: adminPendingCounts.job },
+                { id: 'projects', labelKey: 'Projects', icon: FolderOpen, path: '/admin/projects' },
                 { id: 'expense', labelKey: 'Expense', icon: Wallet, path: '/admin/expense' },
             ],
             teacher: [
@@ -503,6 +504,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                 { id: 'assigned', labelKey: 'Assigned', icon: CheckCircle, path: '/job/tasks', state: { tab: 'assigned' }, badge: jobAssignedCount },
                 ...(jobChatSummary.totalAssigned > 0 ? [{ id: 'job-chat', labelKey: 'Job Chat', icon: MessageSquare, path: '/job/job-chat', badge: jobChatSummary.totalUnread }] : []),
                 { id: 'completed', labelKey: 'Completed', icon: Award, path: '/job/tasks', state: { tab: 'completed' } },
+                { id: 'payments', labelKey: 'Payments', icon: Wallet, path: '/job/payments' },
                 { id: 'expired', labelKey: 'Expired', icon: Clock, path: '/job/tasks', state: { tab: 'expired' } },
                 { id: 'showcase', labelKey: 'Feedback', icon: MessageSquare, path: '/job/tasks', state: { tab: 'showcase' } },
                 { id: 'profile', labelKey: 'nav.myProfile', icon: User, path: '/job/profile' },
@@ -675,20 +677,31 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                                     <item.icon className="w-5 h-5 flex-shrink-0" />
                                     <div className="font-medium flex-1 min-w-0">
                                         <span>{t(item.labelKey)}</span>
-                                        {item.counters && location.pathname === item.path && (
-                                            <div className="flex flex-wrap gap-1.5 mt-1.5">
-                                                <span className="px-1.5 py-0.5 rounded-md bg-yellow-500/20 text-yellow-400 text-[9px] font-black whitespace-nowrap">
-                                                    Applicants: {item.counters.applicants}
-                                                </span>
-                                                <span className="px-1.5 py-0.5 rounded-md bg-green-500/20 text-green-400 text-[9px] font-black whitespace-nowrap">
-                                                    Assigned: {item.counters.assigned}
-                                                </span>
-                                                <span className="px-1.5 py-0.5 rounded-md bg-blue-500/20 text-blue-400 text-[9px] font-black whitespace-nowrap">
-                                                    Submitted: {item.counters.submitted}
-                                                </span>
-                                            </div>
-                                        )}
                                     </div>
+                                    {item.counters && (item.counters.assigned > 0 || item.counters.submitted > 0) && (
+                                        <div className="flex flex-none items-center gap-1.5">
+                                            {item.counters.assigned > 0 && (
+                                                <motion.span
+                                                    initial={{ scale: 0 }}
+                                                    animate={{ scale: 1 }}
+                                                    className="flex h-5 min-w-5 items-center justify-center rounded-full bg-emerald-500 px-1 text-[10px] font-black text-white shadow-lg shadow-emerald-500/20"
+                                                    title="Assigned"
+                                                >
+                                                    {item.counters.assigned > 99 ? '99+' : item.counters.assigned}
+                                                </motion.span>
+                                            )}
+                                            {item.counters.submitted > 0 && (
+                                                <motion.span
+                                                    initial={{ scale: 0 }}
+                                                    animate={{ scale: 1 }}
+                                                    className="flex h-5 min-w-5 items-center justify-center rounded-full bg-blue-500 px-1 text-[10px] font-black text-white shadow-lg shadow-blue-500/20"
+                                                    title="Submitted"
+                                                >
+                                                    {item.counters.submitted > 99 ? '99+' : item.counters.submitted}
+                                                </motion.span>
+                                            )}
+                                        </div>
+                                    )}
                                     {item.id === 'assignments' && role !== 'student' && pendingCount > 0 && (
                                         <motion.span
                                             initial={{ scale: 0 }}

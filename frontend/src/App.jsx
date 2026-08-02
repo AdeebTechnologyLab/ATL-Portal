@@ -49,6 +49,7 @@ const StudentDirectory = lazy(() => import('./pages/admin/StudentDirectory'));
 const TeacherDirectory = lazy(() => import('./pages/admin/TeacherDirectory'));
 const AttendanceSettings = lazy(() => import('./pages/admin/AttendanceSettings'));
 const ExpenseManagement = lazy(() => import('./pages/admin/ExpenseManagement'));
+const ProjectManagement = lazy(() => import('./pages/admin/ProjectManagement'));
 const RegistrationPages = lazy(() => import('./pages/admin/RegistrationPages'));
 const AdminFeeMethods = lazy(() => import('./pages/admin/AdminFeeMethods'));
 
@@ -66,6 +67,7 @@ const TeacherCertificates = lazy(() => import('./pages/teacher/TeacherCertificat
 // Job Pages (lazy loaded)
 const JobDashboard = lazy(() => import('./pages/job/JobDashboard'));
 const BrowseTasks = lazy(() => import('./pages/job/BrowseTasks'));
+const PaymentHistory = lazy(() => import('./pages/job/PaymentHistory'));
 const JobProfile = lazy(() => import('./pages/job/JobProfile'));
 
 // Public Pages (lazy loaded)
@@ -164,6 +166,7 @@ const AppRoutes = () => {
         <Route path="settings" element={<Settings />} />
         <Route path="attendance-settings" element={<AttendanceSettings />} />
         <Route path="expense" element={<ExpenseManagement />} />
+        <Route path="projects" element={<ProjectManagement />} />
         <Route path="registration-pages" element={<RegistrationPages />} />
         <Route path="discussion-room" element={<DiscussionRoom />} />
         <Route path="help-support" element={<HelpSupport />} />
@@ -234,6 +237,7 @@ const AppRoutes = () => {
         <Route index element={<Navigate to="dashboard" replace />} />
         <Route path="dashboard" element={<JobDashboard />} />
         <Route path="tasks" element={<BrowseTasks />} />
+        <Route path="payments" element={<PaymentHistory />} />
         <Route path="job-chat" element={<JobChat />} />
         <Route path="profile" element={<JobProfile />} />
         <Route path="discussion-room" element={<DiscussionRoom />} />

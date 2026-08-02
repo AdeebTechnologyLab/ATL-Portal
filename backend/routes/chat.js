@@ -622,11 +622,14 @@ router.get('/job/tasks', protect, authorize('admin', 'teacher', 'job'), async (r
             .populate('assignedTo', 'name email photo role')
             .select('title createdBy jobManager jobManagers applicants assignedTo submissions status')
             .sort('-updatedAt');
+        const adminContacts = req.user.role === 'job'
+            ? await User.find({ role: 'admin' }).select('name email photo role')
+            : [];
 
         const data = await Promise.all(tasks.map(async task => {
             const managers = task.jobManagers?.length ? task.jobManagers : (task.jobManager ? [task.jobManager] : (task.createdBy ? [task.createdBy] : []));
             const contacts = req.user.role === 'job'
-                ? managers
+                ? [...new Map([...managers, ...adminContacts].filter(Boolean).map(contact => [String(contact._id), contact])).values()]
                 : (task.assignedTo || []).filter(Boolean);
             const contactsWithUnread = await Promise.all(contacts.map(async contact => {
                 const unreadQuery = { task: task._id, sender: contact._id, recipient: userId, isRead: false };
@@ -682,7 +685,10 @@ const canAccessJobChat = async (task, user, otherUserId) => {
     if (user.role === 'admin') return assignedIds.includes(String(otherUserId));
     const managerIds = (task.jobManagers?.length ? task.jobManagers : [task.jobManager || task.createdBy]).filter(Boolean).map(String);
     if (user.role === 'teacher') return managerIds.includes(String(user.id)) && assignedIds.includes(String(otherUserId));
-    return user.role === 'job' && assignedIds.includes(String(user.id)) && managerIds.includes(String(otherUserId));
+    if (user.role !== 'job' || !assignedIds.includes(String(user.id))) return false;
+    if (managerIds.includes(String(otherUserId))) return true;
+    const otherUser = await User.findById(otherUserId).select('role');
+    return otherUser?.role === 'admin';
 };
 
 router.get('/job/:taskId/messages/:userId', protect, authorize('admin', 'teacher', 'job'), async (req, res) => {

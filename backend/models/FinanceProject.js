@@ -17,6 +17,13 @@ const companySchema = new mongoose.Schema({
 }, { _id: true });
 
 const financeProjectSchema = new mongoose.Schema({
+    sourceTask: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'PaidTask',
+        default: null,
+        unique: true,
+        sparse: true
+    },
     name: { type: String, required: true, trim: true },
     clientName: { type: String, required: true, trim: true },
     clientPhone: { type: String, trim: true, default: '' },

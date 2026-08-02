@@ -60,7 +60,7 @@ const Metric = ({ label, value, tone = 'text-gray-900 dark:text-white' }) => (
     </div>
 );
 
-const ExpenseManagement = () => {
+const ExpenseManagement = ({ showProjectSections = true, projectsOnly = false }) => {
     const [entries, setEntries] = useState([]);
     const [projects, setProjects] = useState([]);
     const [summary, setSummary] = useState({});
@@ -343,7 +343,7 @@ const ExpenseManagement = () => {
 
             autoTable(doc, {
                 startY: 35,
-                head: [['Total Income', 'Total Expenses', 'Available Balance', 'Verified Fee Income', 'Project Total Cash', 'Project Cash Profit']],
+                head: [['Total Income', 'Total Expenses', 'Available Balance', 'Total Fee Income', 'Project Total Cash', 'Project Profit Cash']],
                 body: [[pdfMoney(summary.totalIncome), pdfMoney(summary.totalExpenses), pdfMoney(summary.balance), pdfMoney(summary.feeIncome), pdfMoney(visibleProjectCash), pdfMoney(visibleCompanyProfit)]],
                 ...tableTheme,
                 bodyStyles: { fontSize: 11, fontStyle: 'bold', textColor: [15, 23, 42], cellPadding: 4 }
@@ -467,11 +467,11 @@ const ExpenseManagement = () => {
     return (
         <div className="p-4 md:p-6 space-y-6">
             <div className="flex items-start justify-between gap-3">
-                <div className="min-w-0"><h1 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white">Income, Expense & Projects</h1><p className="hidden sm:block text-sm text-gray-500 dark:text-slate-400">Cash flow, project profitability and pending clearances in one place.</p></div>
+                <div className="min-w-0"><h1 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white">{projectsOnly ? 'Projects' : 'Income, Expense & Projects'}</h1><p className="hidden sm:block text-sm text-gray-500 dark:text-slate-400">{projectsOnly ? 'Active work, collections and completed project tracking.' : 'Cash flow, project profitability and pending clearances in one place.'}</p></div>
                 <div className="ml-auto flex shrink-0 flex-row gap-2">
-                    <button onClick={downloadFinanceReport} className="flex items-center justify-center gap-1.5 whitespace-nowrap rounded-xl border border-primary/25 bg-primary/10 px-3 py-2.5 text-xs font-bold text-primary transition-colors hover:bg-primary hover:text-white sm:gap-2 sm:px-4 sm:py-3 sm:text-sm"><Download className="h-4 w-4" /><span className="hidden md:inline">Download </span>Report</button>
-                    <button onClick={openNewProject} className="px-3 sm:px-4 py-2.5 sm:py-3 bg-slate-900 dark:bg-white dark:text-slate-900 text-white rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 sm:gap-2 whitespace-nowrap"><BriefcaseBusiness className="w-4 h-4" /> <span className="hidden sm:inline">Create </span>Project</button>
-                    <button onClick={openNew} className="px-3 sm:px-4 py-2.5 sm:py-3 bg-primary text-white rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 sm:gap-2 whitespace-nowrap"><Plus className="w-4 h-4" /> <span className="hidden sm:inline">Add </span>Record</button>
+                    {!projectsOnly && <button onClick={downloadFinanceReport} className="flex items-center justify-center gap-1.5 whitespace-nowrap rounded-xl border border-primary/25 bg-primary/10 px-3 py-2.5 text-xs font-bold text-primary transition-colors hover:bg-primary hover:text-white sm:gap-2 sm:px-4 sm:py-3 sm:text-sm"><Download className="h-4 w-4" /><span className="hidden md:inline">Download </span>Report</button>}
+                    {showProjectSections && <button onClick={openNewProject} className="px-3 sm:px-4 py-2.5 sm:py-3 bg-slate-900 dark:bg-white dark:text-slate-900 text-white rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 sm:gap-2 whitespace-nowrap"><BriefcaseBusiness className="w-4 h-4" /> <span className="hidden sm:inline">Create </span>Project</button>}
+                    {!projectsOnly && <button onClick={openNew} className="px-3 sm:px-4 py-2.5 sm:py-3 bg-primary text-white rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 sm:gap-2 whitespace-nowrap"><Plus className="w-4 h-4" /> <span className="hidden sm:inline">Add </span>Record</button>}
                 </div>
             </div>
 
@@ -483,8 +483,8 @@ const ExpenseManagement = () => {
                 </div>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-2">
-                {[{ label: 'Total Income', value: summary.totalIncome, icon: TrendingUp, tone: 'text-emerald-500', iconBg: 'bg-emerald-500/10' }, { label: 'Total Expenses', value: summary.totalExpenses, icon: TrendingDown, tone: 'text-rose-500', iconBg: 'bg-rose-500/10' }, { label: 'Available Balance', value: summary.balance, icon: Wallet, tone: 'text-blue-500', iconBg: 'bg-blue-500/10' }, { label: 'Verified Fee Income', value: summary.feeIncome, icon: Landmark, tone: 'text-amber-500', iconBg: 'bg-amber-500/10' }, { label: 'Project Total Cash', value: visibleProjectCash, icon: CircleDollarSign, tone: 'text-cyan-600', iconBg: 'bg-cyan-500/10' }, { label: 'Project Cash Profit', value: visibleCompanyProfit, icon: BriefcaseBusiness, tone: 'text-violet-500', iconBg: 'bg-violet-500/10' }].map(card => (
+            {!projectsOnly && <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-2">
+                {[{ label: 'Total Income', value: summary.totalIncome, icon: TrendingUp, tone: 'text-emerald-500', iconBg: 'bg-emerald-500/10' }, { label: 'Total Expenses', value: summary.totalExpenses, icon: TrendingDown, tone: 'text-rose-500', iconBg: 'bg-rose-500/10' }, { label: 'Available Balance', value: summary.balance, icon: Wallet, tone: 'text-blue-500', iconBg: 'bg-blue-500/10' }, { label: 'Total Fee Income', value: summary.feeIncome, icon: Landmark, tone: 'text-amber-500', iconBg: 'bg-amber-500/10' }, { label: 'Project Total Cash', value: visibleProjectCash, icon: CircleDollarSign, tone: 'text-cyan-600', iconBg: 'bg-cyan-500/10' }, { label: 'Project Profit Cash', value: visibleCompanyProfit, icon: BriefcaseBusiness, tone: 'text-violet-500', iconBg: 'bg-violet-500/10' }].map(card => (
                     <div key={card.label} className={`flex min-w-0 items-center gap-2.5 rounded-xl border border-gray-100 bg-white p-2.5 shadow-sm dark:border-slate-700 dark:bg-slate-900 sm:p-3 ${card.label === 'Available Balance' ? 'dark:!border-blue-500/40 dark:!bg-blue-950/40' : ''}`}>
                         <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${card.iconBg}`}>
                             <card.icon className={`h-4 w-4 ${card.tone}`} />
@@ -495,9 +495,9 @@ const ExpenseManagement = () => {
                         </div>
                     </div>
                 ))}
-            </div>
+            </div>}
 
-            <section className="space-y-3">
+            {showProjectSections && <section className="space-y-3">
                 <div><h2 className="text-lg font-black text-gray-900 dark:text-white">Project Portfolio</h2><p className="text-xs text-gray-400">Active projects, collections and team clearance.</p></div>
                 <div className="grid lg:grid-cols-2 gap-4">
                     {filteredProjects.map(project => {
@@ -515,9 +515,9 @@ const ExpenseManagement = () => {
                     })}
                 </div>
                 {!filteredProjects.length && <div className="rounded-2xl border border-dashed border-gray-200 dark:border-slate-700 p-10 text-center"><BriefcaseBusiness className="w-8 h-8 mx-auto text-gray-300 mb-2" /><p className="text-sm font-bold text-gray-400">No projects in this view.</p><button onClick={openNewProject} className="mt-3 text-xs font-black text-primary">Create first project</button></div>}
-            </section>
+            </section>}
 
-            <div className="flex flex-col sm:flex-row gap-2 w-full">
+            {!projectsOnly && <div className="flex flex-col sm:flex-row gap-2 w-full">
                 <div className="relative flex-1">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                     <input value={searchQuery} onChange={event => setSearchQuery(event.target.value)} placeholder="Search transaction history..." className="w-full pl-10 pr-4 py-3 rounded-xl bg-white dark:bg-slate-900 dark:text-white border border-gray-200 dark:border-slate-700 outline-none focus:border-primary text-sm" />
@@ -527,19 +527,19 @@ const ExpenseManagement = () => {
                     <option value="general">General Records</option>
                     {projects.map(project => <option key={project._id} value={project._id}>📁 {project.name}</option>)}
                 </select>
-            </div>
+            </div>}
 
-            <div>
+            {!projectsOnly && <div>
                 <div className="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-700 rounded-2xl overflow-hidden"><div className="p-4 border-b border-gray-100 dark:border-slate-700 flex flex-col md:flex-row md:items-center justify-between gap-3"><div className="flex items-center gap-3"><h2 className="font-black text-gray-900 dark:text-white">Transaction History</h2>{filteredEntries.length > 0 && <span className="inline-flex items-center gap-1.5 rounded-lg bg-gray-100 dark:bg-slate-800 px-2.5 py-1 text-[10px] font-black text-gray-500">{filteredEntries.length} records</span>}</div><div className="flex items-center gap-3">{filteredEntries.length > 0 && <div className="flex items-center gap-2 text-[10px] font-black"><span className="text-emerald-600">+{money(filteredIncome)}</span><span className="text-gray-300">|</span><span className="text-rose-600">-{money(filteredExpense)}</span><span className="text-gray-300">|</span><span className="text-blue-600">{money(filteredTotal)}</span></div>}<div className="flex gap-2"><select value={filter} onChange={event => setFilter(event.target.value)} className="px-3 py-2 rounded-xl bg-gray-50 dark:bg-slate-800 dark:text-white border border-gray-200 dark:border-slate-600 text-xs font-bold"><option value="all">All Records</option><option value="income">Income</option><option value="expense">Expenses</option></select><select value={categoryFilter} onChange={event => setCategoryFilter(event.target.value)} className="px-3 py-2 rounded-xl bg-gray-50 dark:bg-slate-800 dark:text-white border border-gray-200 dark:border-slate-600 text-xs font-bold"><option value="all">All Categories</option>{availableCategories.map(category => <option key={category.name} value={category.name}>{category.name} ({category.count})</option>)}</select></div></div></div><div className="overflow-x-auto"><table className="w-full text-sm"><thead className="bg-gray-50 dark:bg-slate-800 text-gray-500"><tr><th className="p-3 text-left">Date</th><th className="p-3 text-left">Details</th><th className="p-3 text-left">Category</th><th className="p-3 text-right">Amount</th><th className="p-3" /></tr></thead><tbody className="divide-y divide-gray-100 dark:divide-slate-700">{filteredEntries.map(entry => <tr key={entry._id} className="dark:text-slate-200"><td className="p-3 whitespace-nowrap">{new Date(entry.transactionDate).toLocaleDateString('en-GB')}</td><td className="p-3"><p className="font-bold">{entry.title}</p><p className="text-xs text-gray-400">{entry.description || 'No description'}</p></td><td className="p-3"><span className="inline-flex items-center gap-2"><span>{getCategoryIcon(entry.category)}</span>{entry.category}</span></td><td className={`p-3 text-right font-black ${entry.type === 'income' ? 'text-emerald-600' : 'text-rose-600'}`}>{entry.type === 'income' ? '+' : '-'} {money(entry.amount)}</td><td className="p-3"><div className="flex justify-end gap-1"><button onClick={() => openEdit(entry)} className="p-2 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg"><Pencil className="w-4 h-4" /></button><button onClick={() => removeEntry(entry._id)} className="p-2 text-rose-500 hover:bg-rose-50 rounded-lg"><Trash2 className="w-4 h-4" /></button></div></td></tr>)}</tbody></table>{!filteredEntries.length && <p className="p-10 text-center text-gray-400">No records match these filters.</p>}</div></div>
-            </div>
+            </div>}
 
-            <section className="space-y-3">
+            {showProjectSections && <section className="space-y-3">
                 <div><h2 className="text-lg font-black text-gray-900 dark:text-white">Completed Projects</h2><p className="text-xs text-gray-400">Projects automatically move here when Team Pending reaches Rs 0.</p></div>
                 <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-4">
                     {completedProjects.map(project => <article key={project._id} className="bg-white dark:bg-slate-900 border border-emerald-100 dark:border-emerald-900/40 rounded-2xl p-5 shadow-sm"><div className="flex items-start justify-between gap-3"><div><span className="inline-flex px-2.5 py-1 rounded-full text-[9px] font-black uppercase bg-emerald-100 text-emerald-700">Completed</span><h3 className="mt-2 font-black text-gray-900 dark:text-white">{project.name}</h3></div><div className="flex gap-1"><button onClick={() => openEditProject(project)} className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800"><Pencil className="w-4 h-4" /></button><button onClick={() => removeProject(project._id)} className="p-2 rounded-lg text-rose-500 hover:bg-rose-50"><Trash2 className="w-4 h-4" /></button></div></div><div className="grid grid-cols-3 gap-2 mt-4"><Metric label="Total Cost" value={project.clientTotal} /><Metric label="Team Cost" value={project.metrics?.developerTotal} /><Metric label="Company Profit" value={project.metrics?.companyTotal} tone="text-emerald-600" /></div></article>)}
                 </div>
                 {!completedProjects.length && <div className="rounded-2xl border border-dashed border-gray-200 dark:border-slate-700 p-8 text-center text-sm font-bold text-gray-400">No completed projects yet.</div>}
-            </section>
+            </section>}
 
             {showForm && <div className="fixed inset-0 z-[100] bg-black/60 flex items-center justify-center p-4"><form onSubmit={saveEntry} className="w-full max-w-lg bg-white dark:bg-slate-900 rounded-2xl p-5 space-y-4 shadow-2xl"><div className="flex justify-between"><h2 className="text-lg font-black dark:text-white">{editingId ? 'Edit Record' : 'Add Finance Record'}</h2><button type="button" onClick={() => setShowForm(false)}><X className="w-5 h-5 dark:text-white" /></button></div><div className="grid grid-cols-2 gap-3"><select value={form.type} onChange={event => setForm({ ...form, type: event.target.value })} className={fieldClass}><option value="expense">📤 Expense</option><option value="income">📥 Income</option></select><input required inputMode="numeric" placeholder="Amount" value={form.amount} onChange={event => setForm({ ...form, amount: formatAmountInput(event.target.value) })} className={fieldClass} /></div><input required placeholder="Record title" value={form.title} onChange={event => setForm({ ...form, title: event.target.value })} className={fieldClass} /><div className="grid grid-cols-2 gap-3"><select value={form.category} onChange={event => setForm({ ...form, category: event.target.value })} className={fieldClass}>{categories.map(category => <option key={category} value={category}>{getCategoryIcon(category)} {category}</option>)}</select><input type="date" required value={form.transactionDate} onChange={event => setForm({ ...form, transactionDate: event.target.value })} className={fieldClass} /></div><select value={form.project} onChange={event => setForm({ ...form, project: event.target.value, paymentTarget: '' })} className={fieldClass}><option value="">No project / General record</option>{activeProjects.map(project => <option key={project._id} value={project._id}>📁 {project.name}</option>)}</select>{selectedPaymentProject && <select required value={form.paymentTarget} onChange={event => { const target = event.target.value; setForm({ ...form, paymentTarget: target, type: target === 'client' ? 'income' : target.startsWith('team:') || target.startsWith('company:') ? 'expense' : form.type }); }} className={fieldClass}><option value="">Select payment for</option><option value="client">Client — {selectedPaymentProject.clientName}</option>{(selectedPaymentProject.developers || []).map(member => <option key={member._id} value={`team:${member._id}`}>Team Member — {member.name}{member.designation ? ` (${member.designation})` : ''}</option>)}{(selectedPaymentProject.companies || []).map(company => <option key={company._id} value={`company:${company._id}`}>Company — {company.name}{company.designation ? ` (${company.designation})` : ''}</option>)}</select>}{form.category === 'Other' && <input required placeholder="Custom category name" value={form.customCategory} onChange={event => setForm({ ...form, customCategory: event.target.value })} className={fieldClass} />}<textarea rows="3" placeholder="Description" value={form.description} onChange={event => setForm({ ...form, description: event.target.value })} className={fieldClass} /><button disabled={saving} className="w-full py-3 bg-primary text-white rounded-xl font-black disabled:opacity-50">{saving ? 'Saving...' : 'Save Record'}</button></form></div>}
 

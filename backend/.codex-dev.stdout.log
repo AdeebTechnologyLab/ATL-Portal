@@ -1,0 +1,1096 @@
+
+> lms-backend@1.0.0 dev
+> nodemon server.js
+
+[33m[nodemon] 3.1.11[39m
+[33m[nodemon] to restart at any time, enter `rs`[39m
+[33m[nodemon] watching path(s): *.*[39m
+[33m[nodemon] watching extensions: js,mjs,cjs,json[39m
+[32m[nodemon] starting `node server.js`[39m
+Google Drive assignment uploads are configured.
+
+========================================
+🔧 LMS BACKEND - Starting...
+========================================
+
+🚀 Server running on port 5000
+✅ MongoDB connected
+🔄 Running startup installment check...
+🔄 Starting installment generation check...
+✅ User Muhammad Amir has certificate for Office Work [IT] - skipping
+✅ User Amna Nargis has certificate for Graphic Designer - skipping
+✅ User Saiqa Yaseen has certificate for Graphic Designer - skipping
+✅ User Ahsaan-Ullah has certificate for Video Editing - skipping
+✅ User Muhammad Ali has certificate for Office Work [IT] - skipping
+✅ User Ahmad Hassan has certificate for Office Work [IT] - skipping
+✅ User Bisma Noor has certificate for Office Work [IT] - skipping
+✅ User Sami-Ullah has certificate for Office Work [IT] - skipping
+✅ User Syed Fyzan Gull has certificate for Office Work [IT] - skipping
+✅ User Muhammad Mudasir has certificate for Office Work [IT] - skipping
+✅ User Ali Ch has certificate for Office Work [IT] - skipping
+✅ User Ameer Hamza has certificate for Office Work [IT] - skipping
+✅ User Zia UR Rehman has certificate for Office Work [IT] - skipping
+✅ User Muhammad Shahbaz Habib has certificate for Video Editing - skipping
+✅ User Taimoor Saif has certificate for Office Work [IT] - skipping
+✅ User Aimen Irfan has certificate for Web Development   (Online) - skipping
+✅ User Muhammad Amin has certificate for Web Development   (Online) - skipping
+✅ User Umar Sajid has certificate for Office Work [IT] - skipping
+✅ User Sameer Qasim has certificate for Office Work [IT] - skipping
+✅ User Farhan Talib has certificate for Office Work [IT] - skipping
+✅ User Ayyaz Hussain has certificate for Office Work [IT] - skipping
+✅ User Zaighum Siddique has certificate for Graphic Designer - skipping
+✅ User Laiba Saleem has certificate for Office Work [IT] - skipping
+✅ User Aqsa Bibi has certificate for Office Work [IT] - skipping
+✅ User Farha Batool has certificate for Graphic Designer - skipping
+✅ User Arbab Ghafoor has certificate for Graphic Designer - skipping
+✅ User Aqsa Naseer has certificate for Office Work [IT] - skipping
+✅ User Talha Siyal has certificate for Web Development   (Online) - skipping
+✅ User Armeeza Siyal has certificate for Graphic Designer - skipping
+✅ User Ashna Zahid has certificate for Office Work [IT] - skipping
+✅ User Kainat Mehmood has certificate for Web Development   (Online) - skipping
+✅ User Ayesha Ishtiaq has certificate for Web Development   (Online) - skipping
+✅ User M. Zubair Younis has certificate for Graphic Designer - skipping
+✅ User Anza Aleem has certificate for Web Development   (Online) - skipping
+✅ User Muhammad Hashir has certificate for Graphic Designer - skipping
+✅ User Ahsan Abbas has certificate for Home Architecture   (Online) - skipping
+✅ User Abdullah Shahid has certificate for Graphic Designer - skipping
+✅ User Hammad Sadiq has certificate for Office Work [IT] - skipping
+✅ User Hafiz Muhammad Ahmad Raza Khan has certificate for Video Editing - skipping
+⏸️ Enrollment for Abdul Hanan Hashmi Qureshi in Office Work [IT] is paused - skipping installment generation
+✅ User Raqeeb Ullah has certificate for Graphic Designer - skipping
+✅ User Abdul Wahab has certificate for Office Work [IT] - skipping
+✅ User Salman Tariq has certificate for Office Work [IT] - skipping
+✅ User Ghulam Mustafa has certificate for Web Development   (Online) - skipping
+✅ User Muhammad Mohsin has certificate for Office Work [IT] - skipping
+✅ User Muhammad Hymn Abdullah Bukhari has certificate for Office Work [IT] - skipping
+✅ User Muhammad Aneeb Bukhari has certificate for Office Work [IT] - skipping
+✅ User Kashif Khalid has certificate for Graphic Designer - skipping
+✅ User Zahra Baloch has certificate for Web Development   (Online) - skipping
+✅ User Tooba Adrees has certificate for Web Development (HTML+CSS+Java) - skipping
+✅ User Muhammad Arham Khalid has certificate for Office Work [IT] Documentation Management - skipping
+✅ User Muhammad Mohsin has certificate for Web Development (HTML+CSS+Java) - skipping
+✅ User Hadia Sarwar has certificate for Web Development (HTML+CSS+Java) - skipping
+✅ User Adil Asif has certificate for Web Development (HTML+CSS+Java) - skipping
+⚠️ Skipping fee 6983148804a102554fc15bb7 - no course data
+✅ User Moazzam Ali Zahid has certificate for Web Development (HTML+CSS+Java) - skipping
+✅ User Adil Asif has certificate for App Development - skipping
+✅ User Muntaha Fatima has certificate for Social media manager - skipping
+✅ User M.Ahsan has certificate for Graphic Designer - skipping
+✅ User Ali Raza has certificate for Graphic Designer - skipping
+✅ User Imran Patras has certificate for Video Editing - skipping
+✅ User Aliza Yasin has certificate for Video Editing - skipping
+✅ User Aliza Yasin has certificate for Office Work [IT] - skipping
+✅ User Aliza Yasin has certificate for Graphic Designer - skipping
+✅ User Adnan Ahmad has certificate for Video Editing - skipping
+✅ User Muhammad Umar has certificate for Video Editing - skipping
+✅ User Tooba Adrees has certificate for Social media manager - skipping
+✅ User Amna Bibi has certificate for YouTube Manager + Video Editor - skipping
+✅ User Amna Bibi has certificate for HR Manager - skipping
+✅ User Amna Bibi has certificate for Graphic Designer - skipping
+✅ User Hadia has certificate for HR Manager - skipping
+✅ User Hadia has certificate for Graphic Designer - skipping
+✅ User Muhammad Hamza Zakriya has certificate for Web Development (HTML+CSS+Java) - skipping
+✅ User Taimoor Saif has certificate for Web Development   (Online) - skipping
+✅ User Abdullah Shahid has certificate for Video Editing - skipping
+✅ User Mustafa Faraz has certificate for Video Editing - skipping
+✅ User Muhammad Shahbaz has certificate for Video Editing - skipping
+✅ User Waqas Anwar Khan has certificate for Office Work [IT] - skipping
+⏸️ Enrollment for M Aman Khan in Office Work [IT] is paused - skipping installment generation
+⏸️ Enrollment for Abdur Rahim in Office Work [IT] is paused - skipping installment generation
+⏸️ Enrollment for Anees Khan in Digital Marketing, Ads is paused - skipping installment generation
+✅ User Anees Khan has certificate for Video Editing - skipping
+✅ User Muqadas Zahrah has certificate for HR Manager - skipping
+✅ User Ghulam Muhammad Taqi Shah has certificate for Internet of Things (IoT) - skipping
+⏸️ Enrollment for Muhammad  Farhad in Office Work [IT] is paused - skipping installment generation
+✅ User Homam sajjad has certificate for Digital Marketing, Ads - skipping
+⏸️ Enrollment for Gul Imtiaz Qureshi in E-Commerce is paused - skipping installment generation
+⏸️ Enrollment for Abu Bakar in Basic Computer is paused - skipping installment generation
+⏸️ Enrollment for Muhammad Asjad in Basic Computer is paused - skipping installment generation
+⏸️ Enrollment for Abdul Hadi in Basic Computer is paused - skipping installment generation
+⏸️ Enrollment for Muhammad Rizwan in Basic Computer is paused - skipping installment generation
+⏸️ Enrollment for Sharyar in Graphic Designer is paused - skipping installment generation
+⏸️ Enrollment for AHTESHAM KHAN in Basic Computer is paused - skipping installment generation
+✅ User Shayan israr has certificate for Basic Computer - skipping
+⏸️ Enrollment for FALAK KHAN in Basic Computer is paused - skipping installment generation
+⏸️ Enrollment for M Abdullah in Basic Computer is paused - skipping installment generation
+⚠️ Skipping fee 6a348f67af9a0db166c5f694 - no course data
+⚠️ Skipping fee 6a38e103664e534307a1c4bc - no course data
+⚠️ Skipping fee 6a3a25334bed3b68a523403d - no course data
+⚠️ Skipping fee 6a3e6d1a58f55b3ab4342a0a - no course data
+⏸️ Enrollment for Shayan ali in Video Editing is paused - skipping installment generation
+⚠️ Skipping fee 6a47e655eaebbc66498ed3f1 - no course data
+⚠️ Skipping fee 6a4a568d9c2968f188e1ef72 - no course data
+⏸️ Enrollment for M Saeed khan in Video Editing is paused - skipping installment generation
+✅ User Muqadas Zahrah has certificate for Social media manager - skipping
+✅ Installment generation complete. Generated 0 new installments.
+🔄 Updating enrollment active status...
+🔌 New client connected
+🔌 New client connected
+🔌 New client connected
+👤 User joined personal chat room: 697fa841f525fb948dcac5f9 | Active: 1
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+👤 User joined personal chat room: 697fa841f525fb948dcac5f9 | Active: 1
+🔐 Auth OK: Salman Adeeb (job) - GET /api/auth/available-roles
+👤 User joined personal chat room: 697fa841f525fb948dcac5f9 | Active: 1
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Salman Adeeb (job) - GET /api/auth/me
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/unread
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 1
+🔌 New client connected
+🔌 New client connected
+👤 User joined personal chat room: 697fa841f525fb948dcac5f9 | Active: 1
+👤 User joined personal chat room: 697fa841f525fb948dcac5f9 | Active: 1
+🔐 Auth OK: Salman Adeeb (job) - GET /api/users/role/admin/verified
+🔐 Auth OK: Salman Adeeb (job) - GET /api/attendance/global-holidays
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/auth/available-roles
+🔐 Auth OK: Salman Adeeb (job) - GET /api/auth/me
+🔐 Auth OK: Salman Adeeb (job) - GET /api/notifications/active
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/unread
+🔐 Auth OK: Salman Adeeb (job) - GET /api/users/role/admin/verified
+🔐 Auth OK: Salman Adeeb (job) - GET /api/attendance/global-holidays
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications
+🔐 Auth OK: Salman Adeeb (job) - GET /api/auth/me
+🔐 Auth OK: Salman Adeeb (job) - GET /api/auth/available-roles
+🔐 Auth OK: Salman Adeeb (job) - GET /api/users/role/admin/verified
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 1
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/messages/6979f4a7fe559715b806b751
+👤 User joined personal chat room: 697fa841f525fb948dcac5f9 | Active: 1
+👤 User joined personal chat room: 697fa841f525fb948dcac5f9 | Active: 1
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Salman Adeeb (job) - GET /api/auth/me
+🔐 Auth OK: Salman Adeeb (job) - GET /api/notifications/active
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 1
+🔌 New client connected
+🔌 New client connected
+👤 User joined personal chat room: 697fa841f525fb948dcac5f9 | Active: 1
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/auth/available-roles
+👤 User joined personal chat room: 697fa841f525fb948dcac5f9 | Active: 1
+🔐 Auth OK: Salman Adeeb (job) - GET /api/users/role/admin/verified
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/messages/6979f4a7fe559715b806b751
+🔐 Auth OK: Salman Adeeb (job) - GET /api/auth/available-roles
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/messages/6979f4a7fe559715b806b751
+🔐 Auth OK: Salman Adeeb (job) - PUT /api/chat/read/6979f4a7fe559715b806b751
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/unread
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/messages/6979f4a7fe559715b806b751
+🔐 Auth OK: Salman Adeeb (job) - PUT /api/chat/read/6979f4a7fe559715b806b751
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/unread
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+✅ Enrollment status update complete. Updated 0 enrollments.
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔌 New client connected
+🔌 New client connected
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/available-roles
+🔐 Auth OK: Super Admin (admin) - GET /api/stats/admin-dashboard?startDate=2026-08-01&endDate=2026-08-03
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/conversations
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/me
+🔐 Auth OK: Super Admin (admin) - GET /api/attendance/global-holidays
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/stats/admin-dashboard?startDate=2026-08-01&endDate=2026-08-31
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/available-roles
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/me
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+🔌 New client connected
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/unread
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔐 Auth OK: Super Admin (admin) - GET /api/attendance/global-holidays
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/available-roles
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/stats/admin-dashboard?startDate=2026-08-01&endDate=2026-08-03
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/users/birthdays
+🔐 Auth OK: Super Admin (admin) - GET /api/users/birthdays
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/stats/admin-dashboard?startDate=2026-08-01&endDate=2026-08-03
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/conversations
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/unread
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/completed-showcase
+🔐 Auth OK: Super Admin (admin) - GET /api/users/role/teacher/verified
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/me
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/completed-showcase
+🔐 Auth OK: Super Admin (admin) - GET /api/users/role/teacher/verified
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+🔌 New client connected
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/available-roles
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/stats/admin-dashboard?startDate=2026-08-01&endDate=2026-08-03
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/stats/admin-dashboard?startDate=2026-08-01&endDate=2026-08-03
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/stats/admin-dashboard?startDate=2026-08-01&endDate=2026-08-03
+🔐 Auth OK: Super Admin (admin) - GET /api/stats/admin-dashboard?startDate=2026-08-01&endDate=2026-08-03
+🔐 Auth OK: Super Admin (admin) - GET /api/stats/admin-dashboard?startDate=2026-08-01&endDate=2026-08-03
+🔐 Auth OK: Super Admin (admin) - GET /api/stats/admin-dashboard?startDate=2026-08-01&endDate=2026-08-03
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/me
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+🔌 New client connected
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/available-roles
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔐 Auth OK: Super Admin (admin) - GET /api/users/role/job
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/settings
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/me
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/settings
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/available-roles
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/users/role/job
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔐 Auth OK: Super Admin (admin) - GET /api/finance?startDate=2026-08-01&endDate=2026-08-31
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/me
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+🔌 New client connected
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/available-roles
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/finance?startDate=2026-08-01&endDate=2026-08-31
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/attendance/global-holidays
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/attendance/global-holidays
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/attendance/global-holidays
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/attendance/global-holidays
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/me
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔐 Auth OK: Salman Adeeb (job) - GET /api/auth/me
+🔌 New client connected
+🔌 New client connected
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/available-roles
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔌 New client connected
+🔌 New client connected
+👤 User joined personal chat room: 697fa841f525fb948dcac5f9 | Active: 2
+👤 User joined personal chat room: 697fa841f525fb948dcac5f9 | Active: 2
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Salman Adeeb (job) - GET /api/auth/available-roles
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/me
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+🔌 New client connected
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/available-roles
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/attendance/global-holidays
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/attendance/global-holidays
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/finance?startDate=2026-08-01&endDate=2026-08-31
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/me
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+🔌 New client connected
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/available-roles
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance?startDate=2026-08-01&endDate=2026-08-31
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/me
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+🔌 New client connected
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/available-roles
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/finance?startDate=2026-08-01&endDate=2026-08-31
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/me
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+🔌 New client connected
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/available-roles
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/finance?startDate=2026-08-01&endDate=2026-08-31
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/me
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+🔌 New client connected
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/available-roles
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/finance?startDate=2026-08-01&endDate=2026-08-31
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/me
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+🔌 New client connected
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/available-roles
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/finance?startDate=2026-08-01&endDate=2026-08-31
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/attendance/global-holidays
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/me
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+🔌 New client connected
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/available-roles
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/attendance/global-holidays
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/finance?startDate=2026-08-01&endDate=2026-08-31
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/me
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+🔌 New client connected
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/available-roles
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/finance?startDate=2026-08-01&endDate=2026-08-31
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/me
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+🔌 New client connected
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/available-roles
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/attendance/global-holidays
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/finance?startDate=2026-08-01&endDate=2026-08-31
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/attendance/global-holidays
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts

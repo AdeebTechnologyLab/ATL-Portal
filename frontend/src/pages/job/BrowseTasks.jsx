@@ -301,38 +301,6 @@ const BrowseTasks = () => {
                 </div>
             )}
 
-            <div>
-                <div className="grid grid-cols-5 gap-1 rounded-xl bg-gray-100 dark:bg-slate-900 p-1 border border-gray-200/60 dark:border-slate-700">
-                    {[
-                        { id: 'available', label: 'Available', count: availableTasks.length },
-                        { id: 'applied', label: 'Applied', count: appliedTasks.length },
-                        { id: 'assigned', label: 'Assigned', count: assignedTasks.length },
-                        { id: 'completed', label: 'Completed', count: completedTasks.length },
-                        { id: 'expired', label: 'Expired', count: expiredTasks.length }
-                    ].map((tab) => (
-                        <button
-                            key={tab.id}
-                            type="button"
-                            onClick={() => setActiveTab(tab.id)}
-                            className={`min-w-0 px-0.5 sm:px-4 py-2 rounded-lg transition-all flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 ${
-                                activeTab === tab.id
-                                    ? 'bg-white dark:bg-slate-800 text-primary shadow-sm'
-                                    : 'text-gray-500 dark:text-slate-400 hover:bg-white/60 dark:hover:bg-slate-800/60'
-                            }`}
-                        >
-                            <span className="max-w-full text-[7px] min-[380px]:text-[8px] sm:text-xs font-black uppercase tracking-tight sm:tracking-wider truncate">{tab.label}</span>
-                            <span className={`min-w-4 h-4 sm:min-w-5 sm:h-5 px-1 sm:px-1.5 rounded flex items-center justify-center text-[8px] sm:text-[10px] font-black ${
-                                activeTab === tab.id
-                                    ? 'bg-primary/10 text-primary'
-                                    : 'bg-gray-200 dark:bg-slate-700 text-gray-600 dark:text-slate-300'
-                            }`}>
-                                {tab.count}
-                            </span>
-                        </button>
-                    ))}
-                </div>
-            </div>
-
             {/* Search */}
             <div className="bg-transparent sm:bg-white dark:bg-transparent sm:dark:bg-slate-900 rounded-xl sm:rounded-2xl p-0 sm:p-4 border-0 sm:border border-gray-100 dark:border-slate-700">
                 <div className="flex items-center bg-white dark:bg-slate-900 rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-200 dark:border-slate-700 shadow-sm">

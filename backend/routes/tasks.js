@@ -13,6 +13,7 @@ const requireActiveTeacher = (req, res, next) => {
 const { protect, authorize } = require('../middleware/auth');
 const { uploadSubmission } = require('../config/cloudinary');
 const PaidTask = require('../models/PaidTask');
+const FinanceProject = require('../models/FinanceProject');
 const User = require('../models/User');
 const UserNotification = require('../models/UserNotification');
 const { sendPushNotification } = require('../utils/pushHelper');
@@ -346,6 +347,48 @@ router.put('/:id/assign', protect, authorize('admin', 'teacher'), requireActiveT
         }
 
         await task.save();
+
+        // Keep the admin Project Portfolio in sync with assigned job work.
+        // The first assignment creates the project; later assignments only add
+        // the new person to the same project team.
+        const assignedUser = await User.findById(userId).select('name');
+        if (assignedUser) {
+            const budgetNumbers = String(task.budget || '').match(/[\d,]+/g) || [];
+            const clientTotal = budgetNumbers.length
+                ? Number(budgetNumbers[budgetNumbers.length - 1].replace(/,/g, '')) || 0
+                : 0;
+            let financeProject = await FinanceProject.findOne({ sourceTask: task._id });
+
+            if (!financeProject) {
+                financeProject = await FinanceProject.create({
+                    sourceTask: task._id,
+                    name: task.title,
+                    clientName: 'Job Posting Client',
+                    clientTotal,
+                    developers: [{
+                        name: assignedUser.name,
+                        designation: 'Assigned Job User',
+                        percentage: 0,
+                        totalPayable: 0,
+                        paidAmount: 0
+                    }],
+                    companies: [],
+                    status: 'processing',
+                    startDate: task.assignedAt || new Date(),
+                    description: `Automatically created from Job Posting: ${task.title}`,
+                    createdBy: req.user.id
+                });
+            } else if (!(financeProject.developers || []).some(member => member.name === assignedUser.name)) {
+                financeProject.developers.push({
+                    name: assignedUser.name,
+                    designation: 'Assigned Job User',
+                    percentage: 0,
+                    totalPayable: 0,
+                    paidAmount: 0
+                });
+                await financeProject.save();
+            }
+        }
 
         // Notify the assigned user
         const UserNotificationModel = require('../models/UserNotification');

@@ -6,6 +6,7 @@ import {
 import Loader, { ButtonLoader } from '../../components/ui/Loader';
 import Badge from '../../components/ui/Badge';
 import Modal from '../../components/ui/Modal';
+import ProfileAvatar from '../../components/ui/ProfileAvatar';
 import { taskAPI, userNotificationAPI, userAPI } from '../../services/api';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -1500,9 +1501,12 @@ const PaidTasksManagement = () => {
                             <div key={idx} className="p-4 border rounded-xl bg-white shadow-sm">
                                 <div className="flex items-center justify-between mb-3 pb-3 border-b">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold">
-                                            {sub.user?.name?.charAt(0) || 'U'}
-                                        </div>
+                                        <ProfileAvatar
+                                            src={sub.user?.photo}
+                                            name={sub.user?.name || 'User'}
+                                            size="md"
+                                            fallbackColor="bg-blue-500"
+                                        />
                                         <div>
                                             <p className="font-semibold text-gray-900">{sub.user?.name || 'Unknown User'}</p>
                                             <p className="text-xs text-gray-500">{sub.user?.email}</p>
@@ -1528,7 +1532,18 @@ const PaidTasksManagement = () => {
 
                                     <div className="bg-primary/5 p-3 rounded-lg">
                                         <p className="text-xs font-bold text-primary uppercase tracking-wider mb-1">Payment Details</p>
-                                        <p className="text-sm font-mono text-primary">{sub.accountDetails}</p>
+                                        <div className="space-y-1 text-sm font-mono text-primary">
+                                            {(sub.accountDetails || '').split('|').map((detail, detailIndex) => {
+                                                const [label, ...valueParts] = detail.trim().split(':');
+                                                const value = valueParts.join(':').trim();
+                                                const displayLabel = label.trim().replace(/^Account\s+/i, '');
+                                                return (
+                                                    <p key={`${label}-${detailIndex}`} className="break-words">
+                                                        {value ? <><span className="font-bold">{displayLabel}:</span> {value}</> : detail.trim()}
+                                                    </p>
+                                                );
+                                            })}
+                                        </div>
                                         {Number(sub.requestedAmount) > 0 && (
                                             <p className="text-sm font-black text-emerald-600 mt-2">Requested Payment: Rs {Number(sub.requestedAmount).toLocaleString()}</p>
                                         )}

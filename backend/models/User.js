@@ -29,7 +29,11 @@ const userSchema = new mongoose.Schema({
     },
     photo: {
         type: String, // Cloudinary URL
-        default: null
+        default: function () {
+            return this.role === 'admin'
+                ? 'https://res.cloudinary.com/adeeb-tech-lab/image/upload/v1779729753/livechat_pqwhjj.png'
+                : null;
+        }
     },
     feeScreenshot: {
         type: String, // Cloudinary URL or external link

@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import { ArrowLeft, Briefcase, MessageCircle, Send, Trash2 } from 'lucide-react';
+import { ArrowLeft, Briefcase, MessageCircle, Search, Send, ShieldCheck, Trash2 } from 'lucide-react';
 import { chatAPI } from '../../services/api';
 import Loader from '../../components/ui/Loader';
+import ProfileAvatar from '../../components/ui/ProfileAvatar';
 
 const JobChat = () => {
     const { user } = useSelector(state => state.auth);
@@ -15,6 +16,7 @@ const JobChat = () => {
     const [text, setText] = useState('');
     const [loading, setLoading] = useState(true);
     const [sending, setSending] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
     const endRef = useRef(null);
 
     const loadJobs = async (quiet = false) => {
@@ -56,9 +58,11 @@ const JobChat = () => {
     };
 
     useEffect(() => {
-        if (user?.role !== 'job' || !location.state?.taskId || activeJob || jobs.length === 0) return;
-        const requestedJob = jobs.find(job => String(job._id) === String(location.state.taskId));
-        if (requestedJob) openApplicantJobChat(requestedJob);
+        if (user?.role !== 'job' || activeJob || jobs.length === 0) return;
+        const requestedJob = location.state?.taskId
+            ? jobs.find(job => String(job._id) === String(location.state.taskId))
+            : null;
+        openApplicantJobChat(requestedJob || jobs[0]);
     }, [jobs, location.state?.taskId, user?.role, activeJob]);
 
     const send = async e => {
@@ -78,26 +82,52 @@ const JobChat = () => {
         setMessages([]);
     };
 
+    const visibleJobs = jobs.filter(job => {
+        const query = searchQuery.trim().toLowerCase();
+        if (!query) return true;
+        return job.title?.toLowerCase().includes(query) ||
+            (job.contacts || []).some(contact => contact.name?.toLowerCase().includes(query));
+    });
+
     if (loading) return <Loader message="Loading job chats..." />;
 
     return (
-        <div className="space-y-3 sm:space-y-4">
-            <div>
-                <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Job Collaboration</h1>
-                <p className="text-xs sm:text-base text-gray-500 dark:text-gray-400">Jobs, applicants and private discussions in one place</p>
+        <div className="flex h-[calc(100dvh-8.5rem)] min-h-0 flex-col gap-4 overflow-hidden">
+            <div className="flex items-center gap-3">
+                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary text-white shadow-lg shadow-primary/20">
+                    <MessageCircle className="h-5 w-5" />
+                </div>
+                <div>
+                    <h1 className="text-xl font-black text-gray-900 dark:text-white sm:text-2xl">Job Messages</h1>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 sm:text-sm">Private conversations about assigned work</p>
+                </div>
             </div>
-            <div className="grid grid-cols-1 lg:grid-cols-[340px_1fr] h-[calc(100dvh-10rem)] min-h-[520px] lg:min-h-[620px] bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-700 rounded-xl sm:rounded-2xl overflow-hidden shadow-sm">
-                <aside className={`${activeContact ? 'hidden lg:block' : 'block'} border-r border-gray-100 dark:border-gray-700 overflow-y-auto h-full bg-white dark:bg-gray-900`}>
-                    {jobs.length === 0 ? <p className="p-6 text-sm text-gray-500 dark:text-gray-400">No job conversations yet.</p> : jobs.map(job => (
-                        <div key={job._id} className="border-b border-gray-100 dark:border-gray-700 p-2.5 sm:p-3">
+            <div className={`grid min-h-0 flex-1 grid-cols-1 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl shadow-gray-200/40 dark:border-slate-700 dark:bg-slate-900 dark:shadow-black/20 ${user?.role === 'job' ? '' : 'lg:grid-cols-[330px_1fr]'}`}>
+                {user?.role !== 'job' && <aside className={`${activeContact ? 'hidden lg:flex' : 'flex'} h-full min-h-0 flex-col border-r border-gray-200 bg-gray-50/60 dark:border-slate-700 dark:bg-slate-900`}>
+                    <div className="border-b border-gray-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900">
+                        <div className="mb-3 flex items-center justify-between">
+                            <div>
+                                <p className="font-black text-gray-900 dark:text-white">Conversations</p>
+                                <p className="text-[11px] text-gray-400">{jobs.length} job thread{jobs.length === 1 ? '' : 's'}</p>
+                            </div>
+                            <span className="flex h-8 min-w-8 items-center justify-center rounded-full bg-primary/10 px-2 text-xs font-black text-primary">{jobs.reduce((sum, job) => sum + Number(job.totalUnread || 0), 0)}</span>
+                        </div>
+                        <div className="flex items-center gap-2 rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 dark:border-slate-700 dark:bg-slate-800">
+                            <Search className="h-4 w-4 text-gray-400" />
+                            <input value={searchQuery} onChange={event => setSearchQuery(event.target.value)} placeholder="Search conversations" className="min-w-0 flex-1 border-0 bg-transparent p-0 text-sm text-gray-900 outline-none ring-0 placeholder:text-gray-400 focus:border-0 focus:ring-0 dark:text-white" />
+                        </div>
+                    </div>
+                    <div className="no-scrollbar flex-1 overflow-y-auto p-2">
+                    {visibleJobs.length === 0 ? <div className="flex h-56 flex-col items-center justify-center px-6 text-center"><MessageCircle className="mb-3 h-9 w-9 text-gray-300" /><p className="text-sm font-semibold text-gray-500 dark:text-gray-400">No conversations found</p></div> : visibleJobs.map(job => (
+                        <div key={job._id} className="mb-1">
                             {user?.role === 'job' ? (
                                 <button
                                     onClick={() => openApplicantJobChat(job)}
-                                    className={`w-full flex items-center gap-3 p-3 rounded-xl text-left transition-colors ${activeJob?._id === job._id ? 'bg-primary/10 dark:bg-primary/25' : 'hover:bg-gray-50 dark:hover:bg-gray-800'}`}
+                                    className={`group flex w-full items-center gap-3 rounded-xl border p-3 text-left transition-all ${activeJob?._id === job._id ? 'border-primary/20 bg-white shadow-sm ring-1 ring-primary/10 dark:bg-slate-800' : 'border-transparent hover:bg-white hover:shadow-sm dark:hover:bg-slate-800'}`}
                                 >
-                                    <Briefcase className="w-5 h-5 text-primary shrink-0" />
-                                    <span className="font-bold text-sm text-gray-900 dark:text-gray-100 flex-1">{job.title}</span>
-                                    {job.totalUnread > 0 && <span className="bg-red-500 text-white text-xs rounded-full min-w-5 h-5 px-1 flex items-center justify-center">{job.totalUnread}</span>}
+                                    <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${activeJob?._id === job._id ? 'bg-primary text-white' : 'bg-primary/10 text-primary'}`}><Briefcase className="h-5 w-5" /></div>
+                                    <div className="min-w-0 flex-1"><p className="truncate text-sm font-bold text-gray-900 dark:text-gray-100">{job.title}</p><p className="mt-0.5 truncate text-[11px] text-gray-400">{job.contacts?.[0]?.name || 'Job manager'} · Private chat</p></div>
+                                    {job.totalUnread > 0 && <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-black text-white">{job.totalUnread}</span>}
                                 </button>
                             ) : <>
                             <div className="flex items-center gap-2 mb-2">
@@ -119,13 +149,14 @@ const JobChat = () => {
                             </>}
                         </div>
                     ))}
-                </aside>
-                <section className={`${activeContact ? 'flex' : 'hidden lg:flex'} flex-col min-w-0 min-h-0`}>
+                    </div>
+                </aside>}
+                <section className={`${activeContact || user?.role === 'job' ? 'flex' : 'hidden lg:flex'} flex-col min-w-0 min-h-0`}>
                     {!activeContact ? (
-                        <div className="flex-1 flex flex-col items-center justify-center text-gray-400 dark:text-gray-500"><MessageCircle className="w-12 h-12 mb-2" /><p>Select a job conversation</p></div>
+                        <div className="flex flex-1 flex-col items-center justify-center bg-gradient-to-br from-white to-gray-50 px-6 text-center text-gray-400 dark:from-slate-900 dark:to-slate-950 dark:text-gray-500"><div className="mb-4 flex h-20 w-20 items-center justify-center rounded-3xl bg-primary/10"><MessageCircle className="h-9 w-9 text-primary" /></div><p className="text-lg font-black text-gray-700 dark:text-slate-200">Select a conversation</p><p className="mt-1 max-w-xs text-sm">Choose a job thread to view messages and continue the discussion.</p></div>
                     ) : <>
-                        <header className="p-3 sm:p-4 border-b border-gray-100 dark:border-gray-700 flex items-center gap-2 sm:gap-3 bg-white dark:bg-gray-900 shrink-0">
-                            <button
+                        <header className="flex min-h-[72px] shrink-0 items-center gap-3 border-b border-gray-200 bg-white px-3 py-3 dark:border-slate-700 dark:bg-slate-900 sm:px-5">
+                            {user?.role !== 'job' && <button
                                 type="button"
                                 onClick={() => {
                                     setActiveContact(null);
@@ -136,33 +167,42 @@ const JobChat = () => {
                                 aria-label="Back to conversations"
                             >
                                 <ArrowLeft className="w-4 h-4" />
-                            </button>
+                            </button>}
                             {user?.role === 'job' ? (
-                                <div className="flex-1 min-w-0">
-                                    <p className="font-bold text-sm sm:text-base text-gray-900 dark:text-white mb-1.5 sm:mb-2 truncate">{activeJob.title}</p>
-                                    <div className="flex items-start gap-2 sm:gap-3 overflow-x-auto no-scrollbar">
-                                        {activeJob.contacts.map(manager => (
-                                            <div key={manager._id} className="flex flex-col items-center w-14">
-                                                <div className="w-9 h-9 rounded-full overflow-hidden bg-primary text-white flex items-center justify-center text-sm font-bold ring-2 ring-white dark:ring-gray-700">
-                                                    {manager.photo ? <img src={manager.photo} alt={manager.name} className="w-full h-full object-cover" /> : manager.name?.charAt(0)}
+                                <div className="flex min-w-0 flex-1 items-center gap-4">
+                                    <div className="min-w-0 shrink-0"><p className="max-w-44 truncate text-sm font-black text-gray-900 dark:text-white sm:max-w-60">{activeJob.title}</p><p className="mt-0.5 text-[10px] font-bold uppercase tracking-wider text-gray-400">Job contacts</p></div>
+                                    <div className="no-scrollbar flex min-w-0 flex-1 gap-2 overflow-x-auto pb-1">
+                                        {(activeJob.contacts || []).map(contact => (
+                                            <div
+                                                key={contact._id}
+                                                className="relative flex w-[76px] shrink-0 flex-col items-center px-1 py-1 text-center"
+                                            >
+                                                <div className="relative flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-primary to-orange-400 text-xs font-black text-white">
+                                                    <span>{contact.name?.charAt(0)?.toUpperCase() || '?'}</span>
+                                                    {contact.photo && <img src={contact.photo} alt="" className="absolute inset-0 h-full w-full object-cover" onError={event => { event.currentTarget.style.display = 'none'; }} />}
                                                 </div>
-                                                <span className="mt-1 text-[10px] leading-tight text-center text-gray-600 dark:text-gray-300 line-clamp-2">{manager.name}</span>
+                                                <p className="mt-1.5 w-full truncate text-[11px] font-black text-gray-800 dark:text-slate-100">{contact.name}</p>
+                                                {contact.unreadCount > 0 && <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-[9px] font-black text-white ring-2 ring-white dark:ring-slate-900">{contact.unreadCount}</span>}
                                             </div>
                                         ))}
                                     </div>
+                                    <span className="hidden shrink-0 rounded-full bg-emerald-50 px-2 py-1 text-[10px] font-bold text-emerald-600 dark:bg-emerald-950/30 dark:text-emerald-400 sm:block">{activeJob.contacts?.length || 0} contacts</span>
                                 </div>
-                            ) : <div className="flex-1"><p className="font-bold text-gray-900 dark:text-white">{activeContact.name}</p><p className="text-xs text-gray-500 dark:text-gray-400">{activeJob.title}</p></div>}
+                            ) : <>
+                                <ProfileAvatar src={activeContact.photo} name={activeContact.name} size="md" />
+                                <div className="min-w-0 flex-1"><div className="flex items-center gap-1.5"><p className="truncate font-black text-gray-900 dark:text-white">{activeContact.name}</p><ShieldCheck className="h-4 w-4 flex-none text-emerald-500" /></div><p className="truncate text-xs text-gray-500 dark:text-gray-400">{activeJob.title}</p></div>
+                            </>}
                             {user?.role === 'admin' && <button onClick={clearChat} className="p-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-lg" title="Clear chat"><Trash2 className="w-5 h-5" /></button>}
                         </header>
-                        <div className="flex-1 min-h-0 p-3 sm:p-4 overflow-y-auto bg-gray-50 dark:bg-gray-950 space-y-2.5 sm:space-y-3">
-                            {messages.length === 0 && <p className="text-center text-sm text-gray-400 mt-12">No messages yet. Start the discussion.</p>}
+                        <div className="no-scrollbar flex-1 min-h-0 p-3 sm:p-5 overflow-y-auto bg-[#f6f7fb] dark:bg-slate-950 space-y-3">
+                            {messages.length === 0 && <div className="mx-auto mt-14 max-w-xs text-center"><div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-white shadow-sm dark:bg-slate-900"><Send className="h-5 w-5 text-primary" /></div><p className="font-bold text-gray-700 dark:text-slate-200">Start the conversation</p><p className="mt-1 text-xs text-gray-400">Send a message about this job.</p></div>}
                             {messages.map(message => {
                                 const mine = String(message.sender?._id || message.sender) === String(user?.id || user?._id);
-                                return <div key={message._id} className={`flex ${mine ? 'justify-end' : 'justify-start'}`}><div className={`max-w-[86%] sm:max-w-[78%] px-3 sm:px-4 py-2 rounded-2xl ${mine ? 'bg-primary text-white rounded-br-md' : 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-100 rounded-bl-md'}`}><p className="text-[9px] sm:text-[10px] font-bold opacity-70 mb-1">{message.sender?.name}</p><p className="text-[13px] sm:text-sm whitespace-pre-wrap break-words">{message.text}</p><p className="text-[8px] sm:text-[9px] opacity-60 mt-1 text-right">{new Date(message.createdAt).toLocaleString()}</p></div></div>;
+                                return <div key={message._id} className={`flex items-end gap-2 ${mine ? 'justify-end' : 'justify-start'}`}>{!mine && <ProfileAvatar src={message.sender?.photo} name={message.sender?.name} size="xs" />}<div className={`max-w-[82%] px-3.5 py-2.5 shadow-sm sm:max-w-[70%] ${mine ? 'rounded-2xl rounded-br-sm bg-primary text-white' : 'rounded-2xl rounded-bl-sm border border-gray-200 bg-white text-gray-800 dark:border-slate-700 dark:bg-slate-800 dark:text-gray-100'}`}><p className="whitespace-pre-wrap break-words text-[13px] leading-relaxed sm:text-sm">{message.text}</p><p className={`mt-1.5 text-right text-[9px] ${mine ? 'text-white/65' : 'text-gray-400'}`}>{new Date(message.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p></div></div>;
                             })}
                             <div ref={endRef} />
                         </div>
-                        <form onSubmit={send} className="p-2.5 sm:p-4 border-t border-gray-100 dark:border-gray-700 flex gap-2 bg-white dark:bg-gray-900 shrink-0"><input value={text} onChange={e => setText(e.target.value)} placeholder="Write a message..." className="min-w-0 flex-1 px-3 sm:px-4 py-2.5 sm:py-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder:text-gray-400 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:ring-2 focus:ring-primary/20 text-sm" /><button disabled={!text.trim() || sending} className="w-11 sm:w-auto sm:px-4 bg-primary text-white rounded-xl disabled:opacity-50 flex items-center justify-center shrink-0"><Send className="w-5 h-5" /></button></form>
+                        <form onSubmit={send} className="flex shrink-0 gap-2 border-t border-gray-200 bg-white p-3 dark:border-slate-700 dark:bg-slate-900 sm:p-4"><div className="flex min-w-0 flex-1 items-center rounded-2xl border border-gray-200 bg-gray-50 px-4 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/10 dark:border-slate-700 dark:bg-slate-800"><input value={text} onChange={e => setText(e.target.value)} placeholder="Type your message..." className="min-w-0 flex-1 border-0 bg-transparent py-3 text-sm text-gray-900 outline-none ring-0 placeholder:text-gray-400 focus:border-0 focus:ring-0 dark:text-white" /></div><button disabled={!text.trim() || sending} className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary text-white shadow-lg shadow-primary/20 transition-transform hover:scale-105 disabled:scale-100 disabled:opacity-40"><Send className="h-5 w-5" /></button></form>
                     </>}
                 </section>
             </div>
