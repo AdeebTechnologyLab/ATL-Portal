@@ -13,6 +13,7 @@ import { formatDate, formatDateTime } from '../../../utils/dateFormatter';
 import RichTextContent from '../../../components/ui/RichTextContent';
 import { stripHtmlToText } from '../../../utils/richText';
 import { formatAttendanceDateDisplay, formatAttendanceWeekday } from '../../../utils/attendanceDate';
+import { isDueDateOverdue } from '../../../utils/dueDate';
 
 const TAB_ASSIGNMENTS = 'assignments';
 const TAB_DAILY_TASKS = 'daily_tasks';
@@ -237,7 +238,7 @@ const StudentWorkView = ({ student, onBack }) => {
                                             .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
                                             .map((assignment, idx) => {
                                                 const submission = assignment.submissions?.[0];
-                                                const isOverdue = new Date(assignment.dueDate) < new Date();
+                                                const isOverdue = isDueDateOverdue(assignment.dueDate);
 
                                                 return (
                                                     <motion.div

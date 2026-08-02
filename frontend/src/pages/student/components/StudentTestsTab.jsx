@@ -8,6 +8,7 @@ import Loader, { ButtonLoader } from '../../../components/ui/Loader';
 import { testAPI } from '../../../services/api';
 import Badge from '../../../components/ui/Badge';
 import { formatDate } from '../../../utils/dateFormatter';
+import { isDueDateOverdue } from '../../../utils/dueDate';
 
 const getAutomaticFeedback = (percentage) => {
     if (!percentage || isNaN(percentage)) return '-';
@@ -743,7 +744,7 @@ const StudentTestsTab = ({ courseId, isRestricted }) => {
                                             </div>
                                         </div>
                                         
-                                        {test.dueDate && new Date(test.dueDate) < new Date() ? (
+                                        {test.dueDate && isDueDateOverdue(test.dueDate) ? (
                                             <div className="w-full py-4 bg-red-50 text-red-500 border border-red-100 rounded-2xl font-black text-sm uppercase tracking-widest flex items-center justify-center gap-2 cursor-not-allowed">
                                                 <AlertCircle className="w-4 h-4" />
                                                 Test Expired

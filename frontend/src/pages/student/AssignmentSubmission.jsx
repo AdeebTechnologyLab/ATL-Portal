@@ -20,6 +20,7 @@ import WorkspaceRestrictedBanner from '../../components/dashboard/WorkspaceRestr
 import { calculateOutstandingFees } from '../../utils/feeHelpers';
 import { io } from 'socket.io-client';
 import { getSocketURL } from '../../config/apiBaseUrl';
+import { endOfDueDate, isDueDateOverdue } from '../../utils/dueDate';
 
 const SOCKET_URL = getSocketURL();
 
@@ -266,11 +267,13 @@ const AssignmentSubmission = () => {
         }
     };
 
-    const isDeadlinePassed = (deadline) => new Date(deadline) < new Date();
+    const isDeadlinePassed = isDueDateOverdue;
     
 
     const getTimeRemaining = (deadline) => {
-        const diff = new Date(deadline) - new Date();
+        const dueDate = endOfDueDate(deadline);
+        if (!dueDate) return 'No deadline';
+        const diff = dueDate - new Date();
         if (diff < 0) return 'Deadline Passed';
         const days = Math.floor(diff / (1000 * 60 * 60 * 24));
         const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);

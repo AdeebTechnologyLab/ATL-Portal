@@ -8,6 +8,7 @@ import Loader, { ButtonLoader } from '../../../components/ui/Loader';
 import { formatDate, formatDateTime } from '../../../utils/dateFormatter';
 import RichTextEditor from '../../../components/ui/RichTextEditor';
 import RichTextContent from '../../../components/ui/RichTextContent';
+import { isDueDateOverdue } from '../../../utils/dueDate';
 
 const getAutomaticFeedback = (percentage) => {
     if (!percentage || isNaN(percentage)) return '-';
@@ -480,7 +481,7 @@ const AssignmentsTab = ({ course, students }) => { // Accept students prop
                             const submissionCount = assignment.submissions?.length || 0;
                             const gradedCount = assignment.submissions?.filter(s => s.marks !== undefined && s.marks !== null).length || 0;
                             const isFullyGraded = submissionCount > 0 && gradedCount === submissionCount;
-                            const isOverdue = new Date(assignment.dueDate) < new Date();
+                            const isOverdue = isDueDateOverdue(assignment.dueDate);
                             const isScheduled = new Date(assignment.publishDate) > new Date();
 
                             // Spotlight submission if student filter is active

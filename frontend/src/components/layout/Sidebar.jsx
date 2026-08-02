@@ -3,6 +3,7 @@ import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
 import { io } from 'socket.io-client';
 import { assignmentAPI, courseAPI, dailyTaskAPI, chatAPI, enrollmentAPI, feeAPI, certificateAPI, testAPI, taskAPI } from '../../services/api';
+import { isDueDateOverdue } from '../../utils/dueDate';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     LayoutDashboard,
@@ -344,7 +345,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                 const mySub = a.submissions?.find(s => (s.user?._id || s.user) === (user?._id || user?.id));
                 const isSubmitted = !!mySub;
                 const isRejected = mySub?.status === 'rejected';
-                const isDeadlinePassed = new Date(a.dueDate) < new Date();
+                const isDeadlinePassed = isDueDateOverdue(a.dueDate);
 
                 // Count if: 
                 // 1. Never submitted AND deadline not passed
