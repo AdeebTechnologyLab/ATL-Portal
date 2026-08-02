@@ -315,6 +315,11 @@ export const financeAPI = {
     deleteProject: (id) => api.delete(`/finance/projects/${id}`)
 };
 
+export const teacherFinanceAPI = {
+    getAssignedProjects: () => api.get('/teacher/finance/projects'),
+    updateProject: (id, data) => api.put(`/teacher/finance/projects/${id}`, data)
+};
+
 export const reportAPI = {
     uploadInternReport: (internId, formData) => api.post(`/reports/intern/${internId}/upload`, formData),
     uploadStudentReport: (studentId, formData) => api.post(`/reports/student/${studentId}/upload`, formData)

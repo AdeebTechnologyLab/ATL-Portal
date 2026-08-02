@@ -51,7 +51,6 @@ const AttendanceSettings = lazy(() => import('./pages/admin/AttendanceSettings')
 const ExpenseManagement = lazy(() => import('./pages/admin/ExpenseManagement'));
 const ProjectManagement = lazy(() => import('./pages/admin/ProjectManagement'));
 const RegistrationPages = lazy(() => import('./pages/admin/RegistrationPages'));
-const AdminFeeMethods = lazy(() => import('./pages/admin/AdminFeeMethods'));
 
 // Shared Pages (lazy loaded)
 const JobChat = lazy(() => import('./pages/shared/JobChat'));
@@ -63,6 +62,7 @@ const AttendanceSheet = lazy(() => import('./pages/teacher/AttendanceSheet'));
 const TeacherCourses = lazy(() => import('./pages/teacher/TeacherCourses'));
 const QuickAttendance = lazy(() => import('./pages/teacher/QuickAttendance'));
 const TeacherCertificates = lazy(() => import('./pages/teacher/TeacherCertificates'));
+const TeacherProjects = lazy(() => import('./pages/teacher/TeacherProjects'));
 
 // Job Pages (lazy loaded)
 const JobDashboard = lazy(() => import('./pages/job/JobDashboard'));
@@ -159,13 +159,12 @@ const AppRoutes = () => {
         <Route path="interns" element={<InternsManagement />} />
         <Route path="jobs" element={<JobsManagement />} />
         <Route path="fees" element={<FeeVerification />} />
-        <Route path="fee-methods" element={<AdminFeeMethods />} />
         <Route path="notifications" element={<NotificationManagement />} />
         <Route path="directory" element={<StudentDirectory />} />
         <Route path="teacher-directory" element={<TeacherDirectory />} />
         <Route path="settings" element={<Settings />} />
         <Route path="attendance-settings" element={<AttendanceSettings />} />
-        <Route path="expense" element={<ExpenseManagement />} />
+        <Route path="expense" element={<ExpenseManagement showProjectSections={false} />} />
         <Route path="projects" element={<ProjectManagement />} />
         <Route path="registration-pages" element={<RegistrationPages />} />
         <Route path="discussion-room" element={<DiscussionRoom />} />
@@ -188,6 +187,7 @@ const AppRoutes = () => {
         <Route path="quick-attendance" element={<QuickAttendance />} />
         <Route path="course/:id" element={<AttendanceSheet />} />
         <Route path="certificates" element={<TeacherCertificates />} />
+        <Route path="projects" element={<TeacherProjects />} />
         <Route path="jobs" element={<PaidTasksManagement />} />
         <Route path="job-chat" element={<JobChat />} />
         <Route path="discussion-room" element={<DiscussionRoom />} />

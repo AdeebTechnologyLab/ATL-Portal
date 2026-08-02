@@ -473,6 +473,7 @@ app.use('/api/settings', settingsRoutes);
 app.use('/api/live-class', liveClassRoutes);
 app.use('/api/directory', directoryRoutes);
 app.use('/api/finance', financeRoutes);
+app.use('/api/teacher/finance', require('./routes/teacherFinance'));
 app.use('/api/reports', reportRoutes);
 app.use('/api/registration-pages', registrationPageRoutes);
 app.use('/api/google-drive', googleDriveRoutes);

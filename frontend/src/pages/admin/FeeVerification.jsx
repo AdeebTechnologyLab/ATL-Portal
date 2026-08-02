@@ -9,6 +9,8 @@ import autoTable from 'jspdf-autotable';
 import Badge from '../../components/ui/Badge';
 import Modal from '../../components/ui/Modal';
 import { feeAPI, userAPI, enrollmentAPI } from '../../services/api';
+import { paymentMethodAPI } from '../../services/api';
+import AdminFeeMethods from './AdminFeeMethods';
 import { showToast } from '../../utils/customToast';
 import Loader, { ButtonLoader } from '../../components/ui/Loader';
 import { formatDate } from '../../utils/dateFormatter';
@@ -429,7 +431,7 @@ const FeeVerification = () => {
                     <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Fee Management</h1>
                     <p className="text-xs sm:text-sm text-gray-500 dark:text-slate-400">Verify payments and manage monthly fee plans</p>
                 </div>
-                <div className="grid grid-cols-2 sm:flex bg-gray-100 dark:bg-slate-800 p-1 rounded-xl w-full sm:w-auto">
+                <div className="grid grid-cols-3 sm:flex bg-gray-100 dark:bg-slate-800 p-1 rounded-xl w-full sm:w-auto">
                     <button
                         onClick={() => setActiveTab('pending')}
                         className={`px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-bold transition-all ${activeTab === 'pending' ? 'bg-white shadow text-primary' : 'text-gray-500 hover:text-gray-700'
@@ -444,11 +446,18 @@ const FeeVerification = () => {
                     >
                         All Fees & Months
                     </button>
+                    <button
+                        onClick={() => setActiveTab('payment-methods')}
+                        className={`px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-bold transition-all ${activeTab === 'payment-methods' ? 'bg-white shadow text-primary' : 'text-gray-500 hover:text-gray-700'
+                            }`}
+                    >
+                        Payment Methods
+                    </button>
                 </div>
             </div>
 
             {/* Filters and Search */}
-            <div className="bg-white dark:bg-slate-900 rounded-xl sm:rounded-2xl p-3 sm:p-6 border border-gray-100 dark:border-slate-700 space-y-3 sm:space-y-5">
+            {activeTab !== 'payment-methods' && <div className="bg-white dark:bg-slate-900 rounded-xl sm:rounded-2xl p-3 sm:p-6 border border-gray-100 dark:border-slate-700 space-y-3 sm:space-y-5">
                 <div className="flex flex-col sm:flex-row gap-3">
                     {/* Search */}
                     <div className="flex-1 flex items-center bg-gray-50 dark:bg-slate-800 rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 border border-transparent focus-within:border-primary/20 focus-within:bg-white dark:focus-within:bg-slate-800 transition-all">
@@ -525,10 +534,8 @@ const FeeVerification = () => {
                         </div>
                     </div>
                 </div>
-            </div>
+            </div>}
 
-
-            {/* Error */}
             {error && (
                 <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-center gap-3">
                     <AlertCircle className="w-5 h-5 text-red-500" />
@@ -537,7 +544,7 @@ const FeeVerification = () => {
             )}
 
             {/* Content based on Active Tab */}
-            {activeTab === 'pending' ? (
+            {activeTab === 'pending' && (
                 <div className="space-y-5 sm:space-y-8">
                     {/* Section 1: Submitted for Review (Priority) */}
                     <div>
@@ -827,7 +834,9 @@ const FeeVerification = () => {
                         )}
                     </div>
                 </div>
-            ) : (
+            )}
+
+            {activeTab === 'all' && (
                 /* All Fees List with Course Grouping */
                 <div className="space-y-6">
                     {!selectedCourse ? (
@@ -1060,8 +1069,13 @@ const FeeVerification = () => {
                         </div>
                     )}
                 </div>
-            )
-            }
+            )}
+
+            {activeTab === 'payment-methods' && (
+                <div className="mt-4">
+                    <AdminFeeMethods embedded />
+                </div>
+            )}
 
             {/* Screenshot Modal */}
             <Modal isOpen={isImageModalOpen} onClose={() => setIsImageModalOpen(false)} title="Payment Receipt" zIndex={150}>

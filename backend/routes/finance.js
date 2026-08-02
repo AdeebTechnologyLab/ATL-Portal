@@ -73,7 +73,8 @@ const normalizeProjectPayload = body => ({
     status: body.status || 'processing',
     startDate: body.startDate || new Date(),
     completionDate: body.status === 'completed' ? (body.completionDate || new Date()) : null,
-    description: body.description || ''
+    description: body.description || '',
+    assignedTeachers: (body.assignedTeachers || []).map(id => id.toString ? id.toString() : id)
 });
 
 router.get('/', async (req, res) => {
@@ -130,6 +131,7 @@ router.get('/projects', async (req, res) => {
     try {
         const projects = await FinanceProject.find()
             .populate('createdBy', 'name')
+            .populate('assignedTeachers', 'name email')
             .sort({ startDate: -1, createdAt: -1 });
         const projectIds = projects.map(project => project._id);
         const linkedEntries = await FinanceEntry.aggregate([

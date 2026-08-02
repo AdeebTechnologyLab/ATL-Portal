@@ -869,7 +869,7 @@ const PaidTasksManagement = () => {
                             )}
 
                             {/* Keep the card compact; full payment details open in a dialog. */}
-                            {task.paymentHistory && task.paymentHistory.length > 0 && (
+                            {user?.role === 'admin' && task.paymentHistory && task.paymentHistory.length > 0 && (
                                 <button
                                     type="button"
                                     onClick={() => setViewingPaymentHistoryTask(task)}

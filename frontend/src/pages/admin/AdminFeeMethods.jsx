@@ -26,7 +26,7 @@ const emptyForm = {
 const fieldClass = 'w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-600 text-gray-900 dark:text-white outline-none focus:border-primary transition-colors';
 const labelClass = 'text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1.5';
 
-const AdminFeeMethods = () => {
+const AdminFeeMethods = ({ embedded = false }) => {
     const [methods, setMethods] = useState([]);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
@@ -116,9 +116,9 @@ const AdminFeeMethods = () => {
     if (loading) return <Loader message="Loading payment methods..." />;
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-slate-900 p-4 sm:p-6 lg:p-8">
+        <div className={embedded ? '' : 'min-h-screen bg-gray-50 dark:bg-slate-900 p-4 sm:p-6 lg:p-8'}>
             {/* Header */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
+            {!embedded && <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
                 <div>
                     <h1 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white flex items-center gap-3">
                         <div className="p-2.5 bg-emerald-100 dark:bg-emerald-900/50 rounded-xl">
@@ -137,9 +137,18 @@ const AdminFeeMethods = () => {
                     <Plus className="w-4 h-4" />
                     Add New Payment Method
                 </button>
-            </div>
+            </div>}
 
             {/* Payment Method Cards */}
+            {embedded && <div className="flex justify-end mb-4">
+                <button
+                    onClick={() => { setForm(emptyForm); setEditingId(null); setShowForm(true); }}
+                    className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs transition-colors"
+                >
+                    <Plus className="w-3.5 h-3.5" />
+                    Add Payment Method
+                </button>
+            </div>}
             {methods.length === 0 ? (
                 <div className="text-center py-20">
                     <div className="w-20 h-20 mx-auto mb-4 rounded-2xl bg-gray-100 dark:bg-slate-800 flex items-center justify-center">

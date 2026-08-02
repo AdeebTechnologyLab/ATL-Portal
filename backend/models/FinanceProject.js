@@ -35,6 +35,7 @@ const financeProjectSchema = new mongoose.Schema({
     startDate: { type: Date, default: Date.now },
     completionDate: { type: Date, default: null },
     description: { type: String, trim: true, default: '' },
+    assignedTeachers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', default: [] }],
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }
 }, { timestamps: true });
 
