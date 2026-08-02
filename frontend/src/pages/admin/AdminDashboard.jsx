@@ -424,22 +424,22 @@ const AdminDashboard = () => {
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
                 <div className="xl:col-span-2 space-y-6">
                     {/* Revenue Section */}
-                    <div className="bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-sm relative overflow-hidden group">
+                    <div className="bg-white rounded-[1.75rem] sm:rounded-[2.5rem] p-4 sm:p-8 border border-gray-100 shadow-sm relative overflow-hidden group">
                         <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -mr-32 -mt-32 opacity-50 group-hover:scale-110 transition-transform duration-700"></div>
                         <div className="relative z-10">
-                            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+                            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6 mb-6 sm:mb-8">
                                 <div>
-                                    <h2 className="text-[10px] font-black uppercase tracking-[0.3em] text-primary dark:text-primary mb-1">Financial Intelligence</h2>
-                                    <h3 className="text-3xl font-black text-gray-900 dark:text-white uppercase tracking-tighter leading-none">Total Revenue</h3>
+                                    <h2 className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] text-primary dark:text-primary mb-1">Financial Intelligence</h2>
+                                    <h3 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white uppercase tracking-tighter leading-none">Total Revenue</h3>
                                 </div>
-                                <div className="flex flex-col md:items-end gap-3">
-                                    <div className="flex items-center gap-4">
-                                        <div className="flex items-center gap-2 bg-white p-2.5 rounded-2xl border-2 border-primary/10 shadow-sm hover:border-primary/30 transition-colors">
-                                            <Calendar className="w-5 h-5 text-primary ml-2" />
+                                <div className="flex flex-col md:items-end gap-3 w-full md:w-auto">
+                                    <div className="grid grid-cols-1 min-[390px]:grid-cols-2 items-center gap-2 sm:gap-4 w-full md:w-auto">
+                                        <div className="flex min-w-0 items-center gap-1.5 bg-white p-2 rounded-xl sm:rounded-2xl border-2 border-primary/10 shadow-sm hover:border-primary/30 transition-colors">
+                                            <Calendar className="w-4 h-4 sm:w-5 sm:h-5 text-primary ml-1 sm:ml-2 shrink-0" />
                                             <select
                                                 value={dateRangeType}
                                                 onChange={(e) => setDateRangeType(e.target.value)}
-                                                className="bg-transparent border-none text-sm font-black uppercase tracking-widest focus:ring-0 cursor-pointer px-3 outline-none"
+                                                className="min-w-0 w-full bg-transparent border-none text-xs sm:text-sm font-black uppercase tracking-wide sm:tracking-widest focus:ring-0 cursor-pointer px-1 sm:px-3 outline-none"
                                             >
                                                 <option value="current_month">Month</option>
                                                 <option value="custom">Date Range</option>
@@ -447,13 +447,13 @@ const AdminDashboard = () => {
                                             </select>
                                         </div>
                                         {dateRangeType === 'current_month' && (
-                                            <div className="flex items-center gap-2 bg-white p-2.5 rounded-2xl border-2 border-primary/10 shadow-sm hover:border-primary/30 transition-colors">
+                                            <div className="flex min-w-0 items-center gap-2 bg-white p-2 rounded-xl sm:rounded-2xl border-2 border-primary/10 shadow-sm hover:border-primary/30 transition-colors">
                                                 <input
                                                     type="month"
                                                     value={selectedMonth}
                                                     max={getLocalDateString(new Date()).slice(0, 7)}
                                                     onChange={(e) => setSelectedMonth(e.target.value)}
-                                                    className="bg-transparent border-none text-sm font-black focus:ring-0 cursor-pointer outline-none"
+                                                    className="min-w-0 w-full bg-transparent border-none text-xs sm:text-sm font-black focus:ring-0 cursor-pointer outline-none"
                                                 />
                                             </div>
                                         )}
@@ -483,16 +483,16 @@ const AdminDashboard = () => {
                                 </div>
                             </div>
 
-                            <div className="flex items-baseline gap-6 mb-2">
-                                <span className="text-3xl sm:text-7xl font-black text-gray-900 dark:text-white tracking-tighter drop-shadow-sm">
+                            <div className="flex flex-col sm:flex-row sm:items-baseline gap-2 sm:gap-6 mb-2">
+                                <span className="text-4xl sm:text-7xl font-black text-gray-900 dark:text-white tracking-tighter leading-none drop-shadow-sm break-words">
                                     Rs {data?.totalRevenue.toLocaleString()}
                                 </span>
-                                <div className="flex items-center gap-2 px-4 py-2 text-primary rounded-2xl">
-                                    <TrendingUp className="w-5 h-5" />
-                                    <span className="text-xs font-black uppercase tracking-widest">Growth Plan Active</span>
+                                <div className="flex w-fit items-center gap-1.5 py-1 sm:px-4 sm:py-2 text-primary rounded-2xl">
+                                    <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5" />
+                                    <span className="text-[10px] sm:text-xs font-black uppercase tracking-wider sm:tracking-widest">Growth Plan Active</span>
                                 </div>
                             </div>
-                            <p className="text-xs font-bold text-gray-400 dark:text-gray-300 uppercase tracking-widest mt-2 ml-1">
+                            <p className="text-[10px] sm:text-xs font-bold text-gray-400 dark:text-gray-300 uppercase leading-relaxed tracking-wide sm:tracking-widest mt-3 sm:mt-2 sm:ml-1 break-words">
                                 Verified Installments from {filters.startDate ? `${filters.startDate} to ${filters.endDate}` : `Month: ${filters.month}`}
                             </p>
                         </div>
