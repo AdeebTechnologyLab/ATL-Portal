@@ -46,7 +46,7 @@ const dailyTaskSchema = new mongoose.Schema({
     timestamps: true
 });
 
-// Prevent duplicate submissions for the same day/course by the same user if needed
-// dailyTaskSchema.index({ user: 1, course: 1, date: 1 }, { unique: true });
+dailyTaskSchema.index({ course: 1, createdAt: -1 });
+dailyTaskSchema.index({ user: 1, createdAt: -1 });
 
 module.exports = mongoose.model('DailyTask', dailyTaskSchema);

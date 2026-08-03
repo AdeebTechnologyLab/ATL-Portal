@@ -143,5 +143,6 @@ paidTaskSchema.index({ status: 1, createdAt: -1 });
 paidTaskSchema.index({ assignedTo: 1 });
 paidTaskSchema.index({ createdBy: 1 });
 paidTaskSchema.index({ jobManagers: 1 });
+paidTaskSchema.index({ 'applicants.user': 1 });
 
 module.exports = mongoose.model('PaidTask', paidTaskSchema);

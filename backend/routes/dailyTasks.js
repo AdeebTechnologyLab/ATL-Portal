@@ -148,7 +148,8 @@ router.get('/course/:courseId', protect, authorize('teacher', 'admin'), async (r
     try {
         const tasks = await DailyTask.find({ course: req.params.courseId })
             .populate('user', 'name email rollNo photo role')
-            .sort({ createdAt: -1 });
+            .sort({ createdAt: -1 })
+            .lean();
 
         res.json({
             success: true,
@@ -169,7 +170,7 @@ router.get('/my/:courseId', protect, authorize('intern', 'student'), async (req,
         const tasks = await DailyTask.find({
             course: req.params.courseId,
             user: req.user.id
-        }).sort({ createdAt: -1 });
+        }).sort({ createdAt: -1 }).lean();
         console.log(`📊 Found ${tasks.length} daily tasks`);
 
         res.json({
@@ -329,7 +330,8 @@ router.get('/user/:userId', protect, authorize('teacher', 'admin'), async (req, 
 
         const tasks = await DailyTask.find({ user: resolvedUserId })
             .populate('course', 'title category')
-            .sort({ createdAt: -1 });
+            .sort({ createdAt: -1 })
+            .lean();
 
         res.json({
             success: true,

@@ -23,22 +23,35 @@ const { sendPushNotification } = require('../utils/pushHelper');
 // @access  Private/Admin, Teacher
 router.get('/counts', protect, async (req, res) => {
     try {
-        let taskQuery = {};
+        let matchQuery = { status: { $in: ['assigned', 'submitted'] } };
         if (req.user.role === 'teacher') {
-            taskQuery.$or = [
+            matchQuery.$or = [
                 { jobManagers: req.user._id },
                 { jobManager: req.user._id },
                 { createdBy: req.user._id }
             ];
         }
-        const allTasks = await PaidTask.find(taskQuery).select('assignedTo submissions status');
-        const assignedTasks = allTasks.filter(t => t.status === 'assigned' || t.status === 'submitted');
-        const totalAssigned = assignedTasks.reduce((sum, task) => sum + (task.assignedTo?.length || 0), 0);
-        const totalSubmitted = allTasks.reduce((sum, task) => {
-            const uniqueUsers = new Set((task.submissions || []).map(s => String(s.user?._id || s.user)));
-            return sum + uniqueUsers.size;
-        }, 0);
-        res.json({ success: true, data: { totalAssigned, totalSubmitted } });
+
+        const [totalAssigned] = await PaidTask.aggregate([
+            { $match: matchQuery },
+            { $unwind: { path: '$assignedTo', preserveNullAndEmptyArrays: false } },
+            { $count: 'total' }
+        ]);
+
+        const [totalSubmitted] = await PaidTask.aggregate([
+            { $match: { status: { $in: ['assigned', 'submitted'] }, ...(req.user.role === 'teacher' ? { $or: matchQuery.$or } : {}) } },
+            { $unwind: { path: '$submissions', preserveNullAndEmptyArrays: false } },
+            { $group: { _id: '$submissions.user' } },
+            { $count: 'total' }
+        ]);
+
+        res.json({
+            success: true,
+            data: {
+                totalAssigned: totalAssigned?.total || 0,
+                totalSubmitted: totalSubmitted?.total || 0
+            }
+        });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
@@ -69,7 +82,8 @@ router.get('/', async (req, res) => {
             .populate('feedback.user', 'name photo totalEarnings')
             .populate('paymentHistory.user', 'name photo totalEarnings')
             .populate('applicants.user', 'name email phone skills experience portfolio completedTasks rating totalEarnings cvUrl photo education address city cnic')
-            .sort('-createdAt');
+            .sort('-createdAt')
+            .lean();
 
         res.json({ success: true, data: tasks });
     } catch (error) {
@@ -686,16 +700,17 @@ router.put('/:id/admin-complete', protect, authorize('admin'), async (req, res) 
         await task.save();
 
         if (payableUsers.length > 0) {
-            for (const userId of payableUsers) {
+            const userUpdates = payableUsers.map(userId => {
                 const userApplications = task.applicants.filter(applicant => String(applicant.user) === userId);
                 const currentApplication = userApplications.sort((a, b) => (b.cycle || 1) - (a.cycle || 1))[0];
                 const cycle = currentApplication?.cycle || 1;
                 const amount = paymentMap.get(userId);
                 task.paymentHistory.push({ user: userId, amount, paymentProof, cycle, paidAt: new Date(), feedbackSubmitted: false });
                 if (currentApplication) currentApplication.status = 'paid';
-                await User.findByIdAndUpdate(userId, { $inc: { completedTasks: 1, totalEarnings: amount } });
-            }
+                return User.findByIdAndUpdate(userId, { $inc: { completedTasks: 1, totalEarnings: amount } });
+            });
 
+            await Promise.all(userUpdates);
             await task.save();
 
             // Notify users that payment is completed
@@ -937,7 +952,8 @@ router.get('/completed-showcase', protect, async (req, res) => {
             .populate('assignedTo', 'name email photo')
             .populate('feedback.user', 'name photo totalEarnings')
             .select('title description budget skills category status assignedTo feedback completedAt paymentSentAt createdAt images image')
-            .sort('-paymentSentAt');
+            .sort('-paymentSentAt')
+            .lean();
 
         res.json({ success: true, data: tasks });
     } catch (error) {
@@ -954,14 +970,15 @@ router.get('/my', protect, authorize('job'), async (req, res) => {
         const tasks = await PaidTask.find({
             $or: [
                 { 'applicants.user': req.user.id },
-                { assignedTo: req.user.id } // auto-checks array
+                { assignedTo: req.user.id }
             ]
         })
             .populate('assignedTo', 'name email photo')
             .populate('feedback.user', 'name photo totalEarnings')
             .populate('paymentHistory.user', 'name photo totalEarnings')
             .populate('applicants.user', 'name email photo totalEarnings completedTasks rating')
-            .sort('-createdAt');
+            .sort('-createdAt')
+            .lean();
 
         res.json({ success: true, data: tasks });
     } catch (error) {
