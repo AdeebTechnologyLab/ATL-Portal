@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { io } from 'socket.io-client';
 import { Send, User, ShieldCheck, Bell } from 'lucide-react';
-import { taskAPI } from '../../../services/api';
+import { taskAPI, chatAPI, googleDriveAPI } from '../../../services/api';
+import ChatMediaButton from '../../../components/shared/ChatMediaButton';
+import ChatMediaDisplay from '../../../components/shared/ChatMediaDisplay';
 import Loader, { ButtonLoader } from '../../../components/ui/Loader';
 import { getSocketURL } from '../../../config/apiBaseUrl';
 
@@ -13,6 +15,8 @@ const TaskChat = ({ taskId, currentUser }) => {
     const [isSending, setIsSending] = useState(false);
     const [isFetching, setIsFetching] = useState(true);
     const [showNewMessageBanner, setShowNewMessageBanner] = useState(false);
+    const [pendingMedia, setPendingMedia] = useState([]);
+    const [driveStatus, setDriveStatus] = useState({ connected: false });
     const socketRef = useRef();
     const scrollRef = useRef();
 
@@ -71,13 +75,17 @@ const TaskChat = ({ taskId, currentUser }) => {
         scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages]);
 
+    useEffect(() => {
+        googleDriveAPI.getStatus().then(res => setDriveStatus(res.data)).catch(() => {});
+    }, []);
+
     const handleSendMessage = async (e) => {
         e.preventDefault();
-        if (!newMessage.trim() || isSending) return;
+        if ((!newMessage.trim() && pendingMedia.length === 0) || isSending) return;
 
         setIsSending(true);
         try {
-            const response = await taskAPI.addMessage(taskId, newMessage);
+            const response = await chatAPI.sendJobMessage(taskId, null, newMessage, pendingMedia);
             const savedMessage = response.data.message;
 
             // Emit via socket for real-time update
@@ -96,6 +104,7 @@ const TaskChat = ({ taskId, currentUser }) => {
             });
 
             setNewMessage('');
+            setPendingMedia([]);
         } catch (error) {
             console.error('Error sending message:', error);
             alert('Failed to send message');
@@ -156,6 +165,9 @@ const TaskChat = ({ taskId, currentUser }) => {
                                     : 'bg-white text-gray-700 border border-gray-100 rounded-tl-none'
                                     }`}>
                                     {msg.text}
+                                    {msg.media && msg.media.length > 0 && (
+                                        <ChatMediaDisplay media={msg.media} />
+                                    )}
                                 </div>
                                 <span className="text-[9px] text-gray-400 mt-1 px-1 font-medium">
                                     {new Date(msg.createdAt).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}
@@ -169,6 +181,12 @@ const TaskChat = ({ taskId, currentUser }) => {
 
             {/* Input Area */}
             <form onSubmit={handleSendMessage} className="p-3 bg-white border-t border-gray-100 flex gap-2">
+                <ChatMediaButton
+                    onMediaSelect={(media) => setPendingMedia([...pendingMedia, ...media])}
+                    driveStatus={driveStatus}
+                    pendingMedia={pendingMedia}
+                    onRemoveMedia={(index) => setPendingMedia(pendingMedia.filter((_, i) => i !== index))}
+                />
                 <input
                     type="text"
                     value={newMessage}
@@ -179,7 +197,7 @@ const TaskChat = ({ taskId, currentUser }) => {
                 <ButtonLoader
                     type="submit"
                     isLoading={isSending}
-                    disabled={!newMessage.trim()}
+                    disabled={!newMessage.trim() && pendingMedia.length === 0}
                     className="w-10 h-10 bg-primary hover:bg-purple-700 text-white rounded-xl flex items-center justify-center transition-all disabled:opacity-50 shadow-md"
                     icon={<Send className="w-4 h-4" />}
                 />

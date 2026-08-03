@@ -60,7 +60,7 @@ router.get('/messages/:otherUserId', protect, async (req, res) => {
 // @access  Private
 router.post('/messages', protect, async (req, res) => {
     try {
-        const { recipientId, text } = req.body;
+        const { recipientId, text, media } = req.body;
         const senderId = req.user.id;
         const senderAccountIds = await getLinkedAccountIds(senderId);
         const recipientAccountIds = await getLinkedAccountIds(recipientId);
@@ -68,7 +68,8 @@ router.post('/messages', protect, async (req, res) => {
         const message = await GlobalMessage.create({
             sender: senderId,
             recipient: recipientId,
-            text
+            text: text || '',
+            media: media || []
         });
 
         const populatedMessage = await GlobalMessage.findById(message._id)
@@ -354,12 +355,14 @@ router.get('/discussion', protect, async (req, res) => {
 router.post('/discussion', protect, async (req, res) => {
     try {
         const text = (req.body.text || '').trim();
-        if (!text) return res.status(400).json({ success: false, message: 'Message is required' });
+        const media = req.body.media || [];
+        if (!text && media.length === 0) return res.status(400).json({ success: false, message: 'Message is required' });
 
         const message = await GlobalMessage.create({
             sender: req.user.id,
             recipient: null,
             text,
+            media,
             discussionRoom: true
         });
 
@@ -705,10 +708,10 @@ router.get('/job/:taskId/messages/:userId', protect, authorize('admin', 'teacher
 
 router.post('/job/:taskId/send', protect, authorize('admin', 'teacher', 'job'), async (req, res) => {
     try {
-        const { recipientId, text } = req.body;
+        const { recipientId, text, media } = req.body;
         const task = await PaidTask.findById(req.params.taskId);
-        if (!text?.trim() || !task || !(await canAccessJobChat(task, req.user, recipientId))) return res.status(403).json({ success: false, message: 'Job chat access denied' });
-        const message = await GlobalMessage.create({ sender: req.user.id, recipient: recipientId, text: text.trim(), task: task._id });
+        if ((!text?.trim() && (!media || media.length === 0)) || !task || !(await canAccessJobChat(task, req.user, recipientId))) return res.status(403).json({ success: false, message: 'Job chat access denied' });
+        const message = await GlobalMessage.create({ sender: req.user.id, recipient: recipientId, text: text?.trim() || '', media: media || [], task: task._id });
         const populated = await GlobalMessage.findById(message._id).populate('sender recipient', 'name photo role');
         const io = req.app.get('io');
         if (io) {
@@ -762,14 +765,15 @@ router.get('/course/:courseId/messages/:userId', protect, async (req, res) => {
 // @access  Private
 router.post('/course/:courseId/send', protect, async (req, res) => {
     try {
-        const { recipientId, text } = req.body;
+        const { recipientId, text, media } = req.body;
         const courseId = req.params.courseId;
         const senderId = req.user.id;
 
         const message = await GlobalMessage.create({
             sender: senderId,
             recipient: recipientId,
-            text,
+            text: text || '',
+            media: media || [],
             course: courseId
         });
 

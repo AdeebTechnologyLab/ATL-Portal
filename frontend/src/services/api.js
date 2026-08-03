@@ -267,7 +267,7 @@ export const userNotificationAPI = {
 // Chat APIs
 export const chatAPI = {
     getMessages: (otherUserId) => api.get(`/chat/messages/${otherUserId}`),
-    sendMessage: (recipientId, text) => api.post('/chat/messages', { recipientId, text }),
+    sendMessage: (recipientId, text, media = []) => api.post('/chat/messages', { recipientId, text, media }),
     sendBotReply: (recipientId, text, options) => api.post('/chat/bot-reply', { recipientId, text, options }),
     getConversations: () => api.get('/chat/conversations'),
     markAsRead: (senderId) => api.put(`/chat/read/${senderId}`),
@@ -278,7 +278,7 @@ export const chatAPI = {
     },
     // Course-based chat APIs
     getCourseMessages: (courseId, userId) => api.get(`/chat/course/${courseId}/messages/${userId}`),
-    sendCourseMessage: (courseId, recipientId, text) => api.post(`/chat/course/${courseId}/send`, { recipientId, text }),
+    sendCourseMessage: (courseId, recipientId, text, media = []) => api.post(`/chat/course/${courseId}/send`, { recipientId, text, media }),
     getTeacherCourses: () => api.get('/chat/teacher/courses'),
     getStudentCourses: () => api.get('/chat/student/courses'),
     searchByEmail: (email, courseId = null) => {
@@ -289,14 +289,14 @@ export const chatAPI = {
     clearCourseChat: (courseId, userId) => api.post(`/chat/course/${courseId}/clear/${userId}`),
     getJobChats: () => api.get('/chat/job/tasks'),
     getJobMessages: (taskId, userId) => api.get(`/chat/job/${taskId}/messages/${userId}`),
-    sendJobMessage: (taskId, recipientId, text) => api.post(`/chat/job/${taskId}/send`, { recipientId, text }),
+    sendJobMessage: (taskId, recipientId, text, media = []) => api.post(`/chat/job/${taskId}/send`, { recipientId, text, media }),
     markJobChatRead: (taskId, senderId) => api.put(`/chat/job/${taskId}/read/${senderId}`),
     clearJobChat: (taskId, userId) => api.delete(`/chat/job/${taskId}/messages/${userId}`),
     getDiscussionMessages: () => api.get('/chat/discussion'),
     getDiscussionOnlineCount: () => api.get('/chat/discussion/online-count'),
     getDiscussionUnread: () => api.get('/chat/discussion/unread'),
     markDiscussionRead: () => api.put('/chat/discussion/read'),
-    sendDiscussionMessage: (text) => api.post('/chat/discussion', { text }),
+    sendDiscussionMessage: (text, media = []) => api.post('/chat/discussion', { text, media }),
     createDiscussionPoll: (question, options) => api.post('/chat/discussion/poll', { question, options }),
     voteDiscussionPoll: (messageId, optionIndex) => api.put(`/chat/discussion/${messageId}/poll-vote`, { optionIndex }),
     toggleDiscussionReaction: (messageId, emoji) => api.put(`/chat/discussion/${messageId}/reaction`, { emoji }),

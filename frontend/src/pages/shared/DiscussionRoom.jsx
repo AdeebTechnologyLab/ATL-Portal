@@ -2,8 +2,10 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { io } from 'socket.io-client';
 import { MessageSquare, Send, Trash2, Users, Loader2, Circle, BarChart3, Plus, X, Smile } from 'lucide-react';
-import { chatAPI } from '../../services/api';
+import { chatAPI, googleDriveAPI } from '../../services/api';
 import { getSocketURL } from '../../config/apiBaseUrl';
+import ChatMediaButton from '../../components/shared/ChatMediaButton';
+import ChatMediaDisplay from '../../components/shared/ChatMediaDisplay';
 
 const isUserOnline = (lastSeen) => {
     if (!lastSeen) return false;
@@ -87,6 +89,8 @@ const DiscussionRoom = () => {
     const [showComposerActions, setShowComposerActions] = useState(false);
     const [pollQuestion, setPollQuestion] = useState('');
     const [pollOptions, setPollOptions] = useState(['', '']);
+    const [pendingMedia, setPendingMedia] = useState([]);
+    const [driveStatus, setDriveStatus] = useState({ connected: false });
     const socketRef = useRef(null);
     const messagesContainerRef = useRef(null);
     const bottomRef = useRef(null);
@@ -172,6 +176,10 @@ const DiscussionRoom = () => {
         };
     }, [myId]);
 
+    useEffect(() => {
+        googleDriveAPI.getStatus().then(res => setDriveStatus(res.data)).catch(() => {});
+    }, []);
+
     const scrollToBottom = (smooth = true) => {
         requestAnimationFrame(() => {
             const container = messagesContainerRef.current;
@@ -200,12 +208,13 @@ const DiscussionRoom = () => {
     const sendMessage = async (e) => {
         e.preventDefault();
         const text = newMessage.trim();
-        if (!text || sending) return;
+        if ((!text && pendingMedia.length === 0) || sending) return;
         setSending(true);
         setNewMessage('');
         try {
-            const res = await chatAPI.sendDiscussionMessage(text);
+            const res = await chatAPI.sendDiscussionMessage(text, pendingMedia);
             const saved = res.data.data;
+            setPendingMedia([]);
             setMessages(prev => prev.some(m => String(m._id) === String(saved._id)) ? prev : [...prev, saved]);
         } catch (error) {
             setNewMessage(text);
@@ -423,6 +432,7 @@ const DiscussionRoom = () => {
                                                     {renderMessageText(msg.text)}
                                                 </p>
                                             )}
+                                            <ChatMediaDisplay media={msg.media} isMine={mine} />
                                             <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
                                                 <div className="flex flex-wrap items-center gap-2">
                                                 {Object.entries(reactionGroups).map(([emoji, users]) => {
@@ -580,6 +590,11 @@ const DiscussionRoom = () => {
                             )}
                         </div>
                     )}
+                    <ChatMediaButton
+                        onMediaUploaded={setPendingMedia}
+                        driveStatus={driveStatus}
+                        disabled={sending}
+                    />
                     <input
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
@@ -587,7 +602,7 @@ const DiscussionRoom = () => {
                         className="flex-1 px-4 py-3 rounded-xl bg-gray-50 dark:bg-[#1e1f21] border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-[#8E9297] outline-none focus:border-primary/70"
                     />
                     <button
-                        disabled={!newMessage.trim() || sending}
+                        disabled={(!newMessage.trim() && pendingMedia.length === 0) || sending}
                         className="px-5 py-3 rounded-xl bg-primary hover:bg-primary/90 text-white font-black disabled:opacity-50 flex items-center gap-2 shadow-lg shadow-primary/20"
                     >
                         {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}

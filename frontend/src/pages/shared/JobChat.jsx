@@ -2,7 +2,9 @@ import { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { ArrowLeft, Briefcase, MessageCircle, Search, Send, ShieldCheck, Trash2 } from 'lucide-react';
-import { chatAPI } from '../../services/api';
+import { chatAPI, googleDriveAPI } from '../../services/api';
+import ChatMediaButton from '../../components/shared/ChatMediaButton';
+import ChatMediaDisplay from '../../components/shared/ChatMediaDisplay';
 import Loader from '../../components/ui/Loader';
 import ProfileAvatar from '../../components/ui/ProfileAvatar';
 
@@ -17,6 +19,8 @@ const JobChat = () => {
     const [loading, setLoading] = useState(true);
     const [sending, setSending] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
+    const [pendingMedia, setPendingMedia] = useState([]);
+    const [driveStatus, setDriveStatus] = useState({ connected: false });
     const endRef = useRef(null);
 
     const loadJobs = async (quiet = false) => {
@@ -43,6 +47,9 @@ const JobChat = () => {
         return () => clearInterval(timer);
     }, [activeJob, activeContact]);
     useEffect(() => { endRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages]);
+    useEffect(() => {
+        googleDriveAPI.getStatus().then(res => setDriveStatus(res.data)).catch(() => {});
+    }, []);
 
     const openChat = async (job, contact) => {
         setActiveJob(job);
@@ -67,12 +74,13 @@ const JobChat = () => {
 
     const send = async e => {
         e.preventDefault();
-        if (!text.trim() || !activeJob || !activeContact || sending) return;
+        if ((!text.trim() && pendingMedia.length === 0) || !activeJob || !activeContact || sending) return;
         setSending(true);
         try {
-            const res = await chatAPI.sendJobMessage(activeJob._id, activeContact._id, text.trim());
+            const res = await chatAPI.sendJobMessage(activeJob._id, activeContact._id, text.trim(), pendingMedia);
             setMessages(prev => [...prev, res.data.data]);
             setText('');
+            setPendingMedia([]);
         } finally { setSending(false); }
     };
 
@@ -198,11 +206,15 @@ const JobChat = () => {
                             {messages.length === 0 && <div className="mx-auto mt-14 max-w-xs text-center"><div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-white shadow-sm dark:bg-slate-900"><Send className="h-5 w-5 text-primary" /></div><p className="font-bold text-gray-700 dark:text-slate-200">Start the conversation</p><p className="mt-1 text-xs text-gray-400">Send a message about this job.</p></div>}
                             {messages.map(message => {
                                 const mine = String(message.sender?._id || message.sender) === String(user?.id || user?._id);
-                                return <div key={message._id} className={`flex items-end gap-2 ${mine ? 'justify-end' : 'justify-start'}`}>{!mine && <ProfileAvatar src={message.sender?.photo} name={message.sender?.name} size="xs" />}<div className={`max-w-[82%] px-3.5 py-2.5 shadow-sm sm:max-w-[70%] ${mine ? 'rounded-2xl rounded-br-sm bg-primary text-white' : 'rounded-2xl rounded-bl-sm border border-gray-200 bg-white text-gray-800 dark:border-slate-700 dark:bg-slate-800 dark:text-gray-100'}`}><p className="whitespace-pre-wrap break-words text-[13px] leading-relaxed sm:text-sm">{message.text}</p><p className={`mt-1.5 text-right text-[9px] ${mine ? 'text-white/65' : 'text-gray-400'}`}>{new Date(message.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p></div></div>;
+                                return <div key={message._id} className={`flex items-end gap-2 ${mine ? 'justify-end' : 'justify-start'}`}>{!mine && <ProfileAvatar src={message.sender?.photo} name={message.sender?.name} size="xs" />}<div className={`max-w-[82%] px-3.5 py-2.5 shadow-sm sm:max-w-[70%] ${mine ? 'rounded-2xl rounded-br-sm bg-primary text-white' : 'rounded-2xl rounded-bl-sm border border-gray-200 bg-white text-gray-800 dark:border-slate-700 dark:bg-slate-800 dark:text-gray-100'}`}><p className="whitespace-pre-wrap break-words text-[13px] leading-relaxed sm:text-sm">{message.text}</p><ChatMediaDisplay media={message.media} isMine={mine} /><p className={`mt-1.5 text-right text-[9px] ${mine ? 'text-white/65' : 'text-gray-400'}`}>{new Date(message.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p></div></div>;
                             })}
                             <div ref={endRef} />
                         </div>
-                        <form onSubmit={send} className="flex shrink-0 gap-2 border-t border-gray-200 bg-white p-3 dark:border-slate-700 dark:bg-slate-900 sm:p-4"><div className="flex min-w-0 flex-1 items-center rounded-2xl border border-gray-200 bg-gray-50 px-4 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/10 dark:border-slate-700 dark:bg-slate-800"><input value={text} onChange={e => setText(e.target.value)} placeholder="Type your message..." className="min-w-0 flex-1 border-0 bg-transparent py-3 text-sm text-gray-900 outline-none ring-0 placeholder:text-gray-400 focus:border-0 focus:ring-0 dark:text-white" /></div><button disabled={!text.trim() || sending} className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary text-white shadow-lg shadow-primary/20 transition-transform hover:scale-105 disabled:scale-100 disabled:opacity-40"><Send className="h-5 w-5" /></button></form>
+                        <form onSubmit={send} className="flex shrink-0 gap-2 border-t border-gray-200 bg-white p-3 dark:border-slate-700 dark:bg-slate-900 sm:p-4">
+                            <ChatMediaButton onMediaSelect={media => setPendingMedia(prev => [...prev, ...media])} driveStatus={driveStatus} pendingMedia={pendingMedia} setPendingMedia={setPendingMedia} />
+                            <div className="flex min-w-0 flex-1 items-center rounded-2xl border border-gray-200 bg-gray-50 px-4 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/10 dark:border-slate-700 dark:bg-slate-800"><input value={text} onChange={e => setText(e.target.value)} placeholder="Type your message..." className="min-w-0 flex-1 border-0 bg-transparent py-3 text-sm text-gray-900 outline-none ring-0 placeholder:text-gray-400 focus:border-0 focus:ring-0 dark:text-white" /></div>
+                            <button disabled={(!text.trim() && pendingMedia.length === 0) || sending} className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary text-white shadow-lg shadow-primary/20 transition-transform hover:scale-105 disabled:scale-100 disabled:opacity-40"><Send className="h-5 w-5" /></button>
+                        </form>
                     </>}
                 </section>
             </div>

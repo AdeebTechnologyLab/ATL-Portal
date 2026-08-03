@@ -11,6 +11,9 @@ import { showToast } from '../../../utils/customToast';
 import Loader, { ButtonLoader } from '../../../components/ui/Loader';
 import { formatDate } from '../../../utils/dateFormatter';
 import { getSocketURL } from '../../../config/apiBaseUrl';
+import ChatMediaButton from '../../../components/shared/ChatMediaButton';
+import ChatMediaDisplay from '../../../components/shared/ChatMediaDisplay';
+import { googleDriveAPI } from '../../../services/api';
 
 const SOCKET_URL = getSocketURL();
 
@@ -25,6 +28,8 @@ const TeacherChatTab = ({ course, students, onUnreadCountChange }) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [searchResults, setSearchResults] = useState([]);
     const [isSearching, setIsSearching] = useState(false);
+    const [pendingMedia, setPendingMedia] = useState([]);
+    const [driveStatus, setDriveStatus] = useState({ connected: false });
 
     const socketRef = useRef();
     const scrollRef = useRef();
@@ -82,6 +87,10 @@ const TeacherChatTab = ({ course, students, onUnreadCountChange }) => {
         }
     }, [messages]);
 
+    useEffect(() => {
+        googleDriveAPI.getStatus().then(res => setDriveStatus(res.data)).catch(() => {});
+    }, []);
+
     const fetchStudentsWithUnread = async () => {
         try {
             const res = await chatAPI.getTeacherCourses();
@@ -130,7 +139,7 @@ const TeacherChatTab = ({ course, students, onUnreadCountChange }) => {
 
     const handleSendMessage = async (e) => {
         if (e) e.preventDefault();
-        if (!newMessage.trim() || !activeStudent || isSending) return;
+        if ((!newMessage.trim() && pendingMedia.length === 0) || !activeStudent || isSending) return;
 
         const studentId = activeStudent._id || activeStudent.id;
         if (!studentId) {
@@ -141,11 +150,12 @@ const TeacherChatTab = ({ course, students, onUnreadCountChange }) => {
         setIsSending(true);
         try {
             const courseId = course.id || course._id;
-            const res = await chatAPI.sendCourseMessage(courseId, studentId, newMessage.trim());
+            const res = await chatAPI.sendCourseMessage(courseId, studentId, newMessage.trim(), pendingMedia);
             if (res.data && res.data.data) {
                 setMessages(prev => [...prev, res.data.data]);
             }
             setNewMessage('');
+            setPendingMedia([]);
         } catch (error) {
             console.error('Error sending message:', error);
         } finally {
@@ -335,6 +345,9 @@ const TeacherChatTab = ({ course, students, onUnreadCountChange }) => {
                                                         : 'bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-800 dark:text-gray-200 rounded-bl-md'
                                                     }`}>
                                                     <p className="text-sm whitespace-pre-wrap">{msg.text}</p>
+                                                    {msg.media && msg.media.length > 0 && (
+                                                        <ChatMediaDisplay media={msg.media} />
+                                                    )}
                                                     <p className={`text-[10px] mt-1 ${isMe ? 'text-primary' : 'text-gray-400 dark:text-gray-500'}`}>
                                                         {formatTime(msg.createdAt)}
                                                     </p>
@@ -354,7 +367,12 @@ const TeacherChatTab = ({ course, students, onUnreadCountChange }) => {
 
                         {/* Message Input */}
                         <form onSubmit={handleSendMessage} className="p-4 bg-white dark:bg-slate-800 rounded-b-xl border-t border-gray-100 dark:border-slate-700">
-                            <div className="flex gap-2">
+                            <div className="flex gap-2 items-end">
+                                <ChatMediaButton
+                                    pendingMedia={pendingMedia}
+                                    setPendingMedia={setPendingMedia}
+                                    disabled={isSending}
+                                />
                                 <input
                                     type="text"
                                     value={newMessage}
@@ -371,7 +389,7 @@ const TeacherChatTab = ({ course, students, onUnreadCountChange }) => {
                                 <button
                                     type="button"
                                     onClick={() => handleSendMessage()}
-                                    disabled={!newMessage.trim() || !activeStudent || isSending}
+                                    disabled={(!newMessage.trim() && pendingMedia.length === 0) || !activeStudent || isSending}
                                     className="px-4 py-3 bg-primary text-white rounded-xl hover:bg-primary disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                                 >
                                     {isSending ? (

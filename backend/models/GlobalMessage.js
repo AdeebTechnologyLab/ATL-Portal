@@ -13,7 +13,17 @@ const globalMessageSchema = new mongoose.Schema({
     },
     text: {
         type: String,
-        required: true
+        default: ''
+    },
+    media: {
+        type: [{
+            url: { type: String, required: true },
+            name: { type: String, default: '' },
+            type: { type: String, default: 'file' },
+            size: { type: Number, default: 0 },
+            thumbnail: { type: String, default: '' }
+        }],
+        default: []
     },
     course: {
         type: mongoose.Schema.Types.ObjectId,

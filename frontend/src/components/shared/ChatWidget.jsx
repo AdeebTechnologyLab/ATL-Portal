@@ -35,7 +35,9 @@ import Loader, { ButtonLoader } from '../ui/Loader';
 
 
 
-import { chatAPI, userAPI } from '../../services/api';
+import { chatAPI, userAPI, googleDriveAPI } from '../../services/api';
+import ChatMediaButton from './ChatMediaButton';
+import ChatMediaDisplay from './ChatMediaDisplay';
 
 
 
@@ -160,6 +162,8 @@ const ChatWidget = () => {
 
 
     const [incomingNotify, setIncomingNotify] = useState(null); // { senderName, text }
+    const [pendingMedia, setPendingMedia] = useState([]);
+    const [driveStatus, setDriveStatus] = useState({ connected: false });
 
 
 
@@ -193,6 +197,12 @@ const ChatWidget = () => {
 
     }, [isOpen]);
 
+
+
+
+    useEffect(() => {
+        googleDriveAPI.getStatus().then(res => setDriveStatus(res.data)).catch(() => {});
+    }, []);
 
 
 
@@ -1822,7 +1832,7 @@ const ChatWidget = () => {
 
 
 
-        if (!text.trim() || !recipientId) return;
+        if ((!text.trim() && pendingMedia.length === 0) || !recipientId) return;
 
 
 
@@ -1910,7 +1920,8 @@ const ChatWidget = () => {
 
 
 
-            const res = await chatAPI.sendMessage(recipientId, text);
+            const res = await chatAPI.sendMessage(recipientId, text, pendingMedia);
+            setPendingMedia([]);
 
 
 
@@ -3678,8 +3689,9 @@ const ChatWidget = () => {
                                                                 )}
 
 
-
-                                                                
+                                                                {!isBot && (
+                                                                    <ChatMediaDisplay media={msg.media} isMine={isMe} />
+                                                                )}
 
 
 
@@ -3895,7 +3907,15 @@ const ChatWidget = () => {
 
 
 
-                                    <form onSubmit={handleSendMessage} className="p-3 bg-white border-t border-gray-100 flex gap-2">
+                                    <form onSubmit={handleSendMessage} className="p-3 bg-white border-t border-gray-100 flex gap-2 items-center">
+
+
+
+                                        <ChatMediaButton
+                                            pendingMedia={pendingMedia}
+                                            setPendingMedia={setPendingMedia}
+                                            driveStatus={driveStatus}
+                                        />
 
 
 
@@ -3935,7 +3955,7 @@ const ChatWidget = () => {
 
 
 
-                                            disabled={!newMessage.trim()}
+                                            disabled={!newMessage.trim() && pendingMedia.length === 0}
 
 
 

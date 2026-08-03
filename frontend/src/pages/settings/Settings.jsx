@@ -248,6 +248,9 @@ const Settings = () => {
             {/* Sections */}
             <div className="space-y-5 sm:space-y-6">
 
+                {/* Account + Security Row */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
+
                 {/* Account Section - ALL roles */}
                 <section className="bg-white dark:bg-[#1a1f2e] rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden">
                     <div className="p-4 sm:p-5 border-b border-gray-50 dark:border-gray-800/50">
@@ -266,24 +269,24 @@ const Settings = () => {
                         </div>
                     </div>
                     <div className="p-4 sm:p-5">
-                        <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-5">
-                            <div className="relative group">
-                                <div className="w-20 h-20 rounded-2xl bg-primary/10 flex items-center justify-center overflow-hidden border-2 border-primary/20">
+                        <div className="flex items-start gap-4">
+                            <div className="relative group shrink-0">
+                                <div className="w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center overflow-hidden border-2 border-primary/20">
                                     {user?.photo ? (
                                         <img src={user.photo} alt={user.name} className="w-full h-full object-cover" />
                                     ) : (
-                                        <span className="text-2xl font-black text-primary">
+                                        <span className="text-xl font-black text-primary">
                                             {(user?.name || 'U').charAt(0).toUpperCase()}
                                         </span>
                                     )}
                                 </div>
                                 {isEditingProfile && (
-                                    <div className="absolute inset-0 bg-black/40 rounded-2xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
-                                        <Camera className="w-6 h-6 text-white" />
+                                    <div className="absolute inset-0 bg-black/40 rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+                                        <Camera className="w-5 h-5 text-white" />
                                     </div>
                                 )}
                             </div>
-                            <div className="flex-1 w-full space-y-3">
+                            <div className="flex-1 min-w-0 space-y-3">
                                 {isEditingProfile ? (
                                     <>
                                         <div>
@@ -335,13 +338,13 @@ const Settings = () => {
                                     </>
                                 ) : (
                                     <>
-                                        <div className="space-y-1.5">
-                                            <h4 className="text-base font-black text-gray-900 dark:text-white">{user?.name || 'User'}</h4>
-                                            <div className="flex flex-wrap items-center gap-3 text-xs text-gray-500 dark:text-gray-400">
-                                                <span className="flex items-center gap-1"><Mail className="w-3 h-3" /> {user?.email}</span>
-                                                {user?.phone && <span className="flex items-center gap-1"><Phone className="w-3 h-3" /> {user?.phone}</span>}
+                                        <div className="space-y-1">
+                                            <h4 className="text-sm font-black text-gray-900 dark:text-white truncate">{user?.name || 'User'}</h4>
+                                            <div className="flex flex-wrap items-center gap-2 text-[11px] text-gray-500 dark:text-gray-400">
+                                                <span className="flex items-center gap-1 truncate"><Mail className="w-3 h-3 shrink-0" /> {user?.email}</span>
+                                                {user?.phone && <span className="flex items-center gap-1"><Phone className="w-3 h-3 shrink-0" /> {user?.phone}</span>}
                                             </div>
-                                            <div className="flex items-center gap-2 mt-1">
+                                            <div className="flex items-center gap-2">
                                                 <span className="px-2 py-0.5 bg-primary/10 text-primary text-[9px] font-black uppercase tracking-widest rounded-full">
                                                     {getRoleLabel(role)}
                                                 </span>
@@ -365,7 +368,7 @@ const Settings = () => {
                     </div>
                 </section>
 
-                {/* Password Section - ALL roles */}
+                {/* Security Section - ALL roles */}
                 <section className="bg-white dark:bg-[#1a1f2e] rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden">
                     <div className="p-4 sm:p-5 border-b border-gray-50 dark:border-gray-800/50">
                         <div className="flex items-center gap-3">
@@ -386,7 +389,7 @@ const Settings = () => {
                         {!isChangingPassword ? (
                             <button
                                 onClick={() => setIsChangingPassword(true)}
-                                className="w-full sm:w-auto px-5 py-2.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-[10px] sm:text-xs font-black uppercase tracking-widest rounded-xl hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors flex items-center justify-center gap-2"
+                                className="w-full px-5 py-2.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-[10px] sm:text-xs font-black uppercase tracking-widest rounded-xl hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors flex items-center justify-center gap-2"
                             >
                                 <Lock className="w-4 h-4" />
                                 Change Password
@@ -443,7 +446,7 @@ const Settings = () => {
                                         className="px-4 py-2 bg-primary text-white text-[10px] font-black uppercase tracking-widest rounded-lg hover:bg-primary/90 transition-colors flex items-center gap-2 disabled:opacity-50"
                                     >
                                         {isSavingPassword ? <ButtonLoader /> : <Lock className="w-3.5 h-3.5" />}
-                                        Update Password
+                                        Update
                                     </button>
                                     <button
                                         onClick={() => { setIsChangingPassword(false); setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' }); setPasswordError(''); }}
@@ -456,6 +459,11 @@ const Settings = () => {
                         )}
                     </div>
                 </section>
+
+                </div>
+
+                {/* Notifications + Language Row */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
 
                 {/* Notifications - ALL roles */}
                 <section className="bg-white dark:bg-[#1a1f2e] rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden">
@@ -502,8 +510,10 @@ const Settings = () => {
                     </div>
                 </section>
 
-                {/* Language - Full Width */}
+                {/* Language */}
                 <LanguagePicker />
+
+                </div>
 
                 {/* Appearance + Date/Time Row */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">

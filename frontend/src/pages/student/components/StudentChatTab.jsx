@@ -7,6 +7,9 @@ import {
 } from 'lucide-react';
 import Loader, { ButtonLoader } from '../../../components/ui/Loader';
 import { chatAPI } from '../../../services/api';
+import ChatMediaButton from '../../../components/shared/ChatMediaButton';
+import ChatMediaDisplay from '../../../components/shared/ChatMediaDisplay';
+import { googleDriveAPI } from '../../../services/api';
 import ProfileAvatar from '../../../components/ui/ProfileAvatar';
 import { formatDate } from '../../../utils/dateFormatter';
 import { getSocketURL } from '../../../config/apiBaseUrl';
@@ -21,6 +24,8 @@ const StudentChatTab = ({ course, isRestricted }) => {
     const [newMessage, setNewMessage] = useState('');
     const [isLoading, setIsLoading] = useState(true);
     const [isSending, setIsSending] = useState(false);
+    const [pendingMedia, setPendingMedia] = useState([]);
+    const [driveStatus, setDriveStatus] = useState({ connected: false });
 
     const socketRef = useRef();
     const scrollRef = useRef();
@@ -29,6 +34,10 @@ const StudentChatTab = ({ course, isRestricted }) => {
     useEffect(() => {
         activeTeacherRef.current = activeTeacher;
     }, [activeTeacher]);
+
+    useEffect(() => {
+        googleDriveAPI.getStatus().then(res => setDriveStatus(res.data)).catch(() => {});
+    }, []);
 
     // Initialize socket and fetch teachers
     useEffect(() => {
@@ -128,7 +137,7 @@ const StudentChatTab = ({ course, isRestricted }) => {
 
     const handleSendMessage = async (e) => {
         if (e) e.preventDefault();
-        if (!newMessage.trim() || !activeTeacher || isSending || isRestricted) return;
+        if ((!newMessage.trim() && pendingMedia.length === 0) || !activeTeacher || isSending || isRestricted) return;
 
         const teacherId = activeTeacher._id || activeTeacher.id;
         if (!teacherId) {
@@ -139,11 +148,12 @@ const StudentChatTab = ({ course, isRestricted }) => {
         setIsSending(true);
         try {
             const courseId = course._id || course.id;
-            const res = await chatAPI.sendCourseMessage(courseId, teacherId, newMessage.trim());
+            const res = await chatAPI.sendCourseMessage(courseId, teacherId, newMessage.trim(), pendingMedia);
             if (res.data && res.data.data) {
                 setMessages(prev => [...prev, res.data.data]);
             }
             setNewMessage('');
+            setPendingMedia([]);
         } catch (error) {
             console.error('Error sending message:', error);
         } finally {
@@ -275,6 +285,9 @@ const StudentChatTab = ({ course, isRestricted }) => {
                                                         : 'bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-800 dark:text-gray-200 rounded-bl-md'
                                                 }`}>
                                                     <p className="text-sm whitespace-pre-wrap">{msg.text}</p>
+                                                    {msg.media && msg.media.length > 0 && (
+                                                        <ChatMediaDisplay media={msg.media} isMe={isMe} />
+                                                    )}
                                                     <p className={`text-[10px] mt-1 ${isMe ? 'text-primary' : 'text-gray-400 dark:text-gray-500'}`}>
                                                         {formatTime(msg.createdAt)}
                                                     </p>
@@ -298,6 +311,12 @@ const StudentChatTab = ({ course, isRestricted }) => {
                                 <p className="text-xs text-red-500 mb-2">Messaging disabled due to payment restrictions.</p>
                             )}
                             <div className="flex gap-2">
+                                <ChatMediaButton
+                                    pendingMedia={pendingMedia}
+                                    setPendingMedia={setPendingMedia}
+                                    driveStatus={driveStatus}
+                                    disabled={isRestricted}
+                                />
                                 <input
                                     type="text"
                                     value={newMessage}
@@ -314,7 +333,7 @@ const StudentChatTab = ({ course, isRestricted }) => {
                                 />
                                 <button
                                     onClick={() => handleSendMessage()}
-                                    disabled={!newMessage.trim() || !activeTeacher || isRestricted || isSending}
+                                    disabled={(!newMessage.trim() && pendingMedia.length === 0) || !activeTeacher || isRestricted || isSending}
                                     className="px-4 py-3 bg-primary text-white rounded-xl hover:bg-primary disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                                 >
                                     <ButtonLoader
