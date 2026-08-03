@@ -2,7 +2,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
 import { io } from 'socket.io-client';
-import { assignmentAPI, courseAPI, dailyTaskAPI, chatAPI, enrollmentAPI, feeAPI, certificateAPI, testAPI, taskAPI, teacherFinanceAPI } from '../../services/api';
+import { assignmentAPI, courseAPI, dailyTaskAPI, chatAPI, enrollmentAPI, feeAPI, certificateAPI, testAPI, taskAPI, teacherFinanceAPI, financeAPI } from '../../services/api';
 import { isDueDateOverdue } from '../../utils/dueDate';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -57,6 +57,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
     const [studentNavCounts, setStudentNavCounts] = useState({});
     const [discussionUnread, setDiscussionUnread] = useState(0);
     const [teacherProjectCount, setTeacherProjectCount] = useState(0);
+    const [adminProjectCount, setAdminProjectCount] = useState(0);
     const [availableRoles, setAvailableRoles] = useState([]);
     const [isSwitchingRole, setIsSwitchingRole] = useState(false);
     const [showRoleMenu, setShowRoleMenu] = useState(false);
@@ -225,13 +226,30 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         const loadTeacherProjects = async () => {
             try {
                 const res = await teacherFinanceAPI.getAssignedProjects();
-                setTeacherProjectCount((res.data.data || []).length);
+                const allProjects = res.data.data || [];
+                setTeacherProjectCount(allProjects.filter(p => p.status !== 'completed').length);
             } catch (_) {
                 setTeacherProjectCount(0);
             }
         };
         loadTeacherProjects();
         const timer = setInterval(loadTeacherProjects, 30000);
+        return () => clearInterval(timer);
+    }, [role]);
+
+    useEffect(() => {
+        if (role !== 'admin') return;
+        const loadAdminProjects = async () => {
+            try {
+                const res = await financeAPI.getProjects();
+                const allProjects = res.data.data || [];
+                setAdminProjectCount(allProjects.filter(p => p.status !== 'completed').length);
+            } catch (_) {
+                setAdminProjectCount(0);
+            }
+        };
+        loadAdminProjects();
+        const timer = setInterval(loadAdminProjects, 30000);
         return () => clearInterval(timer);
     }, [role]);
 
@@ -464,6 +482,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                 { id: 'interns', labelKey: 'nav.interns', icon: Users, path: '/admin/interns', badge: adminPendingCounts.internRegisteredNew },
                 { id: 'notifications', labelKey: 'nav.notifications', icon: Bell, path: '/admin/notifications' },
                 { id: 'fees', labelKey: 'nav.feeVerification', icon: CreditCard, path: '/admin/fees', badge: adminPendingCounts.fees, secondaryBadge: adminPendingCounts.feesAwaiting },
+                { id: 'expenses', labelKey: 'Expenses', icon: Wallet, path: '/admin/expense' },
                 { id: 'discussion-room', labelKey: 'Discussion Room', icon: MessageSquare, path: '/admin/discussion-room', badge: discussionUnread },
                 { id: 'attendance-settings', labelKey: 'nav.attendanceSettings', icon: ClipboardList, path: '/admin/attendance-settings' },
                 { id: 'registration-pages', labelKey: 'Registration Forms', icon: FileText, path: '/admin/registration-pages' },
@@ -471,7 +490,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                 { id: 'paid-tasks', labelKey: 'nav.paidTasks', icon: Briefcase, path: '/admin/paid-tasks', counters: { assigned: jobPostingCounts.totalAssigned || 0, submitted: jobPostingCounts.totalSubmitted || 0 } },
                 ...(jobChatSummary.totalAssigned > 0 ? [{ id: 'job-chat', labelKey: 'Job Chats', icon: MessageSquare, path: '/admin/job-chat', badge: jobChatSummary.totalUnread }] : []),
                 { id: 'jobs', labelKey: 'nav.freelancers', icon: Briefcase, path: '/admin/jobs', badge: adminPendingCounts.job },
-                { id: 'projects', labelKey: 'Projects', icon: FolderOpen, path: '/admin/projects' },
+                { id: 'projects', labelKey: 'Projects', icon: FolderOpen, path: '/admin/projects', badge: adminProjectCount },
             ],
             teacher: [
                 { id: 'dashboard', labelKey: 'nav.dashboard', icon: LayoutDashboard, path: '/teacher/dashboard', submissionBadge: teacherSubmissionCount },
@@ -483,7 +502,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                 { id: 'discussion-room', labelKey: 'Discussion Room', icon: MessageSquare, path: '/teacher/discussion-room', badge: discussionUnread },
                 { id: 'projects-section-label', type: 'section', label: 'Projects & Jobs' },
                 { id: 'jobs', labelKey: 'Job Posting', icon: Briefcase, path: '/teacher/jobs', badge: (jobPostingCounts.totalAssigned || 0) + (jobPostingCounts.totalSubmitted || 0) },
-                ...(teacherProjectCount > 0 ? [{ id: 'my-projects', labelKey: 'My Projects', icon: BriefcaseBusiness, path: '/teacher/projects' }] : []),
+                ...(teacherProjectCount > 0 ? [{ id: 'my-projects', labelKey: 'My Projects', icon: BriefcaseBusiness, path: '/teacher/projects', badge: teacherProjectCount }] : []),
                 ...(jobChatSummary.totalAssigned > 0 ? [{ id: 'job-chat', labelKey: 'Applicant Chats', icon: MessageSquare, path: '/teacher/job-chat', badge: jobChatSummary.totalUnread }] : []),
             ],
             student: [
