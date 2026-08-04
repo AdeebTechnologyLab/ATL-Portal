@@ -129,7 +129,7 @@ const Settings = () => {
     };
 
     useEffect(() => {
-        if (role === 'student' || role === 'intern') {
+        if (role === 'student' || role === 'intern' || role === 'admin' || role === 'teacher' || role === 'job') {
             googleDriveAPI.getStatus()
                 .then(res => setDriveStatus(res.data))
                 .catch(() => {});
@@ -661,7 +661,7 @@ const Settings = () => {
                 </section>
 
                 {/* Row 3: Google Drive (only for students/interns) */}
-                {(role === 'student' || role === 'intern') && (
+                {(role === 'student' || role === 'intern' || role === 'admin' || role === 'teacher' || role === 'job') && (
                     <section className="bg-white dark:bg-[#1a1f2e] rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden">
                         <div className="p-4 sm:p-5 border-b border-gray-50 dark:border-gray-800/50">
                             <div className="flex items-center gap-3">
