@@ -373,11 +373,11 @@ const AttendanceTab = ({ course, students }) => {
                     </div>
                 )}
 
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                     <div>
-                        <h3 className="text-lg font-black text-gray-900 uppercase italic">Attendance Sheet</h3>
-                        <div className="flex items-center gap-2">
-                            <p className="text-sm text-gray-500 font-medium">{selectedDate === getTodayAttendanceDateKey() ? "Current Session" : "Historical Record"}</p>
+                        <h3 className="text-base sm:text-lg font-black text-gray-900 uppercase italic">Attendance Sheet</h3>
+                        <div className="flex flex-wrap items-center gap-2">
+                            <p className="text-xs sm:text-sm text-gray-500 font-medium">{selectedDate === getTodayAttendanceDateKey() ? "Current Session" : "Historical Record"}</p>
                             {lastSaved && (
                                 <span className="text-[10px] bg-primary/10 text-primary px-1.5 py-0.5 rounded font-bold uppercase animate-pulse">
                                     Auto-saved {lastSaved.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true })}
@@ -385,14 +385,14 @@ const AttendanceTab = ({ course, students }) => {
                             )}
                         </div>
                     </div>
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
                         <button
                             onClick={fetchAttendance}
                             disabled={isLoading}
-                            className="flex items-center gap-2 px-5 py-2.5 bg-primary/5 text-primary rounded-xl font-black text-[10px] uppercase tracking-widest transition-all active:scale-95 disabled:opacity-50"
+                            className="flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 bg-primary/5 text-primary rounded-xl font-black text-[10px] uppercase tracking-widest transition-all active:scale-95 disabled:opacity-50"
                         >
                             <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin' : ''}`} />
-                            Refresh Data
+                            Refresh
                         </button>
                         <div className="relative">
                             <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" />
@@ -400,7 +400,7 @@ const AttendanceTab = ({ course, students }) => {
                                 type="date"
                                 value={selectedDate}
                                 onChange={(e) => setSelectedDate(e.target.value)}
-                                className="pl-9 pr-4 py-2 bg-gray-50 border border-gray-100 rounded-xl text-sm font-bold outline-none focus:ring-2 focus:ring-primary/20 text-gray-700"
+                                className="pl-9 pr-4 py-2 bg-gray-50 border border-gray-100 rounded-xl text-xs sm:text-sm font-bold outline-none focus:ring-2 focus:ring-primary/20 text-gray-700"
                             />
                         </div>
                     </div>
@@ -448,25 +448,25 @@ const AttendanceTab = ({ course, students }) => {
                     </div>
                 </div>
 
-                <div className="flex flex-col md:flex-row items-center gap-3 mb-6">
-                    <div className="flex-1 w-full bg-gray-50 px-4 py-3 rounded-2xl flex items-center border border-gray-100">
-                        <Search className="w-5 h-5 text-gray-400 mr-3" />
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-6">
+                    <div className="flex-1 w-full bg-gray-50 px-3 sm:px-4 py-2.5 sm:py-3 rounded-2xl flex items-center border border-gray-100">
+                        <Search className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 mr-2 sm:mr-3 shrink-0" />
                         <input
                             type="text"
                             placeholder="Search student name or roll no..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="bg-transparent border-none outline-none w-full text-sm font-medium"
+                            className="bg-transparent border-none outline-none w-full text-xs sm:text-sm font-medium"
                         />
                     </div>
                     {!isLocked && (
                         <button
                             onClick={handleSave}
                             disabled={isSaving}
-                            className="w-full md:w-auto px-8 py-3 bg-primary hover:bg-primary text-white rounded-2xl flex items-center justify-center gap-2 font-bold transition-all shadow-lg shadow-primary"
+                            className="w-full sm:w-auto px-6 sm:px-8 py-2.5 sm:py-3 bg-primary hover:bg-primary text-white rounded-2xl flex items-center justify-center gap-2 font-bold transition-all shadow-lg shadow-primary text-sm"
                         >
-                            {isSaving ? <ButtonLoader /> : <Save className="w-5 h-5" />}
-                            {isSaving ? 'SAVING...' : 'SAVE ATTENDANCE'}
+                            {isSaving ? <ButtonLoader /> : <Save className="w-4 h-4 sm:w-5 sm:h-5" />}
+                            {isSaving ? 'SAVING...' : 'SAVE'}
                         </button>
                     )}
                 </div>

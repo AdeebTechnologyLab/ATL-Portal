@@ -117,15 +117,6 @@ router.post('/upload', protect, upload.array('files', 10), async (req, res) => {
         if (!req.files?.length) {
             return res.status(400).json({ success: false, message: 'Please select at least one file' });
         }
-        const assignment = await Assignment.findById(req.body.assignmentId)
-            .populate({
-                path: 'course',
-                select: 'title teachers',
-                populate: { path: 'teachers', select: 'email' }
-            });
-        if (!assignment) {
-            return res.status(404).json({ success: false, message: 'Assignment not found' });
-        }
 
         const connection = await GoogleDriveConnection.findOne({ user: req.user.id })
             .select('+encryptedRefreshToken');
@@ -138,13 +129,37 @@ router.post('/upload', protect, upload.array('files', 10), async (req, res) => {
             refresh_token: decryptToken(connection.encryptedRefreshToken)
         });
 
-        const driveUpload = await uploadAssignmentFiles({
-            auth: oauth2Client,
-            files: req.files,
-            courseTitle: assignment.course?.title || 'Course',
-            assignmentTitle: assignment.title,
-            teacherEmails: assignment.course?.teachers?.map(teacher => teacher.email) || []
-        });
+        let driveUpload;
+        const assignmentId = req.body.assignmentId;
+
+        if (assignmentId) {
+            const assignment = await Assignment.findById(assignmentId)
+                .populate({
+                    path: 'course',
+                    select: 'title teachers',
+                    populate: { path: 'teachers', select: 'email' }
+                });
+            if (!assignment) {
+                return res.status(404).json({ success: false, message: 'Assignment not found' });
+            }
+            driveUpload = await uploadAssignmentFiles({
+                auth: oauth2Client,
+                files: req.files,
+                courseTitle: assignment.course?.title || 'Course',
+                assignmentTitle: assignment.title,
+                teacherEmails: assignment.course?.teachers?.map(teacher => teacher.email) || []
+            });
+        } else {
+            const userName = req.user.name || 'User';
+            const timestamp = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).replace(/ /g, '-');
+            driveUpload = await uploadAssignmentFiles({
+                auth: oauth2Client,
+                files: req.files,
+                courseTitle: 'Chat Files',
+                assignmentTitle: `${userName}-${timestamp}`,
+                teacherEmails: []
+            });
+        }
 
         res.status(201).json({
             success: true,

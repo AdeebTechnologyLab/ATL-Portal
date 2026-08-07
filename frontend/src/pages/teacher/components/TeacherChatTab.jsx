@@ -369,8 +369,8 @@ const TeacherChatTab = ({ course, students, onUnreadCountChange }) => {
                         <form onSubmit={handleSendMessage} className="p-4 bg-white dark:bg-slate-800 rounded-b-xl border-t border-gray-100 dark:border-slate-700">
                             <div className="flex gap-2 items-end">
                                 <ChatMediaButton
-                                    pendingMedia={pendingMedia}
-                                    setPendingMedia={setPendingMedia}
+                                    onMediaUploaded={setPendingMedia}
+                                    driveStatus={driveStatus}
                                     disabled={isSending}
                                 />
                                 <input

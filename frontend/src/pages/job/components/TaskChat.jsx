@@ -182,10 +182,9 @@ const TaskChat = ({ taskId, currentUser }) => {
             {/* Input Area */}
             <form onSubmit={handleSendMessage} className="p-3 bg-white border-t border-gray-100 flex gap-2">
                 <ChatMediaButton
-                    onMediaSelect={(media) => setPendingMedia([...pendingMedia, ...media])}
+                    onMediaUploaded={setPendingMedia}
                     driveStatus={driveStatus}
-                    pendingMedia={pendingMedia}
-                    onRemoveMedia={(index) => setPendingMedia(pendingMedia.filter((_, i) => i !== index))}
+                    disabled={isSending}
                 />
                 <input
                     type="text"

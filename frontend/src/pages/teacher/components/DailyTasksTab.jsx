@@ -147,14 +147,14 @@ const DailyTasksTab = ({ course, students = [] }) => {
 
     return (
         <div className="space-y-6">
-            <div className="flex items-center justify-between">
-                <h3 className="text-lg font-bold text-gray-900 uppercase italic">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <h3 className="text-base sm:text-lg font-bold text-gray-900 uppercase italic">
                     {course.targetAudience === 'interns' ? 'Meeting Log Submissions' : 'Class Log Submissions'}
                 </h3>
                 <button
                     onClick={fetchTasks}
                     disabled={isLoading}
-                    className="flex items-center gap-2 px-5 py-2.5 bg-primary/5 text-primary rounded-xl font-black text-[10px] uppercase tracking-widest transition-all active:scale-95 disabled:opacity-50"
+                    className="flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 bg-primary/5 text-primary rounded-xl font-black text-[10px] uppercase tracking-widest transition-all active:scale-95 disabled:opacity-50 self-start"
                 >
                     <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin' : ''}`} />
                     Refresh Logs
@@ -162,67 +162,67 @@ const DailyTasksTab = ({ course, students = [] }) => {
             </div>
 
             {/* Quick Stats Summary Row */}
-            <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
                 {[
-                    { id: 'all', label: 'Total Submissions', icon: BookOpen, count: tasks.length, color: 'text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 border-blue-100 dark:border-blue-800/30', activeColor: 'ring-4 ring-blue-500/20 bg-blue-100 dark:bg-blue-900/40 border-blue-400 scale-105', onClick: () => setActiveStatFilter('all') },
-                    { id: 'verified', label: 'Verified Logs', icon: CheckCircle, count: tasks.filter(t => t.status === 'verified' || t.status === 'graded').length, color: 'text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 border-emerald-100 dark:border-emerald-800/30', activeColor: 'ring-4 ring-emerald-500/20 bg-emerald-100 dark:bg-emerald-900/40 border-emerald-400 scale-105', onClick: () => setActiveStatFilter(activeStatFilter === 'verified' ? 'all' : 'verified') },
-                    { id: 'pending', label: 'Pending Verification', icon: Clock, count: tasks.filter(t => t.status === 'submitted' || t.status === 'pending').length, color: 'text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 border-amber-100 dark:border-amber-800/30', activeColor: 'ring-4 ring-amber-500/20 bg-amber-100 dark:bg-amber-900/40 border-amber-400 scale-105', onClick: () => setActiveStatFilter(activeStatFilter === 'pending' ? 'all' : 'pending') },
-                    { id: 'rejected', label: 'Rejected Logs', icon: XCircle, count: tasks.filter(t => t.status === 'rejected').length, color: 'text-red-700 dark:text-red-400 bg-red-50 dark:bg-red-900/20 border-red-100 dark:border-red-800/30', activeColor: 'ring-4 ring-red-500/20 bg-red-100 dark:bg-red-900/40 border-red-400 scale-105', onClick: () => setActiveStatFilter(activeStatFilter === 'rejected' ? 'all' : 'rejected') },
+                    { id: 'all', label: 'Total', icon: BookOpen, count: tasks.length, color: 'text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 border-blue-100 dark:border-blue-800/30', activeColor: 'ring-4 ring-blue-500/20 bg-blue-100 dark:bg-blue-900/40 border-blue-400 scale-105', onClick: () => setActiveStatFilter('all') },
+                    { id: 'verified', label: 'Verified', icon: CheckCircle, count: tasks.filter(t => t.status === 'verified' || t.status === 'graded').length, color: 'text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 border-emerald-100 dark:border-emerald-800/30', activeColor: 'ring-4 ring-emerald-500/20 bg-emerald-100 dark:bg-emerald-900/40 border-emerald-400 scale-105', onClick: () => setActiveStatFilter(activeStatFilter === 'verified' ? 'all' : 'verified') },
+                    { id: 'pending', label: 'Pending', icon: Clock, count: tasks.filter(t => t.status === 'submitted' || t.status === 'pending').length, color: 'text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 border-amber-100 dark:border-amber-800/30', activeColor: 'ring-4 ring-amber-500/20 bg-amber-100 dark:bg-amber-900/40 border-amber-400 scale-105', onClick: () => setActiveStatFilter(activeStatFilter === 'pending' ? 'all' : 'pending') },
+                    { id: 'rejected', label: 'Rejected', icon: XCircle, count: tasks.filter(t => t.status === 'rejected').length, color: 'text-red-700 dark:text-red-400 bg-red-50 dark:bg-red-900/20 border-red-100 dark:border-red-800/30', activeColor: 'ring-4 ring-red-500/20 bg-red-100 dark:bg-red-900/40 border-red-400 scale-105', onClick: () => setActiveStatFilter(activeStatFilter === 'rejected' ? 'all' : 'rejected') },
                 ].map((stat) => (
                     <button
                         key={stat.id}
                         onClick={stat.onClick}
-                        className={`${stat.color} ${activeStatFilter === stat.id ? stat.activeColor : 'border hover:scale-105'} rounded-2xl p-4 flex items-center justify-between shadow-sm text-left transition-all focus:outline-none`}
+                        className={`${stat.color} ${activeStatFilter === stat.id ? stat.activeColor : 'border hover:scale-105'} rounded-2xl p-3 sm:p-4 flex items-center justify-between shadow-sm text-left transition-all focus:outline-none`}
                     >
                         <div>
-                            <span className="text-[10px] font-black uppercase tracking-widest opacity-70 block mb-1">{stat.label}</span>
-                            <p className="text-2xl font-black leading-none">{stat.count}</p>
+                            <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest opacity-70 block mb-1">{stat.label}</span>
+                            <p className="text-xl sm:text-2xl font-black leading-none">{stat.count}</p>
                         </div>
-                        <div className="p-2 rounded-xl bg-white/50 dark:bg-black/20 backdrop-blur-sm">
-                            <stat.icon className="w-5 h-5 opacity-80" />
+                        <div className="p-1.5 sm:p-2 rounded-xl bg-white/50 dark:bg-black/20 backdrop-blur-sm">
+                            <stat.icon className="w-4 h-4 sm:w-5 sm:h-5 opacity-80" />
                         </div>
                     </button>
                 ))}
-                <div className="text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700 rounded-2xl p-4 flex items-center justify-between shadow-sm">
+                <div className="text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700 rounded-2xl p-3 sm:p-4 flex items-center justify-between shadow-sm">
                     <div>
-                        <span className="text-[10px] font-black uppercase tracking-widest opacity-70 block mb-1">Total Students</span>
-                        <p className="text-2xl font-black leading-none">{students.length}</p>
+                        <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest opacity-70 block mb-1">Students</span>
+                        <p className="text-xl sm:text-2xl font-black leading-none">{students.length}</p>
                     </div>
-                    <div className="p-2 rounded-xl bg-white/50 dark:bg-black/20 backdrop-blur-sm">
-                        <Users className="w-5 h-5 opacity-80" />
+                    <div className="p-1.5 sm:p-2 rounded-xl bg-white/50 dark:bg-black/20 backdrop-blur-sm">
+                        <Users className="w-4 h-4 sm:w-5 sm:h-5 opacity-80" />
                     </div>
                 </div>
             </div>
 
             {/* Student Filter */}
             <div className="relative">
-                <div className="flex items-center justify-between gap-3 mb-2"><p className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2"><Users className="w-3 h-3" />Filter by Student</p><div className="flex items-center gap-2"><button type="button" onClick={() => setSelectedStudentFilters(null)} className="px-3 py-2 text-xs font-bold text-primary bg-primary/5 hover:bg-primary/10 rounded-lg">Select All</button><button type="button" onClick={() => setSelectedStudentFilters([])} className="px-3 py-2 text-xs font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg">Clear</button></div></div>
+                <div className="flex items-center justify-between gap-3 mb-2"><p className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2"><Users className="w-3 h-3" />Filter by Student</p><div className="flex items-center gap-2"><button type="button" onClick={() => setSelectedStudentFilters(null)} className="px-3 py-1.5 sm:py-2 text-[10px] sm:text-xs font-bold text-primary bg-primary/5 hover:bg-primary/10 rounded-lg">Select All</button><button type="button" onClick={() => setSelectedStudentFilters([])} className="px-3 py-1.5 sm:py-2 text-[10px] sm:text-xs font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg">Clear</button></div></div>
 
-                <div className="flex flex-wrap items-start gap-3">
+                <div className="flex flex-wrap items-start gap-2 sm:gap-3">
                     {(students || []).map(student => {
                         const studentId = student.id || student._id;
                         const selected = selectedStudentFilters === null || selectedStudentFilters.map(String).includes(String(studentId));
                         return <label
                             key={studentId}
-                            className={`inline-flex w-fit flex-none items-center gap-3 px-3 py-2.5 rounded-xl border text-left transition-all ${selected ? 'border-primary bg-primary/5 shadow-sm' : 'border-gray-200 bg-white hover:border-primary/40 hover:shadow-sm'}`}
+                            className={`inline-flex w-fit flex-none items-center gap-2 sm:gap-3 px-2.5 sm:px-3 py-2 sm:py-2.5 rounded-xl border text-left transition-all ${selected ? 'border-primary bg-primary/5 shadow-sm' : 'border-gray-200 bg-white hover:border-primary/40 hover:shadow-sm'}`}
                         >
-                            <input type="checkbox" checked={selected} onChange={(event) => { const allIds = students.map(item => item.id || item._id); const current = selectedStudentFilters === null ? allIds : selectedStudentFilters; setSelectedStudentFilters(event.target.checked ? [...new Set([...current, studentId])] : current.filter(id => String(id) !== String(studentId))); }} className="w-4 h-4 rounded accent-orange-500 text-orange-500 focus:ring-orange-500" />
-                            {student.photo ? <img src={student.photo} alt={student.name} className="w-8 h-8 rounded-full object-cover" /> : <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold">{student.name?.charAt(0)}</div>}
-                            <div><p className="text-sm font-medium text-gray-900">{student.name}</p>{student.rollNo && <p className="text-xs text-gray-400">{student.rollNo}</p>}</div>
+                            <input type="checkbox" checked={selected} onChange={(event) => { const allIds = students.map(item => item.id || item._id); const current = selectedStudentFilters === null ? allIds : selectedStudentFilters; setSelectedStudentFilters(event.target.checked ? [...new Set([...current, studentId])] : current.filter(id => String(id) !== String(studentId))); }} className="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded accent-orange-500 text-orange-500 focus:ring-orange-500" />
+                            {student.photo ? <img src={student.photo} alt={student.name} className="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover" /> : <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] sm:text-xs font-bold">{student.name?.charAt(0)}</div>}
+                            <div className="min-w-0"><p className="text-xs sm:text-sm font-medium text-gray-900 truncate">{student.name}</p>{student.rollNo && <p className="text-[10px] sm:text-xs text-gray-400">{student.rollNo}</p>}</div>
                         </label>;
                     })}
                 </div>
             </div>
 
             {/* Search */}
-            <div className="bg-white p-4 rounded-xl border border-gray-100 flex items-center gap-3 shadow-sm">
-                <Search className="w-5 h-5 text-gray-400" />
+            <div className="bg-white p-3 sm:p-4 rounded-xl border border-gray-100 flex items-center gap-3 shadow-sm">
+                <Search className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 shrink-0" />
                 <input
                     type="text"
                     placeholder="Search by student or content..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="flex-1 outline-none text-gray-700 font-medium"
+                    className="flex-1 outline-none text-gray-700 font-medium text-sm"
                 />
             </div>
 
@@ -242,35 +242,35 @@ const DailyTasksTab = ({ course, students = [] }) => {
                                 key={task._id}
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                className={`bg-white p-6 rounded-2xl border border-gray-100 hover:shadow-md transition-all group ${task.status === 'verified' ? 'opacity-60 bg-gray-50/30' : ''}`}
+                                className={`bg-white p-4 sm:p-6 rounded-2xl border border-gray-100 hover:shadow-md transition-all group ${task.status === 'verified' ? 'opacity-60 bg-gray-50/30' : ''}`}
                             >
-                                <div className="flex items-start justify-between gap-4">
-                                    <div className="flex items-start gap-4 flex-1">
+                                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                                    <div className="flex items-start gap-3 sm:gap-4 flex-1 min-w-0">
                                         {task.user?.photo ? (
-                                            <img src={task.user.photo} alt={task.user.name} className="w-12 h-12 rounded-full object-cover border border-primary/10" />
+                                            <img src={task.user.photo} alt={task.user.name} className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover border border-primary/10 shrink-0" />
                                         ) : (
-                                            <div className="w-12 h-12 rounded-full bg-primary/5 flex items-center justify-center text-base font-bold text-primary border border-primary/10">
+                                            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-primary/5 flex items-center justify-center text-sm sm:text-base font-bold text-primary border border-primary/10 shrink-0">
                                                 {task.user?.name?.charAt(0)}
                                             </div>
                                         )}
-                                        <div className="flex-1">
-                                            <div className="flex items-center gap-2 mb-1">
-                                                <span className="text-[10px] font-black text-primary bg-primary/5 px-2 py-0.5 rounded-lg border border-primary/10 uppercase tracking-tight">
+                                        <div className="flex-1 min-w-0">
+                                            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mb-1">
+                                                <span className="text-[9px] sm:text-[10px] font-black text-primary bg-primary/5 px-1.5 sm:px-2 py-0.5 rounded-lg border border-primary/10 uppercase tracking-tight">
                                                     {task.user?.role === 'intern' ? 'LOG' : 'CLASS'} #{logNumber}
                                                 </span>
-                                                <h4 className="font-bold text-gray-900">{task.user?.name}</h4>
+                                                <h4 className="font-bold text-gray-900 text-sm sm:text-base">{task.user?.name}</h4>
                                                 {task.user?.rollNo && (
-                                                    <span className="text-[10px] font-black text-red-500 bg-red-50 px-2 py-0.5 rounded-lg border border-red-100">
+                                                    <span className="text-[9px] sm:text-[10px] font-black text-red-500 bg-red-50 px-1.5 sm:px-2 py-0.5 rounded-lg border border-red-100">
                                                         {task.user?.rollNo}
                                                     </span>
                                                 )}
-                                                <span className={`text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full border ${task.user?.role === 'intern' ? 'bg-purple-50 text-primary border-primary/10' : 'bg-blue-50 text-blue-600 border-blue-100'
+                                                <span className={`text-[8px] sm:text-[9px] font-black uppercase tracking-widest px-1.5 sm:px-2 py-0.5 rounded-full border ${task.user?.role === 'intern' ? 'bg-purple-50 text-primary border-primary/10' : 'bg-blue-50 text-blue-600 border-blue-100'
                                                     }`}>
                                                     {task.user?.role || 'student'}
                                                 </span>
                                             </div>
-                                            <p className="text-xs text-gray-400 mb-4 flex items-center gap-1.5 font-medium">
-                                                <Clock className="w-3.5 h-3.5" />
+                                            <p className="text-[10px] sm:text-xs text-gray-400 mb-3 sm:mb-4 flex items-center gap-1.5 font-medium">
+                                                <Clock className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                                                 {formatDateTime(task.date || task.createdAt)}
                                             </p>
 
@@ -280,38 +280,38 @@ const DailyTasksTab = ({ course, students = [] }) => {
                                                         href={task.workLink}
                                                         target="_blank"
                                                         rel="noopener noreferrer"
-                                                        className="flex items-center gap-2 text-sm text-primary font-bold hover:underline bg-primary/5 w-fit px-3 py-2 rounded-xl border border-primary/10"
+                                                        className="flex items-center gap-2 text-xs sm:text-sm text-primary font-bold hover:underline bg-primary/5 w-fit px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl border border-primary/10"
                                                     >
-                                                        <ExternalLink className="w-4 h-4" />
+                                                        <ExternalLink className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                                                         SUBMITTED WORK LINK
                                                     </a>
                                                 )}
                                                 <RichTextContent
                                                     html={task.content}
-                                                    className="bg-gray-50 p-4 rounded-2xl border border-gray-100 italic"
+                                                    className="bg-gray-50 p-3 sm:p-4 rounded-2xl border border-gray-100 italic text-xs sm:text-sm"
                                                 />
                                             </div>
 
                                             {task.feedback && (
-                                                <div className="mt-4 p-3 bg-blue-50/50 rounded-xl border border-blue-100/50">
-                                                    <p className="text-[10px] font-black text-blue-600 uppercase mb-1 tracking-widest">Feedback Given</p>
-                                                    <p className="text-sm text-blue-900 font-medium italic">{task.feedback}</p>
+                                                <div className="mt-3 sm:mt-4 p-2.5 sm:p-3 bg-blue-50/50 rounded-xl border border-blue-100/50">
+                                                    <p className="text-[9px] sm:text-[10px] font-black text-blue-600 uppercase mb-1 tracking-widest">Feedback Given</p>
+                                                    <p className="text-xs sm:text-sm text-blue-900 font-medium italic">{task.feedback}</p>
                                                 </div>
                                             )}
                                         </div>
                                     </div>
 
-                                    <div className="flex flex-col items-end gap-3">
+                                    <div className="flex flex-row sm:flex-col items-start sm:items-end gap-2 sm:gap-3 shrink-0">
                                         <Badge variant={task.status === 'verified' || task.status === 'graded' ? 'success' : task.status === 'rejected' ? 'error' : 'warning'}>
                                             {task.status === 'verified' || task.status === 'graded' ? 'VERIFIED ✅' : task.status === 'rejected' ? 'REJECTED ❌' : 'PENDING ⏳'}
                                         </Badge>
 
-                                        <div className="flex items-center gap-2">
+                                        <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
                                             {(task.status === 'submitted' || task.status === 'rejected') && (
                                                 <button
                                                     onClick={() => handleVerifyClick(task)}
                                                     disabled={isSubmitting}
-                                                    className="px-4 py-2 bg-primary hover:bg-primary text-white rounded-lg text-xs font-black uppercase tracking-widest transition-all shadow-md active:scale-95 disabled:opacity-50"
+                                                    className="px-3 sm:px-4 py-1.5 sm:py-2 bg-primary hover:bg-primary text-white rounded-lg text-[10px] sm:text-xs font-black uppercase tracking-widest transition-all shadow-md active:scale-95 disabled:opacity-50"
                                                 >
                                                     {isSubmitting ? '...' : 'VERIFY'}
                                                 </button>
@@ -320,16 +320,16 @@ const DailyTasksTab = ({ course, students = [] }) => {
                                                 <button
                                                     onClick={() => handleEditGradeClick(task)}
                                                     disabled={isSubmitting}
-                                                    className="px-4 py-2 bg-blue-100 text-blue-600 hover:bg-blue-200 rounded-lg text-xs font-black uppercase tracking-widest transition-all shadow-sm active:scale-95 disabled:opacity-50"
+                                                    className="px-3 sm:px-4 py-1.5 sm:py-2 bg-blue-100 text-blue-600 hover:bg-blue-200 rounded-lg text-[10px] sm:text-xs font-black uppercase tracking-widest transition-all shadow-sm active:scale-95 disabled:opacity-50"
                                                 >
-                                                    EDIT GRADE
+                                                    EDIT
                                                 </button>
                                             )}
                                             {(task.status === 'submitted' || task.status === 'verified' || task.status === 'graded') && (
                                                 <button
                                                     onClick={() => handleReject(task)}
                                                     disabled={isSubmitting}
-                                                    className="px-4 py-2 bg-red-100 text-red-600 hover:bg-red-200 rounded-lg text-xs font-black uppercase tracking-widest transition-all active:scale-95 disabled:opacity-50"
+                                                    className="px-3 sm:px-4 py-1.5 sm:py-2 bg-red-100 text-red-600 hover:bg-red-200 rounded-lg text-[10px] sm:text-xs font-black uppercase tracking-widest transition-all active:scale-95 disabled:opacity-50"
                                                 >
                                                     {task.status === 'rejected' ? 'REJECTED' : 'REJECT'}
                                                 </button>
@@ -337,7 +337,7 @@ const DailyTasksTab = ({ course, students = [] }) => {
                                             <button
                                                 onClick={() => handleDelete(task)}
                                                 disabled={isSubmitting}
-                                                className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                                                className="p-1.5 sm:p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
                                                 title="Delete Log"
                                             >
                                                 <Trash2 className="w-4 h-4" />
@@ -360,7 +360,7 @@ const DailyTasksTab = ({ course, students = [] }) => {
 
             {/* Grading Modal */}
             {selectedTaskForGrading && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6">
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -370,26 +370,26 @@ const DailyTasksTab = ({ course, students = [] }) => {
                     <motion.div
                         initial={{ opacity: 0, scale: 0.95, y: 20 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
-                        className="bg-white dark:bg-slate-900 w-full max-w-lg rounded-[2.5rem] shadow-2xl relative z-10 border border-gray-100 dark:border-slate-800 flex flex-col" style={{ maxHeight: '90vh' }}
+                        className="bg-white dark:bg-slate-900 w-full max-w-lg rounded-2xl sm:rounded-[2.5rem] shadow-2xl relative z-10 border border-gray-100 dark:border-slate-800 flex flex-col" style={{ maxHeight: '90vh' }}
                     >
-                        <div className="bg-primary p-8 text-white relative rounded-t-[2.5rem]">
+                        <div className="bg-primary p-5 sm:p-8 text-white relative rounded-t-2xl sm:rounded-t-[2.5rem]">
                             <button
                                 onClick={() => setSelectedTaskForGrading(null)}
-                                className="absolute top-6 right-6 p-2 hover:bg-white/10 rounded-full transition-colors"
+                                className="absolute top-4 right-4 sm:top-6 sm:right-6 p-2 hover:bg-white/10 rounded-full transition-colors"
                             >
                                 <X className="w-5 h-5" />
                             </button>
-                            <h3 className="text-xl font-black uppercase tracking-tight mb-1">Verify & Grade Work</h3>
+                            <h3 className="text-lg sm:text-xl font-black uppercase tracking-tight mb-1">Verify & Grade Work</h3>
                             <p className="text-white/70 text-[10px] font-black uppercase tracking-widest">Assign marks and feedback for {selectedTaskForGrading.user?.name}</p>
                         </div>
 
                         {/* Scrollable Content Area */}
-                        <div className="overflow-y-auto flex-1 p-8 space-y-6">
-                            <div className="bg-gray-50 dark:bg-slate-800/50 p-5 rounded-2xl border border-gray-100 dark:border-slate-800">
+                        <div className="overflow-y-auto flex-1 p-5 sm:p-8 space-y-4 sm:space-y-6">
+                            <div className="bg-gray-50 dark:bg-slate-800/50 p-4 sm:p-5 rounded-2xl border border-gray-100 dark:border-slate-800">
                                 <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Student Log Content</p>
                                 <RichTextContent 
                                     html={selectedTaskForGrading.content} 
-                                    className="text-sm font-medium text-gray-600 dark:text-gray-400 italic"
+                                    className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 italic"
                                 />
                             </div>
 
@@ -402,9 +402,9 @@ const DailyTasksTab = ({ course, students = [] }) => {
                                         max="10"
                                         value={gradingMarks}
                                         onChange={handleMarksChange}
-                                        className="w-full px-6 py-4 bg-gray-50 dark:bg-black/20 border-2 border-gray-100 dark:border-slate-800 rounded-2xl outline-none focus:border-primary font-black text-lg transition-all"
+                                        className="w-full px-5 sm:px-6 py-3 sm:py-4 bg-gray-50 dark:bg-black/20 border-2 border-gray-100 dark:border-slate-800 rounded-2xl outline-none focus:border-primary font-black text-base sm:text-lg transition-all"
                                     />
-                                    <span className="absolute right-6 top-1/2 -translate-y-1/2 font-black text-gray-300 text-lg">/10</span>
+                                    <span className="absolute right-5 sm:right-6 top-1/2 -translate-y-1/2 font-black text-gray-300 text-base sm:text-lg">/10</span>
                                 </div>
                             </div>
 
@@ -415,23 +415,23 @@ const DailyTasksTab = ({ course, students = [] }) => {
                                     value={gradingFeedback}
                                     onChange={(e) => setGradingFeedback(e.target.value)}
                                     placeholder="Write a short encouraging feedback..."
-                                    className="w-full px-6 py-4 bg-gray-50 dark:bg-black/20 border-2 border-gray-100 dark:border-slate-800 rounded-2xl outline-none focus:border-primary font-medium text-sm transition-all resize-none"
+                                    className="w-full px-5 sm:px-6 py-3 sm:py-4 bg-gray-50 dark:bg-black/20 border-2 border-gray-100 dark:border-slate-800 rounded-2xl outline-none focus:border-primary font-medium text-xs sm:text-sm transition-all resize-none"
                                 />
                             </div>
                         </div>
 
                         {/* Fixed Bottom Buttons */}
-                        <div className="flex gap-3 px-8 py-5 border-t border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-b-[2.5rem]">
+                        <div className="flex gap-2 sm:gap-3 px-5 sm:px-8 py-4 sm:py-5 border-t border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-b-2xl sm:rounded-b-[2.5rem]">
                             <button
                                 onClick={() => setSelectedTaskForGrading(null)}
-                                className="flex-1 py-4 px-6 border-2 border-gray-100 dark:border-slate-800 rounded-2xl font-black text-[10px] uppercase tracking-widest text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-800 transition-all"
+                                className="flex-1 py-3 sm:py-4 px-4 sm:px-6 border-2 border-gray-100 dark:border-slate-800 rounded-2xl font-black text-[10px] uppercase tracking-widest text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-800 transition-all"
                             >
                                 Cancel
                             </button>
                             <button
                                 onClick={() => submitVerification(selectedTaskForGrading._id, 'verified')}
                                 disabled={isSubmitting}
-                                className="flex-2 py-4 px-10 bg-primary text-white rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-xl shadow-primary/20 hover:shadow-2xl hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50"
+                                className="flex-[2] py-3 sm:py-4 px-6 sm:px-10 bg-primary text-white rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-xl shadow-primary/20 hover:shadow-2xl hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50"
                             >
                                 {isSubmitting ? 'Processing...' : 'Verify & Post Results'}
                             </button>

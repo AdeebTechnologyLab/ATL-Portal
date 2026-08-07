@@ -3912,8 +3912,7 @@ const ChatWidget = () => {
 
 
                                         <ChatMediaButton
-                                            pendingMedia={pendingMedia}
-                                            setPendingMedia={setPendingMedia}
+                                            onMediaUploaded={setPendingMedia}
                                             driveStatus={driveStatus}
                                         />
 

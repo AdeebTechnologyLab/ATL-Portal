@@ -277,16 +277,16 @@ const AssignmentsTab = ({ course, students }) => { // Accept students prop
 
     return (
         <div className="space-y-6">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <h3 className="font-bold text-gray-900 text-lg">{itemsLabel}</h3>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
                     <button
                         onClick={fetchAssignments}
                         disabled={isLoading}
-                        className="flex items-center gap-2 px-5 py-2.5 bg-primary/5 text-primary rounded-xl font-black text-[10px] uppercase tracking-widest transition-all active:scale-95 disabled:opacity-50"
+                        className="flex items-center gap-2 px-4 sm:px-5 py-2 sm:2.5 bg-primary/5 text-primary rounded-xl font-black text-[10px] uppercase tracking-widest transition-all active:scale-95 disabled:opacity-50"
                     >
                         <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin' : ''}`} />
-                        Refresh List
+                        Refresh
                     </button>
                     <button
                         onClick={() => {
@@ -303,7 +303,7 @@ const AssignmentsTab = ({ course, students }) => { // Accept students prop
                             setAssignSearchTerm('');
                             setIsCreateModalOpen(true);
                         }}
-                        className="px-6 py-2.5 bg-primary hover:bg-primary/90 text-white rounded-xl font-black text-xs uppercase tracking-widest transition-all flex items-center gap-2 shadow-lg shadow-primary/10 active:scale-95"
+                        className="px-4 sm:px-6 py-2 sm:py-2.5 bg-primary hover:bg-primary/90 text-white rounded-xl font-black text-[10px] sm:text-xs uppercase tracking-widest transition-all flex items-center gap-2 shadow-lg shadow-primary/10 active:scale-95"
                     >
                         <Plus className="w-4 h-4" />
                         Create {itemLabel}
@@ -312,34 +312,34 @@ const AssignmentsTab = ({ course, students }) => { // Accept students prop
             </div>
 
             {/* Quick Stats Summary Row */}
-            <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
                 {[
                     { id: 'all', label: `Total ${itemsLabel}`, icon: FileText, count: assignments.length, color: 'text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 border-blue-100 dark:border-blue-800/30', activeColor: 'ring-4 ring-blue-500/20 bg-blue-100 dark:bg-blue-900/40 border-blue-400 scale-105', onClick: () => setActiveStatFilter('all') },
-                    { id: 'submissions', label: 'Total Submissions', icon: CheckCircle, count: assignments.reduce((acc, a) => acc + (a.submissions?.length || 0), 0), color: 'text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 border-emerald-100 dark:border-emerald-800/30', activeColor: 'ring-4 ring-emerald-500/20 bg-emerald-100 dark:bg-emerald-900/40 border-emerald-400 scale-105', onClick: () => setActiveStatFilter(activeStatFilter === 'submissions' ? 'all' : 'submissions') },
-                    { id: 'pending', label: 'Pending Marks', icon: Clock, count: assignments.reduce((acc, a) => { const submissions = a.submissions || []; const gradedCount = submissions.filter(s => s.status === 'graded' || s.status === 'rejected').length; return acc + (submissions.length - gradedCount); }, 0), color: 'text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 border-amber-100 dark:border-amber-800/30', activeColor: 'ring-4 ring-amber-500/20 bg-amber-100 dark:bg-amber-900/40 border-amber-400 scale-105', onClick: () => setActiveStatFilter(activeStatFilter === 'pending' ? 'all' : 'pending') },
+                    { id: 'submissions', label: 'Submissions', icon: CheckCircle, count: assignments.reduce((acc, a) => acc + (a.submissions?.length || 0), 0), color: 'text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 border-emerald-100 dark:border-emerald-800/30', activeColor: 'ring-4 ring-emerald-500/20 bg-emerald-100 dark:bg-emerald-900/40 border-emerald-400 scale-105', onClick: () => setActiveStatFilter(activeStatFilter === 'submissions' ? 'all' : 'submissions') },
+                    { id: 'pending', label: 'Pending', icon: Clock, count: assignments.reduce((acc, a) => { const submissions = a.submissions || []; const gradedCount = submissions.filter(s => s.status === 'graded' || s.status === 'rejected').length; return acc + (submissions.length - gradedCount); }, 0), color: 'text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 border-amber-100 dark:border-amber-800/30', activeColor: 'ring-4 ring-amber-500/20 bg-amber-100 dark:bg-amber-900/40 border-amber-400 scale-105', onClick: () => setActiveStatFilter(activeStatFilter === 'pending' ? 'all' : 'pending') },
                     { id: 'rejected', label: 'Rejected', icon: X, count: assignments.reduce((acc, a) => acc + (a.submissions?.filter(s => s.status === 'rejected').length || 0), 0), color: 'text-red-700 dark:text-red-400 bg-red-50 dark:bg-red-900/20 border-red-100 dark:border-red-800/30', activeColor: 'ring-4 ring-red-500/20 bg-red-100 dark:bg-red-900/40 border-red-400 scale-105', onClick: () => setActiveStatFilter(activeStatFilter === 'rejected' ? 'all' : 'rejected') },
                 ].map((stat) => (
                     <button
                         key={stat.id}
                         onClick={stat.onClick}
-                        className={`${stat.color} ${activeStatFilter === stat.id ? stat.activeColor : 'border hover:scale-105'} rounded-2xl p-4 flex items-center justify-between shadow-sm text-left transition-all focus:outline-none`}
+                        className={`${stat.color} ${activeStatFilter === stat.id ? stat.activeColor : 'border hover:scale-105'} rounded-2xl p-3 sm:p-4 flex items-center justify-between shadow-sm text-left transition-all focus:outline-none`}
                     >
                         <div>
-                            <span className="text-[10px] font-black uppercase tracking-widest opacity-70 block mb-1">{stat.label}</span>
-                            <p className="text-2xl font-black leading-none">{stat.count}</p>
+                            <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest opacity-70 block mb-1">{stat.label}</span>
+                            <p className="text-xl sm:text-2xl font-black leading-none">{stat.count}</p>
                         </div>
-                        <div className="p-2 rounded-xl bg-white/50 dark:bg-black/20 backdrop-blur-sm">
-                            <stat.icon className="w-5 h-5 opacity-80" />
+                        <div className="p-1.5 sm:p-2 rounded-xl bg-white/50 dark:bg-black/20 backdrop-blur-sm">
+                            <stat.icon className="w-4 h-4 sm:w-5 sm:h-5 opacity-80" />
                         </div>
                     </button>
                 ))}
-                <div className="text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700 rounded-2xl p-4 flex items-center justify-between shadow-sm">
+                <div className="text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700 rounded-2xl p-3 sm:p-4 flex items-center justify-between shadow-sm">
                     <div>
-                        <span className="text-[10px] font-black uppercase tracking-widest opacity-70 block mb-1">Total Students</span>
-                        <p className="text-2xl font-black leading-none">{students.length}</p>
+                        <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest opacity-70 block mb-1">Students</span>
+                        <p className="text-xl sm:text-2xl font-black leading-none">{students.length}</p>
                     </div>
-                    <div className="p-2 rounded-xl bg-white/50 dark:bg-black/20 backdrop-blur-sm">
-                        <Users className="w-5 h-5 opacity-80" />
+                    <div className="p-1.5 sm:p-2 rounded-xl bg-white/50 dark:bg-black/20 backdrop-blur-sm">
+                        <Users className="w-4 h-4 sm:w-5 sm:h-5 opacity-80" />
                     </div>
                 </div>
             </div>
@@ -355,28 +355,28 @@ const AssignmentsTab = ({ course, students }) => { // Accept students prop
                         <button
                             type="button"
                             onClick={() => setSelectedStudentFilters(null)}
-                            className="px-3 py-2 text-xs font-bold text-primary bg-primary/5 hover:bg-primary/10 rounded-lg"
+                            className="px-3 py-1.5 sm:py-2 text-[10px] sm:text-xs font-bold text-primary bg-primary/5 hover:bg-primary/10 rounded-lg"
                         >
                             Select All
                         </button>
                         <button
                             type="button"
                             onClick={() => setSelectedStudentFilters([])}
-                            className="px-3 py-2 text-xs font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg"
+                            className="px-3 py-1.5 sm:py-2 text-[10px] sm:text-xs font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg"
                         >
                             Clear
                         </button>
                     </div>
                 </div>
 
-                <div className="flex flex-wrap items-start gap-3">
+                <div className="flex flex-wrap items-start gap-2 sm:gap-3">
                     {(students || []).map(student => {
                         const studentId = student.id || student._id;
                         const selected = selectedStudentFilters === null || selectedStudentFilters.map(String).includes(String(studentId));
                         return (
                             <label
                                 key={studentId}
-                                className={`inline-flex w-fit flex-none items-center gap-3 px-3 py-2.5 rounded-xl border text-left transition-all ${selected
+                                className={`inline-flex w-fit flex-none items-center gap-2 sm:gap-3 px-2.5 sm:px-3 py-2 sm:py-2.5 rounded-xl border text-left transition-all ${selected
                                     ? 'border-primary bg-primary/5 shadow-sm'
                                     : 'border-gray-200 bg-white hover:border-primary/40 hover:shadow-sm'
                                     }`}
@@ -391,18 +391,18 @@ const AssignmentsTab = ({ course, students }) => { // Accept students prop
                                             ? [...new Set([...current, studentId])]
                                             : current.filter(id => String(id) !== String(studentId)));
                                     }}
-                                    className="w-4 h-4 rounded accent-orange-500 text-orange-500 focus:ring-orange-500"
+                                    className="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded accent-orange-500 text-orange-500 focus:ring-orange-500"
                                 />
                                 {student.photo ? (
-                                    <img src={student.photo} alt={student.name} className="w-8 h-8 rounded-full object-cover" />
+                                    <img src={student.photo} alt={student.name} className="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover" />
                                 ) : (
-                                    <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold">
+                                    <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] sm:text-xs font-bold">
                                         {student.name?.charAt(0)}
                                     </div>
                                 )}
-                                <div>
-                                    <p className="text-sm font-medium text-gray-900">{student.name}</p>
-                                    {student.rollNo && <p className="text-xs text-gray-400">{student.rollNo}</p>}
+                                <div className="min-w-0">
+                                    <p className="text-xs sm:text-sm font-medium text-gray-900 truncate">{student.name}</p>
+                                    {student.rollNo && <p className="text-[10px] sm:text-xs text-gray-400">{student.rollNo}</p>}
                                 </div>
                             </label>
                         );
@@ -494,14 +494,14 @@ const AssignmentsTab = ({ course, students }) => { // Accept students prop
                                     key={assignment._id}
                                     initial={{ opacity: 0, y: 10 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    className={`bg-white rounded-2xl p-6 border border-gray-100 hover:shadow-lg transition-all ${isFullyGraded ? 'opacity-50 grayscale-[0.5]' : ''}`}
+                                    className={`bg-white rounded-2xl p-4 sm:p-6 border border-gray-100 hover:shadow-lg transition-all ${isFullyGraded ? 'opacity-50 grayscale-[0.5]' : ''}`}
                                 >
-                                    <div className="flex items-start justify-between mb-4">
-                                        <div className="flex-1">
-                                            <div className="flex items-center gap-3 mb-1">
-                                                <span className="text-xs font-black text-gray-300 tracking-tighter uppercase whitespace-nowrap bg-gray-50 px-2 py-1 rounded-lg border border-gray-100">ASGN #{assignmentNumber}</span>
-                                                <h4 className="font-bold text-gray-900 text-lg uppercase tracking-tight">{assignment.title}</h4>
-                                                <div className="flex gap-2">
+                                    <div className="flex flex-col sm:flex-row sm:items-start justify-between mb-4 gap-3">
+                                        <div className="flex-1 min-w-0">
+                                            <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-1">
+                                                <span className="text-[10px] sm:text-xs font-black text-gray-300 tracking-tighter uppercase whitespace-nowrap bg-gray-50 px-2 py-1 rounded-lg border border-gray-100">ASGN #{assignmentNumber}</span>
+                                                <h4 className="font-bold text-gray-900 text-base sm:text-lg uppercase tracking-tight">{assignment.title}</h4>
+                                                <div className="flex flex-wrap gap-1.5 sm:gap-2">
                                                     <Badge variant="info">ASSIGNED</Badge>
                                                     {isScheduled && <Badge variant="warning">SCHEDULED</Badge>}
                                                     {isOverdue && <Badge variant="error font-black uppercase">Expired</Badge>}
@@ -510,33 +510,35 @@ const AssignmentsTab = ({ course, students }) => { // Accept students prop
                                             </div>
                                             <RichTextContent
                                                 html={assignment.description}
-                                                className="text-sm"
+                                                className="text-xs sm:text-sm"
                                                 emptyText="No description"
                                             />
                                         </div>
-                                        <div className="text-right">
-                                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Submissions</p>
-                                            <div className="flex items-center gap-1">
-                                                <span className="text-xl font-black text-primary">{submissionCount}</span>
-                                                <span className="text-sm text-gray-400">/</span>
-                                                <span className="text-xl font-black text-red-500">{assignment.assignTo === 'all' ? (students?.length || '?') : (assignment.assignedUsers?.length || 0)}</span>
+                                        <div className="flex items-center sm:flex-col sm:items-end gap-3 sm:gap-1 shrink-0">
+                                            <div className="text-right">
+                                                <p className="text-[9px] sm:text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Submissions</p>
+                                                <div className="flex items-center gap-1">
+                                                    <span className="text-lg sm:text-xl font-black text-primary">{submissionCount}</span>
+                                                    <span className="text-xs sm:text-sm text-gray-400">/</span>
+                                                    <span className="text-lg sm:text-xl font-black text-red-500">{assignment.assignTo === 'all' ? (students?.length || '?') : (assignment.assignedUsers?.length || 0)}</span>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div className="flex gap-2">
-                                            <button
-                                                onClick={() => handleEditAssignment(assignment)}
-                                                className="p-2 hover:bg-blue-50 text-blue-600 rounded-lg transition-colors border border-transparent hover:border-blue-100"
-                                                title={`Edit ${itemLabel}`}
-                                            >
-                                                <Edit2 className="w-4 h-4" />
-                                            </button>
-                                            <button
-                                                onClick={() => handleDeleteAssignment(assignment._id)}
-                                                className="p-2 hover:bg-red-50 text-red-600 rounded-lg transition-colors border border-transparent hover:border-red-100"
-                                                title="Delete Assignment"
-                                            >
-                                                <X className="w-4 h-4" />
-                                            </button>
+                                            <div className="flex gap-1.5 sm:gap-2">
+                                                <button
+                                                    onClick={() => handleEditAssignment(assignment)}
+                                                    className="p-1.5 sm:p-2 hover:bg-blue-50 text-blue-600 rounded-lg transition-colors border border-transparent hover:border-blue-100"
+                                                    title={`Edit ${itemLabel}`}
+                                                >
+                                                    <Edit2 className="w-4 h-4" />
+                                                </button>
+                                                <button
+                                                    onClick={() => handleDeleteAssignment(assignment._id)}
+                                                    className="p-1.5 sm:p-2 hover:bg-red-50 text-red-600 rounded-lg transition-colors border border-transparent hover:border-red-100"
+                                                    title="Delete Assignment"
+                                                >
+                                                    <X className="w-4 h-4" />
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -644,34 +646,34 @@ const AssignmentsTab = ({ course, students }) => { // Accept students prop
                                         </div>
                                     )}
 
-                                    <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                                        <div className="flex items-center gap-4">
-                                            <div className="flex items-center gap-1.5 px-3 py-1 bg-gray-50 rounded-lg border border-gray-100 text-xs font-bold text-gray-500 uppercase">
+                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between pt-4 border-t border-gray-100 gap-3">
+                                        <div className="flex flex-wrap items-center gap-2 sm:gap-4">
+                                            <div className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1 bg-gray-50 rounded-lg border border-gray-100 text-[10px] sm:text-xs font-bold text-gray-500 uppercase">
                                                 <Calendar className="w-3.5 h-3.5" />
                                                 Due: {formatDate(assignment.dueDate)}
                                             </div>
                                             {gradedCount < submissionCount && (
-                                                <div className="flex items-center gap-1.5 px-3 py-1 bg-amber-50 rounded-lg border border-amber-100 text-[10px] font-black text-amber-600 uppercase">
+                                                <div className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1 bg-amber-50 rounded-lg border border-amber-100 text-[9px] sm:text-[10px] font-black text-amber-600 uppercase">
                                                     <Clock className="w-3.5 h-3.5" />
-                                                    {submissionCount - gradedCount} Pending Marks
+                                                    {submissionCount - gradedCount} Pending
                                                 </div>
                                             )}
                                         </div>
-                                        <div className="flex items-center gap-2">
+                                        <div className="flex items-center gap-2 flex-wrap">
                                             {gradedCount > 0 && (
                                                 <button
                                                     onClick={() => { setReviewAssignment(assignment); setIsReviewModalOpen(true); }}
-                                                    className="flex items-center gap-1.5 px-4 py-2.5 bg-primary/5 hover:bg-primary/10 text-primary border border-primary/20 rounded-xl text-xs font-black uppercase tracking-widest transition-all active:scale-95"
+                                                    className="flex items-center gap-1.5 px-3 sm:px-4 py-2 sm:py-2.5 bg-primary/5 hover:bg-primary/10 text-primary border border-primary/20 rounded-xl text-[10px] sm:text-xs font-black uppercase tracking-widest transition-all active:scale-95"
                                                 >
                                                     <Eye className="w-3.5 h-3.5" />
-                                                    REVIEW GRADES
+                                                    REVIEW
                                                 </button>
                                             )}
                                             <button
                                                 onClick={() => handleViewSubmissions(assignment)}
-                                                className="px-6 py-2.5 bg-primary hover:bg-primary text-white rounded-xl text-xs font-black uppercase tracking-widest transition-all shadow-lg active:scale-95"
+                                                className="px-4 sm:px-6 py-2 sm:py-2.5 bg-primary hover:bg-primary text-white rounded-xl text-[10px] sm:text-xs font-black uppercase tracking-widest transition-all shadow-lg active:scale-95"
                                             >
-                                                {isFullyGraded ? 'GRADE SUBMISSIONS' : 'GRADE SUBMISSIONS'}
+                                                GRADE
                                             </button>
                                         </div>
                                     </div>

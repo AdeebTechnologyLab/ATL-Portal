@@ -328,16 +328,16 @@ const TeacherCourses = ({ isDashboard = false, initialSearchMode = 'courses' }) 
         <>
             <div className="space-y-6">
                 {isDashboard && <BirthdayWish />}
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
-                        <h1 className="text-2xl font-bold text-gray-900">
+                        <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
                             {isDashboard
                                 ? t('teacherDashboard.pendingTasksDashboard')
                                 : searchMode === 'students'
                                     ? 'Students'
                                     : t('teacherDashboard.courses')}
                         </h1>
-                        <p className="text-gray-500">
+                        <p className="text-gray-500 text-sm">
                             {isDashboard 
                                 ? t('teacherDashboard.showingCoursesGrading') 
                                 : searchMode === 'students'
@@ -345,17 +345,18 @@ const TeacherCourses = ({ isDashboard = false, initialSearchMode = 'courses' }) 
                                     : 'Overview of all your assigned courses'}
                         </p>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-wrap">
                         <button
                             onClick={() => {
                                 setLiveClassForm({ title: '', link: '', description: '', visibility: 'all', autoEndMinutes: '' });
                                 setLiveClassModalType('google');
                                 setShowLiveClassModal(true);
                             }}
-                            className="px-5 py-2.5 bg-red-500 hover:bg-red-600 text-white rounded-xl font-medium transition-all duration-300 flex items-center gap-2 shadow-lg shadow-red-200"
+                            className="px-4 sm:px-5 py-2 sm:py-2.5 bg-red-500 hover:bg-red-600 text-white rounded-xl font-medium transition-all duration-300 flex items-center gap-2 shadow-lg shadow-red-200 text-sm"
                         >
-                            <Video className="w-5 h-5" />
-                            {t('teacherDashboard.googleMeetLink')}
+                            <Video className="w-4 h-4 sm:w-5 sm:h-5" />
+                            <span className="hidden sm:inline">{t('teacherDashboard.googleMeetLink')}</span>
+                            <span className="sm:hidden">Meet</span>
                         </button>
                         <button
                             onClick={() => {
@@ -363,10 +364,11 @@ const TeacherCourses = ({ isDashboard = false, initialSearchMode = 'courses' }) 
                                 setLiveClassModalType('adeeb');
                                 setShowLiveClassModal(true);
                             }}
-                            className="px-5 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-xl font-medium transition-all duration-300 flex items-center gap-2 shadow-lg shadow-primary/20"
+                            className="px-4 sm:px-5 py-2 sm:py-2.5 bg-primary hover:bg-primary-dark text-white rounded-xl font-medium transition-all duration-300 flex items-center gap-2 shadow-lg shadow-primary/20 text-sm"
                         >
-                            <Users className="w-5 h-5" />
-                            {t('teacherDashboard.startAdeebMeet')}
+                            <Users className="w-4 h-4 sm:w-5 sm:h-5" />
+                            <span className="hidden sm:inline">{t('teacherDashboard.startAdeebMeet')}</span>
+                            <span className="sm:hidden">Adeeb</span>
                         </button>
                     </div>
                 </div>
