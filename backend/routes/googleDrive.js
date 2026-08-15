@@ -182,20 +182,31 @@ router.post('/upload', protect, upload.array('files', 10), async (req, res) => {
         });
     } catch (error) {
         console.error('Google Drive upload error:', error);
-        const errorMessage = error.response?.data?.error?.message || error.message || 'Google Drive upload failed';
+        const googleError = error.response?.data?.error;
+        const googleErrorCode = typeof googleError === 'string' ? googleError : googleError?.status;
+        const errorMessage = error.response?.data?.error_description || googleError?.message || error.message || 'Google Drive upload failed';
+        const hasInvalidClient =
+            googleErrorCode === 'invalid_client' ||
+            /invalid_client|unauthorized client|client authentication failed/i.test(errorMessage);
         const needsReauthorization =
             error.response?.status === 403 &&
             /insufficient authentication scopes|insufficient permission|insufficient.*scope/i.test(errorMessage);
 
-        if (needsReauthorization) {
+        if (needsReauthorization || hasInvalidClient) {
             await GoogleDriveConnection.deleteOne({ user: req.user.id });
         }
 
-        res.status(needsReauthorization ? 403 : 500).json({
+        res.status(needsReauthorization ? 403 : hasInvalidClient ? 503 : 500).json({
             success: false,
-            code: needsReauthorization ? 'GOOGLE_DRIVE_REAUTH_REQUIRED' : 'GOOGLE_DRIVE_UPLOAD_FAILED',
+            code: needsReauthorization
+                ? 'GOOGLE_DRIVE_REAUTH_REQUIRED'
+                : hasInvalidClient
+                    ? 'GOOGLE_DRIVE_CONFIG_INVALID'
+                    : 'GOOGLE_DRIVE_UPLOAD_FAILED',
             message: needsReauthorization
                 ? 'Drive file permission is missing. Reconnect Google Drive and allow file access.'
+                : hasInvalidClient
+                    ? 'Google Drive client credentials are invalid. Ask the administrator to update the Google OAuth Client ID and secret.'
                 : errorMessage
         });
     }

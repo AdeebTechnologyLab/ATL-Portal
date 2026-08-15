@@ -206,6 +206,9 @@ const AssignmentSubmission = () => {
             if (responseCode === 'GOOGLE_DRIVE_REAUTH_REQUIRED') {
                 setDriveStatus(previous => ({ ...previous, connected: false, googleEmail: '' }));
                 setDriveError('Drive permission was not allowed. Click Connect Google Drive again, then tick the Drive file access checkbox and continue.');
+            } else if (responseCode === 'GOOGLE_DRIVE_CONFIG_INVALID') {
+                setDriveStatus(previous => ({ ...previous, connected: false, googleEmail: '' }));
+                setDriveError('Google Drive setup is invalid. Please ask the administrator to update the Google OAuth Client ID and secret.');
             } else {
                 setDriveError(error.response?.data?.message || 'Google Drive upload failed.');
             }
