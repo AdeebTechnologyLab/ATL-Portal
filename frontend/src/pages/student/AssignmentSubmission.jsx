@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     CheckCircle, Clock, Calendar, Search, Filter, AlertCircle, XCircle, ChevronLeft, ChevronRight,
-    BookOpen, GraduationCap, ArrowRight, ExternalLink, Send, FileText, ClipboardList, Plus, Link as LinkIcon, MessageCircle, MapPin, Zap, X, Pencil, Trash2, Upload
+    BookOpen, GraduationCap, ArrowRight, ExternalLink, Send, FileText, ClipboardList, Plus, Link as LinkIcon, MessageCircle, MapPin, Zap, X, Pencil, Trash2, Upload, Eye
 } from 'lucide-react';
 import Badge from '../../components/ui/Badge';
 import Loader, { ButtonLoader } from '../../components/ui/Loader';
@@ -64,6 +64,7 @@ const AssignmentSubmission = () => {
     const [isDriveUploading, setIsDriveUploading] = useState(false);
     const [isDriveFilesLoading, setIsDriveFilesLoading] = useState(false);
     const [deletingDriveFileId, setDeletingDriveFileId] = useState(null);
+    const [previewDriveFile, setPreviewDriveFile] = useState(null);
     const [driveError, setDriveError] = useState('');
     const [newTaskLink, setNewTaskLink] = useState('');
     const [newTaskContent, setNewTaskContent] = useState('');
@@ -923,9 +924,19 @@ const AssignmentSubmission = () => {
                                                                         return (
                                                                             <div key={item.clientId} className="rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-3">
                                                                                 <div className="flex items-center gap-3">
-                                                                                    <div className="w-9 h-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
-                                                                                        <FileText className="w-4 h-4" />
-                                                                                    </div>
+                                                                                    <button
+                                                                                        type="button"
+                                                                                        onClick={() => item.uploadedFile?.id && setPreviewDriveFile(item.uploadedFile)}
+                                                                                        disabled={!item.uploadedFile?.id}
+                                                                                        className="w-11 h-11 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0 overflow-hidden disabled:cursor-default"
+                                                                                        title={item.uploadedFile?.id ? 'Preview file' : ''}
+                                                                                    >
+                                                                                        {item.uploadedFile?.thumbnailLink ? (
+                                                                                            <img src={item.uploadedFile.thumbnailLink} alt="" className="w-full h-full object-cover" />
+                                                                                        ) : (
+                                                                                            <FileText className="w-4 h-4" />
+                                                                                        )}
+                                                                                    </button>
                                                                                     <div className="min-w-0 flex-1">
                                                                                         <p className="text-[11px] font-black text-slate-700 dark:text-slate-200 truncate" title={item.name}>{item.name}</p>
                                                                                         <p className={`text-[9px] font-bold ${item.status === 'failed' ? 'text-red-500' : item.status === 'uploaded' ? 'text-emerald-500' : 'text-slate-400'}`}>
@@ -938,15 +949,27 @@ const AssignmentSubmission = () => {
                                                                                                         : `${item.progress}% • ${item.statusText || 'Uploading'} • ${formatFileSize(item.size)}`}
                                                                                         </p>
                                                                                     </div>
-                                                                                    <button
-                                                                                        type="button"
-                                                                                        onClick={() => handleRemoveDriveFile(item)}
-                                                                                        disabled={isBusy}
-                                                                                        title={item.uploadedFile?.id ? 'Delete from Google Drive' : 'Remove file'}
-                                                                                        className="w-9 h-9 rounded-lg border border-red-200 dark:border-red-900/60 text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 flex items-center justify-center shrink-0 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-                                                                                    >
-                                                                                        {isDeleting ? <ButtonLoader size="sm" /> : <Trash2 className="w-4 h-4" />}
-                                                                                    </button>
+                                                                                    <div className="flex items-center gap-2 shrink-0">
+                                                                                        {item.uploadedFile?.id && (
+                                                                                            <button
+                                                                                                type="button"
+                                                                                                onClick={() => setPreviewDriveFile(item.uploadedFile)}
+                                                                                                title="Preview file"
+                                                                                                className="w-9 h-9 rounded-lg border border-primary/20 text-primary hover:bg-primary/10 flex items-center justify-center transition-colors"
+                                                                                            >
+                                                                                                <Eye className="w-4 h-4" />
+                                                                                            </button>
+                                                                                        )}
+                                                                                        <button
+                                                                                            type="button"
+                                                                                            onClick={() => handleRemoveDriveFile(item)}
+                                                                                            disabled={isBusy}
+                                                                                            title={item.uploadedFile?.id ? 'Delete from Google Drive' : 'Remove file'}
+                                                                                            className="w-9 h-9 rounded-lg border border-red-200 dark:border-red-900/60 text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 flex items-center justify-center disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                                                                                        >
+                                                                                            {isDeleting ? <ButtonLoader size="sm" /> : <Trash2 className="w-4 h-4" />}
+                                                                                        </button>
+                                                                                    </div>
                                                                                 </div>
                                                                                 <div className="mt-2 h-1.5 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
                                                                                     <div
@@ -1237,6 +1260,52 @@ const AssignmentSubmission = () => {
                     </div>
                 </div>
             )}
+
+            <AnimatePresence>
+                {previewDriveFile && (
+                    <div className="fixed inset-0 z-[160] flex items-center justify-center p-3 sm:p-6">
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setPreviewDriveFile(null)}
+                            className="absolute inset-0 bg-slate-950/90 backdrop-blur-md"
+                        />
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.96, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.96, y: 20 }}
+                            className="relative z-10 w-full max-w-5xl h-[85vh] bg-white dark:bg-slate-900 rounded-2xl border border-white/10 shadow-2xl overflow-hidden flex flex-col"
+                        >
+                            <div className="px-4 py-3 sm:px-5 border-b border-slate-200 dark:border-slate-700 flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                                    <FileText className="w-5 h-5" />
+                                </div>
+                                <div className="min-w-0 flex-1">
+                                    <p className="text-sm font-black text-slate-900 dark:text-white truncate">{previewDriveFile.name}</p>
+                                    <p className="text-[10px] font-bold text-slate-400">{previewDriveFile.mimeType || 'Google Drive file'} • {formatFileSize(previewDriveFile.size)}</p>
+                                </div>
+                                {previewDriveFile.webViewLink && (
+                                    <a href={previewDriveFile.webViewLink} target="_blank" rel="noopener noreferrer" className="h-9 px-3 rounded-lg bg-primary text-white text-[10px] font-black uppercase flex items-center gap-2">
+                                        <ExternalLink className="w-4 h-4" /> <span className="hidden sm:inline">Open in Drive</span>
+                                    </a>
+                                )}
+                                <button type="button" onClick={() => setPreviewDriveFile(null)} className="w-9 h-9 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 flex items-center justify-center">
+                                    <X className="w-5 h-5" />
+                                </button>
+                            </div>
+                            <div className="flex-1 min-h-0 bg-slate-100 dark:bg-slate-950">
+                                <iframe
+                                    title={`Preview ${previewDriveFile.name}`}
+                                    src={`https://drive.google.com/file/d/${previewDriveFile.id}/preview`}
+                                    className="w-full h-full border-0"
+                                    allow="autoplay"
+                                />
+                            </div>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
         </div>
     );
 };
