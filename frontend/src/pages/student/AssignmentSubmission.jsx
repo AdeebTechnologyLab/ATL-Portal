@@ -30,6 +30,11 @@ const formatFileSize = (bytes = 0) => {
     return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 };
 
+const getDriveFolderId = (submission) => {
+    if (submission?.googleDriveFile?.id) return submission.googleDriveFile.id;
+    return submission?.fileUrl?.match(/drive\.google\.com\/drive\/folders\/([^/?#]+)/)?.[1] || '';
+};
+
 const GoogleDriveIcon = ({ className = '' }) => (
     <svg viewBox="0 0 24 24" aria-hidden="true" className={className}>
         <path fill="currentColor" d="M8.1 3h5.2l7.3 12.6H15.4L8.1 3Z" opacity="0.95" />
@@ -57,6 +62,7 @@ const AssignmentSubmission = () => {
     const [driveFile, setDriveFile] = useState(null);
     const [driveUploadItems, setDriveUploadItems] = useState([]);
     const [isDriveUploading, setIsDriveUploading] = useState(false);
+    const [isDriveFilesLoading, setIsDriveFilesLoading] = useState(false);
     const [deletingDriveFileId, setDeletingDriveFileId] = useState(null);
     const [driveError, setDriveError] = useState('');
     const [newTaskLink, setNewTaskLink] = useState('');
@@ -76,6 +82,16 @@ const AssignmentSubmission = () => {
             .then(response => setDriveStatus(response.data))
             .catch(() => setDriveStatus({ configured: false, connected: false, googleEmail: '' }));
         socketRef.current = io(SOCKET_URL, { withCredentials: true });
+        if (user?._id || user?.id) {
+            socketRef.current.emit('join_chat', user._id || user.id);
+        }
+        socketRef.current.on('drive_upload_progress', ({ uploadId, progress, stage }) => {
+            setDriveUploadItems(previous => previous.map(entry =>
+                entry.clientId === uploadId
+                    ? { ...entry, progress: Math.max(entry.progress || 0, progress), statusText: stage }
+                    : entry
+            ));
+        });
         
         return () => {
             if (socketRef.current) socketRef.current.disconnect();
@@ -209,7 +225,8 @@ const AssignmentSubmission = () => {
             name: file.name,
             size: file.size,
             progress: 0,
-            status: 'queued'
+            status: 'queued',
+            statusText: 'Waiting in queue'
         }));
         setDriveUploadItems(previous => [...previous, ...queuedItems]);
         setIsDriveUploading(true);
@@ -217,18 +234,25 @@ const AssignmentSubmission = () => {
         try {
             for (const item of queuedItems) {
                 setDriveUploadItems(previous => previous.map(entry =>
-                    entry.clientId === item.clientId ? { ...entry, status: 'uploading' } : entry
+                    entry.clientId === item.clientId
+                        ? { ...entry, status: 'uploading', statusText: 'Starting upload' }
+                        : entry
                 ));
 
                 try {
                     const formData = new FormData();
                     formData.append('files', item.file);
                     formData.append('assignmentId', selectedAssignment._id);
+                    formData.append('uploadId', item.clientId);
                     const response = await googleDriveAPI.upload(formData, progressEvent => {
                         const total = progressEvent.total || item.size;
-                        const progress = total ? Math.min(99, Math.round((progressEvent.loaded * 100) / total)) : 0;
+                        // Device-to-server transfer is the first 45%. The backend
+                        // reports the remaining Google Drive transfer over Socket.IO.
+                        const progress = total ? Math.min(45, Math.round((progressEvent.loaded * 45) / total)) : 0;
                         setDriveUploadItems(previous => previous.map(entry =>
-                            entry.clientId === item.clientId ? { ...entry, progress } : entry
+                            entry.clientId === item.clientId
+                                ? { ...entry, progress: Math.max(entry.progress || 0, progress), statusText: 'Uploading from device' }
+                                : entry
                         ));
                     });
 
@@ -268,6 +292,53 @@ const AssignmentSubmission = () => {
         }
     };
 
+    const handleOpenSubmission = async (assignment, submission) => {
+        const folderId = getDriveFolderId(submission);
+        setSelectedAssignment(assignment);
+        setSubmissionUrl(folderId ? '' : (submission?.fileUrl || ''));
+        setSubmissionText(submission?.notes || '');
+        setDriveUploadItems([]);
+        setDriveError('');
+
+        if (!folderId) {
+            setDriveFile(null);
+            return;
+        }
+
+        const savedFolder = {
+            id: folderId,
+            name: submission?.googleDriveFile?.name || 'Assignment files',
+            mimeType: 'application/vnd.google-apps.folder',
+            webViewLink: submission?.fileUrl || '',
+            files: []
+        };
+        setDriveFile(savedFolder);
+        if (!driveStatus.connected) {
+            setDriveError('Connect Google Drive to view and manage the files in this folder.');
+            return;
+        }
+
+        setIsDriveFilesLoading(true);
+        try {
+            const response = await googleDriveAPI.listFolderFiles(folderId);
+            const folder = response.data.folder;
+            setDriveFile(folder);
+            setDriveUploadItems((folder.files || []).map(file => ({
+                clientId: `existing-${file.id}`,
+                name: file.name,
+                size: Number(file.size || 0),
+                progress: 100,
+                status: 'uploaded',
+                statusText: 'Uploaded',
+                uploadedFile: file
+            })));
+        } catch (error) {
+            setDriveError(error.response?.data?.message || 'Could not load the files already saved in this Drive folder.');
+        } finally {
+            setIsDriveFilesLoading(false);
+        }
+    };
+
     const handleRemoveDriveFile = async (item) => {
         if (item.status === 'uploading') return;
         if (item.uploadedFile?.id && !window.confirm(`Delete “${item.name}” from Google Drive?`)) return;
@@ -281,7 +352,7 @@ const AssignmentSubmission = () => {
             setDriveFile(previous => {
                 if (!previous) return null;
                 const files = (previous.files || []).filter(file => file.id !== item.uploadedFile?.id);
-                return files.length ? { ...previous, files } : null;
+                return { ...previous, files };
             });
         } catch (error) {
             setDriveError(error.response?.data?.message || 'Could not delete the file.');
@@ -737,14 +808,7 @@ const AssignmentSubmission = () => {
                                                                 )}
                                                                 {(canSubmit || canResubmit) && selectedAssignment?._id !== assignment._id && (
                                                                 <button
-                                                                    onClick={() => {
-                                                                        setSelectedAssignment(assignment);
-                                                                        setSubmissionUrl(submissionLink || '');
-                                                                        setSubmissionText(submissionNotes || '');
-                                                                        setDriveFile(null);
-                                                                        setDriveUploadItems([]);
-                                                                        setDriveError('');
-                                                                    }}
+                                                                    onClick={() => handleOpenSubmission(assignment, mySubmission)}
                                                                     disabled={isRestricted}
                                                                     className={`w-full sm:w-auto px-6 sm:px-10 py-3 sm:py-3.5 rounded-xl font-black text-xs uppercase tracking-widest transition-all text-white shadow-lg hover:shadow-xl active:scale-95 ${submissionStatus === 'rejected' ? 'bg-red-600 hover:bg-red-700' : canResubmit ? 'bg-blue-600 hover:bg-blue-700' : 'bg-primary hover:bg-[#e67e00]'} disabled:opacity-50`}
                                                                     >
@@ -824,15 +888,31 @@ const AssignmentSubmission = () => {
                                                                 )}
                                                             </div>
 
-                                                            {driveFile && (
+                                                            {isDriveFilesLoading && (
+                                                                <div className="mt-4 flex items-center gap-3 rounded-xl bg-white dark:bg-slate-900 border border-primary/20 p-3">
+                                                                    <ButtonLoader />
+                                                                    <div>
+                                                                        <p className="text-xs font-black text-slate-700 dark:text-slate-200">Loading saved Drive files...</p>
+                                                                        <p className="text-[10px] text-slate-400">Folder ka current data check ho raha hai</p>
+                                                                    </div>
+                                                                </div>
+                                                            )}
+                                                            {driveFile && !isDriveFilesLoading && (
                                                                 <div className="mt-4 flex items-center justify-between gap-3 rounded-xl bg-white dark:bg-slate-900 border border-emerald-200 dark:border-emerald-800 p-3">
                                                                     <div className="min-w-0">
                                                                         <p className="text-xs font-black text-emerald-700 dark:text-emerald-300">
-                                                                            {driveFile.files?.length || 1} file{(driveFile.files?.length || 1) === 1 ? '' : 's'} uploaded
+                                                                            {driveFile.files?.length ?? 0} file{(driveFile.files?.length ?? 0) === 1 ? '' : 's'} in Drive folder
                                                                         </p>
                                                                         <p className="text-[10px] text-gray-400">Saved together in one Drive folder • Teacher access enabled</p>
                                                                     </div>
-                                                                    <CheckCircle className="w-5 h-5 text-emerald-500 shrink-0" />
+                                                                    <div className="flex items-center gap-2 shrink-0">
+                                                                        {driveFile.webViewLink && (
+                                                                            <a href={driveFile.webViewLink} target="_blank" rel="noopener noreferrer" title="Open Drive folder" className="w-8 h-8 rounded-lg border border-primary/20 text-primary hover:bg-primary/10 flex items-center justify-center">
+                                                                                <ExternalLink className="w-4 h-4" />
+                                                                            </a>
+                                                                        )}
+                                                                        <CheckCircle className="w-5 h-5 text-emerald-500" />
+                                                                    </div>
                                                                 </div>
                                                             )}
                                                             {driveUploadItems.length > 0 && (
@@ -853,7 +933,9 @@ const AssignmentSubmission = () => {
                                                                                                 ? item.error
                                                                                                 : item.status === 'uploaded'
                                                                                                     ? `Uploaded • ${formatFileSize(item.size)}`
-                                                                                                    : `${item.progress}% uploaded • ${formatFileSize(item.size)}`}
+                                                                                                    : item.status === 'queued'
+                                                                                                        ? `Waiting in queue • ${formatFileSize(item.size)}`
+                                                                                                        : `${item.progress}% • ${item.statusText || 'Uploading'} • ${formatFileSize(item.size)}`}
                                                                                         </p>
                                                                                     </div>
                                                                                     <button

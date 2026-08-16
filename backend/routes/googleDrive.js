@@ -131,6 +131,15 @@ router.post('/upload', protect, upload.array('files', 10), async (req, res) => {
 
         let driveUpload;
         const assignmentId = req.body.assignmentId;
+        const uploadId = req.body.uploadId;
+        const reportProgress = ({ progress, stage }) => {
+            if (!uploadId) return;
+            req.app.get('io')?.to(req.user.id.toString()).emit('drive_upload_progress', {
+                uploadId,
+                progress,
+                stage
+            });
+        };
 
         if (assignmentId) {
             const assignment = await Assignment.findById(assignmentId)
@@ -147,7 +156,8 @@ router.post('/upload', protect, upload.array('files', 10), async (req, res) => {
                 files: req.files,
                 courseTitle: assignment.course?.title || 'Course',
                 assignmentTitle: assignment.title,
-                teacherEmails: assignment.course?.teachers?.map(teacher => teacher.email) || []
+                teacherEmails: assignment.course?.teachers?.map(teacher => teacher.email) || [],
+                onProgress: reportProgress
             });
         } else {
             const userName = req.user.name || 'User';
@@ -157,9 +167,12 @@ router.post('/upload', protect, upload.array('files', 10), async (req, res) => {
                 files: req.files,
                 courseTitle: 'Chat Files',
                 assignmentTitle: `${userName}-${timestamp}`,
-                teacherEmails: []
+                teacherEmails: [],
+                onProgress: reportProgress
             });
         }
+
+        reportProgress({ progress: 100, stage: 'Uploaded' });
 
         res.status(201).json({
             success: true,
@@ -235,6 +248,50 @@ router.delete('/files/:fileId', protect, async (req, res) => {
         res.status(status).json({
             success: false,
             message: status === 404 ? 'File was already deleted or could not be found' : 'Could not delete the file from Google Drive'
+        });
+    }
+});
+
+// List the current contents of a previously submitted Drive folder so the
+// student can review, remove, or add files before resubmitting.
+router.get('/folders/:folderId/files', protect, async (req, res) => {
+    try {
+        const connection = await GoogleDriveConnection.findOne({ user: req.user.id })
+            .select('+encryptedRefreshToken');
+        if (!connection) {
+            return res.status(409).json({ success: false, message: 'Connect Google Drive first' });
+        }
+
+        const oauth2Client = getOAuthClient();
+        oauth2Client.setCredentials({
+            refresh_token: decryptToken(connection.encryptedRefreshToken)
+        });
+        const drive = google.drive({ version: 'v3', auth: oauth2Client });
+        const folderId = req.params.folderId;
+        const [folderResponse, filesResponse] = await Promise.all([
+            drive.files.get({ fileId: folderId, fields: 'id,name,webViewLink' }),
+            drive.files.list({
+                q: `'${String(folderId).replace(/'/g, "\\'")}' in parents and trashed=false`,
+                fields: 'files(id,name,mimeType,size,webViewLink,thumbnailLink,modifiedTime)',
+                orderBy: 'name'
+            })
+        ]);
+
+        res.json({
+            success: true,
+            folder: {
+                ...folderResponse.data,
+                files: (filesResponse.data.files || []).map(file => ({
+                    ...file,
+                    size: Number(file.size || 0)
+                }))
+            }
+        });
+    } catch (error) {
+        console.error('Google Drive folder listing error:', error);
+        res.status(error.response?.status === 404 ? 404 : 500).json({
+            success: false,
+            message: 'Could not load files from this Google Drive folder'
         });
     }
 });

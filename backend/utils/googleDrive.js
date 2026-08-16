@@ -86,8 +86,9 @@ const getOrCreateFolder = async (drive, name, parentId = null) => {
     return created.data.id;
 };
 
-const uploadAssignmentFiles = async ({ auth, files, courseTitle, assignmentTitle, teacherEmails }) => {
+const uploadAssignmentFiles = async ({ auth, files, courseTitle, assignmentTitle, teacherEmails, onProgress }) => {
     const drive = google.drive({ version: 'v3', auth });
+    onProgress?.({ progress: 48, stage: 'Preparing Google Drive' });
     const rootFolder = await getOrCreateFolder(drive, 'Adeeb LMS');
 
     // Make root folder publicly accessible via link so teachers can open assignment links
@@ -95,20 +96,33 @@ const uploadAssignmentFiles = async ({ auth, files, courseTitle, assignmentTitle
 
     const courseFolder = await getOrCreateFolder(drive, courseTitle, rootFolder);
     const assignmentFolder = await getOrCreateFolder(drive, assignmentTitle, courseFolder);
+    onProgress?.({ progress: 55, stage: 'Uploading to Google Drive' });
 
     const uploadedFiles = [];
     for (const file of files) {
-        const uploaded = await drive.files.create({
-            requestBody: {
-                name: file.originalname,
-                parents: [assignmentFolder]
+        const uploaded = await drive.files.create(
+            {
+                requestBody: {
+                    name: file.originalname,
+                    parents: [assignmentFolder]
+                },
+                media: {
+                    mimeType: file.mimetype,
+                    body: Readable.from(file.buffer)
+                },
+                fields: 'id,name,mimeType,size,webViewLink,thumbnailLink'
             },
-            media: {
-                mimeType: file.mimetype,
-                body: Readable.from(file.buffer)
-            },
-            fields: 'id,name,mimeType,size,webViewLink,thumbnailLink'
-        });
+            {
+                onUploadProgress: event => {
+                    const bytesRead = Number(event.bytesRead || 0);
+                    const ratio = file.size ? bytesRead / file.size : 0;
+                    onProgress?.({
+                        progress: Math.min(98, 55 + Math.round(ratio * 43)),
+                        stage: 'Uploading to Google Drive'
+                    });
+                }
+            }
+        );
         uploadedFiles.push(uploaded.data);
     }
 
@@ -128,6 +142,8 @@ const uploadAssignmentFiles = async ({ auth, files, courseTitle, assignmentTitle
         fileId: assignmentFolder,
         fields: 'id,name,webViewLink'
     });
+
+    onProgress?.({ progress: 99, stage: 'Finishing upload' });
 
     return { folder: folder.data, files: uploadedFiles };
 };

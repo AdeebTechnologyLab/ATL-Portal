@@ -65,6 +65,7 @@ export const authAPI = {
     resetPassword: (token, data) => api.post(`/auth/reset-password/${token}`, data),
     getAvailableRoles: () => api.get('/auth/available-roles'),
     switchRole: (data) => api.post('/auth/switch-role', data),
+    updateThemePreference: (colorTheme) => api.put('/auth/preferences/theme', { colorTheme }),
     changePassword: (data) => api.put('/auth/change-password', data)
 };
 
@@ -175,6 +176,7 @@ export const googleDriveAPI = {
         onUploadProgress
     }),
     deleteFile: (fileId) => api.delete(`/google-drive/files/${fileId}`),
+    listFolderFiles: (folderId) => api.get(`/google-drive/folders/${folderId}/files`),
     disconnect: () => api.delete('/google-drive/disconnect')
 };
 

@@ -68,6 +68,13 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: ''
     },
+    preferences: {
+        colorTheme: {
+            type: String,
+            enum: ['orange', 'gold', 'olive', 'navy', 'lavender', 'rose-pink', 'pakistan-green'],
+            default: 'orange'
+        }
+    },
     // Common fields
     cnic: String,
     fatherName: String, // Added for all user types

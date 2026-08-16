@@ -368,6 +368,7 @@ router.post('/login', async (req, res) => {
                 feeScreenshot: user.feeScreenshot,
                 // Common fields
                 isVerified: user.isVerified,
+                preferences: user.preferences,
                 createdAt: user.createdAt
             }
         });
@@ -386,6 +387,32 @@ router.get('/me', protect, async (req, res) => {
         res.json({ success: true, user });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
+    }
+});
+
+// Save account-level visual preferences across every role linked to this user.
+router.put('/preferences/theme', protect, async (req, res) => {
+    try {
+        const allowedThemes = ['orange', 'gold', 'olive', 'navy', 'lavender', 'rose-pink', 'pakistan-green'];
+        const colorTheme = String(req.body.colorTheme || '').trim();
+        if (!allowedThemes.includes(colorTheme)) {
+            return res.status(400).json({ success: false, message: 'Invalid theme selection' });
+        }
+
+        const currentUser = await User.findById(req.user.id);
+        if (!currentUser) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        await User.updateMany(
+            getLinkedAccountQuery(currentUser),
+            { $set: { 'preferences.colorTheme': colorTheme } }
+        );
+
+        res.json({ success: true, preferences: { colorTheme } });
+    } catch (error) {
+        console.error('Theme preference update error:', error);
+        res.status(500).json({ success: false, message: 'Could not save theme preference' });
     }
 });
 
@@ -455,6 +482,7 @@ router.post('/switch-role', protect, async (req, res) => {
                 phone: targetUser.phone,
                 location: targetUser.location,
                 isVerified: targetUser.isVerified,
+                preferences: targetUser.preferences,
                 createdAt: targetUser.createdAt
             }
         });

@@ -1,8 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { Provider } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { useEffect, lazy, Suspense } from 'react';
-import store from './store/store';
 import { subscribeToPushNotifications } from './utils/pushNotifications';
 
 // Layout (keep eagerly loaded - used on every authenticated page)
@@ -266,14 +264,12 @@ import { Toaster } from 'react-hot-toast';
 
 function App() {
   return (
-    <Provider store={store}>
-      <Router>
-        <Toaster position="top-right" reverseOrder={false} />
-        <Suspense fallback={<PageLoader />}>
-          <AppRoutes />
-        </Suspense>
-      </Router>
-    </Provider>
+    <Router>
+      <Toaster position="top-right" reverseOrder={false} />
+      <Suspense fallback={<PageLoader />}>
+        <AppRoutes />
+      </Suspense>
+    </Router>
   );
 }
 

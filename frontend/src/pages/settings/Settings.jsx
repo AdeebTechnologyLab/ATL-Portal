@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Palette, Check, Layout, Sun, Moon, Sparkles, LogOut, HardDrive, Clock, Paintbrush, User, Mail, Phone, Shield, Lock, Bell, Eye, EyeOff, Camera, Save, X } from 'lucide-react';
 import { useSelector, useDispatch } from 'react-redux';
@@ -89,6 +89,8 @@ const Settings = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [showSuccess, setShowSuccess] = useState('');
+    const themeSaveTimerRef = useRef(null);
+    const themeSaveQueueRef = useRef(Promise.resolve());
     const [driveStatus, setDriveStatus] = useState({ configured: false, connected: false, googleEmail: '' });
     const [isDisconnecting, setIsDisconnecting] = useState(false);
     const [driveError, setDriveError] = useState('');
@@ -116,16 +118,31 @@ const Settings = () => {
         announcementAlerts: true,
     });
 
-    const activeThemeMeta = APP_THEMES.find((t) => t.id === theme) || APP_THEMES[0];
-
     const showSuccessMessage = (msg) => {
         setShowSuccess(msg);
         setTimeout(() => setShowSuccess(''), 3000);
     };
 
     const handleThemeChange = (id) => {
+        const selectedTheme = APP_THEMES.find(option => option.id === id) || APP_THEMES[0];
         setTheme(id);
-        showSuccessMessage(t('settings.themeApplied', { name: activeThemeMeta.name }));
+        dispatch(updateUser({
+            preferences: { ...(user?.preferences || {}), colorTheme: id }
+        }));
+        showSuccessMessage(t('settings.themeApplied', { name: selectedTheme.name }));
+
+        // Apply instantly, but save only the latest rapid selection. Queuing
+        // prevents an older slow request from overwriting the newest choice.
+        clearTimeout(themeSaveTimerRef.current);
+        themeSaveTimerRef.current = setTimeout(() => {
+            themeSaveQueueRef.current = themeSaveQueueRef.current
+                .catch(() => {})
+                .then(() => authAPI.updateThemePreference(id))
+                .catch(error => {
+                    console.error('Theme preference save failed:', error);
+                    setShowSuccess('Theme changed locally, but could not save it to your account.');
+                });
+        }, 350);
     };
 
     useEffect(() => {

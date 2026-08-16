@@ -1,15 +1,20 @@
 import { createContext, useContext, useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { APP_THEMES } from '../constants/themes';
 
 const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
+    const user = useSelector((state) => state.auth.user);
     const [isDark, setIsDark] = useState(() => {
         const saved = localStorage.getItem('theme');
         return saved === 'dark';
     });
 
     const [theme, setTheme] = useState(() => {
-        return localStorage.getItem('color-theme') || 'orange';
+        const storedUser = localStorage.getItem('user') || sessionStorage.getItem('user');
+        const accountTheme = storedUser ? JSON.parse(storedUser)?.preferences?.colorTheme : '';
+        return accountTheme || localStorage.getItem('color-theme') || 'orange';
     });
 
     const [dateFormat, setDateFormat] = useState(() => {
@@ -32,7 +37,9 @@ export const ThemeProvider = ({ children }) => {
 
     useEffect(() => {
         // Remove all color theme classes first
-        const themeClasses = ['theme-navy', 'theme-lavender', 'theme-rose-pink', 'theme-olive', 'theme-gold'];
+        const themeClasses = APP_THEMES
+            .filter(option => option.id !== 'orange')
+            .map(option => `theme-${option.id}`);
         document.documentElement.classList.remove(...themeClasses);
         
         // Add current theme class if not default (orange)
@@ -41,6 +48,15 @@ export const ThemeProvider = ({ children }) => {
         }
         localStorage.setItem('color-theme', theme);
     }, [theme]);
+
+    // The account preference is authoritative after login/role switching, so
+    // the same theme follows the user across browsers and devices.
+    useEffect(() => {
+        const accountTheme = user?.preferences?.colorTheme;
+        if (accountTheme && APP_THEMES.some(option => option.id === accountTheme)) {
+            setTheme(accountTheme);
+        }
+    }, [user?.preferences?.colorTheme]);
 
     useEffect(() => {
         localStorage.setItem('date-format', dateFormat);
