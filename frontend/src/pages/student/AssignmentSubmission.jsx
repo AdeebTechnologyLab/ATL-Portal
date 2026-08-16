@@ -24,6 +24,12 @@ import { endOfDueDate, isDueDateOverdue } from '../../utils/dueDate';
 
 const SOCKET_URL = getSocketURL();
 
+const formatFileSize = (bytes = 0) => {
+    if (!bytes) return '0 KB';
+    if (bytes < 1024 * 1024) return `${Math.max(1, Math.round(bytes / 1024))} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+};
+
 const GoogleDriveIcon = ({ className = '' }) => (
     <svg viewBox="0 0 24 24" aria-hidden="true" className={className}>
         <path fill="currentColor" d="M8.1 3h5.2l7.3 12.6H15.4L8.1 3Z" opacity="0.95" />
@@ -49,7 +55,9 @@ const AssignmentSubmission = () => {
     const [submissionText, setSubmissionText] = useState('');
     const [driveStatus, setDriveStatus] = useState({ configured: false, connected: false, googleEmail: '' });
     const [driveFile, setDriveFile] = useState(null);
+    const [driveUploadItems, setDriveUploadItems] = useState([]);
     const [isDriveUploading, setIsDriveUploading] = useState(false);
+    const [deletingDriveFileId, setDeletingDriveFileId] = useState(null);
     const [driveError, setDriveError] = useState('');
     const [newTaskLink, setNewTaskLink] = useState('');
     const [newTaskContent, setNewTaskContent] = useState('');
@@ -170,6 +178,7 @@ const AssignmentSubmission = () => {
             setSubmissionUrl('');
             setSubmissionText('');
             setDriveFile(null);
+            setDriveUploadItems([]);
             fetchCourseData();
         } catch (error) {
             console.error('Submission failed:', error);
@@ -193,27 +202,91 @@ const AssignmentSubmission = () => {
         const files = Array.from(event.target.files || []);
         event.target.value = '';
         if (!files.length || !selectedAssignment) return;
+
+        const queuedItems = files.map((file, index) => ({
+            clientId: `${Date.now()}-${index}-${file.name}`,
+            file,
+            name: file.name,
+            size: file.size,
+            progress: 0,
+            status: 'queued'
+        }));
+        setDriveUploadItems(previous => [...previous, ...queuedItems]);
         setIsDriveUploading(true);
         setDriveError('');
         try {
-            const formData = new FormData();
-            files.forEach(file => formData.append('files', file));
-            formData.append('assignmentId', selectedAssignment._id);
-            const response = await googleDriveAPI.upload(formData);
-            setDriveFile(response.data.file);
-        } catch (error) {
-            const responseCode = error.response?.data?.code;
-            if (responseCode === 'GOOGLE_DRIVE_REAUTH_REQUIRED') {
-                setDriveStatus(previous => ({ ...previous, connected: false, googleEmail: '' }));
-                setDriveError('Drive permission was not allowed. Click Connect Google Drive again, then tick the Drive file access checkbox and continue.');
-            } else if (responseCode === 'GOOGLE_DRIVE_CONFIG_INVALID') {
-                setDriveStatus(previous => ({ ...previous, connected: false, googleEmail: '' }));
-                setDriveError('Google Drive setup is invalid. Please ask the administrator to update the Google OAuth Client ID and secret.');
-            } else {
-                setDriveError(error.response?.data?.message || 'Google Drive upload failed.');
+            for (const item of queuedItems) {
+                setDriveUploadItems(previous => previous.map(entry =>
+                    entry.clientId === item.clientId ? { ...entry, status: 'uploading' } : entry
+                ));
+
+                try {
+                    const formData = new FormData();
+                    formData.append('files', item.file);
+                    formData.append('assignmentId', selectedAssignment._id);
+                    const response = await googleDriveAPI.upload(formData, progressEvent => {
+                        const total = progressEvent.total || item.size;
+                        const progress = total ? Math.min(99, Math.round((progressEvent.loaded * 100) / total)) : 0;
+                        setDriveUploadItems(previous => previous.map(entry =>
+                            entry.clientId === item.clientId ? { ...entry, progress } : entry
+                        ));
+                    });
+
+                    const uploadedFile = response.data.file.files?.[0] || response.data.file;
+                    setDriveUploadItems(previous => previous.map(entry =>
+                        entry.clientId === item.clientId
+                            ? { ...entry, progress: 100, status: 'uploaded', uploadedFile }
+                            : entry
+                    ));
+                    setDriveFile(previous => ({
+                        ...response.data.file,
+                        files: [
+                            ...(previous?.files || []),
+                            ...(response.data.file.files || [uploadedFile])
+                        ]
+                    }));
+                } catch (error) {
+                    setDriveUploadItems(previous => previous.map(entry =>
+                        entry.clientId === item.clientId
+                            ? { ...entry, status: 'failed', error: error.response?.data?.message || 'Upload failed' }
+                            : entry
+                    ));
+                    const responseCode = error.response?.data?.code;
+                    if (responseCode === 'GOOGLE_DRIVE_REAUTH_REQUIRED') {
+                        setDriveStatus(previous => ({ ...previous, connected: false, googleEmail: '' }));
+                        setDriveError('Drive permission was not allowed. Click Connect Google Drive again, then tick the Drive file access checkbox and continue.');
+                    } else if (responseCode === 'GOOGLE_DRIVE_CONFIG_INVALID') {
+                        setDriveStatus(previous => ({ ...previous, connected: false, googleEmail: '' }));
+                        setDriveError('Google Drive setup is invalid. Please ask the administrator to update the Google OAuth Client ID and secret.');
+                    } else {
+                        setDriveError(error.response?.data?.message || 'One or more files could not be uploaded.');
+                    }
+                }
             }
         } finally {
             setIsDriveUploading(false);
+        }
+    };
+
+    const handleRemoveDriveFile = async (item) => {
+        if (item.status === 'uploading') return;
+        if (item.uploadedFile?.id && !window.confirm(`Delete “${item.name}” from Google Drive?`)) return;
+
+        try {
+            if (item.uploadedFile?.id) {
+                setDeletingDriveFileId(item.uploadedFile.id);
+                await googleDriveAPI.deleteFile(item.uploadedFile.id);
+            }
+            setDriveUploadItems(previous => previous.filter(entry => entry.clientId !== item.clientId));
+            setDriveFile(previous => {
+                if (!previous) return null;
+                const files = (previous.files || []).filter(file => file.id !== item.uploadedFile?.id);
+                return files.length ? { ...previous, files } : null;
+            });
+        } catch (error) {
+            setDriveError(error.response?.data?.message || 'Could not delete the file.');
+        } finally {
+            setDeletingDriveFileId(null);
         }
     };
 
@@ -669,6 +742,7 @@ const AssignmentSubmission = () => {
                                                                         setSubmissionUrl(submissionLink || '');
                                                                         setSubmissionText(submissionNotes || '');
                                                                         setDriveFile(null);
+                                                                        setDriveUploadItems([]);
                                                                         setDriveError('');
                                                                     }}
                                                                     disabled={isRestricted}
@@ -761,13 +835,46 @@ const AssignmentSubmission = () => {
                                                                     <CheckCircle className="w-5 h-5 text-emerald-500 shrink-0" />
                                                                 </div>
                                                             )}
-                                                            {driveFile?.files?.length > 0 && (
-                                                                <div className="mt-2 flex flex-wrap gap-1.5">
-                                                                    {driveFile.files.map(file => (
-                                                                        <span key={file.id} className="max-w-full truncate px-2 py-1 rounded-lg bg-white dark:bg-slate-900 border border-primary/20 dark:border-primary/30 text-[9px] font-bold text-gray-500 dark:text-slate-300">
-                                                                            {file.name}
-                                                                        </span>
-                                                                    ))}
+                                                            {driveUploadItems.length > 0 && (
+                                                                <div className="mt-3 space-y-2">
+                                                                    {driveUploadItems.map(item => {
+                                                                        const isDeleting = deletingDriveFileId === item.uploadedFile?.id;
+                                                                        const isBusy = item.status === 'uploading' || isDeleting;
+                                                                        return (
+                                                                            <div key={item.clientId} className="rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-3">
+                                                                                <div className="flex items-center gap-3">
+                                                                                    <div className="w-9 h-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                                                                                        <FileText className="w-4 h-4" />
+                                                                                    </div>
+                                                                                    <div className="min-w-0 flex-1">
+                                                                                        <p className="text-[11px] font-black text-slate-700 dark:text-slate-200 truncate" title={item.name}>{item.name}</p>
+                                                                                        <p className={`text-[9px] font-bold ${item.status === 'failed' ? 'text-red-500' : item.status === 'uploaded' ? 'text-emerald-500' : 'text-slate-400'}`}>
+                                                                                            {item.status === 'failed'
+                                                                                                ? item.error
+                                                                                                : item.status === 'uploaded'
+                                                                                                    ? `Uploaded • ${formatFileSize(item.size)}`
+                                                                                                    : `${item.progress}% uploaded • ${formatFileSize(item.size)}`}
+                                                                                        </p>
+                                                                                    </div>
+                                                                                    <button
+                                                                                        type="button"
+                                                                                        onClick={() => handleRemoveDriveFile(item)}
+                                                                                        disabled={isBusy}
+                                                                                        title={item.uploadedFile?.id ? 'Delete from Google Drive' : 'Remove file'}
+                                                                                        className="w-9 h-9 rounded-lg border border-red-200 dark:border-red-900/60 text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 flex items-center justify-center shrink-0 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                                                                                    >
+                                                                                        {isDeleting ? <ButtonLoader size="sm" /> : <Trash2 className="w-4 h-4" />}
+                                                                                    </button>
+                                                                                </div>
+                                                                                <div className="mt-2 h-1.5 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+                                                                                    <div
+                                                                                        className={`h-full rounded-full transition-all duration-300 ${item.status === 'failed' ? 'bg-red-500' : item.status === 'uploaded' ? 'bg-emerald-500' : 'bg-primary'}`}
+                                                                                        style={{ width: `${item.status === 'failed' ? 100 : item.progress}%` }}
+                                                                                    />
+                                                                                </div>
+                                                                            </div>
+                                                                        );
+                                                                    })}
                                                                 </div>
                                                             )}
 

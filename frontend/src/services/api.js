@@ -169,10 +169,12 @@ export const assignmentAPI = {
 export const googleDriveAPI = {
     getStatus: () => api.get('/google-drive/status'),
     getAuthUrl: () => api.get('/google-drive/auth-url'),
-    upload: (formData) => api.post('/google-drive/upload', formData, {
+    upload: (formData, onUploadProgress) => api.post('/google-drive/upload', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
-        timeout: 180000
+        timeout: 180000,
+        onUploadProgress
     }),
+    deleteFile: (fileId) => api.delete(`/google-drive/files/${fileId}`),
     disconnect: () => api.delete('/google-drive/disconnect')
 };
 

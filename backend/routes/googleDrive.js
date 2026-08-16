@@ -212,6 +212,33 @@ router.post('/upload', protect, upload.array('files', 10), async (req, res) => {
     }
 });
 
+// Remove an accidentally uploaded file from the connected user's Drive.
+router.delete('/files/:fileId', protect, async (req, res) => {
+    try {
+        const connection = await GoogleDriveConnection.findOne({ user: req.user.id })
+            .select('+encryptedRefreshToken');
+        if (!connection) {
+            return res.status(409).json({ success: false, message: 'Connect Google Drive first' });
+        }
+
+        const oauth2Client = getOAuthClient();
+        oauth2Client.setCredentials({
+            refresh_token: decryptToken(connection.encryptedRefreshToken)
+        });
+
+        const drive = google.drive({ version: 'v3', auth: oauth2Client });
+        await drive.files.delete({ fileId: req.params.fileId });
+        res.json({ success: true, message: 'File deleted from Google Drive' });
+    } catch (error) {
+        console.error('Google Drive delete error:', error);
+        const status = error.response?.status === 404 ? 404 : 500;
+        res.status(status).json({
+            success: false,
+            message: status === 404 ? 'File was already deleted or could not be found' : 'Could not delete the file from Google Drive'
+        });
+    }
+});
+
 router.delete('/disconnect', protect, async (req, res) => {
     await GoogleDriveConnection.deleteOne({ user: req.user.id });
     res.json({ success: true, message: 'Google Drive disconnected' });
