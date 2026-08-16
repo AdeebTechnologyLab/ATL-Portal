@@ -140,7 +140,48 @@ const StudentsManagement = () => {
         return `*Course Fee Reminder*\n*${campus}*\n*Digital Tech Expert Software House*\n\n*Name:* ${student.name || 'N/A'}\n*Roll No:* ${student.rollNo || 'N/A'}\n*Course:* ${student.enrolledCourseName || 'N/A'}\n\nAap ke ward ne course enroll kar liya hai, lekin abhi tak fee submit nahi ki. Meherbani karke apni pending fee jald se jald pay kar dein.\n\n⚠️ *Important:* Fee pay karne ke baad *payment slip* ya *screenshot* ko **LMS Portal** par upload karna lazmi hai. Verification ke baad hi payment confirm hogi.\n\n*LMS Portal:*\nhttps://darkorchid-salmon-191482.hostingersite.com/\n\n*Note:* Agar fee waqt par submit nahi ki gayi to course enrollment **temporarily suspend** ya **cancel** ki ja sakti hai.\n\n*Regards,*\n*HR Department*\n*Adeeb Technology Lab*`;
     };
 
+    const getCompletionMessage = async (student, forGuardian = false) => {
+        let courseNames = student.enrolledCourseName || 'N/A';
+        try {
+            const enrollRes = await enrollmentAPI.getUserEnrollments(student._id);
+            const enrollments = enrollRes.data.data || [];
+            courseNames = enrollments
+                .filter(e => e.status === 'completed')
+                .map(e => e.course?.title)
+                .filter(Boolean)
+                .join(', ') || enrollments.map(e => e.course?.title).filter(Boolean).join(', ') || 'N/A';
+        } catch (error) { console.error('Unable to load completed courses:', error); }
+        const intro = forGuardian
+            ? `Humein aap ko yeh batate hue khushi ho rahi hai ke *${student.name || 'Student'}* ne apna course kamyabi se complete kar liya hai. Mubarak ho!`
+            : `Aap ko bohat bohat mubarak ho! Aap ne apna course kamyabi se complete kar liya hai.`;
+        return `*Course Completion Congratulations*\n*Adeeb Technology Lab*\n\n*Name:* ${student.name || 'N/A'}\n*Roll No:* ${student.rollNo || 'N/A'}\n*Course:* ${courseNames}\n\n${intro}\n\nApna certificate dekhne aur download karne ke liye LMS Portal par login karein:\nhttps://darkorchid-salmon-191482.hostingersite.com/\n\nAap ke mustaqbil ke liye bohat si nek khwahishat!\n\n*Regards,*\n*HR Department*\n*Adeeb Technology Lab*`;
+    };
+
+    const getOldStudentMessage = (student, forGuardian = false) => {
+        const intro = forGuardian
+            ? `*${student.name || 'Student'}* ne pehle Adeeb Technology Lab mein admission ke liye apply kiya tha.`
+            : `Aap ne pehle Adeeb Technology Lab mein admission ke liye apply kiya tha.`;
+        return `*Admissions Are Open Again*\n*Adeeb Technology Lab*\n\n*Name:* ${student.name || 'N/A'}\n*Roll No:* ${student.rollNo || 'N/A'}\n\n${intro}\n\nAdmissions dobara open hain. Agar ${forGuardian ? 'woh' : 'aap'} admission lena ${forGuardian ? 'chahein' : 'chahte hain'}, to apni usi registered email se LMS Portal par login karke dobara apply kar ${forGuardian ? 'sakte hain' : 'sakte hain'}.\n\n*LMS Portal:*\nhttps://darkorchid-salmon-191482.hostingersite.com/\n\nAgar email ya password yaad nahi hai, to hamare WhatsApp par contact karein. Hamari team login recover karne mein madad karegi.\n\n*Regards,*\n*Admissions Department*\n*Adeeb Technology Lab*`;
+    };
+
     const handleReminder = async (student) => {
+        if (student.registeredOld && (student.totalEnrollments || 0) === 0) {
+            const phoneNumber = student.phone;
+            if (!phoneNumber) { alert("WhatsApp number not found for this user."); return; }
+            let cleanPhone = phoneNumber.replace(/[^0-9+]/g, '');
+            if (cleanPhone.startsWith('0')) cleanPhone = '92' + cleanPhone.slice(1);
+            window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(getOldStudentMessage(student))}`, '_blank');
+            return;
+        }
+        if (getStudentStatus(student) === 'Completed') {
+            const phoneNumber = student.phone;
+            if (!phoneNumber) { alert("WhatsApp number not found for this user."); return; }
+            let cleanPhone = phoneNumber.replace(/[^0-9+]/g, '');
+            if (cleanPhone.startsWith('0')) cleanPhone = '92' + cleanPhone.slice(1);
+            const message = await getCompletionMessage(student);
+            window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`, '_blank');
+            return;
+        }
         if (getStudentStatus(student) === 'Active' && !hasPaidFee(student._id)) {
             const phoneNumber = student.phone;
             if (!phoneNumber) { alert("WhatsApp number not found for this user."); return; }
@@ -180,6 +221,19 @@ const StudentsManagement = () => {
         const phoneNumber = student.guardianPhone || student.parentPhone;
         if (!phoneNumber) {
             alert("Guardian WhatsApp number not found for this user.");
+            return;
+        }
+        if (student.registeredOld && (student.totalEnrollments || 0) === 0) {
+            let cleanPhone = phoneNumber.replace(/[^0-9+]/g, '');
+            if (cleanPhone.startsWith('0')) cleanPhone = '92' + cleanPhone.slice(1);
+            window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(getOldStudentMessage(student, true))}`, '_blank');
+            return;
+        }
+        if (getStudentStatus(student) === 'Completed') {
+            let cleanPhone = phoneNumber.replace(/[^0-9+]/g, '');
+            if (cleanPhone.startsWith('0')) cleanPhone = '92' + cleanPhone.slice(1);
+            const message = await getCompletionMessage(student, true);
+            window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`, '_blank');
             return;
         }
         if (getStudentStatus(student) === 'Active' && !hasPaidFee(student._id)) {
@@ -1059,7 +1113,7 @@ const StudentsManagement = () => {
                                     {/* Action Buttons */}
                                     <div className="w-full border-t border-gray-100 pt-3 dark:border-slate-700 sm:pt-4">
                                         <div className="grid w-full min-w-0 grid-cols-4 items-center gap-2 sm:flex sm:flex-wrap sm:justify-end">
-                                            {(((student.totalEnrollments || 0) === 0 && !student.registeredOld) || getStudentStatus(student) === 'Active') && (
+                                            {(((student.totalEnrollments || 0) === 0) || ['Active', 'Completed'].includes(getStudentStatus(student))) && (
                                                 <button
                                                     onClick={() => handleReminder(student)}
                                                     className="h-10 w-full p-0 sm:h-auto sm:w-auto sm:px-3 sm:py-1.5 bg-[#25D366] hover:bg-[#128C7E] text-white rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-1.5 transition-all shadow-sm shadow-green-200"
@@ -1071,7 +1125,7 @@ const StudentsManagement = () => {
                                                     <span className="hidden sm:inline">Reminder</span>
                                                 </button>
                                             )}
-                                            {(student.guardianPhone || student.parentPhone) && (((student.totalEnrollments || 0) === 0 && !student.registeredOld) || getStudentStatus(student) === 'Active') && (
+                                            {((getStudentStatus(student) === 'Completed') || (student.registeredOld && (student.totalEnrollments || 0) === 0) || ((student.guardianPhone || student.parentPhone) && (((student.totalEnrollments || 0) === 0) || getStudentStatus(student) === 'Active'))) && (
                                                 <button
                                                     onClick={() => handleGuardianReminder(student)}
                                                     className="h-10 w-full p-0 sm:h-auto sm:w-auto sm:px-3 sm:py-1.5 bg-rose-500 hover:bg-rose-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-1.5 transition-all shadow-sm shadow-rose-200"
@@ -1083,9 +1137,23 @@ const StudentsManagement = () => {
                                                     <span className="hidden sm:inline">Guardian Reminder</span>
                                                 </button>
                                             )}
-                                            {student.email && (((student.totalEnrollments || 0) === 0 && !student.registeredOld) || getStudentStatus(student) === 'Active') && (
+                                            {((getStudentStatus(student) === 'Completed') || (student.registeredOld && (student.totalEnrollments || 0) === 0) || (student.email && (((student.totalEnrollments || 0) === 0) || getStudentStatus(student) === 'Active'))) && (
                                                 <button
                                                     onClick={async (event) => {
+                                                        if (student.registeredOld && (student.totalEnrollments || 0) === 0) {
+                                                            event.preventDefault();
+                                                            if (!student.email) { alert('Email address not found for this student.'); return; }
+                                                            const body = getOldStudentMessage(student).replaceAll('*', '');
+                                                            window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${student.email}&su=${encodeURIComponent('Admissions Are Open Again - Adeeb Technology Lab')}&body=${encodeURIComponent(body)}`, '_blank');
+                                                            return;
+                                                        }
+                                                        if (getStudentStatus(student) === 'Completed') {
+                                                            event.preventDefault();
+                                                            if (!student.email) { alert('Email address not found for this student.'); return; }
+                                                            const body = (await getCompletionMessage(student)).replaceAll('*', '');
+                                                            window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${student.email}&su=${encodeURIComponent('Congratulations on Completing Your Course - Adeeb Technology Lab')}&body=${encodeURIComponent(body)}`, '_blank');
+                                                            return;
+                                                        }
                                                         if (getStudentStatus(student) === 'Active' && !hasPaidFee(student._id)) {
                                                             event.preventDefault();
                                                             try {

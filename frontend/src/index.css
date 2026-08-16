@@ -433,26 +433,26 @@ html.lang-rtl textarea {
 
 /* Theme 4 — Midnight Navy */
 .theme-navy {
-  --primary: #1154bd;
-  --primary-dark: #1154bd;
-  --primary-darkest: #0a316a;
-  --primary-light: #3e79d6;
+  --primary: #2D58B7;
+  --primary-dark: #152E5C;
+  --primary-darkest: #152E5C;
+  --primary-light: #1477A1;
   --primary-lighter: #7ba6e8;
 
-  --secondary: #0a316a;
-  --secondary-light: #1154bd;
-  --secondary-dark: #082654;
+  --secondary: #152E5C;
+  --secondary-light: #1477A1;
+  --secondary-dark: #152E5C;
 
   --brand-blue-50: #eff6ff;
   --brand-blue-100: #dbeafe;
   --brand-blue-200: #bfdbfe;
   --brand-blue-300: #93c5fd;
-  --brand-blue-400: #60a5fa;
-  --brand-blue-500: #1154bd;
-  --brand-blue-600: #0d4194;
-  --brand-blue-700: #0a316a;
-  --brand-blue-800: #082654;
-  --brand-blue-900: #061c3d;
+  --brand-blue-400: #1477A1;
+  --brand-blue-500: #2D58B7;
+  --brand-blue-600: #152E5C;
+  --brand-blue-700: #152E5C;
+  --brand-blue-800: #152E5C;
+  --brand-blue-900: #152E5C;
 
   --brand-secondary-50: #eef2ff;
   --brand-secondary-100: #e0e7ff;
@@ -465,9 +465,9 @@ html.lang-rtl textarea {
   --brand-secondary-800: #3730a3;
   --brand-secondary-900: #1e1b4b;
 
-  --bg-sidebar: #0a316a;
-  --bg-sidebar-light: #1154bd;
-  --bg-sidebar-dark: #082654;
+  --bg-sidebar: #152E5C;
+  --bg-sidebar-light: #1477A1;
+  --bg-sidebar-dark: #152E5C;
   --border-sidebar: rgba(255, 255, 255, 0.1);
   --text-sidebar: #FFFFFF;
   --text-sidebar-muted: rgba(255, 255, 255, 0.6);
@@ -476,7 +476,7 @@ html.lang-rtl textarea {
   --bg-card: #FFFFFF;
   --primary-foreground: #ffffff;
 
-  --text-primary: #0b2c5f;
+  --text-primary: #152E5C;
   --text-secondary: #5a7199;
   --text-muted: #94a3b8;
   --text-light: #FFFFFF;
@@ -1324,11 +1324,47 @@ body {
 }
 
 /* Theme 7 — Pakistan Green */
+.theme-custom .hover\:bg-orange-500:hover,
+.theme-custom .hover\:bg-orange-600:hover,
+.theme-custom .hover\:bg-orange-700:hover,
+.theme-custom .hover\:bg-\[\#e67e00\]:hover,
+.theme-custom .hover\:bg-\[\#e67e01\]:hover {
+  background-color: var(--primary-dark) !important;
+}
+
+.theme-custom .from-orange-400,
+.theme-custom .from-orange-500,
+.theme-custom .from-orange-600,
+.theme-custom .from-amber-400,
+.theme-custom .from-amber-500 {
+  --tw-gradient-from: var(--primary-light) var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: transparent var(--tw-gradient-to-position) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+}
+
+.theme-custom .to-orange-400,
+.theme-custom .to-orange-500,
+.theme-custom .to-orange-600,
+.theme-custom .to-orange-700,
+.theme-custom .to-primary {
+  --tw-gradient-to: var(--primary) var(--tw-gradient-to-position) !important;
+}
+
+.theme-custom .focus\:ring-orange-400:focus,
+.theme-custom .focus\:ring-orange-500:focus,
+.theme-custom .focus\:ring-\[\#ff8e01\]:focus {
+  --tw-ring-color: var(--primary-light) !important;
+}
+
+.theme-custom .accent-orange-500 {
+  accent-color: var(--primary) !important;
+}
+
 .theme-pakistan-green {
-  --primary: #01411C;
+  --primary: #02BF57;
   --primary-dark: #01411C;
   --primary-darkest: #002B13;
-  --primary-light: #0A6B33;
+  --primary-light: #02BF57;
   --primary-lighter: #E8F5EE;
 
   --secondary: #FFFFFF;
@@ -1339,9 +1375,9 @@ body {
   --brand-blue-100: #DCFCE7;
   --brand-blue-200: #BBF7D0;
   --brand-blue-300: #86EFAC;
-  --brand-blue-400: #4ADE80;
-  --brand-blue-500: #01411C;
-  --brand-blue-600: #0A6B33;
+  --brand-blue-400: #02BF57;
+  --brand-blue-500: #02BF57;
+  --brand-blue-600: #01411C;
   --brand-blue-700: #005A26;
   --brand-blue-800: #00451D;
   --brand-blue-900: #002B13;
@@ -1358,19 +1394,104 @@ body {
   --brand-secondary-900: #0F172A;
 
   --bg-sidebar: #01411C;
-  --bg-sidebar-light: #0A6B33;
+  --bg-sidebar-light: #02BF57;
   --bg-sidebar-dark: #002B13;
   --border-sidebar: rgba(255, 255, 255, 0.14);
   --text-sidebar: #FFFFFF;
   --text-sidebar-muted: rgba(255, 255, 255, 0.68);
 
-  --bg-main: #F8FAFC;
+  --bg-main: #FFFFFF;
   --bg-card: #FFFFFF;
   --primary-foreground: #FFFFFF;
+  --success: #02BF57;
+  --accent-teal: #02BF57;
 
   --text-primary: #01411C;
   --text-secondary: #4B6355;
   --text-light: #FFFFFF;
+}
+
+/* Midnight Navy compatibility for screens that still use legacy orange
+   utility names. Keep the complete portal on the supplied three-color set. */
+.theme-navy .hover\:bg-orange-500:hover,
+.theme-navy .hover\:bg-orange-600:hover,
+.theme-navy .hover\:bg-orange-700:hover,
+.theme-navy .hover\:bg-\[\#e67e00\]:hover,
+.theme-navy .hover\:bg-\[\#e67e01\]:hover {
+  background-color: #152E5C !important;
+}
+
+.theme-navy .from-orange-400,
+.theme-navy .from-orange-500,
+.theme-navy .from-orange-600,
+.theme-navy .from-amber-400,
+.theme-navy .from-amber-500 {
+  --tw-gradient-from: #1477A1 var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: rgb(20 119 161 / 0) var(--tw-gradient-to-position) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+}
+
+.theme-navy .to-orange-400,
+.theme-navy .to-orange-500,
+.theme-navy .to-orange-600,
+.theme-navy .to-orange-700,
+.theme-navy .to-primary {
+  --tw-gradient-to: #2D58B7 var(--tw-gradient-to-position) !important;
+}
+
+.theme-navy .focus\:ring-orange-400:focus,
+.theme-navy .focus\:ring-orange-500:focus,
+.theme-navy .focus\:ring-\[\#ff8e01\]:focus {
+  --tw-ring-color: #1477A1 !important;
+}
+
+.theme-navy .accent-orange-500 {
+  accent-color: #2D58B7 !important;
+}
+
+.theme-navy .dark\:text-orange-300:is(.dark *),
+.theme-navy .dark\:text-orange-400:is(.dark *) {
+  color: #1477A1 !important;
+}
+
+/* Pakistan theme compatibility for older screens that still use explicit
+   orange utility names. This keeps the full portal on the selected palette. */
+.theme-pakistan-green .hover\:bg-orange-500:hover,
+.theme-pakistan-green .hover\:bg-orange-600:hover,
+.theme-pakistan-green .hover\:bg-orange-700:hover,
+.theme-pakistan-green .hover\:bg-\[\#e67e00\]:hover,
+.theme-pakistan-green .hover\:bg-\[\#e67e01\]:hover {
+  background-color: #01411C !important;
+}
+
+.theme-pakistan-green .from-orange-400,
+.theme-pakistan-green .from-orange-500,
+.theme-pakistan-green .from-orange-600 {
+  --tw-gradient-from: #02BF57 var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: rgb(2 191 87 / 0) var(--tw-gradient-to-position) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+}
+
+.theme-pakistan-green .to-orange-400,
+.theme-pakistan-green .to-orange-500,
+.theme-pakistan-green .to-orange-600,
+.theme-pakistan-green .to-orange-700 {
+  --tw-gradient-to: #01411C var(--tw-gradient-to-position) !important;
+}
+
+.theme-pakistan-green .focus\:ring-orange-400:focus,
+.theme-pakistan-green .focus\:ring-orange-500:focus,
+.theme-pakistan-green .focus\:ring-\[\#ff8e01\]:focus {
+  --tw-ring-color: #02BF57 !important;
+}
+
+.theme-pakistan-green .accent-orange-500 {
+  accent-color: #02BF57 !important;
+}
+
+.theme-pakistan-green .dark\:text-orange-300:is(.dark *),
+.theme-pakistan-green .dark\:text-orange-400:is(.dark *) {
+  color: #02BF57 !important;
 }
 
 /* Circuit Line Pulse Animation (Brand Panel) */

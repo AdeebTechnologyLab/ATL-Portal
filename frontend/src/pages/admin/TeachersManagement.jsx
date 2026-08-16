@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import {
     Calendar, GraduationCap, CheckCircle, XCircle, Clock, Shield, Edit2, Save, Download,
     FileText, Users, PauseCircle, PlayCircle, BookOpen,
-    Search, UserCheck, UserX, Trash2, User, Mail, MapPin, Phone, Briefcase, Camera, Upload, Plus
+    Search, UserCheck, UserX, Trash2, User, Mail, MapPin, Phone, Briefcase, Camera, Upload, Plus, MessageCircle
 } from 'lucide-react';
 import Loader, { ButtonLoader } from '../../components/ui/Loader';
 import { jsPDF } from 'jspdf';
@@ -475,6 +475,49 @@ const TeachersManagement = () => {
         getTotalAssignmentCount(teacher) === 0 &&
         (teacher.pausedEnrollments || 0) === 0;
 
+    const getTeacherCompletionMessage = (teacher, forGuardian = false) => {
+        const courseNames = (teacher.courseData || [])
+            .map(item => item.course?.title || item.title || item.name)
+            .filter(Boolean)
+            .join(', ') || teacher.specialization || 'Teaching Assignment';
+        const intro = forGuardian
+            ? `Humein aap ko yeh batate hue khushi ho rahi hai ke *${teacher.name || 'Teacher'}* ne apna teaching assignment/course kamyabi se complete kar liya hai. Mubarak ho!`
+            : `Aap ko bohat bohat mubarak ho! Aap ne apna teaching assignment/course kamyabi se complete kar liya hai.`;
+        return `*Teaching Completion Congratulations*\n*Adeeb Technology Lab*\n\n*Name:* ${teacher.name || 'N/A'}\n*Teacher ID:* ${teacher.rollNo || 'N/A'}\n*Course/Department:* ${courseNames}\n\n${intro}\n\nApna certificate dekhne aur download karne ke liye LMS Portal par login karein:\nhttps://darkorchid-salmon-191482.hostingersite.com/\n\nAap ke mustaqbil ke liye bohat si nek khwahishat!\n\n*Regards,*\n*HR Department*\n*Adeeb Technology Lab*`;
+    };
+
+    const getOldTeacherMessage = (teacher, forGuardian = false) => {
+        const intro = forGuardian
+            ? `*${teacher.name || 'Teacher'}* ne pehle Adeeb Technology Lab mein teaching opportunity ke liye apply kiya tha.`
+            : `Aap ne pehle Adeeb Technology Lab mein teaching opportunity ke liye apply kiya tha.`;
+        return `*Teaching Applications Are Open Again*\n*Adeeb Technology Lab*\n\n*Name:* ${teacher.name || 'N/A'}\n*Teacher ID:* ${teacher.rollNo || 'N/A'}\n*Specialization:* ${teacher.specialization || 'N/A'}\n\n${intro}\n\nApplications dobara open hain. Agar ${forGuardian ? 'woh' : 'aap'} apply karna ${forGuardian ? 'chahein' : 'chahte hain'}, to apni usi registered email se LMS Portal par login karke dobara apply kar sakte hain.\n\n*LMS Portal:*\nhttps://darkorchid-salmon-191482.hostingersite.com/\n\nAgar email ya password yaad nahi hai, to hamare WhatsApp par contact karein. Hamari team login recover karne mein madad karegi.\n\n*Regards,*\n*HR Department*\n*Adeeb Technology Lab*`;
+    };
+
+    const openTeacherCompletionWhatsApp = (teacher, forGuardian = false) => {
+        const phoneNumber = forGuardian
+            ? (teacher.guardianPhone || teacher.parentPhone)
+            : teacher.phone;
+        if (!phoneNumber) {
+            window.alert(forGuardian ? 'Guardian WhatsApp number not found for this teacher.' : 'WhatsApp number not found for this teacher.');
+            return;
+        }
+        let cleanPhone = phoneNumber.replace(/[^0-9+]/g, '');
+        if (cleanPhone.startsWith('0')) cleanPhone = '92' + cleanPhone.slice(1);
+        const message = teacher.registeredOld
+            ? getOldTeacherMessage(teacher, forGuardian)
+            : getTeacherCompletionMessage(teacher, forGuardian);
+        window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`, '_blank');
+    };
+
+    const openTeacherCompletionEmail = (teacher) => {
+        if (!teacher.email) { window.alert('Email address not found for this teacher.'); return; }
+        const subject = teacher.registeredOld
+            ? 'Teaching Applications Are Open Again - Adeeb Technology Lab'
+            : 'Congratulations on Completing Your Teaching Assignment - Adeeb Technology Lab';
+        const body = (teacher.registeredOld ? getOldTeacherMessage(teacher) : getTeacherCompletionMessage(teacher)).replaceAll('*', '');
+        window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${teacher.email}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`, '_blank');
+    };
+
     const filteredTeachers = teachers.filter(t => {
         const matchesSearch = (t.name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
             (t.email || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -698,6 +741,34 @@ const TeachersManagement = () => {
                                 {/* Actions */}
                                 <div className="flex flex-wrap items-center justify-end gap-2 shrink-0 border-t border-gray-100 dark:border-slate-700 2xl:border-t-0 pt-4 2xl:pt-0">
                                     <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-2 2xl:pb-0">
+                                        {(filterStatus === 'completed' || filterStatus === 'registeredOld') && (
+                                            <>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => openTeacherCompletionWhatsApp(teacher)}
+                                                    className="px-3 py-2 bg-[#25D366] hover:bg-[#128C7E] text-white rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-1.5 transition-all"
+                                                    title="Send completion message on WhatsApp"
+                                                >
+                                                    <MessageCircle className="w-3.5 h-3.5" /> Reminder
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => openTeacherCompletionWhatsApp(teacher, true)}
+                                                    className="px-3 py-2 bg-rose-500 hover:bg-rose-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-1.5 transition-all"
+                                                    title="Send completion message to guardian"
+                                                >
+                                                    <MessageCircle className="w-3.5 h-3.5" /> Guardian Reminder
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => openTeacherCompletionEmail(teacher)}
+                                                    className="px-3 py-2 bg-sky-500 hover:bg-sky-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-1.5 transition-all"
+                                                    title="Send completion email"
+                                                >
+                                                    <Mail className="w-3.5 h-3.5" /> Email
+                                                </button>
+                                            </>
+                                        )}
                                         <button
                                             type="button"
                                             onClick={() => handleActiveStatus(teacher)}

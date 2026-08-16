@@ -393,7 +393,7 @@ router.get('/me', protect, async (req, res) => {
 // Save account-level visual preferences across every role linked to this user.
 router.put('/preferences/theme', protect, async (req, res) => {
     try {
-        const allowedThemes = ['orange', 'gold', 'olive', 'navy', 'lavender', 'rose-pink', 'pakistan-green'];
+        const allowedThemes = ['orange', 'gold', 'olive', 'navy', 'lavender', 'rose-pink', 'pakistan-green', 'custom'];
         const colorTheme = String(req.body.colorTheme || '').trim();
         if (!allowedThemes.includes(colorTheme)) {
             return res.status(400).json({ success: false, message: 'Invalid theme selection' });
@@ -404,12 +404,26 @@ router.put('/preferences/theme', protect, async (req, res) => {
             return res.status(404).json({ success: false, message: 'User not found' });
         }
 
+        const preferenceUpdate = { 'preferences.colorTheme': colorTheme };
+        if (colorTheme === 'custom') {
+            const customTheme = req.body.customTheme || {};
+            const isHex = value => /^#[0-9a-f]{6}$/i.test(String(value || ''));
+            if (![customTheme.primary, customTheme.accent, customTheme.sidebar].every(isHex)) {
+                return res.status(400).json({ success: false, message: 'Custom theme colors must be valid hex colors' });
+            }
+            preferenceUpdate['preferences.customTheme'] = {
+                primary: customTheme.primary.toUpperCase(),
+                accent: customTheme.accent.toUpperCase(),
+                sidebar: customTheme.sidebar.toUpperCase()
+            };
+        }
+
         await User.updateMany(
             getLinkedAccountQuery(currentUser),
-            { $set: { 'preferences.colorTheme': colorTheme } }
+            { $set: preferenceUpdate }
         );
 
-        res.json({ success: true, preferences: { colorTheme } });
+        res.json({ success: true, preferences: { colorTheme, ...(preferenceUpdate['preferences.customTheme'] ? { customTheme: preferenceUpdate['preferences.customTheme'] } : {}) } });
     } catch (error) {
         console.error('Theme preference update error:', error);
         res.status(500).json({ success: false, message: 'Could not save theme preference' });

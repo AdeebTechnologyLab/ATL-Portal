@@ -40,20 +40,63 @@ export const ThemeProvider = ({ children }) => {
         const themeClasses = APP_THEMES
             .filter(option => option.id !== 'orange')
             .map(option => `theme-${option.id}`);
-        document.documentElement.classList.remove(...themeClasses);
+        document.documentElement.classList.remove(...themeClasses, 'theme-custom');
+
+        const customProperties = [
+            '--primary', '--primary-dark', '--primary-darkest', '--primary-light', '--primary-lighter',
+            '--secondary', '--secondary-light', '--secondary-dark', '--brand-blue-50', '--brand-blue-100',
+            '--brand-blue-200', '--brand-blue-300', '--brand-blue-400', '--brand-blue-500', '--brand-blue-600',
+            '--brand-blue-700', '--brand-blue-800', '--brand-blue-900', '--bg-sidebar', '--bg-sidebar-light',
+            '--bg-sidebar-dark', '--text-primary', '--text-secondary', '--success', '--accent-teal'
+        ];
+        customProperties.forEach(property => document.documentElement.style.removeProperty(property));
         
         // Add current theme class if not default (orange)
         if (theme !== 'orange') {
             document.documentElement.classList.add(`theme-${theme}`);
         }
+
+        if (theme === 'custom') {
+            const colors = user?.preferences?.customTheme || {
+                primary: '#7C3AED', accent: '#06B6D4', sidebar: '#1E1B4B'
+            };
+            const values = {
+                '--primary': colors.primary,
+                '--primary-dark': colors.sidebar,
+                '--primary-darkest': colors.sidebar,
+                '--primary-light': colors.accent,
+                '--primary-lighter': `color-mix(in srgb, ${colors.primary} 18%, white)`,
+                '--secondary': colors.sidebar,
+                '--secondary-light': colors.accent,
+                '--secondary-dark': colors.sidebar,
+                '--brand-blue-50': `color-mix(in srgb, ${colors.primary} 8%, white)`,
+                '--brand-blue-100': `color-mix(in srgb, ${colors.primary} 15%, white)`,
+                '--brand-blue-200': `color-mix(in srgb, ${colors.primary} 25%, white)`,
+                '--brand-blue-300': `color-mix(in srgb, ${colors.primary} 45%, white)`,
+                '--brand-blue-400': colors.accent,
+                '--brand-blue-500': colors.primary,
+                '--brand-blue-600': colors.sidebar,
+                '--brand-blue-700': colors.sidebar,
+                '--brand-blue-800': colors.sidebar,
+                '--brand-blue-900': colors.sidebar,
+                '--bg-sidebar': colors.sidebar,
+                '--bg-sidebar-light': colors.accent,
+                '--bg-sidebar-dark': colors.sidebar,
+                '--text-primary': colors.sidebar,
+                '--text-secondary': colors.primary,
+                '--success': colors.accent,
+                '--accent-teal': colors.accent
+            };
+            Object.entries(values).forEach(([property, value]) => document.documentElement.style.setProperty(property, value));
+        }
         localStorage.setItem('color-theme', theme);
-    }, [theme]);
+    }, [theme, user?.preferences?.customTheme]);
 
     // The account preference is authoritative after login/role switching, so
     // the same theme follows the user across browsers and devices.
     useEffect(() => {
         const accountTheme = user?.preferences?.colorTheme;
-        if (accountTheme && APP_THEMES.some(option => option.id === accountTheme)) {
+        if (accountTheme && (accountTheme === 'custom' || APP_THEMES.some(option => option.id === accountTheme))) {
             setTheme(accountTheme);
         }
     }, [user?.preferences?.colorTheme]);

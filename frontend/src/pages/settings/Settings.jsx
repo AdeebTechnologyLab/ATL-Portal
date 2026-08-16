@@ -60,9 +60,9 @@ function ThemePreviewCard({ theme: themeData, isActive, onSelect }) {
                 <div className="flex items-center gap-2 mt-2.5">
                     <span className="text-[7px] font-bold uppercase tracking-wider text-gray-400 shrink-0">Brand</span>
                     <div className="flex gap-1 flex-1">
-                        {[themeData.primary, themeData.sidebar, themeData.textPrimary].map((c) => (
+                        {(themeData.swatches || [themeData.primary, themeData.sidebar, themeData.textPrimary]).map((c, index) => (
                             <span
-                                key={c}
+                                key={`${c}-${index}`}
                                 className="h-4 flex-1 max-w-[2.5rem] rounded border border-black/5"
                                 style={{ backgroundColor: c }}
                             />
@@ -117,6 +117,12 @@ const Settings = () => {
         gradeAlerts: true,
         announcementAlerts: true,
     });
+    const [customTheme, setCustomTheme] = useState(() => user?.preferences?.customTheme || {
+        primary: '#7C3AED',
+        accent: '#06B6D4',
+        sidebar: '#1E1B4B'
+    });
+    const [isSavingCustomTheme, setIsSavingCustomTheme] = useState(false);
 
     const showSuccessMessage = (msg) => {
         setShowSuccess(msg);
@@ -145,6 +151,22 @@ const Settings = () => {
         }, 350);
     };
 
+    const handleCustomThemeSave = async () => {
+        setIsSavingCustomTheme(true);
+        const preferences = { ...(user?.preferences || {}), colorTheme: 'custom', customTheme };
+        dispatch(updateUser({ preferences }));
+        setTheme('custom');
+        try {
+            await authAPI.updateThemePreference('custom', customTheme);
+            showSuccessMessage('Custom theme saved and applied everywhere.');
+        } catch (error) {
+            console.error('Custom theme save failed:', error);
+            setShowSuccess(error.response?.data?.message || 'Could not save custom theme.');
+        } finally {
+            setIsSavingCustomTheme(false);
+        }
+    };
+
     useEffect(() => {
         if (role === 'student' || role === 'intern' || role === 'admin' || role === 'teacher' || role === 'job') {
             googleDriveAPI.getStatus()
@@ -160,6 +182,9 @@ const Settings = () => {
                 email: user.email || '',
                 phone: user.phone || '',
             });
+            if (user.preferences?.customTheme) {
+                setCustomTheme(user.preferences.customTheme);
+            }
         }
     }, [user]);
 
@@ -658,7 +683,7 @@ const Settings = () => {
                                     {t('settings.vibrantThemes')}
                                 </h3>
                                 <p className="text-[9px] text-gray-400 font-bold uppercase tracking-widest mt-0.5">
-                                    {APP_THEMES.length} Themes Available
+                                    {APP_THEMES.length + 1} Themes Available
                                 </p>
                             </div>
                         </div>
@@ -673,6 +698,47 @@ const Settings = () => {
                                     onSelect={() => handleThemeChange(themeOption.id)}
                                 />
                             ))}
+                            <div className={`rounded-xl border-2 overflow-hidden transition-all ${theme === 'custom' ? 'border-primary ring-2 ring-primary/20 shadow-lg' : 'border-gray-100 dark:border-gray-800'}`}>
+                                <div className="p-4 bg-white/90 dark:bg-[#1a1f2e]/90">
+                                    <div className="flex items-center justify-between gap-3 mb-3">
+                                        <div>
+                                            <h4 className="text-sm font-black text-gray-900 dark:text-white uppercase italic tracking-tight">Custom Theme</h4>
+                                            <p className="text-[10px] text-gray-500 dark:text-gray-400 font-semibold mt-0.5">Choose your own 3 colors</p>
+                                        </div>
+                                        <Palette className="w-5 h-5 text-primary" />
+                                    </div>
+                                    <div className="grid grid-cols-3 gap-2 mb-3">
+                                        {[
+                                            ['primary', 'Primary'],
+                                            ['accent', 'Highlight'],
+                                            ['sidebar', 'Sidebar']
+                                        ].map(([key, label]) => (
+                                            <label key={key} className="min-w-0 cursor-pointer">
+                                                <span className="text-[7px] font-black uppercase tracking-wider text-gray-400 block mb-1 truncate">{label}</span>
+                                                <span className="h-9 rounded-lg border border-black/10 dark:border-white/10 flex items-center justify-center overflow-hidden" style={{ backgroundColor: customTheme[key] }}>
+                                                    <input
+                                                        type="color"
+                                                        value={customTheme[key]}
+                                                        onChange={event => setCustomTheme(previous => ({ ...previous, [key]: event.target.value.toUpperCase() }))}
+                                                        className="w-full h-full opacity-0 cursor-pointer"
+                                                        aria-label={`${label} color`}
+                                                    />
+                                                </span>
+                                                <span className="text-[8px] font-bold text-gray-400 mt-1 block text-center truncate">{customTheme[key]}</span>
+                                            </label>
+                                        ))}
+                                    </div>
+                                    <button
+                                        type="button"
+                                        onClick={handleCustomThemeSave}
+                                        disabled={isSavingCustomTheme}
+                                        className="w-full min-h-9 rounded-lg text-white text-[9px] font-black uppercase tracking-wider flex items-center justify-center gap-2 disabled:opacity-60"
+                                        style={{ background: `linear-gradient(90deg, ${customTheme.primary}, ${customTheme.accent}, ${customTheme.sidebar})` }}
+                                    >
+                                        {isSavingCustomTheme ? <ButtonLoader /> : <><Save className="w-3.5 h-3.5" /> Save & Apply</>}
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </section>

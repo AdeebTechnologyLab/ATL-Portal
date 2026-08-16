@@ -59,7 +59,8 @@ import {
     Megaphone,
     Lock,
     Eye,
-    EyeOff
+    EyeOff,
+    Clock
 } from 'lucide-react';
 import { useDispatch } from 'react-redux';
 import { logout, updateUser } from '../../features/auth/authSlice';
@@ -93,12 +94,33 @@ const DashboardLayout = () => {
     const location = useLocation();
     const hideGlobalChatWidget = location.pathname.includes('/discussion-room');
     const navigate = useNavigate();
-    const { isDark, toggleTheme } = useTheme();
+    const { isDark, toggleTheme, timeFormat } = useTheme();
+    const [currentDateTime, setCurrentDateTime] = useState(() => new Date());
     const [pendingTasks, setPendingTasks] = useState([]);
     const [isPageLoading, setIsPageLoading] = useState(false);
     const [isWeeklyOff, setIsWeeklyOff] = useState(false);
     const [weeklyOffDayName, setWeeklyOffDayName] = useState('');
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        const timer = setInterval(() => setCurrentDateTime(new Date()), 1000);
+        return () => clearInterval(timer);
+    }, []);
+
+    const headerTime = new Intl.DateTimeFormat('en-US', {
+        timeZone: 'Asia/Karachi',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: timeFormat !== '24-hour'
+    }).format(currentDateTime);
+
+    const headerDate = new Intl.DateTimeFormat('en-GB', {
+        timeZone: 'Asia/Karachi',
+        weekday: 'long',
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric'
+    }).format(currentDateTime);
 
     useEffect(() => {
         const checkWeeklyOffDay = async () => {
@@ -403,7 +425,11 @@ const DashboardLayout = () => {
                                 </button>
 
                                 <div className="min-w-0">
-                                    <h1 className={`text-lg sm:text-2xl font-bold transition-colors duration-300 truncate ${isDark ? 'text-white' : 'text-gray-900'}`}>{getPageTitle()}</h1>
+                                    <h1 className={`text-lg sm:text-2xl font-bold tabular-nums transition-colors duration-300 truncate ${isDark ? 'text-white' : 'text-gray-900'}`}>{headerTime}</h1>
+                                    <div className={`mt-0.5 flex items-center gap-1.5 text-[9px] sm:text-[10px] font-bold tracking-wide min-w-0 ${isDark ? 'text-white/60' : 'text-gray-500'}`}>
+                                        <Clock className="w-3 h-3 text-primary shrink-0" />
+                                        <span className="truncate">{headerDate}</span>
+                                    </div>
                                 </div>
                             </div>
 

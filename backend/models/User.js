@@ -71,8 +71,13 @@ const userSchema = new mongoose.Schema({
     preferences: {
         colorTheme: {
             type: String,
-            enum: ['orange', 'gold', 'olive', 'navy', 'lavender', 'rose-pink', 'pakistan-green'],
+            enum: ['orange', 'gold', 'olive', 'navy', 'lavender', 'rose-pink', 'pakistan-green', 'custom'],
             default: 'orange'
+        },
+        customTheme: {
+            primary: { type: String, default: '#7C3AED' },
+            accent: { type: String, default: '#06B6D4' },
+            sidebar: { type: String, default: '#1E1B4B' }
         }
     },
     // Common fields
