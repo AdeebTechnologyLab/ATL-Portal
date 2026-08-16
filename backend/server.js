@@ -1,6 +1,3 @@
-const dns = require('dns');
-dns.setServers(['8.8.8.8', '8.8.4.4']);
-
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -406,6 +403,10 @@ app.use((req, res, next) => {
 });
 
 const isDatabaseConnected = () => mongoose.connection.readyState === 1;
+const databaseState = () => {
+    const states = ['disconnected', 'connected', 'connecting', 'disconnecting'];
+    return states[mongoose.connection.readyState] || 'unknown';
+};
 
 const runDatabaseTask = async (label, task) => {
     if (!isDatabaseConnected()) {
@@ -427,7 +428,9 @@ if (!mongoUri) {
 } else {
     mongoose.connect(mongoUri, {
         maxPoolSize: 10,
-        minPoolSize: 2,
+        minPoolSize: 1,
+        maxIdleTimeMS: 60000,
+        heartbeatFrequencyMS: 10000,
         serverSelectionTimeoutMS: 10000,
         socketTimeoutMS: 45000,
         connectTimeoutMS: 10000,
@@ -451,6 +454,20 @@ mongoose.connection.on('error', (err) => {
 
 mongoose.connection.on('reconnected', () => {
     console.log('✅ MongoDB reconnected');
+});
+
+// Do not run database-backed endpoints until MongoDB is ready. This avoids
+// 10-second query-buffer timeouts during startup or a temporary Atlas outage.
+// The MongoDB driver keeps reconnecting in the background.
+app.use('/api', (req, res, next) => {
+    if (req.path === '/health') return next();
+    if (isDatabaseConnected()) return next();
+
+    res.set('Retry-After', '3');
+    return res.status(503).json({
+        success: false,
+        message: 'Database is reconnecting. Please try again in a few seconds.'
+    });
 });
 
 // API Routes
@@ -481,7 +498,12 @@ app.use('/api/payment-methods', paymentMethodRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
-    res.json({ status: 'ok', socket: !!io });
+    const connected = isDatabaseConnected();
+    res.status(connected ? 200 : 503).json({
+        status: connected ? 'ok' : 'degraded',
+        database: databaseState(),
+        socket: !!io
+    });
 });
 
 // Attendance auto-save & lock cron job - Runs daily at 12:00 AM Pakistan Time (PKT)
