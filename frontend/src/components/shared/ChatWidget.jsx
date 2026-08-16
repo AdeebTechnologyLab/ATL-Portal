@@ -35,7 +35,7 @@ import Loader, { ButtonLoader } from '../ui/Loader';
 
 
 
-import { chatAPI, userAPI, googleDriveAPI } from '../../services/api';
+import { chatAPI, userAPI } from '../../services/api';
 import ChatMediaButton from './ChatMediaButton';
 import ChatMediaDisplay from './ChatMediaDisplay';
 
@@ -163,7 +163,6 @@ const ChatWidget = () => {
 
     const [incomingNotify, setIncomingNotify] = useState(null); // { senderName, text }
     const [pendingMedia, setPendingMedia] = useState([]);
-    const [driveStatus, setDriveStatus] = useState({ connected: false });
 
 
 
@@ -201,7 +200,6 @@ const ChatWidget = () => {
 
 
     useEffect(() => {
-        googleDriveAPI.getStatus().then(res => setDriveStatus(res.data)).catch(() => {});
     }, []);
 
 
@@ -3913,7 +3911,6 @@ const ChatWidget = () => {
 
                                         <ChatMediaButton
                                             onMediaUploaded={setPendingMedia}
-                                            driveStatus={driveStatus}
                                         />
 
 

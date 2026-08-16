@@ -27,8 +27,22 @@ const isConfigured = () => Boolean(
 
 const DRIVE_FILE_SCOPE = 'https://www.googleapis.com/auth/drive.file';
 
+const getLinkedUserIds = async (userId) => {
+    const user = await User.findById(userId).select('email');
+    if (!user?.email) return [userId];
+    const linkedUsers = await User.find({ email: user.email }).select('_id');
+    return linkedUsers.map(linkedUser => linkedUser._id);
+};
+
+const getSharedDriveConnection = async (userId, includeToken = false) => {
+    const linkedUserIds = await getLinkedUserIds(userId);
+    let query = GoogleDriveConnection.findOne({ user: { $in: linkedUserIds } }).sort({ connectedAt: -1 });
+    if (includeToken) query = query.select('+encryptedRefreshToken');
+    return query;
+};
+
 router.get('/status', protect, async (req, res) => {
-    const connection = await GoogleDriveConnection.findOne({ user: req.user.id });
+    const connection = await getSharedDriveConnection(req.user.id);
     res.json({
         success: true,
         configured: isConfigured(),
@@ -83,12 +97,12 @@ router.get('/callback', async (req, res) => {
 
         const grantedScopes = String(tokens.scope || '').split(/\s+/).filter(Boolean);
         if (!grantedScopes.includes(DRIVE_FILE_SCOPE)) {
-            await GoogleDriveConnection.deleteOne({ user: user._id });
+            const linkedUserIds = await getLinkedUserIds(user._id);
+            await GoogleDriveConnection.deleteMany({ user: { $in: linkedUserIds } });
             throw new Error('Google Drive file permission was not allowed. Please connect again and enable Drive file access.');
         }
 
-        const existing = await GoogleDriveConnection.findOne({ user: user._id })
-            .select('+encryptedRefreshToken');
+        const existing = await getSharedDriveConnection(user._id, true);
         const refreshToken = tokens.refresh_token ||
             (existing?.encryptedRefreshToken ? decryptToken(existing.encryptedRefreshToken) : '');
         if (!refreshToken) throw new Error('Google did not return a refresh token. Please reconnect and allow access.');
@@ -96,6 +110,8 @@ router.get('/callback', async (req, res) => {
         const oauth2 = google.oauth2({ version: 'v2', auth: oauth2Client });
         const googleUser = await oauth2.userinfo.get();
 
+        const linkedUserIds = await getLinkedUserIds(user._id);
+        await GoogleDriveConnection.deleteMany({ user: { $in: linkedUserIds, $ne: user._id } });
         await GoogleDriveConnection.findOneAndUpdate(
             { user: user._id },
             {
@@ -118,8 +134,7 @@ router.post('/upload', protect, upload.array('files', 10), async (req, res) => {
             return res.status(400).json({ success: false, message: 'Please select at least one file' });
         }
 
-        const connection = await GoogleDriveConnection.findOne({ user: req.user.id })
-            .select('+encryptedRefreshToken');
+        const connection = await getSharedDriveConnection(req.user.id, true);
         if (!connection) {
             return res.status(409).json({ success: false, message: 'Connect Google Drive first' });
         }
@@ -206,7 +221,8 @@ router.post('/upload', protect, upload.array('files', 10), async (req, res) => {
             /insufficient authentication scopes|insufficient permission|insufficient.*scope/i.test(errorMessage);
 
         if (needsReauthorization || hasInvalidClient) {
-            await GoogleDriveConnection.deleteOne({ user: req.user.id });
+            const linkedUserIds = await getLinkedUserIds(req.user.id);
+            await GoogleDriveConnection.deleteMany({ user: { $in: linkedUserIds } });
         }
 
         res.status(needsReauthorization ? 403 : hasInvalidClient ? 503 : 500).json({
@@ -228,8 +244,7 @@ router.post('/upload', protect, upload.array('files', 10), async (req, res) => {
 // Remove an accidentally uploaded file from the connected user's Drive.
 router.delete('/files/:fileId', protect, async (req, res) => {
     try {
-        const connection = await GoogleDriveConnection.findOne({ user: req.user.id })
-            .select('+encryptedRefreshToken');
+        const connection = await getSharedDriveConnection(req.user.id, true);
         if (!connection) {
             return res.status(409).json({ success: false, message: 'Connect Google Drive first' });
         }
@@ -256,8 +271,7 @@ router.delete('/files/:fileId', protect, async (req, res) => {
 // student can review, remove, or add files before resubmitting.
 router.get('/folders/:folderId/files', protect, async (req, res) => {
     try {
-        const connection = await GoogleDriveConnection.findOne({ user: req.user.id })
-            .select('+encryptedRefreshToken');
+        const connection = await getSharedDriveConnection(req.user.id, true);
         if (!connection) {
             return res.status(409).json({ success: false, message: 'Connect Google Drive first' });
         }
@@ -297,8 +311,9 @@ router.get('/folders/:folderId/files', protect, async (req, res) => {
 });
 
 router.delete('/disconnect', protect, async (req, res) => {
-    await GoogleDriveConnection.deleteOne({ user: req.user.id });
-    res.json({ success: true, message: 'Google Drive disconnected' });
+    const linkedUserIds = await getLinkedUserIds(req.user.id);
+    await GoogleDriveConnection.deleteMany({ user: { $in: linkedUserIds } });
+    res.json({ success: true, message: 'Google Drive disconnected from all profiles linked to this email' });
 });
 
 module.exports = router;

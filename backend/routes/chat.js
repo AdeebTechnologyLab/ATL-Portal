@@ -5,6 +5,29 @@ const { protect, authorize } = require('../middleware/auth');
 const GlobalMessage = require('../models/GlobalMessage');
 const User = require('../models/User');
 const { sendPushNotification } = require('../utils/pushHelper');
+const { uploadChatFiles } = require('../config/cloudinary');
+
+// @route   POST /api/chat/upload
+// @desc    Upload files for any authenticated chat without Google Drive OAuth
+// @access  Private
+router.post('/upload', protect, uploadChatFiles.array('files'), async (req, res) => {
+    try {
+        if (!req.files?.length) {
+            return res.status(400).json({ success: false, message: 'Please select at least one file.' });
+        }
+        const files = req.files.map(file => ({
+            url: file.path,
+            name: file.originalname,
+            type: file.mimetype || 'application/octet-stream',
+            size: Number(file.size || 0),
+            thumbnail: file.mimetype?.startsWith('image/') ? file.path : ''
+        }));
+        res.status(201).json({ success: true, files });
+    } catch (error) {
+        console.error('Chat file upload error:', error);
+        res.status(500).json({ success: false, message: 'File upload failed. Please try again.' });
+    }
+});
 
 const getLinkedAccountIds = async (userId) => {
     const user = await User.findById(userId).select('email');

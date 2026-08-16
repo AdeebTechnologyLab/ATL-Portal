@@ -1,9 +1,9 @@
 import { useState, useRef } from 'react';
 import { Paperclip, Upload, X } from 'lucide-react';
-import { googleDriveAPI } from '../../services/api';
+import { chatAPI } from '../../services/api';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const ChatMediaButton = ({ onMediaUploaded, disabled = false, driveStatus = null }) => {
+const ChatMediaButton = ({ onMediaUploaded, disabled = false }) => {
     const fileInputRef = useRef(null);
     const [uploading, setUploading] = useState(false);
     const [progress, setProgress] = useState(0);
@@ -15,12 +15,6 @@ const ChatMediaButton = ({ onMediaUploaded, disabled = false, driveStatus = null
         e.target.value = '';
         if (!files.length) return;
 
-        if (!driveStatus?.connected) {
-            setError('Google Drive connect karein pehle');
-            setTimeout(() => setError(''), 3000);
-            return;
-        }
-
         setUploading(true);
         setProgress(0);
         setError('');
@@ -29,19 +23,21 @@ const ChatMediaButton = ({ onMediaUploaded, disabled = false, driveStatus = null
             const formData = new FormData();
             files.forEach(file => formData.append('files', file));
 
-            const response = await googleDriveAPI.upload(formData);
-            const fileData = response.data.file;
-
-            const mediaItems = (fileData.files || []).map((f, i) => ({
-                url: f.webViewLink || fileData.webViewLink || '',
+            const response = await chatAPI.uploadFiles(formData, event => {
+                if (event.total) setProgress(Math.round((event.loaded * 100) / event.total));
+            });
+            const mediaItems = (response.data.files || []).map((f, i) => ({
+                url: f.url || '',
                 name: f.name || files[i]?.name || 'file',
-                type: f.mimeType || files[i]?.type || 'file',
+                type: f.type || files[i]?.type || 'file',
                 size: Number(f.size || files[i]?.size || 0),
-                thumbnail: f.thumbnailLink || ''
+                thumbnail: f.thumbnail || ''
             }));
-
-            setSelectedFiles(prev => [...prev, ...mediaItems]);
-            onMediaUploaded([...selectedFiles, ...mediaItems]);
+            setSelectedFiles(prev => {
+                const updated = [...prev, ...mediaItems];
+                onMediaUploaded(updated);
+                return updated;
+            });
         } catch (err) {
             setError(err.response?.data?.message || 'Upload failed');
             setTimeout(() => setError(''), 4000);
@@ -64,7 +60,6 @@ const ChatMediaButton = ({ onMediaUploaded, disabled = false, driveStatus = null
                 type="file"
                 multiple
                 className="hidden"
-                accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.zip,.txt"
                 onChange={handleFileSelect}
                 disabled={disabled || uploading}
             />

@@ -791,7 +791,11 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
 
                     <NavLink
                         to={`/${role}/settings`}
-                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-[var(--text-sidebar-muted)] hover:text-[var(--text-sidebar)] hover:bg-white/5 transition-all duration-200"
+                        onClick={() => setIsOpen(false)}
+                        className={({ isActive }) => `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 ${isActive
+                            ? 'bg-[var(--bg-sidebar-light)] text-[var(--text-sidebar)] border-l-4 border-primary shadow-lg shadow-black/20'
+                            : 'text-[var(--text-sidebar-muted)] hover:text-[var(--text-sidebar)] hover:bg-[var(--bg-sidebar-light)]/50'
+                            }`}
                     >
                         <Settings className="w-5 h-5" />
                         <span className="font-medium">{t('layout.settings')}</span>

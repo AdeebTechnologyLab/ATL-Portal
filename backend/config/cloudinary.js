@@ -42,6 +42,18 @@ const uploadPhoto = multer({ storage: photoStorage });
 const uploadReceipt = multer({ storage: receiptStorage });
 const uploadSubmission = multer({ storage: submissionStorage });
 
+// Chat files are independent from Google Drive so every authenticated user can
+// share images, documents, audio, video and archives in any conversation.
+const chatStorage = new CloudinaryStorage({
+    cloudinary,
+    params: async (req, file) => ({
+        folder: 'lms/chat',
+        resource_type: 'auto',
+        public_id: `${Date.now()}-${file.originalname.replace(/[^a-zA-Z0-9._-]/g, '-').slice(0, 80)}`
+    })
+});
+const uploadChatFiles = multer({ storage: chatStorage });
+
 // Storage for course images
 const courseStorage = new CloudinaryStorage({
     cloudinary: cloudinary,
@@ -82,6 +94,7 @@ module.exports = {
     uploadPhoto,
     uploadReceipt,
     uploadSubmission,
+    uploadChatFiles,
     uploadCourse,
     uploadRegistration
 };

@@ -270,6 +270,9 @@ export const userNotificationAPI = {
 
 // Chat APIs
 export const chatAPI = {
+    uploadFiles: (formData, onUploadProgress) => api.post('/chat/upload', formData, {
+        onUploadProgress
+    }),
     getMessages: (otherUserId) => api.get(`/chat/messages/${otherUserId}`),
     sendMessage: (recipientId, text, media = []) => api.post('/chat/messages', { recipientId, text, media }),
     sendBotReply: (recipientId, text, options) => api.post('/chat/bot-reply', { recipientId, text, options }),
