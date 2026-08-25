@@ -142,10 +142,13 @@ const InternsManagement = () => {
                 .filter(Boolean)
                 .join(', ') || enrollments.map(e => e.course?.title).filter(Boolean).join(', ') || 'N/A';
         } catch (error) { console.error('Unable to load completed courses:', error); }
+        const campus = intern.location
+            ? `Adeeb Technology Lab ${intern.location.charAt(0).toUpperCase() + intern.location.slice(1)}`
+            : 'Adeeb Technology Lab';
         const intro = forGuardian
-            ? `Humein aap ko yeh batate hue khushi ho rahi hai ke *${intern.name || 'Intern'}* ne apni internship/course kamyabi se complete kar liya hai. Mubarak ho!`
-            : `Aap ko bohat bohat mubarak ho! Aap ne apni internship/course kamyabi se complete kar liya hai.`;
-        return `*Internship Completion Congratulations*\n*Adeeb Technology Lab*\n\n*Name:* ${intern.name || 'N/A'}\n*Roll No:* ${intern.rollNo || 'N/A'}\n*Course/Skill:* ${courseNames}\n\n${intro}\n\nApna certificate dekhne aur download karne ke liye LMS Portal par login karein:\nhttps://darkorchid-salmon-191482.hostingersite.com/\n\nAap ke mustaqbil ke liye bohat si nek khwahishat!\n\n*Regards,*\n*HR Department*\n*Adeeb Technology Lab*`;
+            ? `Humein aap ko yeh batate hue khushi ho rahi hai ke *${intern.name || 'Intern'}* ne apni internship kamyabi se complete kar li hai. Mubarak ho!`
+            : `Aap ko bohat bohat mubarak ho! Aap ne apni internship kamyabi se complete kar li hai.`;
+        return `*Internship Completion Congratulations*\n*${campus}*\n\n*Name:* ${intern.name || 'N/A'}\n*Roll No:* ${intern.rollNo || 'N/A'}\n*Skill:* ${courseNames}\n\n${intro}\n\nApna certificate dekhne aur download karne ke liye Adeeb Portal par login karein:\nhttps://darkorchid-salmon-191482.hostingersite.com/\n\nAap ke aglay safar aur roshan mustaqbil ke liye best of luck!\n\n*Regards,*\n*HR Department*\n*${campus}*`;
     };
 
     const getOldInternMessage = (intern, forGuardian = false) => {

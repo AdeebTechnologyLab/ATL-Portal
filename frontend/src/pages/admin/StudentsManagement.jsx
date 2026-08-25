@@ -151,10 +151,13 @@ const StudentsManagement = () => {
                 .filter(Boolean)
                 .join(', ') || enrollments.map(e => e.course?.title).filter(Boolean).join(', ') || 'N/A';
         } catch (error) { console.error('Unable to load completed courses:', error); }
+        const campus = student.location
+            ? `Adeeb Technology Lab ${student.location.charAt(0).toUpperCase() + student.location.slice(1)}`
+            : 'Adeeb Technology Lab';
         const intro = forGuardian
             ? `Humein aap ko yeh batate hue khushi ho rahi hai ke *${student.name || 'Student'}* ne apna course kamyabi se complete kar liya hai. Mubarak ho!`
             : `Aap ko bohat bohat mubarak ho! Aap ne apna course kamyabi se complete kar liya hai.`;
-        return `*Course Completion Congratulations*\n*Adeeb Technology Lab*\n\n*Name:* ${student.name || 'N/A'}\n*Roll No:* ${student.rollNo || 'N/A'}\n*Course:* ${courseNames}\n\n${intro}\n\nApna certificate dekhne aur download karne ke liye LMS Portal par login karein:\nhttps://darkorchid-salmon-191482.hostingersite.com/\n\nAap ke mustaqbil ke liye bohat si nek khwahishat!\n\n*Regards,*\n*HR Department*\n*Adeeb Technology Lab*`;
+        return `*Course Completion Congratulations*\n*${campus}*\n\n*Name:* ${student.name || 'N/A'}\n*Roll No:* ${student.rollNo || 'N/A'}\n*Course:* ${courseNames}\n\n${intro}\n\nApna certificate dekhne aur download karne ke liye Adeeb Portal par login karein:\nhttps://darkorchid-salmon-191482.hostingersite.com/\n\nAap ke aglay safar aur roshan mustaqbil ke liye best of luck!\n\n*Regards,*\n*HR Department*\n*${campus}*`;
     };
 
     const getOldStudentMessage = (student, forGuardian = false) => {
