@@ -306,6 +306,10 @@ router.post('/:id/installments', protect, authorize('admin'), async (req, res) =
             return res.status(404).json({ success: false, message: 'Fee not found' });
         }
 
+        if (!Array.isArray(installments)) {
+            return res.status(400).json({ success: false, message: 'Installments must be an array' });
+        }
+
         // Block installment creation if student is paused
         const pausedEnrollment = await Enrollment.findOne({ user: fee.user, course: fee.course, isPaused: true });
         if (pausedEnrollment) {
@@ -315,25 +319,15 @@ router.post('/:id/installments', protect, authorize('admin'), async (req, res) =
             });
         }
 
-        // Create new installments array ensuring we don't reset verified/submitted ones
+        // Match by ID so an admin can remove an exact paid/submitted challan
+        // without shifting or overwriting the remaining installment rows.
         const newInstallments = [];
-
-        // First, check if we are trying to remove any paid installments (not allowed)
-        const paidInstallmentsCount = fee.installments.filter(
-            i => i.status === 'verified' || i.status === 'submitted'
-        ).length;
-
-        if (installments.length < paidInstallmentsCount) {
-            return res.status(400).json({
-                success: false,
-                message: `Cannot remove installments that are already paid/submitted. You have ${paidInstallmentsCount} active payments.`
-            });
-        }
+        const existingById = new Map(fee.installments.map(inst => [inst._id.toString(), inst]));
 
         // Map logic
         for (let i = 0; i < installments.length; i++) {
             const newInst = installments[i];
-            const existing = fee.installments[i];
+            const existing = newInst._id ? existingById.get(String(newInst._id)) : null;
 
             if (existing && (existing.status === 'verified' || existing.status === 'submitted')) {
                 // Preserve existing paid installment exactly as is
@@ -355,6 +349,7 @@ router.post('/:id/installments', protect, authorize('admin'), async (req, res) =
         }
 
         fee.installments = newInstallments;
+        fee.updateStatus();
         await fee.save();
 
         // Sync with Enrollment model if it exists

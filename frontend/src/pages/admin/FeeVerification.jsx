@@ -148,6 +148,7 @@ const FeeVerification = () => {
             // Ensure amounts are numbers and statuses are set when sending
             const payloadInstallments = installmentPlan.map(inst => ({
                 amount: inst.amount === '' || inst.amount === null ? 0 : Number(inst.amount),
+                _id: inst._id,
                 dueDate: inst.dueDate || null,
                 status: inst.status || 'pending'
             }));

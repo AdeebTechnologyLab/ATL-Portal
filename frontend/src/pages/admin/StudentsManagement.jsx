@@ -428,6 +428,7 @@ const StudentsManagement = () => {
         try {
             const payloadInstallments = installmentPlan.map(inst => ({
                 amount: inst.amount === '' || inst.amount === null ? 0 : Number(inst.amount),
+                _id: inst._id,
                 dueDate: inst.dueDate || null,
                 status: inst.status || 'pending'
             }));
