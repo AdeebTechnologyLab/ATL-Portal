@@ -8,6 +8,7 @@ import {
 import Loader, { ButtonLoader } from '../../../components/ui/Loader';
 import { chatAPI } from '../../../services/api';
 import ChatMediaButton from '../../../components/shared/ChatMediaButton';
+import VoiceRecorder from '../../../components/shared/VoiceRecorder';
 import ChatMediaDisplay from '../../../components/shared/ChatMediaDisplay';
 import { googleDriveAPI } from '../../../services/api';
 import ProfileAvatar from '../../../components/ui/ProfileAvatar';
@@ -314,6 +315,10 @@ const StudentChatTab = ({ course, isRestricted }) => {
                                 <ChatMediaButton
                                     onMediaUploaded={setPendingMedia}
                                     driveStatus={driveStatus}
+                                    disabled={isRestricted}
+                                />
+                                <VoiceRecorder
+                                    onVoiceUploaded={(media) => setPendingMedia(prev => [...prev, ...media])}
                                     disabled={isRestricted}
                                 />
                                 <input

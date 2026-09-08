@@ -190,4 +190,62 @@ router.get('/admin-dashboard', protect, authorize('admin'), async (req, res) => 
     }
 });
 
+// @route   GET /api/stats/leaderboard
+// @desc    Get top 10 users by game score (one entry per email)
+// @access  Private
+router.get('/leaderboard', protect, async (req, res) => {
+    try {
+        const users = await User.find({ gameScore: { $gt: 0 } })
+            .select('name email photo gameScore')
+            .sort({ gameScore: -1 })
+            .lean();
+
+        const seen = new Map();
+        for (const u of users) {
+            const email = u.email?.toLowerCase();
+            if (!email) continue;
+            if (!seen.has(email)) {
+                seen.set(email, {
+                    _id: u._id,
+                    name: u.name,
+                    photo: u.photo,
+                    gameScore: u.gameScore
+                });
+            }
+        }
+
+        const leaders = Array.from(seen.values()).slice(0, 10);
+        res.json({ success: true, data: leaders });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+});
+
+// @route   PUT /api/stats/game-score
+// @desc    Save high score to ALL accounts with same email
+// @access  Private
+router.put('/game-score', protect, async (req, res) => {
+    try {
+        const { score } = req.body;
+        if (typeof score !== 'number' || score < 0) {
+            return res.status(400).json({ success: false, message: 'Invalid score' });
+        }
+
+        const user = await User.findById(req.user.id);
+        if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+
+        const currentBest = user.gameScore || 0;
+        if (score > currentBest) {
+            await User.updateMany(
+                { email: user.email.toLowerCase(), gameScore: { $lt: score } },
+                { $set: { gameScore: score } }
+            );
+        }
+
+        res.json({ success: true, gameScore: Math.max(score, currentBest) });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+});
+
 module.exports = router;

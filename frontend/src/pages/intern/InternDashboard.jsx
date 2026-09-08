@@ -26,6 +26,7 @@ const InternDashboard = () => {
     const [pendingAssignments, setPendingAssignments] = useState([]);
     const [stats, setStats] = useState([]);
     const [activeLiveClasses, setActiveLiveClasses] = useState([]);
+    const [pendingFees, setPendingFees] = useState(0);
     const socketRef = useRef(null);
 
     useEffect(() => {
@@ -143,6 +144,7 @@ const InternDashboard = () => {
                 const feeRes = await feeAPI.getMy();
                 const { totalAmount } = calculateOutstandingFees(feeRes.data.data || []);
                 totalPendingAmount = totalAmount;
+                setPendingFees(totalAmount);
             } catch (e) {
                 // Ignore if no fee API access
             }
@@ -276,15 +278,22 @@ const InternDashboard = () => {
                                         </div>
                                     </div>
 
-                                    <a
-                                        href={liveClass.link}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="flex-shrink-0 px-8 py-4 md:px-10 md:py-5 bg-white text-red-600 rounded-2xl font-black uppercase tracking-widest text-sm md:text-base hover:bg-gray-100 transition-all shadow-lg flex items-center gap-3 group"
-                                    >
-                                        <ExternalLink className="w-5 h-5 md:w-6 md:h-6 group-hover:rotate-12 transition-transform" />
-                                        {t('dashboard.joinNow')}
-                                    </a>
+                                    {enrollments.length > 0 && pendingFees === 0 ? (
+                                        <a
+                                            href={liveClass.link}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="flex-shrink-0 px-8 py-4 md:px-10 md:py-5 bg-white text-red-600 rounded-2xl font-black uppercase tracking-widest text-sm md:text-base hover:bg-gray-100 transition-all shadow-lg flex items-center gap-3 group"
+                                        >
+                                            <ExternalLink className="w-5 h-5 md:w-6 md:h-6 group-hover:rotate-12 transition-transform" />
+                                            {t('dashboard.joinNow')}
+                                        </a>
+                                    ) : (
+                                        <span className="flex-shrink-0 px-8 py-4 md:px-10 md:py-5 bg-white/20 text-white/60 rounded-2xl font-black uppercase tracking-widest text-sm md:text-base flex items-center gap-3 cursor-not-allowed">
+                                            <ExternalLink className="w-5 h-5 md:w-6 md:h-6" />
+                                            {pendingFees > 0 ? 'Pay Fee to Join' : 'Enroll to Join'}
+                                        </span>
+                                    )}
                                 </div>
                             </div>
                         ))}

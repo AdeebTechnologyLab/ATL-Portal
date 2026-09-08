@@ -64,6 +64,7 @@ const reportRoutes = require('./routes/reports');
 const registrationPageRoutes = require('./routes/registrationPages');
 const googleDriveRoutes = require('./routes/googleDrive');
 const paymentMethodRoutes = require('./routes/paymentMethods');
+const adminWorkTaskRoutes = require('./routes/adminWorkTasks');
 
 // Import attendance lock function
 const { lockTodayAttendance } = require('./controllers/attendanceController');
@@ -494,6 +495,7 @@ app.use('/api/teacher/finance', require('./routes/teacherFinance'));
 app.use('/api/reports', reportRoutes);
 app.use('/api/registration-pages', registrationPageRoutes);
 app.use('/api/google-drive', googleDriveRoutes);
+app.use('/api/admin-work-tasks', adminWorkTaskRoutes);
 app.use('/api/payment-methods', paymentMethodRoutes);
 
 // Health check

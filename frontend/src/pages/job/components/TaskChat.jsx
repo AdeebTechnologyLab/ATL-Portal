@@ -3,6 +3,7 @@ import { io } from 'socket.io-client';
 import { Send, User, ShieldCheck, Bell } from 'lucide-react';
 import { taskAPI, chatAPI, googleDriveAPI } from '../../../services/api';
 import ChatMediaButton from '../../../components/shared/ChatMediaButton';
+import VoiceRecorder from '../../../components/shared/VoiceRecorder';
 import ChatMediaDisplay from '../../../components/shared/ChatMediaDisplay';
 import Loader, { ButtonLoader } from '../../../components/ui/Loader';
 import { getSocketURL } from '../../../config/apiBaseUrl';
@@ -184,6 +185,10 @@ const TaskChat = ({ taskId, currentUser }) => {
                 <ChatMediaButton
                     onMediaUploaded={setPendingMedia}
                     driveStatus={driveStatus}
+                    disabled={isSending}
+                />
+                <VoiceRecorder
+                    onVoiceUploaded={(media) => setPendingMedia(prev => [...prev, ...media])}
                     disabled={isSending}
                 />
                 <input

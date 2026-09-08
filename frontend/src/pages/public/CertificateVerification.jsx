@@ -248,22 +248,30 @@ const CertificateVerification = () => {
                                                         )}
 
                                                         <div className="space-y-1">
-                                                            <p className="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest font-bold">Duration</p>
-                                                            <div className="flex items-center gap-2">
-                                                                <div className="w-6 h-6 rounded-lg bg-primary/10 flex items-center justify-center">
-                                                                    <Calendar className="w-3.5 h-3.5 text-primary" />
-                                                                </div>
-                                                                <span className="font-bold text-gray-900 dark:text-white">{cert.duration || '—'}</span>
-                                                            </div>
-                                                        </div>
-                                                        {cert.issuedAt && (
-                                                            <div className="space-y-1">
-                                                                <p className="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest font-bold">Issued On</p>
-                                                                <p className="font-bold text-gray-900 dark:text-white">
-                                                                    {new Date(cert.issuedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
-                                                                </p>
-                                                            </div>
-                                                        )}
+                                                             <p className="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest font-bold">Duration</p>
+                                                             <div className="flex items-center gap-2">
+                                                                 <div className="w-6 h-6 rounded-lg bg-primary/10 flex items-center justify-center">
+                                                                     <Calendar className="w-3.5 h-3.5 text-primary" />
+                                                                 </div>
+                                                                 <span className="font-bold text-gray-900 dark:text-white">{cert.duration || '—'}</span>
+                                                             </div>
+                                                         </div>
+                                                         {cert.passoutDate && (
+                                                             <div className="space-y-1">
+                                                                 <p className="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest font-bold">Passout Date</p>
+                                                                 <p className="font-bold text-gray-900 dark:text-white">
+                                                                     {new Date(cert.passoutDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+                                                                 </p>
+                                                             </div>
+                                                         )}
+                                                         {cert.issuedAt && (
+                                                             <div className="space-y-1">
+                                                                 <p className="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest font-bold">Issued On</p>
+                                                                 <p className="font-bold text-gray-900 dark:text-white">
+                                                                     {new Date(cert.issuedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+                                                                 </p>
+                                                             </div>
+                                                         )}
 
 
                                                     </div>

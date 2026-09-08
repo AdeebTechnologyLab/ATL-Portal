@@ -37,6 +37,7 @@ import Loader, { ButtonLoader } from '../ui/Loader';
 
 import { chatAPI, userAPI } from '../../services/api';
 import ChatMediaButton from './ChatMediaButton';
+import VoiceRecorder from './VoiceRecorder';
 import ChatMediaDisplay from './ChatMediaDisplay';
 
 
@@ -3911,6 +3912,10 @@ const ChatWidget = () => {
 
                                         <ChatMediaButton
                                             onMediaUploaded={setPendingMedia}
+                                        />
+
+                                        <VoiceRecorder
+                                            onVoiceUploaded={(media) => setPendingMedia(prev => [...prev, ...media])}
                                         />
 
 

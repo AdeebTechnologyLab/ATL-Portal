@@ -5,6 +5,7 @@ import { MessageSquare, Send, Trash2, Users, Loader2, Circle, BarChart3, Plus, X
 import { chatAPI, googleDriveAPI } from '../../services/api';
 import { getSocketURL } from '../../config/apiBaseUrl';
 import ChatMediaButton from '../../components/shared/ChatMediaButton';
+import VoiceRecorder from '../../components/shared/VoiceRecorder';
 import ChatMediaDisplay from '../../components/shared/ChatMediaDisplay';
 
 const isUserOnline = (lastSeen) => {
@@ -593,6 +594,10 @@ const DiscussionRoom = () => {
                     <ChatMediaButton
                         onMediaUploaded={setPendingMedia}
                         driveStatus={driveStatus}
+                        disabled={sending}
+                    />
+                    <VoiceRecorder
+                        onVoiceUploaded={(media) => setPendingMedia(prev => [...prev, ...media])}
                         disabled={sending}
                     />
                     <input

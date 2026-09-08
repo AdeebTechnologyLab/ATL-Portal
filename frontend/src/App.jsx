@@ -49,6 +49,7 @@ const AttendanceSettings = lazy(() => import('./pages/admin/AttendanceSettings')
 const ExpenseManagement = lazy(() => import('./pages/admin/ExpenseManagement'));
 const ProjectManagement = lazy(() => import('./pages/admin/ProjectManagement'));
 const RegistrationPages = lazy(() => import('./pages/admin/RegistrationPages'));
+const AdminWorkLists = lazy(() => import('./pages/admin/AdminWorkLists'));
 
 // Shared Pages (lazy loaded)
 const JobChat = lazy(() => import('./pages/shared/JobChat'));
@@ -164,6 +165,7 @@ const AppRoutes = () => {
         <Route path="attendance-settings" element={<AttendanceSettings />} />
         <Route path="expense" element={<ExpenseManagement showProjectSections={false} />} />
         <Route path="projects" element={<ProjectManagement />} />
+        <Route path="work-tasks" element={<AdminWorkLists />} />
         <Route path="registration-pages" element={<RegistrationPages />} />
         <Route path="discussion-room" element={<DiscussionRoom />} />
         <Route path="help-support" element={<HelpSupport />} />

@@ -73,6 +73,7 @@ const AssignmentSubmission = () => {
     const [deletingTaskId, setDeletingTaskId] = useState(null);
     const [currentEnrollment, setCurrentEnrollment] = useState(null);
     const [pendingFees, setPendingFees] = useState(0);
+    const [overdueInstallment, setOverdueInstallment] = useState(null);
     const [assignFilter, setAssignFilter] = useState('all');
     const [dailyFilter, setDailyFilter] = useState('all');
     const socketRef = useRef();
@@ -161,8 +162,9 @@ const AssignmentSubmission = () => {
 
             try {
                 const feeRes = await feeAPI.getMy();
-                const { totalAmount } = calculateOutstandingFees(feeRes.data.data || []);
+                const { totalAmount, overdueInstallment: overdue } = calculateOutstandingFees(feeRes.data.data || []);
                 setPendingFees(totalAmount);
+                setOverdueInstallment(overdue);
             } catch {
                 setPendingFees(0);
             }
@@ -639,6 +641,7 @@ const AssignmentSubmission = () => {
                             <WorkspaceRestrictedBanner
                                 role={role}
                                 pendingFees={pendingFees}
+                                overdueInstallment={overdueInstallment}
                                 restrictionType={currentEnrollment?.isPaused ? 'paused' : 'fee'}
                                 lockedCourses={[{
                                     id: selectedCourseId,
@@ -646,8 +649,6 @@ const AssignmentSubmission = () => {
                                         || myCourses.find((c) => c._id === selectedCourseId)?.title
                                         || 'This Course',
                                 }]}
-                                onBack={() => setSelectedCourseId(null)}
-                                backLabel="Back to Courses"
                                 className="my-4"
                             />
                         ) : activeTab === 'assignments' ? (

@@ -12,6 +12,7 @@ import Loader, { ButtonLoader } from '../../../components/ui/Loader';
 import { formatDate } from '../../../utils/dateFormatter';
 import { getSocketURL } from '../../../config/apiBaseUrl';
 import ChatMediaButton from '../../../components/shared/ChatMediaButton';
+import VoiceRecorder from '../../../components/shared/VoiceRecorder';
 import ChatMediaDisplay from '../../../components/shared/ChatMediaDisplay';
 import { googleDriveAPI } from '../../../services/api';
 
@@ -371,6 +372,10 @@ const TeacherChatTab = ({ course, students, onUnreadCountChange }) => {
                                 <ChatMediaButton
                                     onMediaUploaded={setPendingMedia}
                                     driveStatus={driveStatus}
+                                    disabled={isSending}
+                                />
+                                <VoiceRecorder
+                                    onVoiceUploaded={(media) => setPendingMedia(prev => [...prev, ...media])}
                                     disabled={isSending}
                                 />
                                 <input

@@ -12,6 +12,7 @@ const {
 const Enrollment = require('../models/Enrollment');
 const Course = require('../models/Course');
 const { sendPushNotification } = require('../utils/pushHelper');
+const Notification = require('../models/Notification');
 
 // Lock function is now handled in controllers/attendanceController.js
 
@@ -280,6 +281,39 @@ router.put('/global-holidays', protect, authorize('admin'), async (req, res) => 
             },
             { new: true, upsert: true }
         );
+
+        // Auto-create notification for weekly off days update
+        const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const offDayNames = holidayDays.map(d => DAY_NAMES[d]);
+        const dayBadges = DAY_NAMES.map((name, i) => {
+            const isOff = holidayDays.includes(i);
+            return `<span style="display:inline-block;padding:4px 10px;margin:3px;border-radius:8px;font-size:12px;font-weight:bold;${isOff ? 'background:#fed7aa;color:#c2410c;border:1px solid #fb923c;' : 'background:#e5e7eb;color:#6b7280;border:1px solid #d1d5db;'}">${name.substring(0, 3).toUpperCase()}</span>`;
+        }).join('');
+        const message = `<p style="margin-bottom:8px;">Admin has updated the <strong>Weekly Off Days</strong>:</p><div style="margin:10px 0;">${dayBadges}</div><p style="font-size:12px;color:#666;">Off days: <strong>${offDayNames.length > 0 ? offDayNames.join(', ') : 'None'}</strong></p>`;
+        const title = '📅 Weekly Off Days Updated';
+        try {
+            const existing = await Notification.findOne({ title, isActive: true });
+            if (existing) {
+                existing.message = message;
+                existing.type = 'blue';
+                existing.updatedAt = new Date();
+                await existing.save();
+            } else {
+                await Notification.create({
+                    title,
+                    message,
+                    type: 'blue',
+                    isHtml: true,
+                    showLifetime: true,
+                    isActive: true,
+                    targetAudience: ['student', 'intern', 'teacher'],
+                    targetLocation: ['both'],
+                    createdBy: req.user.id
+                });
+            }
+        } catch (notifErr) {
+            console.error('Failed to upsert off-days notification:', notifErr.message);
+        }
 
         res.json({ success: true, holidayDays: setting.value });
     } catch (error) {

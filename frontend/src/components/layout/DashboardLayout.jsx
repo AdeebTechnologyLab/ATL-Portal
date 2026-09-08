@@ -67,6 +67,7 @@ import { logout, updateUser } from '../../features/auth/authSlice';
 import Sidebar from './Sidebar';
 import NotificationPopup from '../shared/NotificationPopup';
 import ChatWidget from '../shared/ChatWidget';
+import ProfileCompletionBanner from '../shared/ProfileCompletionBanner';
 import { userNotificationAPI, assignmentAPI, courseAPI, authAPI, attendanceAPI, feeAPI } from '../../services/api';
 import useAutoLogout from '../../hooks/useAutoLogout';
 import { useTheme } from '../../context/ThemeContext';
@@ -104,7 +105,7 @@ const DashboardLayout = () => {
     const dispatch = useDispatch();
 
     const isLearner = role === 'student' || role === 'intern';
-    const feeAccessAllowedPaths = [`/${role}/fees`, `/${role}/profile`, `/${role}/settings`, `/${role}/help-support`];
+    const feeAccessAllowedPaths = [`/${role}/dashboard`, `/${role}/courses`, `/${role}/assignments`, `/${role}/discussion-room`, `/${role}/fees`, `/${role}/profile`, `/${role}/settings`, `/${role}/help-support`];
     const isFeeAccessAllowedPath = feeAccessAllowedPaths.some(path => location.pathname.startsWith(path));
     const shouldShowFeeLock = isLearner && feeAccessStatus.hasOverdue && !isFeeAccessAllowedPath;
 
@@ -997,7 +998,10 @@ const DashboardLayout = () => {
                                 </div>
                             </div>
                         ) : (
-                            <Outlet />
+                            <>
+                                <ProfileCompletionBanner />
+                                <Outlet />
+                            </>
                         )}
                     </motion.div>
                 </main>

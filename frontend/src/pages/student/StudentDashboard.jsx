@@ -19,6 +19,7 @@ import {
     TrendingUp
 } from 'lucide-react';
 import BirthdayWish from '../../components/dashboard/BirthdayWish';
+import LeaderboardCard from '../../components/dashboard/LeaderboardCard';
 import WorkspaceRestrictedBanner from '../../components/dashboard/WorkspaceRestrictedBanner';
 import StatCard from '../../components/ui/StatCard';
 import Badge from '../../components/ui/Badge';
@@ -41,6 +42,7 @@ const StudentDashboard = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [enrolledCourses, setEnrolledCourses] = useState([]);
     const [pendingFees, setPendingFees] = useState(0);
+    const [overdueInstallment, setOverdueInstallment] = useState(null);
     const [stats, setStats] = useState([]);
     const [pendingAssignments, setPendingAssignments] = useState([]);
     const [withdrawModal, setWithdrawModal] = useState({ open: false, enrollmentId: null, courseTitle: '' });
@@ -246,8 +248,9 @@ const StudentDashboard = () => {
             let totalPendingAmount = 0;
             try {
                 const feeRes = await feeAPI.getMy();
-                const { totalAmount } = calculateOutstandingFees(feeRes.data.data || []);
+                const { totalAmount, overdueInstallment: overdue } = calculateOutstandingFees(feeRes.data.data || []);
                 totalPendingAmount = totalAmount;
+                setOverdueInstallment(overdue);
             } catch (e) {
                 // Fees API might not exist for this user
             }
@@ -397,6 +400,8 @@ const StudentDashboard = () => {
 
                 <BirthdayWish />
 
+                <LeaderboardCard />
+
                 {/* Discussion Room Widget */}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
@@ -486,23 +491,37 @@ const StudentDashboard = () => {
                                         </div>
 
                                         {liveClass.link?.includes('/live-meet/') ? (
-                                            <button
-                                                onClick={() => window.open(`/live-meet/${liveClass.link.split('/').pop()}`, '_blank')}
-                                                className="flex-shrink-0 px-5 py-3 bg-white text-primary rounded-xl font-black uppercase tracking-widest text-xs hover:bg-gray-100 transition-all shadow-md flex items-center justify-center gap-2 group"
-                                            >
-                                                <Video className="w-5 h-5 md:w-6 md:h-6 group-hover:scale-110 transition-transform" />
-                                                {t('dashboard.joinMeet')}
-                                            </button>
+                                            enrolledCourses.length > 0 && pendingFees === 0 ? (
+                                                <button
+                                                    onClick={() => window.open(`/live-meet/${liveClass.link.split('/').pop()}`, '_blank')}
+                                                    className="flex-shrink-0 px-5 py-3 bg-white text-primary rounded-xl font-black uppercase tracking-widest text-xs hover:bg-gray-100 transition-all shadow-md flex items-center justify-center gap-2 group"
+                                                >
+                                                    <Video className="w-5 h-5 md:w-6 md:h-6 group-hover:scale-110 transition-transform" />
+                                                    {t('dashboard.joinMeet')}
+                                                </button>
+                                            ) : (
+                                                <span className="flex-shrink-0 px-5 py-3 bg-white/20 text-white/60 rounded-xl font-black uppercase tracking-widest text-xs flex items-center justify-center gap-2 cursor-not-allowed">
+                                                    <Video className="w-5 h-5 md:w-6 md:h-6" />
+                                                    {pendingFees > 0 ? 'Pay Fee to Join' : 'Enroll to Join'}
+                                                </span>
+                                            )
                                         ) : (
-                                            <a
-                                                href={liveClass.link}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="flex-shrink-0 px-5 py-3 bg-white text-red-600 rounded-xl font-black uppercase tracking-widest text-xs hover:bg-gray-100 transition-all shadow-md flex items-center justify-center gap-2 group"
-                                            >
-                                                <ExternalLink className="w-5 h-5 md:w-6 md:h-6 group-hover:rotate-12 transition-transform" />
-                                                {t('dashboard.joinNow')}
-                                            </a>
+                                            enrolledCourses.length > 0 && pendingFees === 0 ? (
+                                                <a
+                                                    href={liveClass.link}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="flex-shrink-0 px-5 py-3 bg-white text-red-600 rounded-xl font-black uppercase tracking-widest text-xs hover:bg-gray-100 transition-all shadow-md flex items-center justify-center gap-2 group"
+                                                >
+                                                    <ExternalLink className="w-5 h-5 md:w-6 md:h-6 group-hover:rotate-12 transition-transform" />
+                                                    {t('dashboard.joinNow')}
+                                                </a>
+                                            ) : (
+                                                <span className="flex-shrink-0 px-5 py-3 bg-white/20 text-white/60 rounded-xl font-black uppercase tracking-widest text-xs flex items-center justify-center gap-2 cursor-not-allowed">
+                                                    <ExternalLink className="w-5 h-5 md:w-6 md:h-6" />
+                                                    {pendingFees > 0 ? 'Pay Fee to Join' : 'Enroll to Join'}
+                                                </span>
+                                            )
                                         )}
                                     </div>
                                 </div>
@@ -533,6 +552,7 @@ const StudentDashboard = () => {
                 <WorkspaceRestrictedBanner
                     role={role}
                     pendingFees={pendingFees}
+                    overdueInstallment={overdueInstallment}
                     lockedCourses={enrolledCourses.filter(
                         (c) => !c.isActive && c.status !== 'completed' && !c.isPaused
                     )}

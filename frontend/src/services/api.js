@@ -335,7 +335,9 @@ export const reportAPI = {
 
 // Stats APIs
 export const statsAPI = {
-    getAdminDashboard: (params) => api.get('/stats/admin-dashboard', { params })
+    getAdminDashboard: (params) => api.get('/stats/admin-dashboard', { params }),
+    getLeaderboard: () => api.get('/stats/leaderboard'),
+    saveGameScore: (score) => api.put('/stats/game-score', { score })
 };
 
 // Settings API
@@ -352,6 +354,15 @@ export const registrationPageAPI = {
     updateAll: (pages) => api.put('/registration-pages', { pages })
 };
 
+export const adminWorkTaskAPI = {
+    getAll: () => api.get('/admin-work-tasks'),
+    create: (data) => api.post('/admin-work-tasks', data),
+    update: (id, data) => api.put(`/admin-work-tasks/${id}`, data),
+    delete: (id) => api.delete(`/admin-work-tasks/${id}`),
+    createItem: (listId, data) => api.post(`/admin-work-tasks/${listId}/items`, data),
+    updateItem: (listId, itemId, data) => api.put(`/admin-work-tasks/${listId}/items/${itemId}`, data),
+    deleteItem: (listId, itemId) => api.delete(`/admin-work-tasks/${listId}/items/${itemId}`),
+};
 // Live Class API
 export const liveClassAPI = {
     create: (data) => api.post('/live-class', data),

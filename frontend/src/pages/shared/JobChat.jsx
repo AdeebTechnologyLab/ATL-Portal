@@ -4,6 +4,7 @@ import { useLocation } from 'react-router-dom';
 import { ArrowLeft, Briefcase, MessageCircle, Search, Send, ShieldCheck, Trash2 } from 'lucide-react';
 import { chatAPI, googleDriveAPI } from '../../services/api';
 import ChatMediaButton from '../../components/shared/ChatMediaButton';
+import VoiceRecorder from '../../components/shared/VoiceRecorder';
 import ChatMediaDisplay from '../../components/shared/ChatMediaDisplay';
 import Loader from '../../components/ui/Loader';
 import ProfileAvatar from '../../components/ui/ProfileAvatar';
@@ -212,6 +213,7 @@ const JobChat = () => {
                         </div>
                         <form onSubmit={send} className="flex shrink-0 gap-2 border-t border-gray-200 bg-white p-3 dark:border-slate-700 dark:bg-slate-900 sm:p-4">
                             <ChatMediaButton onMediaUploaded={setPendingMedia} driveStatus={driveStatus} disabled={sending} />
+                            <VoiceRecorder onVoiceUploaded={(media) => setPendingMedia(prev => [...prev, ...media])} disabled={sending} />
                             <div className="flex min-w-0 flex-1 items-center rounded-2xl border border-gray-200 bg-gray-50 px-4 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/10 dark:border-slate-700 dark:bg-slate-800"><input value={text} onChange={e => setText(e.target.value)} placeholder="Type your message..." className="min-w-0 flex-1 border-0 bg-transparent py-3 text-sm text-gray-900 outline-none ring-0 placeholder:text-gray-400 focus:border-0 focus:ring-0 dark:text-white" /></div>
                             <button disabled={(!text.trim() && pendingMedia.length === 0) || sending} className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary text-white shadow-lg shadow-primary/20 transition-transform hover:scale-105 disabled:scale-100 disabled:opacity-40"><Send className="h-5 w-5" /></button>
                         </form>

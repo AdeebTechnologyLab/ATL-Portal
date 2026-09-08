@@ -30,6 +30,7 @@ import {
     Clock,
     MessageSquare,
     Wallet,
+    ListTodo,
     Search
 } from 'lucide-react';
 import { logout, loginSuccess } from '../../features/auth/authSlice';
@@ -474,6 +475,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         const baseItems = {
             admin: [
                 { id: 'dashboard', labelKey: 'nav.dashboard', icon: LayoutDashboard, path: '/admin/dashboard' },
+                { id: 'work-tasks', labelKey: 'Daily Work Tracker', icon: ListTodo, path: '/admin/work-tasks' },
                 { id: 'directory', labelKey: 'nav.directory', icon: FolderOpen, path: '/admin/directory' },
                 { id: 'courses', labelKey: 'nav.courses', icon: BookOpen, path: '/admin/courses' },
                 { id: 'certificates', labelKey: 'nav.certificates', icon: Award, path: '/admin/certificates' },
