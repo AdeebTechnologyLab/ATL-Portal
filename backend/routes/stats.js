@@ -40,10 +40,10 @@ router.get('/admin-dashboard', protect, authorize('admin'), async (req, res) => 
             fee.installments.forEach(inst => {
                 // ── Revenue: count verified installments within date range ──
                 if (inst.status === 'verified') {
-                    const verifiedDate = inst.verifiedAt ? new Date(inst.verifiedAt) : null;
+                    const accountingDate = inst.dueDate ? new Date(inst.dueDate) : null;
                     if (!hasDateFilter) {
                         totalRevenue += inst.amount;
-                    } else if (verifiedDate && verifiedDate >= dateFilter.$gte && verifiedDate <= dateFilter.$lte) {
+                    } else if (accountingDate && accountingDate >= dateFilter.$gte && accountingDate <= dateFilter.$lte) {
                         totalRevenue += inst.amount;
                     }
                 }
@@ -67,10 +67,10 @@ router.get('/admin-dashboard', protect, authorize('admin'), async (req, res) => 
                     });
                 } else if (isVerified) {
                     // Verified by admin - show even if receipt was deleted
-                    const verifiedDate = inst.verifiedAt ? new Date(inst.verifiedAt) : null;
-                    const entryDate = inst.paidAt || inst.verifiedAt || fee.createdAt;
+                    const accountingDate = inst.dueDate ? new Date(inst.dueDate) : null;
+                    const entryDate = inst.dueDate;
                     // Apply date filter for verified entries too if set
-                    if (!hasDateFilter || (verifiedDate && verifiedDate >= dateFilter.$gte && verifiedDate <= dateFilter.$lte)) {
+                    if (!hasDateFilter || (accountingDate && accountingDate >= dateFilter.$gte && accountingDate <= dateFilter.$lte)) {
                         recentSubmissions.push({
                             id: inst._id,
                             feeId: fee._id,

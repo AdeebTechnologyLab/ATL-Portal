@@ -95,7 +95,10 @@ router.get('/', async (req, res) => {
             .filter(item => {
                 if (item.status !== 'verified') return false;
                 if (!Object.keys(dateFilter).length) return true;
-                const incomeDate = new Date(item.verifiedAt || item.paidAt || item.dueDate);
+                // Count verified fee income in the challan's scheduled month.
+                const incomeDate = new Date(item.dueDate);
+                if (Number.isNaN(incomeDate.getTime())) return false;
+
                 return (!dateFilter.$gte || incomeDate >= dateFilter.$gte) && (!dateFilter.$lte || incomeDate <= dateFilter.$lte);
             })
             .reduce((total, item) => total + Number(item.amount || 0), 0), 0);

@@ -37,13 +37,6 @@ const monthRange = month => {
     const [year, monthNumber] = month.split('-').map(Number);
     return { startDate: `${month}-01`, endDate: `${month}-${String(new Date(year, monthNumber, 0).getDate()).padStart(2, '0')}` };
 };
-const multiMonthRange = (month, count) => {
-    const [year, monthNumber] = month.split('-').map(Number);
-    const end = new Date(year, monthNumber, 0);
-    const start = new Date(year, monthNumber - count, 1);
-    const toDate = date => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-    return { startDate: toDate(start), endDate: toDate(end) };
-};
 const freshToday = () => {
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
@@ -51,6 +44,14 @@ const freshToday = () => {
 const freshCurrentMonth = () => {
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+};
+const isDateInRange = (value, range) => {
+    if (!range) return true;
+    if (!value) return false;
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return false;
+    const dateKey = date.toISOString().slice(0, 10);
+    return dateKey >= range.startDate && dateKey <= range.endDate;
 };
 const emptyDeveloper = () => ({ name: '', designation: '', percentage: '', totalPayable: '', paidAmount: '' });
 const emptyCompany = () => ({ name: '', designation: '', percentage: '', totalPayable: '', paidAmount: '' });
@@ -102,6 +103,11 @@ const ExpenseManagement = ({ showProjectSections = true, projectsOnly = false })
 
     useEffect(() => { loadData(); }, [periodMode, selectedMonth, startDate, endDate]);
 
+    const selectedRange = useMemo(() => {
+        if (periodMode === 'all') return null;
+        return periodMode === 'month' ? monthRange(selectedMonth) : { startDate, endDate };
+    }, [periodMode, selectedMonth, startDate, endDate]);
+
     const availableCategories = useMemo(() => {
         const counts = {};
         entries.forEach(entry => { counts[entry.category] = (counts[entry.category] || 0) + 1; });
@@ -112,54 +118,34 @@ const ExpenseManagement = ({ showProjectSections = true, projectsOnly = false })
         return entries.filter(entry => {
             const projectName = entry.project?.name || '';
             const searchableText = `${entry.title || ''} ${entry.description || ''} ${entry.category || ''} ${projectName}`.toLowerCase();
-            return (filter === 'all' || entry.type === filter) &&
+            return isDateInRange(entry.transactionDate, selectedRange) &&
+                (filter === 'all' || entry.type === filter) &&
                 (categoryFilter === 'all' || entry.category === categoryFilter) &&
                 (historyProjectFilter === 'all' || (historyProjectFilter === 'general' ? !entry.project : entry.project?._id === historyProjectFilter)) &&
                 (!query || searchableText.includes(query));
         });
-    }, [entries, filter, categoryFilter, historyProjectFilter, searchQuery]);
+    }, [entries, filter, categoryFilter, historyProjectFilter, searchQuery, selectedRange]);
     const filteredTotal = useMemo(() => filteredEntries.reduce((sum, entry) => sum + Number(entry.amount || 0), 0), [filteredEntries]);
     const filteredIncome = useMemo(() => filteredEntries.filter(e => e.type === 'income').reduce((sum, e) => sum + Number(e.amount || 0), 0), [filteredEntries]);
     const filteredExpense = useMemo(() => filteredEntries.filter(e => e.type === 'expense').reduce((sum, e) => sum + Number(e.amount || 0), 0), [filteredEntries]);
     const activeProjects = useMemo(() => projects.filter(project => project.status !== 'completed'), [projects]);
-    const completedProjects = useMemo(() => {
-        if (periodMode === 'all') return projects.filter(project => project.status === 'completed');
-        const range = periodMode === 'month' ? monthRange(selectedMonth) : { startDate, endDate };
-        const start = new Date(`${range.startDate}T00:00:00`);
-        const end = new Date(`${range.endDate}T23:59:59`);
-        return projects.filter(project => {
-            if (project.status !== 'completed') return false;
-            const d = new Date(project.completionDate || project.startDate);
-            return d >= start && d <= end;
-        });
-    }, [projects, periodMode, selectedMonth, startDate, endDate]);
-    const filteredProjects = activeProjects;
-    const visibleCompanyProfit = useMemo(() => {
-        if (periodMode === 'all') return projects.reduce((total, project) => total + Number(project.metrics?.companyTotal || 0), 0);
-        const range = periodMode === 'month' ? monthRange(selectedMonth) : { startDate, endDate };
-        const start = new Date(`${range.startDate}T00:00:00`);
-        const end = new Date(`${range.endDate}T23:59:59`);
-        return projects.filter(project => {
-            if (project.status === 'completed') {
-                const d = new Date(project.completionDate || project.startDate);
-                return d >= start && d <= end;
-            }
-            return true;
-        }).reduce((total, project) => total + Number(project.metrics?.companyTotal || 0), 0);
-    }, [projects, periodMode, selectedMonth, startDate, endDate]);
-    const visibleProjectCash = useMemo(() => {
-        if (periodMode === 'all') return projects.reduce((total, project) => total + Number(project.clientReceived || 0), 0);
-        const range = periodMode === 'month' ? monthRange(selectedMonth) : { startDate, endDate };
-        const start = new Date(`${range.startDate}T00:00:00`);
-        const end = new Date(`${range.endDate}T23:59:59`);
-        return projects.filter(project => {
-            if (project.status === 'completed') {
-                const d = new Date(project.completionDate || project.startDate);
-                return d >= start && d <= end;
-            }
-            return true;
-        }).reduce((total, project) => total + Number(project.clientReceived || 0), 0);
-    }, [projects, periodMode, selectedMonth, startDate, endDate]);
+    const completedProjects = useMemo(() => projects.filter(project => {
+        if (project.status !== 'completed') return false;
+        return isDateInRange(project.completionDate || project.startDate, selectedRange);
+    }), [projects, selectedRange]);
+    const filteredProjects = useMemo(
+        () => activeProjects.filter(project => isDateInRange(project.startDate, selectedRange)),
+        [activeProjects, selectedRange]
+    );
+    const visibleProjects = useMemo(() => [...filteredProjects, ...completedProjects], [filteredProjects, completedProjects]);
+    const visibleCompanyProfit = useMemo(
+        () => visibleProjects.reduce((total, project) => total + Number(project.metrics?.companyTotal || 0), 0),
+        [visibleProjects]
+    );
+    const visibleProjectCash = useMemo(
+        () => visibleProjects.reduce((total, project) => total + Number(project.clientReceived || 0), 0),
+        [visibleProjects]
+    );
     const selectedPaymentProject = useMemo(() => projects.find(project => project._id === form.project), [projects, form.project]);
     const projectRemainingValue = useMemo(() => {
         const teamTotal = projectForm.developers.reduce((total, member) => total + parseAmount(member.totalPayable), 0);
@@ -495,14 +481,14 @@ const ExpenseManagement = ({ showProjectSections = true, projectsOnly = false })
             </div>
 
             {!projectsOnly && <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-2">
-                {[{ label: 'Total Income', value: summary.totalIncome, icon: TrendingUp, tone: 'text-emerald-500', iconBg: 'bg-emerald-500/10' }, { label: 'Total Expenses', value: summary.totalExpenses, icon: TrendingDown, tone: 'text-rose-500', iconBg: 'bg-rose-500/10' }, { label: 'Available Balance', value: summary.balance, icon: Wallet, tone: 'text-blue-500', iconBg: 'bg-blue-500/10' }, { label: 'Total Fee Income', value: summary.feeIncome, icon: Landmark, tone: 'text-amber-500', iconBg: 'bg-amber-500/10' }, { label: 'Project Total Cash', value: visibleProjectCash, icon: CircleDollarSign, tone: 'text-cyan-600', iconBg: 'bg-cyan-500/10' }, { label: 'Project Profit Cash', value: visibleCompanyProfit, icon: BriefcaseBusiness, tone: 'text-violet-500', iconBg: 'bg-violet-500/10' }].map(card => (
-                    <div key={card.label} className={`flex min-w-0 items-center gap-2.5 rounded-xl border border-gray-100 bg-white p-2.5 shadow-sm dark:border-slate-700 dark:bg-slate-900 sm:p-3 ${card.label === 'Available Balance' ? 'dark:!border-blue-500/40 dark:!bg-blue-950/40' : ''}`}>
+                {[{ label: 'Total Income', value: summary.totalIncome, icon: TrendingUp, tone: 'text-emerald-500', iconBg: 'bg-emerald-500/10' }, { label: 'Total Expenses', value: summary.totalExpenses, icon: TrendingDown, tone: 'text-rose-500', iconBg: 'bg-rose-500/10' }, { label: 'Available Balance', value: summary.balance, icon: Wallet, tone: 'text-blue-500', iconBg: 'bg-blue-500/10', isBalance: true }, { label: 'Total Fee Income', value: summary.feeIncome, icon: Landmark, tone: 'text-amber-500', iconBg: 'bg-amber-500/10' }, { label: 'Project Total Cash', value: visibleProjectCash, icon: CircleDollarSign, tone: 'text-cyan-600', iconBg: 'bg-cyan-500/10' }, { label: 'Project Profit Cash', value: visibleCompanyProfit, icon: BriefcaseBusiness, tone: 'text-violet-500', iconBg: 'bg-violet-500/10' }].map(card => (
+                    <div key={card.label} className={`flex min-w-0 items-center gap-2.5 rounded-xl border border-gray-100 bg-white p-2.5 shadow-sm dark:border-slate-700 dark:bg-slate-900 sm:p-3 ${card.isBalance ? 'dark:!border-blue-500/40 dark:!bg-blue-950/40' : ''}`}>
                         <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${card.iconBg}`}>
                             <card.icon className={`h-4 w-4 ${card.tone}`} />
                         </span>
                         <div className="min-w-0">
                             <p className="truncate text-[8px] font-black uppercase tracking-wide text-gray-400 sm:text-[9px]">{card.label}</p>
-                            <p className={`mt-0.5 truncate text-sm font-black text-gray-900 dark:!text-white sm:text-base ${card.label === 'Available Balance' ? 'dark:!text-blue-200' : ''}`}>{money(card.value)}</p>
+                            <p className={`mt-0.5 truncate text-sm font-black text-gray-900 dark:!text-white sm:text-base ${card.isBalance ? 'dark:!text-blue-200' : ''}`}>{money(card.value)}</p>
                         </div>
                     </div>
                 ))}

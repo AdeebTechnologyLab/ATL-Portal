@@ -123,6 +123,7 @@ export const enrollmentAPI = {
 // Fee APIs
 export const feeAPI = {
     getMy: () => api.get('/fees/my'),
+    getAccessStatus: () => api.get('/fees/access-status'),
     getPending: () => api.get('/fees/pending'),
     getAll: () => api.get('/fees/all'),
     getUserFees: (userId) => api.get(`/fees/user/${userId}`),

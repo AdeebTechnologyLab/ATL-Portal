@@ -8,6 +8,25 @@ const Enrollment = require('../models/Enrollment');
 const Counter = require('../models/Counter');
 const { sendPushNotification } = require('../utils/pushHelper');
 
+const getPakistanDateKey = (date = new Date()) => new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Karachi',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+}).format(date);
+
+const getDueDateKey = (dueDate) => {
+    const date = new Date(dueDate);
+    if (Number.isNaN(date.getTime())) return null;
+    return [date.getUTCFullYear(), String(date.getUTCMonth() + 1).padStart(2, '0'), String(date.getUTCDate()).padStart(2, '0')].join('-');
+};
+
+const isInstallmentOverdue = (installment, todayKey = getPakistanDateKey()) => {
+    if (['verified', 'paid'].includes(installment.status)) return false;
+    const dueDateKey = getDueDateKey(installment.dueDate);
+    return Boolean(dueDateKey && dueDateKey < todayKey);
+};
+
 const markUserOldWhenNoEnrollmentsRemain = async (userId) => {
     const hasEnrollment = await Enrollment.exists({ user: userId });
     if (!hasEnrollment) {
@@ -60,6 +79,58 @@ router.get('/my', protect, async (req, res) => {
 // @route   POST /api/fees/:id/pay
 // @desc    Upload payment receipt for an installment
 // @access  Private
+
+// @route   GET /api/fees/access-status
+// @desc    Lock student/intern course content when an enrolled course has an overdue installment
+// @access  Private (Student/Intern)
+router.get('/access-status', protect, authorize('student', 'intern'), async (req, res) => {
+    try {
+        const [fees, enrollments] = await Promise.all([
+            Fee.find({ user: req.user.id }).populate('course', 'title targetAudience').lean(),
+            Enrollment.find({
+                user: req.user.id,
+                status: { $nin: ['completed'] }
+            }).select('course').lean()
+        ]);
+
+        const enrolledCourseIds = new Set(enrollments.map(enrollment => String(enrollment.course)));
+        const todayKey = getPakistanDateKey();
+        let overdueInstallment = null;
+
+        for (const fee of fees) {
+            const courseId = String(fee.course?._id || fee.course || '');
+            if (!enrolledCourseIds.has(courseId)) continue;
+
+            const installmentIndex = (fee.installments || []).findIndex(installment =>
+                isInstallmentOverdue(installment, todayKey)
+            );
+
+            if (installmentIndex >= 0) {
+                const installment = fee.installments[installmentIndex];
+                overdueInstallment = {
+                    feeId: fee._id,
+                    courseId,
+                    courseTitle: fee.course?.title || (req.user.role === 'intern' ? 'Enrolled skill' : 'Enrolled course'),
+                    installmentNumber: installmentIndex + 1,
+                    amount: installment.amount,
+                    dueDate: installment.dueDate,
+                    status: installment.status
+                };
+                break;
+            }
+        }
+
+        res.json({
+            success: true,
+            hasOverdue: Boolean(overdueInstallment),
+            canAccessCourseData: !overdueInstallment,
+            overdueInstallment
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+});
+
 router.post('/:id/pay', protect, uploadReceipt.single('receipt'), async (req, res) => {
     try {
         const { installmentId, slipId } = req.body;
@@ -519,24 +590,22 @@ router.get('/check-status/:courseId', protect, async (req, res) => {
             return res.json({ success: true, hasOverdue: false, canSubmit: true });
         }
 
-        const now = new Date();
+        const todayKey = getPakistanDateKey();
         let hasOverdue = false;
         let overdueInstallment = null;
 
         for (const inst of fee.installments) {
-            if (inst.status !== 'verified' && inst.status !== 'paid') {
-                const dueDate = new Date(inst.dueDate);
-                const daysPastDue = Math.floor((now - dueDate) / (1000 * 60 * 60 * 24));
-                if (daysPastDue >= 0) {
-                    hasOverdue = true;
-                    overdueInstallment = {
-                        installmentNumber: fee.installments.indexOf(inst) + 1,
-                        amount: inst.amount,
-                        dueDate: inst.dueDate,
-                        daysPastDue: daysPastDue
-                    };
-                    break;
-                }
+            if (isInstallmentOverdue(inst, todayKey)) {
+                const dueDateKey = getDueDateKey(inst.dueDate);
+                const daysPastDue = Math.max(1, Math.floor((new Date(`${todayKey}T00:00:00Z`) - new Date(`${dueDateKey}T00:00:00Z`)) / (1000 * 60 * 60 * 24)));
+                hasOverdue = true;
+                overdueInstallment = {
+                    installmentNumber: fee.installments.indexOf(inst) + 1,
+                    amount: inst.amount,
+                    dueDate: inst.dueDate,
+                    daysPastDue
+                };
+                break;
             }
         }
 

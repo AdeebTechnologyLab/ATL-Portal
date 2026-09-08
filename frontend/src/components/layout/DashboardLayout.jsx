@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -67,7 +67,7 @@ import { logout, updateUser } from '../../features/auth/authSlice';
 import Sidebar from './Sidebar';
 import NotificationPopup from '../shared/NotificationPopup';
 import ChatWidget from '../shared/ChatWidget';
-import { userNotificationAPI, assignmentAPI, courseAPI, authAPI, attendanceAPI } from '../../services/api';
+import { userNotificationAPI, assignmentAPI, courseAPI, authAPI, attendanceAPI, feeAPI } from '../../services/api';
 import useAutoLogout from '../../hooks/useAutoLogout';
 import { useTheme } from '../../context/ThemeContext';
 import Loader, { FullScreenLoader, ButtonLoader } from '../ui/Loader';
@@ -100,7 +100,36 @@ const DashboardLayout = () => {
     const [isPageLoading, setIsPageLoading] = useState(false);
     const [isWeeklyOff, setIsWeeklyOff] = useState(false);
     const [weeklyOffDayName, setWeeklyOffDayName] = useState('');
+    const [feeAccessStatus, setFeeAccessStatus] = useState({ loading: true, hasOverdue: false, overdueInstallment: null });
     const dispatch = useDispatch();
+
+    const isLearner = role === 'student' || role === 'intern';
+    const feeAccessAllowedPaths = [`/${role}/fees`, `/${role}/profile`, `/${role}/settings`, `/${role}/help-support`];
+    const isFeeAccessAllowedPath = feeAccessAllowedPaths.some(path => location.pathname.startsWith(path));
+    const shouldShowFeeLock = isLearner && feeAccessStatus.hasOverdue && !isFeeAccessAllowedPath;
+
+    const fetchFeeAccessStatus = useCallback(async () => {
+        if (!isLearner) {
+            setFeeAccessStatus({ loading: false, hasOverdue: false, overdueInstallment: null });
+            return;
+        }
+
+        try {
+            const response = await feeAPI.getAccessStatus();
+            setFeeAccessStatus({
+                loading: false,
+                hasOverdue: Boolean(response.data.hasOverdue),
+                overdueInstallment: response.data.overdueInstallment || null
+            });
+        } catch (error) {
+            console.error('Could not check fee access status:', error);
+            setFeeAccessStatus(current => ({ ...current, loading: false }));
+        }
+    }, [isLearner]);
+
+    useEffect(() => {
+        fetchFeeAccessStatus();
+    }, [fetchFeeAccessStatus]);
 
     useEffect(() => {
         const timer = setInterval(() => setCurrentDateTime(new Date()), 1000);
@@ -177,6 +206,7 @@ const DashboardLayout = () => {
         const handleRefresh = () => {
             fetchNotifications();
             fetchPendingTasks();
+            fetchFeeAccessStatus();
             window.dispatchEvent(new CustomEvent('job-applications-updated'));
         };
 
@@ -184,6 +214,7 @@ const DashboardLayout = () => {
         socket.on('new_assignment', handleRefresh);
         socket.on('new_submission', handleRefresh);
         socket.on('attendance_updated', handleRefresh);
+        socket.on('fee_updated', handleRefresh);
         socket.on('class_time_reminder', playClassReminderRing);
         socket.on('new_daily_task', handleRefresh);
         socket.on('user_updated', (data) => {
@@ -200,7 +231,7 @@ const DashboardLayout = () => {
             clearInterval(interval);
             socket.disconnect();
         };
-    }, [role, user]);
+    }, [role, user, fetchFeeAccessStatus]);
 
 
 
@@ -233,6 +264,12 @@ const DashboardLayout = () => {
                     }
                 }
             } else if (role === 'student' || role === 'intern') {
+                const accessResponse = await feeAPI.getAccessStatus();
+                if (accessResponse.data.hasOverdue) {
+                    setPendingTasks([]);
+                    return;
+                }
+
                 const res = await assignmentAPI.getMy();
                 const assignments = res.data.assignments || [];
                 const myId = (user.id || user._id).toString();
@@ -926,7 +963,42 @@ const DashboardLayout = () => {
                         transition={{ duration: 0.3 }}
                         className={hideGlobalChatWidget ? 'flex-1 min-h-0 overflow-hidden' : ''}
                     >
-                        <Outlet />
+                        {feeAccessStatus.loading && isLearner && !isFeeAccessAllowedPath ? (
+                            <div className="min-h-[65vh] flex items-center justify-center">
+                                <Loader message="Checking fee status..." />
+                            </div>
+                        ) : shouldShowFeeLock ? (
+                            <div className="min-h-[65vh] flex items-center justify-center px-4 py-10">
+                                <div className={`w-full max-w-2xl rounded-3xl border-2 border-red-500 p-6 sm:p-10 text-center shadow-xl ${isDark ? 'bg-red-950/40' : 'bg-red-50'}`}>
+                                    <div className="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-full bg-red-600 text-white shadow-lg shadow-red-500/30">
+                                        <AlertCircle className="h-11 w-11" />
+                                    </div>
+                                    <h1 className={`text-2xl sm:text-3xl font-black ${isDark ? 'text-red-300' : 'text-red-700'}`}>
+                                        ⚠ Fee Payment Overdue
+                                    </h1>
+                                    <p className={`mt-4 text-sm sm:text-base font-semibold leading-relaxed ${isDark ? 'text-red-100' : 'text-red-800'}`}>
+                                        Aap ki fee ki due date guzar chuki hai. Fee verify hone tak aap ke enrolled {role === 'intern' ? 'skill' : 'course'} ka data temporarily locked rahega.
+                                    </p>
+                                    {feeAccessStatus.overdueInstallment && (
+                                        <div className={`mt-6 rounded-2xl border p-4 text-sm ${isDark ? 'border-red-400/30 bg-black/20 text-red-100' : 'border-red-200 bg-white text-red-800'}`}>
+                                            <p className="font-black">{feeAccessStatus.overdueInstallment.courseTitle}</p>
+                                            <p className="mt-1">
+                                                Installment #{feeAccessStatus.overdueInstallment.installmentNumber} - Due: {new Date(feeAccessStatus.overdueInstallment.dueDate).toLocaleDateString('en-GB')}
+                                            </p>
+                                        </div>
+                                    )}
+                                    <button
+                                        type="button"
+                                        onClick={() => navigate(`/${role}/fees`)}
+                                        className="mt-7 inline-flex items-center gap-2 rounded-xl bg-red-600 px-6 py-3 font-black text-white shadow-lg transition hover:bg-red-700"
+                                    >
+                                        <CreditCard className="h-5 w-5" /> Pay Fee Now
+                                    </button>
+                                </div>
+                            </div>
+                        ) : (
+                            <Outlet />
+                        )}
                     </motion.div>
                 </main>
             </div>
