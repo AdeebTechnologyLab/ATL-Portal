@@ -33,7 +33,7 @@ import { courseAPI, enrollmentAPI, assignmentAPI, dailyTaskAPI, liveClassAPI, ce
 import { getCourseIcon, getCourseStyle } from '../../utils/courseIcons';
 import { formatDate } from '../../utils/dateFormatter';
 import BirthdayWish from '../../components/dashboard/BirthdayWish';
-import LeaderboardCard from '../../components/dashboard/LeaderboardCard';
+import GamesCard from '../../components/dashboard/GamesCard';
 import { useTranslation } from 'react-i18next';
 import { requestNotificationPermission, showGradingNotification } from '../../utils/desktopNotifications';
 
@@ -339,7 +339,7 @@ const TeacherDashboard = () => {
 
                 <BirthdayWish />
 
-                <LeaderboardCard />
+                <GamesCard />
 
                 {/* Stats Grid */}
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">

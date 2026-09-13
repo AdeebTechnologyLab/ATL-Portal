@@ -15,7 +15,7 @@ import { courseAPI, liveClassAPI } from '../../services/api';
 import StatCard from '../../components/ui/StatCard';
 import { getCourseIcon, getCourseStyle } from '../../utils/courseIcons';
 import BirthdayWish from '../../components/dashboard/BirthdayWish';
-import LeaderboardCard from '../../components/dashboard/LeaderboardCard';
+import GamesCard from '../../components/dashboard/GamesCard';
 import Loader, { ButtonLoader } from '../../components/ui/Loader';
 import { useTranslation } from 'react-i18next';
 
@@ -329,7 +329,7 @@ const TeacherCourses = ({ isDashboard = false, initialSearchMode = 'courses' }) 
         <>
             <div className="space-y-6">
                 {isDashboard && <BirthdayWish />}
-                {isDashboard && <LeaderboardCard />}
+                {isDashboard && <GamesCard />}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
                         <h1 className="text-xl sm:text-2xl font-bold text-gray-900">

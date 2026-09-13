@@ -336,7 +336,7 @@ export const reportAPI = {
 // Stats APIs
 export const statsAPI = {
     getAdminDashboard: (params) => api.get('/stats/admin-dashboard', { params }),
-    getLeaderboard: () => api.get('/stats/leaderboard'),
+    getGames: () => api.get('/stats/leaderboard'),
     saveGameScore: (score) => api.put('/stats/game-score', { score })
 };
 
@@ -389,4 +389,3 @@ export const paymentMethodAPI = {
 };
 
 export default api;
-

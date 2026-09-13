@@ -19,7 +19,7 @@ import {
     TrendingUp
 } from 'lucide-react';
 import BirthdayWish from '../../components/dashboard/BirthdayWish';
-import LeaderboardCard from '../../components/dashboard/LeaderboardCard';
+import GamesCard from '../../components/dashboard/GamesCard';
 import WorkspaceRestrictedBanner from '../../components/dashboard/WorkspaceRestrictedBanner';
 import StatCard from '../../components/ui/StatCard';
 import Badge from '../../components/ui/Badge';
@@ -400,7 +400,7 @@ const StudentDashboard = () => {
 
                 <BirthdayWish />
 
-                <LeaderboardCard />
+                <GamesCard />
 
                 {/* Discussion Room Widget */}
                 <motion.div
@@ -714,7 +714,7 @@ const StudentDashboard = () => {
                                                 </span>
 
                                                 <div className="flex items-center gap-2">
-                                                    {!course.isFirstMonthVerified && (
+                                                    {!course.isCompleted && !course.isFirstMonthVerified && (
                                                         <button
                                                             onClick={(e) => handleWithdrawClick(e, course)}
                                                             className="flex items-center gap-1 text-red-500 hover:text-red-600 hover:bg-red-50 px-2 py-1 rounded transition-colors z-10"
