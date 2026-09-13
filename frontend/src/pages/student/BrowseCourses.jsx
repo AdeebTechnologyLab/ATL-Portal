@@ -121,7 +121,10 @@ const BrowseCourses = () => {
 
     // Get enrollment status for a course
     const getEnrollmentStatus = (courseId) => {
-        const enrollment = myEnrollments.find(e => e.course?._id === courseId);
+        const id = String(courseId);
+        const enrollment = myEnrollments.find(e => String(e.course?._id) === id);
+        const hasCertificate = myCertificates.some(c => String(c.course?._id) === id);
+        if (hasCertificate) return 'completed';
         if (!enrollment) return 'available';
         return enrollment.status; // 'pending', 'enrolled', 'completed', 'suspended'
     };
@@ -132,14 +135,26 @@ const BrowseCourses = () => {
         .filter(e => (e.status === 'enrolled' || e.status === 'pending') && e.course)
         .map(e => ({ ...e.course, enrolledStatus: e.status }));
 
-    const completedCourses = myEnrollments
-        .filter(e => e.status === 'completed' && e.course)
-        .map(e => ({ ...e.course, enrolledStatus: 'completed' }));
+    const completedCourses = [
+        ...myEnrollments
+            .filter(e => e.course && (e.status === 'completed' || myCertificates.some(c => String(c.course?._id) === String(e.course?._id))))
+            .map(e => ({ ...e.course, enrolledStatus: 'completed' })),
+        ...myCertificates
+            .filter(c => c.course && !myEnrollments.some(e => String(e.course?._id) === String(c.course._id)))
+            .map(c => ({ ...c.course, enrolledStatus: 'completed' }))
+    ];
+    // Deduplicate by course _id
+    const seenCourseIds = new Set();
+    const uniqueCompletedCourses = completedCourses.filter(c => {
+        if (seenCourseIds.has(String(c._id))) return false;
+        seenCourseIds.add(String(c._id));
+        return true;
+    });
 
     const getCurrentCourses = () => {
         switch (activeTab) {
             case 'enrolled': return enrolledCourses;
-            case 'completed': return completedCourses;
+            case 'completed': return uniqueCompletedCourses;
             default: return courses; // Show all courses
         }
     };
@@ -207,7 +222,7 @@ const BrowseCourses = () => {
     };
 
     const handleViewCourse = (course) => {
-        const enrollment = myEnrollments.find(e => e.course?._id === course._id);
+        const enrollment = myEnrollments.find(e => String(e.course?._id) === String(course._id));
         if (!enrollment) return;
 
         // If status is enrolled, it means at least the first installment is verified.
@@ -342,7 +357,7 @@ const BrowseCourses = () => {
                         : 'text-gray-600 dark:text-slate-400 hover:bg-gray-200 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-white border border-transparent'
                         }`}
                 >
-                    Completed <span className="opacity-75">({completedCourses.length})</span>
+                    Completed <span className="opacity-75">({uniqueCompletedCourses.length})</span>
                 </button>
             </div>
 
@@ -388,9 +403,10 @@ const BrowseCourses = () => {
             {/* Courses Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
                 {filteredCourses.map((course, index) => {
-                    const status = getEnrollmentStatus(course._id);
-                    const enrollment = myEnrollments.find(e => e.course?._id === course._id);
-                    const certificate = myCertificates.find(c => c.course?._id === course._id || c.course === course._id);
+                    const courseIdStr = String(course._id);
+                    const status = getEnrollmentStatus(courseIdStr);
+                    const enrollment = myEnrollments.find(e => String(e.course?._id) === courseIdStr);
+                    const certificate = myCertificates.find(c => String(c.course?._id) === courseIdStr || String(c.course) === courseIdStr);
 
                     return (
                         <motion.div

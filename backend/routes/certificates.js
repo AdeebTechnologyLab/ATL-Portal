@@ -17,6 +17,26 @@ router.get('/my', protect, async (req, res) => {
             .populate('course', 'title description location')
             .sort('-issuedAt');
 
+        // Auto-sync: if certificate exists but enrollment is missing or not completed, fix it
+        for (const cert of certificates) {
+            if (cert.course) {
+                const existing = await Enrollment.findOne({ user: req.user.id, course: cert.course._id });
+                if (!existing) {
+                    await Enrollment.create({
+                        user: req.user.id,
+                        course: cert.course._id,
+                        status: 'completed',
+                        registrationDate: cert.issuedAt || new Date(),
+                        completedAt: cert.issuedAt || new Date()
+                    });
+                } else if (existing.status !== 'completed') {
+                    existing.status = 'completed';
+                    existing.completedAt = cert.issuedAt || new Date();
+                    await existing.save();
+                }
+            }
+        }
+
         res.json({ success: true, certificates });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });

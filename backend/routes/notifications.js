@@ -91,45 +91,48 @@ router.get('/active', protect, async (req, res) => {
             targetLocation: { $in: ['all', 'both', userLocation] }
         }).sort('-createdAt');
 
-        // Dynamically build schedule notifications from current settings
-        const scheduleNotifications = [];
+        let notifications = dbNotifications;
 
-        // Class Time Slots notification
-        const classTimeSetting = await SystemSetting.findOne({ key: 'class_time_slots' });
-        if (classTimeSetting && Array.isArray(classTimeSetting.value) && classTimeSetting.value.length > 0) {
-            const slotList = classTimeSetting.value.map((s, i) =>
-                `<li style="margin-bottom:4px;"><strong>Slot ${i + 1}:</strong> ${s}</li>`
-            ).join('');
-            scheduleNotifications.push({
-                _id: 'schedule-class-time-slots',
-                title: '📢 Class Time Slots',
-                message: `<p style="margin-bottom:8px;">Current <strong>Class Time Slots</strong>:</p><ul style="padding-left:18px;margin:0;">${slotList}</ul><p style="margin-top:8px;font-size:12px;color:#666;">Please check your assigned slot.</p>`,
-                type: 'blue',
-                isHtml: true,
-                createdAt: classTimeSetting.updatedAt || classTimeSetting.createdAt
-            });
+        // Skip schedule notifications for job role
+        if (userRole !== 'job') {
+            const scheduleNotifications = [];
+
+            // Class Time Slots notification
+            const classTimeSetting = await SystemSetting.findOne({ key: 'class_time_slots' });
+            if (classTimeSetting && Array.isArray(classTimeSetting.value) && classTimeSetting.value.length > 0) {
+                const slotList = classTimeSetting.value.map((s, i) =>
+                    `<li style="margin-bottom:4px;"><strong>Slot ${i + 1}:</strong> ${s}</li>`
+                ).join('');
+                scheduleNotifications.push({
+                    _id: 'schedule-class-time-slots',
+                    title: '📢 Class Time Slots',
+                    message: `<p style="margin-bottom:8px;">Current <strong>Class Time Slots</strong>:</p><ul style="padding-left:18px;margin:0;">${slotList}</ul><p style="margin-top:8px;font-size:12px;color:#666;">Please check your assigned slot.</p>`,
+                    type: 'blue',
+                    isHtml: true,
+                    createdAt: classTimeSetting.updatedAt || classTimeSetting.createdAt
+                });
+            }
+
+            // Weekly Off Days notification
+            const offDaysSetting = await SystemSetting.findOne({ key: 'globalHolidayDays' });
+            if (offDaysSetting && Array.isArray(offDaysSetting.value)) {
+                const offDayNames = offDaysSetting.value.map(d => DAY_NAMES[d]).filter(Boolean);
+                const dayBadges = DAY_NAMES.map((name, i) => {
+                    const isOff = offDaysSetting.value.includes(i);
+                    return `<span style="display:inline-block;padding:4px 10px;margin:3px;border-radius:8px;font-size:12px;font-weight:bold;${isOff ? 'background:#fed7aa;color:#c2410c;border:1px solid #fb923c;' : 'background:#e5e7eb;color:#6b7280;border:1px solid #d1d5db;'}">${name.substring(0, 3).toUpperCase()}</span>`;
+                }).join('');
+                scheduleNotifications.push({
+                    _id: 'schedule-weekly-off-days',
+                    title: '📅 Weekly Off Days',
+                    message: `<p style="margin-bottom:8px;">Current <strong>Weekly Off Days</strong>:</p><div style="margin:10px 0;">${dayBadges}</div><p style="font-size:12px;color:#666;">Off days: <strong>${offDayNames.length > 0 ? offDayNames.join(', ') : 'None'}</strong></p>`,
+                    type: 'blue',
+                    isHtml: true,
+                    createdAt: offDaysSetting.updatedAt || offDaysSetting.createdAt
+                });
+            }
+
+            notifications = [...scheduleNotifications, ...dbNotifications];
         }
-
-        // Weekly Off Days notification
-        const offDaysSetting = await SystemSetting.findOne({ key: 'globalHolidayDays' });
-        if (offDaysSetting && Array.isArray(offDaysSetting.value)) {
-            const offDayNames = offDaysSetting.value.map(d => DAY_NAMES[d]).filter(Boolean);
-            const dayBadges = DAY_NAMES.map((name, i) => {
-                const isOff = offDaysSetting.value.includes(i);
-                return `<span style="display:inline-block;padding:4px 10px;margin:3px;border-radius:8px;font-size:12px;font-weight:bold;${isOff ? 'background:#fed7aa;color:#c2410c;border:1px solid #fb923c;' : 'background:#e5e7eb;color:#6b7280;border:1px solid #d1d5db;'}">${name.substring(0, 3).toUpperCase()}</span>`;
-            }).join('');
-            scheduleNotifications.push({
-                _id: 'schedule-weekly-off-days',
-                title: '📅 Weekly Off Days',
-                message: `<p style="margin-bottom:8px;">Current <strong>Weekly Off Days</strong>:</p><div style="margin:10px 0;">${dayBadges}</div><p style="font-size:12px;color:#666;">Off days: <strong>${offDayNames.length > 0 ? offDayNames.join(', ') : 'None'}</strong></p>`,
-                type: 'blue',
-                isHtml: true,
-                createdAt: offDaysSetting.updatedAt || offDaysSetting.createdAt
-            });
-        }
-
-        // Merge: schedule notifications first, then DB notifications
-        const notifications = [...scheduleNotifications, ...dbNotifications];
 
         res.json({ success: true, data: notifications });
     } catch (error) {
