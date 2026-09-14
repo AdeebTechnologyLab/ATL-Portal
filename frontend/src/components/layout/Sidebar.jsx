@@ -521,7 +521,6 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                 { id: 'marks', labelKey: 'nav.marksSheet', icon: BarChart3, path: '/student/marks' },
                 { id: 'certificates', labelKey: 'Certificates', icon: Award, path: '/student/courses', state: { tab: 'completed' }, badge: studentNavCounts.certificates },
                 { id: 'chat', labelKey: 'Teacher Chat', icon: MessageSquare, path: '/student/assignments', state: { tab: 'chat' }, badge: studentNavCounts.chat },
-                { id: 'work-tasks', labelKey: 'Work Lists', icon: ListTodo, path: '/student/work-tasks' },
             ],
             intern: [
                 { id: 'dashboard', labelKey: 'nav.dashboard', icon: LayoutDashboard, path: '/intern/dashboard' },
@@ -536,7 +535,6 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                 { id: 'marks', labelKey: 'nav.marksSheet', icon: BarChart3, path: '/intern/marks' },
                 { id: 'certificates', labelKey: 'Certificates', icon: Award, path: '/intern/courses', state: { tab: 'completed' } },
                 { id: 'chat', labelKey: 'Teacher Chat', icon: MessageSquare, path: '/intern/assignments', state: { tab: 'chat' } },
-                { id: 'work-tasks', labelKey: 'Work Lists', icon: ListTodo, path: '/intern/work-tasks' },
             ],
             job: [
                 { id: 'dashboard', labelKey: 'nav.dashboard', icon: LayoutDashboard, path: '/job/dashboard' },

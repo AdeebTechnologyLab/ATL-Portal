@@ -285,7 +285,9 @@ const GamesCard = () => {
         try {
             const res = await statsAPI.getGames();
             setLeaders(res.data.data || []);
-        } catch {}
+        } catch (err) {
+            console.error('Failed to fetch leaderboard:', err);
+        }
         setLoading(false);
     }, []);
 
@@ -296,7 +298,12 @@ const GamesCard = () => {
     }, [fetchLeaders]);
 
     const handleGameScore = useCallback(async (score) => {
-        try { await statsAPI.saveGameScore(score); fetchLeaders(); } catch {}
+        try {
+            await statsAPI.saveGameScore(score);
+            fetchLeaders();
+        } catch (err) {
+            console.error('Failed to save game score:', err);
+        }
     }, [fetchLeaders]);
 
     const topThree = leaders.slice(0, 3);
