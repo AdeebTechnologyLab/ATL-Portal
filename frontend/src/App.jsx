@@ -82,12 +82,14 @@ const AdeebMeet = lazy(() => import('./pages/live/AdeebMeet'));
 // Protected Route Component
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const { isAuthenticated, role } = useSelector((state) => state.auth);
+  const isImpersonating = !!sessionStorage.getItem('adminBeforeImpersonate');
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
 
   if (allowedRoles && !allowedRoles.includes(role)) {
+    if (isImpersonating) return children;
     if (role === 'admin') return <Navigate to="/admin/dashboard" replace />;
     if (role === 'teacher') return <Navigate to="/teacher/dashboard" replace />;
     if (role === 'job') return <Navigate to="/job/dashboard" replace />;

@@ -551,13 +551,15 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
             ],
         };
 
-        return baseItems[role] || baseItems.student;
+        const isImpersonating = !!sessionStorage.getItem('adminBeforeImpersonate');
+        return baseItems[isImpersonating ? 'admin' : role] || baseItems.student;
     };
 
     const menuItems = getMenuItems();
 
     // Get role display name
-    const getRoleDisplayName = () => t(`roles.${role}`, { defaultValue: t('roles.user') });
+    const isImpersonating = !!sessionStorage.getItem('adminBeforeImpersonate');
+    const getRoleDisplayName = () => t(`roles.${isImpersonating ? 'admin' : role}`, { defaultValue: t('roles.user') });
 
     return (
         <>
