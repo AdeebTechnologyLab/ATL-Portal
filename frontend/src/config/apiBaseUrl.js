@@ -1,6 +1,6 @@
-/** Hostinger backend — direct URL */
-export const PRODUCTION_API = 'https://darksalmon-grasshopper-335002.hostingersite.com/api';
-export const PRODUCTION_SOCKET = 'https://darksalmon-grasshopper-335002.hostingersite.com';
+/** Canonical live backend. Keep API and socket traffic on the same deployment. */
+export const PRODUCTION_API = 'https://lms-adeeb-technology-lab.onrender.com/api';
+export const PRODUCTION_SOCKET = 'https://lms-adeeb-technology-lab.onrender.com';
 
 const isLocalHost = (host) => host === 'localhost' || host === '127.0.0.1';
 
