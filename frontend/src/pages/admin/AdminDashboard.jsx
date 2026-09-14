@@ -31,6 +31,7 @@ import { jsPDF } from 'jspdf';
 import StatCard from '../../components/ui/StatCard';
 import DataTable from '../../components/ui/DataTable';
 import Badge from '../../components/ui/Badge';
+import ViewAsBar from '../../components/shared/ViewAsBar';
 import { BarChart, DoughnutChart } from '../../components/charts/Charts';
 import { statsAPI, feeAPI } from '../../services/api';
 
@@ -323,6 +324,7 @@ const AdminDashboard = () => {
 
     return (
         <div className="flex-1 space-y-8 p-4 md:p-8 pt-6" ref={dashboardRef}>
+            <ViewAsBar />
             <BirthdayWish />
 
             {/* Management Pulse - NEW Essential Section */}

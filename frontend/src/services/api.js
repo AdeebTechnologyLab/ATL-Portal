@@ -72,6 +72,7 @@ export const authAPI = {
 
 // User APIs (for admin)
 export const userAPI = {
+    search: (query, role) => api.get('/users/search', { params: { query, ...(role ? { role } : {}) } }),
     getByRole: (role) => api.get(`/users/role/${role}`),
     getVerifiedByRole: (role) => api.get(`/users/role/${role}/verified`),
     getAll: () => api.get('/users'),
@@ -86,7 +87,6 @@ export const userAPI = {
         return api.put(`/users/${id}`, data, config);
     },
     changePasswordByEmail: (data) => api.put('/users/change-password-by-email', data),
-    search: (query) => api.get('/users/search', { params: { query } }),
 };
 
 // Course APIs

@@ -6,7 +6,7 @@ import { loginSuccess } from '../../features/auth/authSlice';
 import { userAPI, authAPI } from '../../services/api';
 import ProfileAvatar from '../ui/ProfileAvatar';
 
-const ViewAsBar = () => {
+const ViewAsBar = ({ restoreOnly = false }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { role } = useSelector(state => state.auth);
@@ -15,19 +15,20 @@ const ViewAsBar = () => {
     const [isImpersonating, setIsImpersonating] = useState(() => !!sessionStorage.getItem('adminBeforeImpersonate'));
     const [showSearch, setShowSearch] = useState(false);
     const [query, setQuery] = useState('');
+    const [selectedRole, setSelectedRole] = useState('teacher');
     const [results, setResults] = useState([]);
     const [searching, setSearching] = useState(false);
     const [switching, setSwitching] = useState('');
     const timerRef = useRef(null);
 
-    const searchUsers = useCallback((q) => {
+    const searchUsers = useCallback((q, roleOverride = selectedRole) => {
         setQuery(q);
         if (timerRef.current) clearTimeout(timerRef.current);
         if (!q.trim()) { setResults([]); return; }
         timerRef.current = setTimeout(async () => {
             setSearching(true);
             try {
-                const res = await userAPI.search(q.trim());
+                const res = await userAPI.search(q.trim(), roleOverride);
                 setResults(res.data.data || []);
             } catch {
                 setResults([]);
@@ -35,7 +36,7 @@ const ViewAsBar = () => {
                 setSearching(false);
             }
         }, 300);
-    }, []);
+    }, [selectedRole]);
 
     const handleViewAs = async (targetUser) => {
         setSwitching(targetUser._id);
@@ -87,7 +88,7 @@ const ViewAsBar = () => {
         navigate(0);
     };
 
-    if (!isAdmin) return null;
+    if ((!isAdmin && !isImpersonating) || (restoreOnly && !isImpersonating)) return null;
 
     return (
         <div className="mb-4">
@@ -105,7 +106,7 @@ const ViewAsBar = () => {
             ) : (
                 <div className="relative">
                     {!showSearch ? (
-                        <button onClick={() => { setShowSearch(true); setQuery(''); setResults([]); }} className="flex items-center gap-2 rounded-xl border border-dashed border-blue-300 bg-blue-50/50 px-4 py-2.5 text-sm font-bold text-blue-600 hover:bg-blue-50 dark:border-blue-500/30 dark:bg-blue-500/5 dark:text-blue-400 transition-colors">
+                        <button onClick={() => { setShowSearch(true); setQuery(''); setResults([]); setSelectedRole('teacher'); }} className="flex items-center gap-2 rounded-xl border border-dashed border-blue-300 bg-blue-50/50 px-4 py-2.5 text-sm font-bold text-blue-600 hover:bg-blue-50 dark:border-blue-500/30 dark:bg-blue-500/5 dark:text-blue-400 transition-colors">
                             <Search className="h-4 w-4" />
                             View as Teacher/Student/Intern...
                         </button>
@@ -119,6 +120,13 @@ const ViewAsBar = () => {
                                 <button onClick={() => { setShowSearch(false); setQuery(''); setResults([]); }} className="rounded-lg p-2.5 text-gray-400 hover:bg-gray-100 dark:hover:bg-white/10">
                                     <X className="h-4 w-4" />
                                 </button>
+                            </div>
+                            <div className="mt-3 flex gap-2">
+                                {['teacher', 'student', 'intern'].map(roleOption => (
+                                    <button key={roleOption} onClick={() => { setSelectedRole(roleOption); setResults([]); if (query.trim()) searchUsers(query, roleOption); }} className={`rounded-lg px-3 py-1.5 text-xs font-black capitalize transition-colors ${selectedRole === roleOption ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-white/10 dark:text-white/60'}`}>
+                                        {roleOption}
+                                    </button>
+                                ))}
                             </div>
                             <div className="mt-2 max-h-48 overflow-y-auto">
                                 {searching && <p className="py-3 text-center text-xs text-gray-400">Searching...</p>}

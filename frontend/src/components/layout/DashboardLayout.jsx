@@ -68,6 +68,7 @@ import Sidebar from './Sidebar';
 import NotificationPopup from '../shared/NotificationPopup';
 import ChatWidget from '../shared/ChatWidget';
 import ProfileCompletionBanner from '../shared/ProfileCompletionBanner';
+import ViewAsBar from '../shared/ViewAsBar';
 import { userNotificationAPI, assignmentAPI, courseAPI, authAPI, attendanceAPI, feeAPI } from '../../services/api';
 import useAutoLogout from '../../hooks/useAutoLogout';
 import { useTheme } from '../../context/ThemeContext';
@@ -999,6 +1000,7 @@ const DashboardLayout = () => {
                             </div>
                         ) : (
                             <>
+                                <ViewAsBar restoreOnly />
                                 <ProfileCompletionBanner />
                                 <Outlet />
                             </>
@@ -1135,5 +1137,4 @@ const DashboardLayout = () => {
 };
 
 export default DashboardLayout;
-
 
