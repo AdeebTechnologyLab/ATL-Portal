@@ -65,6 +65,7 @@ export const authAPI = {
     resetPassword: (token, data) => api.post(`/auth/reset-password/${token}`, data),
     getAvailableRoles: () => api.get('/auth/available-roles'),
     switchRole: (data) => api.post('/auth/switch-role', data),
+    adminImpersonate: (userId) => api.post('/auth/admin-impersonate', { userId }),
     updateThemePreference: (colorTheme, customTheme) => api.put('/auth/preferences/theme', { colorTheme, customTheme }),
     changePassword: (data) => api.put('/auth/change-password', data)
 };
@@ -85,6 +86,7 @@ export const userAPI = {
         return api.put(`/users/${id}`, data, config);
     },
     changePasswordByEmail: (data) => api.put('/users/change-password-by-email', data),
+    search: (query) => api.get('/users/search', { params: { query } }),
 };
 
 // Course APIs
@@ -359,6 +361,8 @@ export const adminWorkTaskAPI = {
     create: (data) => api.post('/admin-work-tasks', data),
     update: (id, data) => api.put(`/admin-work-tasks/${id}`, data),
     delete: (id) => api.delete(`/admin-work-tasks/${id}`),
+    share: (id, userId) => api.post(`/admin-work-tasks/${id}/share`, { userId }),
+    unshare: (id, userId) => api.delete(`/admin-work-tasks/${id}/share/${userId}`),
     createItem: (listId, data) => api.post(`/admin-work-tasks/${listId}/items`, data),
     updateItem: (listId, itemId, data) => api.put(`/admin-work-tasks/${listId}/items/${itemId}`, data),
     deleteItem: (listId, itemId) => api.delete(`/admin-work-tasks/${listId}/items/${itemId}`),
@@ -386,6 +390,12 @@ export const paymentMethodAPI = {
     create: (data) => api.post('/payment-methods', data),
     update: (id, data) => api.put(`/payment-methods/${id}`, data),
     delete: (id) => api.delete(`/payment-methods/${id}`)
+};
+
+// Help & Support API
+export const helpSupportAPI = {
+    get: () => api.get('/help-support'),
+    update: (data) => api.put('/help-support', data),
 };
 
 export default api;

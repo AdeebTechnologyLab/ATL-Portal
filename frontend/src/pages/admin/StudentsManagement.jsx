@@ -14,6 +14,7 @@ import { generateComprehensiveReport } from '../../utils/reportGenerator';
 import Loader, { ButtonLoader } from '../../components/ui/Loader';
 import ImageCropper from '../../components/ui/ImageCropper';
 import { formatDate } from '../../utils/dateFormatter';
+import ViewAsBar from '../../components/shared/ViewAsBar';
 
 const StudentsManagement = () => {
     const [searchQuery, setSearchQuery] = useState('');
@@ -915,6 +916,7 @@ const StudentsManagement = () => {
 
     return (
         <div className="space-y-4 sm:space-y-6">
+            <ViewAsBar />
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 sm:gap-6">
                 <div>
                     <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Students Management</h1>

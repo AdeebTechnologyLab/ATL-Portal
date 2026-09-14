@@ -10,6 +10,7 @@ import { financeAPI } from '../../services/api';
 import { userAPI } from '../../services/api';
 import ProfileAvatar from '../../components/ui/ProfileAvatar';
 import Loader from '../../components/ui/Loader';
+import ViewAsBar from '../../components/shared/ViewAsBar';
 
 const categories = ['Rent', 'Salaries', 'Bills', 'Marketing', 'Equipment', 'Internet', 'Maintenance', 'Transport', 'Food', 'Pocket Money', 'Guest', 'Sim Balance', 'Shopping', 'Project', 'Loan', 'Other'];
 const categoryIcons = { 'Office Rent': '🏢', Salaries: '👥', Utilities: '💡', Marketing: '📣', Equipment: '💻', Internet: '🌐', Maintenance: '🛠️', Transport: '🚗', Food: '🍽️', Refreshment: '☕', 'Pocket Money': '👛', Guest: '🤝', Clean: '🧹', 'Sim Balance': '📶', Shopping: '🛍️', 'Course Income': '🎓', 'IOT Project': '📡', 'Website Project': '🌐', 'App Project': '📱', Other: '📦' };
@@ -463,6 +464,7 @@ const ExpenseManagement = ({ showProjectSections = true, projectsOnly = false })
 
     return (
         <div className="p-4 md:p-6 space-y-6">
+            <ViewAsBar />
             <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0"><h1 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white">{projectsOnly ? 'Projects' : 'Income, Expense & Projects'}</h1><p className="hidden sm:block text-sm text-gray-500 dark:text-slate-400">{projectsOnly ? 'Active work, collections and completed project tracking.' : 'Cash flow, project profitability and pending clearances in one place.'}</p></div>
                 <div className="ml-auto flex shrink-0 flex-row gap-2">

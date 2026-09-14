@@ -506,6 +506,47 @@ router.post('/switch-role', protect, async (req, res) => {
     }
 });
 
+// @route   POST /api/auth/admin-impersonate
+// @desc    Admin can view as any user (teacher/student/intern)
+// @access  Private (admin only)
+router.post('/admin-impersonate', protect, async (req, res) => {
+    try {
+        if (req.user.role !== 'admin') {
+            return res.status(403).json({ success: false, message: 'Only admins can use View As feature.' });
+        }
+
+        const { userId } = req.body;
+        if (!userId) return res.status(400).json({ success: false, message: 'User ID is required.' });
+
+        const targetUser = await User.findById(userId);
+        if (!targetUser) return res.status(404).json({ success: false, message: 'User not found.' });
+
+        const token = targetUser.getSignedJwtToken('2h', false);
+
+        res.json({
+            success: true,
+            token,
+            user: {
+                id: targetUser._id,
+                _id: targetUser._id,
+                name: targetUser.name,
+                email: targetUser.email,
+                role: targetUser.role,
+                photo: targetUser.photo,
+                rollNo: targetUser.rollNo,
+                phone: targetUser.phone,
+                location: targetUser.location,
+                isVerified: targetUser.isVerified,
+                preferences: targetUser.preferences,
+                createdAt: targetUser.createdAt
+            }
+        });
+    } catch (error) {
+        console.error('Admin impersonate error:', error);
+        res.status(500).json({ success: false, message: error.message });
+    }
+});
+
 
 // @route   PUT /api/auth/profile
 // @desc    Update user profile

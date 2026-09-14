@@ -48,13 +48,18 @@ router.get('/course/:courseId', protect, async (req, res) => {
                 .populate('submissions.user', 'name email rollNo photo role')
                 .sort('-createdAt');
         } else {
-            // Students/Interns - check enrollment first
+            // Students/Interns - check enrollment OR direct assignment
             const enrollment = await Enrollment.findOne({
                 user: userId,
                 course: courseId
             });
 
-            if (!enrollment) {
+            const isDirectlyAssigned = await Assignment.exists({
+                course: courseId,
+                assignedUsers: userId
+            });
+
+            if (!enrollment && !isDirectlyAssigned) {
                 return res.status(403).json({ success: false, message: 'Not enrolled in this course' });
             }
 
@@ -65,7 +70,7 @@ router.get('/course/:courseId', protect, async (req, res) => {
                     { publishDate: { $lte: new Date() } },
                     { publishDate: { $exists: false } },
                     { publishDate: null },
-                    { createdBy: userId } // Allow creator to see it regardless
+                    { createdBy: userId }
                 ],
                 $and: [
                     {
@@ -571,11 +576,6 @@ router.get('/my', protect, async (req, res) => {
         const enrollments = await Enrollment.find({ user: req.user.id });
         console.log(`📋 User has ${enrollments.length} enrollments`);
 
-        if (enrollments.length === 0) {
-            console.log(`⚠️ User has no enrollments, returning empty assignments`);
-            return res.json({ success: true, assignments: [] });
-        }
-
         const courseIds = enrollments.map(e => e.course);
         console.log(`📚 Enrolled course IDs: ${courseIds.join(', ')}`);
 
@@ -588,24 +588,42 @@ router.get('/my', protect, async (req, res) => {
 
         // Get assignments for those courses
         // Show assignment if:
-        // 1. assignTo is 'all' (meant for everyone in the course)
-        // 2. OR user is specifically in assignedUsers
+        // 1. User is enrolled in the course AND (assignTo is 'all' OR user is in assignedUsers)
+        // 2. OR user is specifically in assignedUsers (even without enrollment)
         // 3. OR user has already made a submission
         const assignments = await Assignment.find({
-            course: { $in: courseIds },
-            $and: [
+            $or: [
+                // Enrolled courses
                 {
+                    course: { $in: courseIds },
+                    $and: [
+                        {
+                            $or: [
+                                { publishDate: { $lte: new Date() } },
+                                { publishDate: { $exists: false } },
+                                { publishDate: null }
+                            ]
+                        },
+                        {
+                            $or: [
+                                { assignedUsers: req.user.id },
+                                { "submissions.user": req.user.id }
+                            ]
+                        }
+                    ]
+                },
+                // Assigned directly (even without enrollment)
+                {
+                    assignedUsers: req.user.id,
                     $or: [
                         { publishDate: { $lte: new Date() } },
                         { publishDate: { $exists: false } },
                         { publishDate: null }
                     ]
                 },
+                // Has submission
                 {
-                    $or: [
-                        { assignedUsers: req.user.id },
-                        { "submissions.user": req.user.id }
-                    ]
+                    "submissions.user": req.user.id
                 }
             ]
         })

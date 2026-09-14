@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 import { registrationPageAPI } from '../../services/api';
 import toast from 'react-hot-toast';
+import ViewAsBar from '../../components/shared/ViewAsBar';
 
 const formTypes = [
     { id: 'student', label: 'Student', icon: BookOpen, color: 'blue' },
@@ -164,6 +165,7 @@ const RegistrationPages = () => {
 
     return (
         <div className="space-y-4 sm:space-y-6">
+            <ViewAsBar />
             {/* Header */}
             <div>
                 <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">

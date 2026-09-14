@@ -191,6 +191,7 @@ const AppRoutes = () => {
         <Route path="jobs" element={<PaidTasksManagement />} />
         <Route path="job-chat" element={<JobChat />} />
         <Route path="discussion-room" element={<DiscussionRoom />} />
+        <Route path="work-tasks" element={<AdminWorkLists />} />
         <Route path="settings" element={<Settings />} />
         <Route path="help-support" element={<HelpSupport />} />
       </Route>
@@ -210,6 +211,7 @@ const AppRoutes = () => {
         <Route path="discussion-room" element={<DiscussionRoom />} />
         <Route path="settings" element={<Settings />} />
         <Route path="help-support" element={<HelpSupport />} />
+        <Route path="work-tasks" element={<AdminWorkLists />} />
       </Route>
 
       {/* Intern Routes */}
@@ -227,6 +229,7 @@ const AppRoutes = () => {
         <Route path="discussion-room" element={<DiscussionRoom />} />
         <Route path="settings" element={<Settings />} />
         <Route path="help-support" element={<HelpSupport />} />
+        <Route path="work-tasks" element={<AdminWorkLists />} />
       </Route>
 
       {/* Job Routes - Paid Tasks System */}
@@ -276,5 +279,3 @@ function App() {
 }
 
 export default App;
-
-

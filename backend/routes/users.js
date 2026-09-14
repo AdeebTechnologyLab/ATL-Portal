@@ -262,6 +262,28 @@ router.get('/pending-counts', protect, authorize('admin'), async (req, res) => {
     }
 });
 
+// @route   GET /api/users/search
+// @desc    Search users by roll number, name, or email
+// @access  Private (admin, teacher)
+router.get('/search', protect, authorize('admin', 'teacher'), async (req, res) => {
+    try {
+        const { query } = req.query;
+        if (!query || !query.trim()) return res.json({ success: true, data: [] });
+        const q = query.trim();
+        const regex = new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+        const users = await User.find({
+            $or: [
+                { rollNo: regex },
+                { name: regex },
+                { email: regex }
+            ]
+        }).select('name email rollNo role photo').limit(20).lean();
+        res.json({ success: true, data: users });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+});
+
 // @route   GET /api/users/role/:role
 // @desc    Get users by role (admin only)
 // @access  Private/Admin

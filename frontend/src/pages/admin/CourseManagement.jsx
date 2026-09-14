@@ -20,6 +20,7 @@ import Modal from '../../components/ui/Modal';
 import { courseAPI, userAPI, enrollmentAPI } from '../../services/api';
 import { getCourseIcon, getCourseColor, getCourseStyle } from '../../utils/courseIcons';
 import Loader, { ButtonLoader } from '../../components/ui/Loader';
+import ViewAsBar from '../../components/shared/ViewAsBar';
 
 const CourseManagement = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -244,6 +245,7 @@ const CourseManagement = () => {
 
     return (
         <div className="space-y-6">
+            <ViewAsBar />
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div>

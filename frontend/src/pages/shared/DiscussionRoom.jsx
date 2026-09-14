@@ -7,6 +7,7 @@ import { getSocketURL } from '../../config/apiBaseUrl';
 import ChatMediaButton from '../../components/shared/ChatMediaButton';
 import VoiceRecorder from '../../components/shared/VoiceRecorder';
 import ChatMediaDisplay from '../../components/shared/ChatMediaDisplay';
+import ViewAsBar from '../../components/shared/ViewAsBar';
 
 const isUserOnline = (lastSeen) => {
     if (!lastSeen) return false;
@@ -292,6 +293,7 @@ const DiscussionRoom = () => {
             onContextMenu={(e) => e.preventDefault()}
             className="h-full min-h-0 overflow-hidden p-3 sm:p-4 md:p-5 flex flex-col gap-3 sm:gap-4 bg-gray-50 dark:bg-gray-950"
         >
+            <ViewAsBar />
             <div className="relative shrink-0 overflow-hidden bg-gradient-to-r from-[var(--bg-sidebar)] to-[var(--bg-sidebar-light)] rounded-xl sm:rounded-2xl p-3 sm:p-5 text-white shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
                 <div className="absolute -right-12 -top-12 w-40 h-40 rounded-full bg-white/10 blur-2xl" />
                 <div className="absolute -bottom-16 left-1/3 w-44 h-44 rounded-full bg-white/10 blur-3xl" />

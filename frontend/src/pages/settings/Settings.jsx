@@ -10,6 +10,7 @@ import LanguagePicker from '../../components/settings/LanguagePicker';
 import { googleDriveAPI, authAPI } from '../../services/api';
 import { updateUser } from '../../features/auth/authSlice';
 import { ButtonLoader } from '../../components/ui/Loader';
+import ViewAsBar from '../../components/shared/ViewAsBar';
 
 function ThemePreviewCard({ theme: themeData, isActive, onSelect }) {
     return (
@@ -255,6 +256,7 @@ const Settings = () => {
 
     return (
         <div className="max-w-5xl mx-auto px-3 sm:px-5 lg:px-8 py-6 sm:py-8 min-h-screen w-full min-w-0">
+            <ViewAsBar />
             <AnimatePresence>
                 {showSuccess && (
                     <motion.div

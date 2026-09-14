@@ -4,6 +4,7 @@ import { Clock, Plus, Trash2, Edit2, X, Check, Calendar, Moon, Sun, Shield, Zap,
 import { settingsAPI, attendanceAPI } from "../../services/api";
 import { showToast } from "../../utils/customToast";
 import Loader from "../../components/ui/Loader";
+import ViewAsBar from '../../components/shared/ViewAsBar';
 
 const CLASS_TIME_KEY = "class_time_slots";
 const DEFAULT_SLOTS = ["Class 1 11AM", "Class 2 3PM", "Class 3 5PM", "Class 3 9PM"];
@@ -143,6 +144,7 @@ const AttendanceSettings = () => {
     return (
         <div className="min-h-0 bg-gradient-to-br from-gray-50 via-white to-primary/5 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 p-0 sm:p-4 md:p-6">
             <div className="w-full">
+                <ViewAsBar />
 
                 <div className="mb-4 sm:mb-6">
                     <h1 className="text-xl sm:text-3xl font-black text-gray-900 dark:text-white uppercase tracking-tight">Attendance Settings</h1>

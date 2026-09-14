@@ -8,7 +8,11 @@ const workItemSchema = new mongoose.Schema({
         enum: ['pending', 'in_progress', 'completed'],
         default: 'pending'
     },
-    completedAt: { type: Date, default: null }
+    completedAt: { type: Date, default: null },
+    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+    createdByRole: { type: String, default: 'admin' },
+    // Existing tasks were created by admins, so they must remain protected as well.
+    isAdminCreated: { type: Boolean, default: true }
 }, { timestamps: true });
 
 const adminWorkTaskSchema = new mongoose.Schema({
@@ -16,6 +20,7 @@ const adminWorkTaskSchema = new mongoose.Schema({
     description: { type: String, trim: true, default: '', maxlength: 3000 },
     receivedFrom: { type: String, trim: true, default: '', maxlength: 150 },
     assignedTo: { type: String, trim: true, default: '', maxlength: 150 },
+    sharedWith: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     receivedDate: { type: Date, default: Date.now },
     dueDate: { type: Date, default: null },
     items: { type: [workItemSchema], default: [] },

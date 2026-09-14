@@ -12,6 +12,7 @@ import Badge from '../../components/ui/Badge';
 import Modal from '../../components/ui/Modal';
 import { userAPI, settingsAPI, courseAPI } from '../../services/api';
 import ImageCropper from '../../components/ui/ImageCropper';
+import ViewAsBar from '../../components/shared/ViewAsBar';
 
 const TeachersManagement = () => {
     const [searchQuery, setSearchQuery] = useState('');
@@ -552,6 +553,7 @@ const TeachersManagement = () => {
 
     return (
         <div className="space-y-6">
+            <ViewAsBar />
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
                 <div>

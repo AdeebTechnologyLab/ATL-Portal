@@ -9,6 +9,7 @@ import Badge from '../../components/ui/Badge';
 import Modal from '../../components/ui/Modal';
 import { courseAPI, enrollmentAPI, certificateAPI } from '../../services/api';
 import { formatDate } from '../../utils/dateFormatter';
+import ViewAsBar from '../../components/shared/ViewAsBar';
 
 const CertificateManagement = () => {
     const { user } = useSelector((state) => state.auth);
@@ -432,6 +433,7 @@ const CertificateManagement = () => {
 
     return (
         <div className="space-y-6">
+            <ViewAsBar />
             {/* Header */}
             <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 p-6 sm:p-8 text-white shadow-2xl shadow-slate-900/10">
                 <div className="absolute -right-16 -top-20 h-56 w-56 rounded-full bg-primary/20 blur-3xl" />

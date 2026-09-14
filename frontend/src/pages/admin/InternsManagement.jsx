@@ -13,6 +13,7 @@ import Modal from '../../components/ui/Modal';
 import { userAPI, settingsAPI, enrollmentAPI, assignmentAPI, feeAPI, courseAPI, reportAPI, dailyTaskAPI } from '../../services/api';
 import { generateComprehensiveReport } from '../../utils/reportGenerator';
 import ImageCropper from '../../components/ui/ImageCropper';
+import ViewAsBar from '../../components/shared/ViewAsBar';
 
 const InternsManagement = () => {
     const [searchQuery, setSearchQuery] = useState('');
@@ -943,6 +944,7 @@ const InternsManagement = () => {
 
     return (
         <div className="space-y-4 sm:space-y-6">
+            <ViewAsBar />
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 sm:gap-6">
                 <div>

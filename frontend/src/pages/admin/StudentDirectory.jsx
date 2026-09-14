@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { directoryAPI } from '../../services/api';
 import Loader from '../../components/ui/Loader';
+import ViewAsBar from '../../components/shared/ViewAsBar';
 
 const FILTER_OPTIONS = [
     { value: 'all', label: 'All', icon: Users },
@@ -110,6 +111,7 @@ const StudentDirectory = () => {
 
     return (
         <div className="space-y-6 min-h-screen">
+            <ViewAsBar />
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="flex items-center gap-4">
