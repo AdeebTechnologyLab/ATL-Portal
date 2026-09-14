@@ -190,10 +190,10 @@ router.get('/admin-dashboard', protect, authorize('admin'), async (req, res) => 
     }
 });
 
-// @route   GET /api/stats/leaderboard
+// @route   GET /api/stats/games
 // @desc    Get top 10 users by game score (one entry per email)
 // @access  Private
-router.get('/leaderboard', protect, async (req, res) => {
+router.get('/games', protect, async (req, res) => {
     try {
         const users = await User.find({ gameScore: { $gt: 0 } })
             .select('name email photo gameScore')

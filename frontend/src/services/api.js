@@ -338,7 +338,7 @@ export const reportAPI = {
 // Stats APIs
 export const statsAPI = {
     getAdminDashboard: (params) => api.get('/stats/admin-dashboard', { params }),
-    getGames: () => api.get('/stats/leaderboard'),
+    getGames: () => api.get('/stats/games'),
     saveGameScore: (score) => api.put('/stats/game-score', { score })
 };
 

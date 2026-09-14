@@ -286,7 +286,7 @@ const GamesCard = () => {
             const res = await statsAPI.getGames();
             setLeaders(res.data.data || []);
         } catch (err) {
-            console.error('Failed to fetch leaderboard:', err);
+            console.error('Failed to fetch games:', err);
         }
         setLoading(false);
     }, []);
