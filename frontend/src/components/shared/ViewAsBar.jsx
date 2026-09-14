@@ -108,7 +108,7 @@ const ViewAsBar = ({ restoreOnly = false }) => {
                     {!showSearch ? (
                         <button onClick={() => { setShowSearch(true); setQuery(''); setResults([]); setSelectedRole('teacher'); }} className="flex items-center gap-2 rounded-xl border border-dashed border-blue-300 bg-blue-50/50 px-4 py-2.5 text-sm font-bold text-blue-600 hover:bg-blue-50 dark:border-blue-500/30 dark:bg-blue-500/5 dark:text-blue-400 transition-colors">
                             <Search className="h-4 w-4" />
-                            View as Teacher/Student/Intern...
+                            View as Teacher...
                         </button>
                     ) : (
                         <div className="rounded-xl border border-blue-200 bg-white p-3 shadow-lg dark:border-blue-500/30 dark:bg-gray-900">
@@ -120,13 +120,6 @@ const ViewAsBar = ({ restoreOnly = false }) => {
                                 <button onClick={() => { setShowSearch(false); setQuery(''); setResults([]); }} className="rounded-lg p-2.5 text-gray-400 hover:bg-gray-100 dark:hover:bg-white/10">
                                     <X className="h-4 w-4" />
                                 </button>
-                            </div>
-                            <div className="mt-3 flex gap-2">
-                                {['teacher', 'student', 'intern'].map(roleOption => (
-                                    <button key={roleOption} onClick={() => { setSelectedRole(roleOption); setResults([]); if (query.trim()) searchUsers(query, roleOption); }} className={`rounded-lg px-3 py-1.5 text-xs font-black capitalize transition-colors ${selectedRole === roleOption ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-white/10 dark:text-white/60'}`}>
-                                        {roleOption}
-                                    </button>
-                                ))}
                             </div>
                             <div className="mt-2 max-h-48 overflow-y-auto">
                                 {searching && <p className="py-3 text-center text-xs text-gray-400">Searching...</p>}
