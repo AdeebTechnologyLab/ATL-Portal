@@ -15,7 +15,7 @@ npm run dev
 new server
 
 Backend: https://darksalmon-grasshopper-335002.hostingersite.com
-Frontend: https://darkorchid-salmon-191482.hostingersite.com
+Frontend: https://darkorchid-salmon-191482.hostingersite.com/
 
 
 student stukoff acadmic repost jenrat link
