@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { protect, authorize } = require('../middleware/auth');
 const HelpSupport = require('../models/HelpSupport');
-const { FAQ_HIGHLIGHTS, FAQ_SECTIONS } = require('../../frontend/src/data/helpSupportFaq');
+const { FAQ_HIGHLIGHTS, FAQ_SECTIONS } = require('../data/helpSupportFaq');
 
 router.use(protect);
 
