@@ -7,11 +7,7 @@ import { attendanceAPI } from '../../../services/api';
 import { useSelector } from 'react-redux';
 import { toAttendanceDateKey } from '../../../utils/attendanceDate';
 import { io } from 'socket.io-client';
-
-const getSocketURL = () => {
-    if (window.location.hostname === 'localhost') return 'http://localhost:5000';
-    return window.location.origin;
-};
+import { getSocketURL } from '../../../config/apiBaseUrl';
 
 const SOCKET_URL = getSocketURL();
 

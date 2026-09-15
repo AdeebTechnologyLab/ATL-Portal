@@ -38,6 +38,7 @@ import { statsAPI, feeAPI } from '../../services/api';
 import Loader, { ButtonLoader } from '../../components/ui/Loader';
 import BirthdayWish from '../../components/dashboard/BirthdayWish';
 import { formatDate } from '../../utils/dateFormatter';
+import { getSocketURL, getBackendOrigin } from '../../config/apiBaseUrl';
 
 const AdminDashboard = () => {
     const navigate = useNavigate();
@@ -72,10 +73,6 @@ const AdminDashboard = () => {
 
     useEffect(() => {
         // Setup real-time updates
-        const getSocketURL = () => {
-            const rawUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-            return rawUrl.replace('/api', '');
-        };
         const socket = io(getSocketURL(), { withCredentials: true });
         
         const user = JSON.parse(localStorage.getItem('user'));
@@ -191,7 +188,7 @@ const AdminDashboard = () => {
             if (cleanUrl.toLowerCase().startsWith('http') || cleanUrl.toLowerCase().startsWith('data:')) {
                 return cleanUrl;
             }
-            const baseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace(/\/api\/?$/, '');
+            const baseUrl = getBackendOrigin();
             return `${baseUrl}/${cleanUrl.replace(/\\/g, '/').replace(/^\//, '')}`;
         } catch (e) {
             return url;

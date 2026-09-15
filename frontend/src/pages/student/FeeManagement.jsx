@@ -11,7 +11,7 @@ import Modal from '../../components/ui/Modal';
 import Loader, { ButtonLoader } from '../../components/ui/Loader';
 import { feeAPI, enrollmentAPI, paymentMethodAPI } from '../../services/api';
 import { formatDate } from '../../utils/dateFormatter';
-import { getSocketURL } from '../../config/apiBaseUrl';
+import { getSocketURL, getBackendOrigin } from '../../config/apiBaseUrl';
 
 const FeeManagement = () => {
     const location = useLocation();
@@ -229,7 +229,7 @@ const FeeManagement = () => {
             if (cleanUrl.toLowerCase().startsWith('http') || cleanUrl.toLowerCase().startsWith('data:')) {
                 return cleanUrl;
             }
-            const baseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace(/\/api\/?$/, '');
+            const baseUrl = getBackendOrigin();
             return `${baseUrl}/${cleanUrl.replace(/\\/g, '/').replace(/^\//, '')}`;
         } catch (e) {
             return url;

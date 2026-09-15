@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import { certificateAPI } from '../../services/api';
 import Loader, { ButtonLoader } from '../../components/ui/Loader';
 import { formatDate } from '../../utils/dateFormatter';
+import { getBackendOrigin } from '../../config/apiBaseUrl';
 
 const TeacherCertificates = () => {
     const { user } = useSelector((state) => state.auth);
@@ -91,7 +92,7 @@ const TeacherCertificates = () => {
                         {/* Teacher Photo or Initial */}
                         <div className="w-16 h-16 rounded-2xl border-2 border-white/30 shadow-lg overflow-hidden bg-white/10 flex items-center justify-center">
                             {user?.photo ? (
-                                <img src={user.photo.startsWith('http') ? user.photo : `http://localhost:5000${user.photo}`} alt="" className="w-full h-full object-cover" />
+                                <img src={user.photo.startsWith('http') ? user.photo : `${getBackendOrigin()}${user.photo}`} alt="" className="w-full h-full object-cover" />
                             ) : (
                                 <span className="text-2xl font-black text-white">{user?.name?.charAt(0)}</span>
                             )}

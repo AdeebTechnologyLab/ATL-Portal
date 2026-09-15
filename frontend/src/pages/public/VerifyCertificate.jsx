@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Search, User, XCircle, Award, CheckCircle, ShieldCheck, Download, FileText, BookOpen, Calendar, MapPin, Briefcase, GraduationCap, ExternalLink, Phone, Mail, Globe, Clock, MessageCircle } from 'lucide-react';
 import { ButtonLoader } from '../../components/ui/Loader';
 import { certificateAPI } from '../../services/api';
+import { getBackendOrigin } from '../../config/apiBaseUrl';
 
 const VerifyCertificate = () => {
     const [searchQuery, setSearchQuery] = useState('');
@@ -219,7 +220,7 @@ const VerifyCertificate = () => {
                                                         <div className="w-40 h-52 rounded-2xl bg-white border-4 border-white shadow-2xl overflow-hidden relative z-10 transform hover:scale-[1.02] transition-transform duration-500">
                                                             {group.photo ? (
                                                                 <img
-                                                                    src={group.photo.startsWith('http') ? group.photo : `http://localhost:5000${group.photo}`}
+                                                                    src={group.photo.startsWith('http') ? group.photo : `${getBackendOrigin()}${group.photo}`}
                                                                     alt={group.name}
                                                                     className="w-full h-full object-cover"
                                                                     onError={(e) => {
