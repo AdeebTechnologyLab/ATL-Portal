@@ -1,9 +1,16 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Trophy, Crown, Medal, Zap, ChevronDown } from 'lucide-react';
 import { statsAPI } from '../../services/api';
+import { getBackendOrigin } from '../../config/apiBaseUrl';
 
 const MEDAL_COLORS = ['#FFD700', '#C0C0C0', '#CD7F32'];
 const MEDAL_ICONS = [Crown, Medal, Medal];
+
+const getPhotoUrl = (photo) => {
+    if (!photo) return '';
+    if (photo.startsWith('http') || photo.startsWith('data:')) return photo;
+    return `${getBackendOrigin()}${photo}`;
+};
 
 const SpaceGame = ({ onScore }) => {
     const canvasRef = useRef(null);
@@ -353,7 +360,7 @@ const GamesCard = () => {
                                                 <div className="relative mb-1.5">
                                                     <div className="w-11 h-11 rounded-full overflow-hidden border-2 border-gray-300 bg-gray-100 dark:bg-gray-800">
                                                         {topThree[1].photo ? (
-                                                            <img src={topThree[1].photo} alt="" className="w-full h-full object-cover" />
+                                                            <img src={getPhotoUrl(topThree[1].photo)} alt="" className="w-full h-full object-cover" />
                                                         ) : (
                                                             <div className="w-full h-full flex items-center justify-center text-sm font-bold text-gray-400">{topThree[1].name?.[0]}</div>
                                                         )}
@@ -372,7 +379,7 @@ const GamesCard = () => {
                                                 <div className="relative mb-1.5">
                                                     <div className="w-14 h-14 rounded-full overflow-hidden border-3 border-yellow-400 bg-yellow-50 dark:bg-yellow-900/20 shadow-lg shadow-yellow-400/20">
                                                         {topThree[0].photo ? (
-                                                            <img src={topThree[0].photo} alt="" className="w-full h-full object-cover" />
+                                                            <img src={getPhotoUrl(topThree[0].photo)} alt="" className="w-full h-full object-cover" />
                                                         ) : (
                                                             <div className="w-full h-full flex items-center justify-center text-base font-bold text-yellow-600">{topThree[0].name?.[0]}</div>
                                                         )}
@@ -392,7 +399,7 @@ const GamesCard = () => {
                                                 <div className="relative mb-1.5">
                                                     <div className="w-11 h-11 rounded-full overflow-hidden border-2 border-amber-600 bg-amber-50 dark:bg-amber-900/20">
                                                         {topThree[2].photo ? (
-                                                            <img src={topThree[2].photo} alt="" className="w-full h-full object-cover" />
+                                                            <img src={getPhotoUrl(topThree[2].photo)} alt="" className="w-full h-full object-cover" />
                                                         ) : (
                                                             <div className="w-full h-full flex items-center justify-center text-sm font-bold text-amber-600">{topThree[2].name?.[0]}</div>
                                                         )}
@@ -416,7 +423,7 @@ const GamesCard = () => {
                                                 <span className="w-5 text-center text-[11px] font-black text-gray-400">{i + 4}</span>
                                                 <div className="w-8 h-8 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-700 flex-shrink-0">
                                                     {user.photo ? (
-                                                        <img src={user.photo} alt="" className="w-full h-full object-cover" />
+                                                        <img src={getPhotoUrl(user.photo)} alt="" className="w-full h-full object-cover" />
                                                     ) : (
                                                         <div className="w-full h-full flex items-center justify-center text-[10px] font-bold text-gray-400">{user.name?.[0]}</div>
                                                     )}
