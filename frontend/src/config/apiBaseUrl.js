@@ -1,12 +1,12 @@
 /** Canonical live backend. Keep API and socket traffic on the same deployment. */
-export const PRODUCTION_API = 'https://lms-adeeb-technology-lab.onrender.com/api';
-export const PRODUCTION_SOCKET = 'https://lms-adeeb-technology-lab.onrender.com';
+export const PRODUCTION_API = 'https://darksalmon-grasshopper-335002.hostingersite.com/api';
+export const PRODUCTION_SOCKET = 'https://darksalmon-grasshopper-335002.hostingersite.com';
 
 const isLocalHost = (host) => host === 'localhost' || host === '127.0.0.1';
 
 /**
  * Localhost / dev: Vite proxy (/api) in dev mode, direct http://localhost:5000/api in prod builds.
- * Production: Direct canonical Render backend URL.
+ * Production: Direct canonical Hostinger backend URL.
  */
 export const getApiBaseUrl = () => {
     if (typeof window !== 'undefined') {
