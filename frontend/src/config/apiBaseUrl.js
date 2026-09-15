@@ -6,7 +6,7 @@ const isLocalHost = (host) => host === 'localhost' || host === '127.0.0.1';
 
 /**
  * Localhost / dev: Vite proxy (/api) in dev mode, direct http://localhost:5000/api in prod builds.
- * Production: Direct Hostinger backend URL.
+ * Production: Direct canonical Render backend URL.
  */
 export const getApiBaseUrl = () => {
     if (typeof window !== 'undefined') {
