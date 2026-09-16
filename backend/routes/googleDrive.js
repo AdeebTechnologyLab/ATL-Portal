@@ -81,7 +81,7 @@ router.get('/auth-url', protect, async (req, res) => {
 });
 
 router.get('/callback', async (req, res) => {
-    const clientUrl = (process.env.CLIENT_URL || 'https://darkorchid-salmon-191482.hostingersite.com').replace(/\/$/, '');
+    const clientUrl = (process.env.CLIENT_URL || 'https://adeebtechhub.online').replace(/\/$/, '');
     try {
         const payload = jwt.verify(req.query.state, process.env.JWT_SECRET);
         const user = await User.findById(payload.userId);

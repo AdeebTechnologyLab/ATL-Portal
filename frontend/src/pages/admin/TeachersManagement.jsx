@@ -484,14 +484,14 @@ const TeachersManagement = () => {
         const intro = forGuardian
             ? `Humein aap ko yeh batate hue khushi ho rahi hai ke *${teacher.name || 'Teacher'}* ne apna teaching assignment/course kamyabi se complete kar liya hai. Mubarak ho!`
             : `Aap ko bohat bohat mubarak ho! Aap ne apna teaching assignment/course kamyabi se complete kar liya hai.`;
-        return `*Teaching Completion Congratulations*\n*Adeeb Technology Lab*\n\n*Name:* ${teacher.name || 'N/A'}\n*Teacher ID:* ${teacher.rollNo || 'N/A'}\n*Course/Department:* ${courseNames}\n\n${intro}\n\nApna certificate dekhne aur download karne ke liye LMS Portal par login karein:\nhttps://darkorchid-salmon-191482.hostingersite.com/\n\nAap ke mustaqbil ke liye bohat si nek khwahishat!\n\n*Regards,*\n*HR Department*\n*Adeeb Technology Lab*`;
+        return `*Teaching Completion Congratulations*\n*Adeeb Technology Lab*\n\n*Name:* ${teacher.name || 'N/A'}\n*Teacher ID:* ${teacher.rollNo || 'N/A'}\n*Course/Department:* ${courseNames}\n\n${intro}\n\nApna certificate dekhne aur download karne ke liye LMS Portal par login karein:\nhttps://adeebtechhub.online/\n\nAap ke mustaqbil ke liye bohat si nek khwahishat!\n\n*Regards,*\n*HR Department*\n*Adeeb Technology Lab*`;
     };
 
     const getOldTeacherMessage = (teacher, forGuardian = false) => {
         const intro = forGuardian
             ? `*${teacher.name || 'Teacher'}* ne pehle Adeeb Technology Lab mein teaching opportunity ke liye apply kiya tha.`
             : `Aap ne pehle Adeeb Technology Lab mein teaching opportunity ke liye apply kiya tha.`;
-        return `*Teaching Applications Are Open Again*\n*Adeeb Technology Lab*\n\n*Name:* ${teacher.name || 'N/A'}\n*Teacher ID:* ${teacher.rollNo || 'N/A'}\n*Specialization:* ${teacher.specialization || 'N/A'}\n\n${intro}\n\nApplications dobara open hain. Agar ${forGuardian ? 'woh' : 'aap'} apply karna ${forGuardian ? 'chahein' : 'chahte hain'}, to apni usi registered email se LMS Portal par login karke dobara apply kar sakte hain.\n\n*LMS Portal:*\nhttps://darkorchid-salmon-191482.hostingersite.com/\n\nAgar email ya password yaad nahi hai, to hamare WhatsApp par contact karein. Hamari team login recover karne mein madad karegi.\n\n*Regards,*\n*HR Department*\n*Adeeb Technology Lab*`;
+        return `*Teaching Applications Are Open Again*\n*Adeeb Technology Lab*\n\n*Name:* ${teacher.name || 'N/A'}\n*Teacher ID:* ${teacher.rollNo || 'N/A'}\n*Specialization:* ${teacher.specialization || 'N/A'}\n\n${intro}\n\nApplications dobara open hain. Agar ${forGuardian ? 'woh' : 'aap'} apply karna ${forGuardian ? 'chahein' : 'chahte hain'}, to apni usi registered email se LMS Portal par login karke dobara apply kar sakte hain.\n\n*LMS Portal:*\nhttps://adeebtechhub.online/\n\nAgar email ya password yaad nahi hai, to hamare WhatsApp par contact karein. Hamari team login recover karne mein madad karegi.\n\n*Regards,*\n*HR Department*\n*Adeeb Technology Lab*`;
     };
 
     const openTeacherCompletionWhatsApp = (teacher, forGuardian = false) => {

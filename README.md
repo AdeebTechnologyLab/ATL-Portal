@@ -15,14 +15,14 @@ npm run dev
 new server
 
 Backend: https://darksalmon-grasshopper-335002.hostingersite.com
-Frontend: https://darkorchid-salmon-191482.hostingersite.com/
+Frontend: https://adeebtechhub.online
 
 
 student stukoff acadmic repost jenrat link
-StudentsManagement.jsx:648 - https://darkorchid-salmon-191482.hostingersite.com${response.data.path}
+StudentsManagement.jsx:648 - https://adeebtechhub.online${response.data.path}
 
 interni stukoff acadmic repost janrat link
-InternsManagement.jsx:553 - https://darkorchid-salmon-191482.hostingersite.com${response.data.path}
+InternsManagement.jsx:553 - https://adeebtechhub.online${response.data.path}
 
 
 new register may jo msg ha ha riminder ka cours select kary
@@ -31,7 +31,7 @@ Files updated:
 - StudentsManagement.jsx — 3 portal links replaced
 - InternsManagement.jsx — 6 portal links replaced
 - FeeVerification.jsx — 6 portal links replaced
-All now point to https://darkorchid-salmon-191482.hostingersite.com/.
+All now point to https://adeebtechhub.online/.
 
 
 

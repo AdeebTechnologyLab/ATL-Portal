@@ -133,12 +133,12 @@ const StudentsManagement = () => {
 
     const getFeeReminderMessage = (student) => {
         const campus = student.location ? `Adeeb Technology Lab ${student.location.charAt(0).toUpperCase() + student.location.slice(1)}` : 'Adeeb Technology Lab';
-        return `*Course Fee Reminder*\n*${campus}*\n*Digital Tech Expert Software House*\n\n*Name:* ${student.name || 'N/A'}\n*Roll No:* ${student.rollNo || 'N/A'}\n*Course:* ${student.enrolledCourseName || 'N/A'}\n\nAap ne course enroll kar liya hai, lekin abhi tak fee submit nahi ki. Meherbani karke apni pending fee jald se jald pay kar dein.\n\n⚠️ *Important:* Fee pay karne ke baad *payment slip* ya *screenshot* ko **LMS Portal** par upload karna lazmi hai. Verification ke baad hi payment confirm hogi.\n\n*LMS Portal:*\nhttps://darkorchid-salmon-191482.hostingersite.com/\n\n*Note:* Agar fee waqt par submit nahi ki gayi to aapki course enrollment **temporarily suspend** ya **cancel** ki ja sakti hai.\n\n*Regards,*\n*HR Department*\n*Adeeb Technology Lab*`;
+        return `*Course Fee Reminder*\n*${campus}*\n*Digital Tech Expert Software House*\n\n*Name:* ${student.name || 'N/A'}\n*Roll No:* ${student.rollNo || 'N/A'}\n*Course:* ${student.enrolledCourseName || 'N/A'}\n\nAap ne course enroll kar liya hai, lekin abhi tak fee submit nahi ki. Meherbani karke apni pending fee jald se jald pay kar dein.\n\n⚠️ *Important:* Fee pay karne ke baad *payment slip* ya *screenshot* ko **LMS Portal** par upload karna lazmi hai. Verification ke baad hi payment confirm hogi.\n\n*LMS Portal:*\nhttps://adeebtechhub.online/\n\n*Note:* Agar fee waqt par submit nahi ki gayi to aapki course enrollment **temporarily suspend** ya **cancel** ki ja sakti hai.\n\n*Regards,*\n*HR Department*\n*Adeeb Technology Lab*`;
     };
 
     const getFeeReminderGuardianMessage = (student) => {
         const campus = student.location ? `Adeeb Technology Lab ${student.location.charAt(0).toUpperCase() + student.location.slice(1)}` : 'Adeeb Technology Lab';
-        return `*Course Fee Reminder*\n*${campus}*\n*Digital Tech Expert Software House*\n\n*Name:* ${student.name || 'N/A'}\n*Roll No:* ${student.rollNo || 'N/A'}\n*Course:* ${student.enrolledCourseName || 'N/A'}\n\nAap ke ward ne course enroll kar liya hai, lekin abhi tak fee submit nahi ki. Meherbani karke apni pending fee jald se jald pay kar dein.\n\n⚠️ *Important:* Fee pay karne ke baad *payment slip* ya *screenshot* ko **LMS Portal** par upload karna lazmi hai. Verification ke baad hi payment confirm hogi.\n\n*LMS Portal:*\nhttps://darkorchid-salmon-191482.hostingersite.com/\n\n*Note:* Agar fee waqt par submit nahi ki gayi to course enrollment **temporarily suspend** ya **cancel** ki ja sakti hai.\n\n*Regards,*\n*HR Department*\n*Adeeb Technology Lab*`;
+        return `*Course Fee Reminder*\n*${campus}*\n*Digital Tech Expert Software House*\n\n*Name:* ${student.name || 'N/A'}\n*Roll No:* ${student.rollNo || 'N/A'}\n*Course:* ${student.enrolledCourseName || 'N/A'}\n\nAap ke ward ne course enroll kar liya hai, lekin abhi tak fee submit nahi ki. Meherbani karke apni pending fee jald se jald pay kar dein.\n\n⚠️ *Important:* Fee pay karne ke baad *payment slip* ya *screenshot* ko **LMS Portal** par upload karna lazmi hai. Verification ke baad hi payment confirm hogi.\n\n*LMS Portal:*\nhttps://adeebtechhub.online/\n\n*Note:* Agar fee waqt par submit nahi ki gayi to course enrollment **temporarily suspend** ya **cancel** ki ja sakti hai.\n\n*Regards,*\n*HR Department*\n*Adeeb Technology Lab*`;
     };
 
     const getCompletionMessage = async (student, forGuardian = false) => {
@@ -158,14 +158,14 @@ const StudentsManagement = () => {
         const intro = forGuardian
             ? `Humein aap ko yeh batate hue khushi ho rahi hai ke *${student.name || 'Student'}* ne apna course kamyabi se complete kar liya hai. Mubarak ho!`
             : `Aap ko bohat bohat mubarak ho! Aap ne apna course kamyabi se complete kar liya hai.`;
-        return `*Course Completion Congratulations*\n*${campus}*\n\n*Name:* ${student.name || 'N/A'}\n*Roll No:* ${student.rollNo || 'N/A'}\n*Course:* ${courseNames}\n\n${intro}\n\nApna certificate dekhne aur download karne ke liye Adeeb Portal par login karein:\nhttps://darkorchid-salmon-191482.hostingersite.com/\n\nAap ke aglay safar aur roshan mustaqbil ke liye best of luck!\n\n*Regards,*\n*HR Department*\n*${campus}*`;
+        return `*Course Completion Congratulations*\n*${campus}*\n\n*Name:* ${student.name || 'N/A'}\n*Roll No:* ${student.rollNo || 'N/A'}\n*Course:* ${courseNames}\n\n${intro}\n\nApna certificate dekhne aur download karne ke liye Adeeb Portal par login karein:\nhttps://adeebtechhub.online/\n\nAap ke aglay safar aur roshan mustaqbil ke liye best of luck!\n\n*Regards,*\n*HR Department*\n*${campus}*`;
     };
 
     const getOldStudentMessage = (student, forGuardian = false) => {
         const intro = forGuardian
             ? `*${student.name || 'Student'}* ne pehle Adeeb Technology Lab mein admission ke liye apply kiya tha.`
             : `Aap ne pehle Adeeb Technology Lab mein admission ke liye apply kiya tha.`;
-        return `*Admissions Are Open Again*\n*Adeeb Technology Lab*\n\n*Name:* ${student.name || 'N/A'}\n*Roll No:* ${student.rollNo || 'N/A'}\n\n${intro}\n\nAdmissions dobara open hain. Agar ${forGuardian ? 'woh' : 'aap'} admission lena ${forGuardian ? 'chahein' : 'chahte hain'}, to apni usi registered email se LMS Portal par login karke dobara apply kar ${forGuardian ? 'sakte hain' : 'sakte hain'}.\n\n*LMS Portal:*\nhttps://darkorchid-salmon-191482.hostingersite.com/\n\nAgar email ya password yaad nahi hai, to hamare WhatsApp par contact karein. Hamari team login recover karne mein madad karegi.\n\n*Regards,*\n*Admissions Department*\n*Adeeb Technology Lab*`;
+        return `*Admissions Are Open Again*\n*Adeeb Technology Lab*\n\n*Name:* ${student.name || 'N/A'}\n*Roll No:* ${student.rollNo || 'N/A'}\n\n${intro}\n\nAdmissions dobara open hain. Agar ${forGuardian ? 'woh' : 'aap'} admission lena ${forGuardian ? 'chahein' : 'chahte hain'}, to apni usi registered email se LMS Portal par login karke dobara apply kar ${forGuardian ? 'sakte hain' : 'sakte hain'}.\n\n*LMS Portal:*\nhttps://adeebtechhub.online/\n\nAgar email ya password yaad nahi hai, to hamare WhatsApp par contact karein. Hamari team login recover karne mein madad karegi.\n\n*Regards,*\n*Admissions Department*\n*Adeeb Technology Lab*`;
     };
 
     const handleReminder = async (student) => {
@@ -216,7 +216,7 @@ const StudentsManagement = () => {
             cleanPhone = '92' + cleanPhone.slice(1);
         }
         const userLocation = student.location ? ` ${student.location.charAt(0).toUpperCase() + student.location.slice(1)}` : '';
-        const message = `Assalam-o-Alaikum ${student.name},\n\nThis is a reminder from LMS Adeeb Technology Lab${userLocation}.\n\nAapne abhi tak koi course join nahi kiya. Baraye meharbani portal par login karein aur "My Courses" section se enroll karein.\n\n*Agar aap course join nahi karna chahte, toh baraye meharbani humein bata dein taake aapki application cancel kardi jaye.*\n\nPortal: https://darkorchid-salmon-191482.hostingersite.com/\n\nThank you!`;
+        const message = `Assalam-o-Alaikum ${student.name},\n\nThis is a reminder from LMS Adeeb Technology Lab${userLocation}.\n\nAapne abhi tak koi course join nahi kiya. Baraye meharbani portal par login karein aur "My Courses" section se enroll karein.\n\n*Agar aap course join nahi karna chahte, toh baraye meharbani humein bata dein taake aapki application cancel kardi jaye.*\n\nPortal: https://adeebtechhub.online/\n\nThank you!`;
         const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
         window.open(waUrl, '_blank');
     };
@@ -263,7 +263,7 @@ const StudentsManagement = () => {
             cleanPhone = '92' + cleanPhone.slice(1);
         }
         const userLocation = student.location ? ` ${student.location.charAt(0).toUpperCase() + student.location.slice(1)}` : '';
-        const message = `Assalam-o-Alaikum,\n\nThis is a reminder from LMS Adeeb Technology Lab${userLocation} regarding ${student.name}.\n\nInhon ne abhi tak koi course join nahi kiya. Baraye meharbani portal par login karein aur "My Courses" section se enroll karein.\n\n*Agar inhon ne course join nahi karna toh baraye meharbani humein bata dein taake application cancel kardi jaye.*\n\nPortal: https://darkorchid-salmon-191482.hostingersite.com/\n\nThank you!`;
+        const message = `Assalam-o-Alaikum,\n\nThis is a reminder from LMS Adeeb Technology Lab${userLocation} regarding ${student.name}.\n\nInhon ne abhi tak koi course join nahi kiya. Baraye meharbani portal par login karein aur "My Courses" section se enroll karein.\n\n*Agar inhon ne course join nahi karna toh baraye meharbani humein bata dein taake application cancel kardi jaye.*\n\nPortal: https://adeebtechhub.online/\n\nThank you!`;
         const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
         window.open(waUrl, '_blank');
     };
@@ -769,7 +769,7 @@ const StudentsManagement = () => {
         formData.append('report', generated.blob, generated.fileName);
         const response = await reportAPI.uploadStudentReport(student._id, formData);
         return {
-            reportUrl: `https://darkorchid-salmon-191482.hostingersite.com${response.data.path}`,
+            reportUrl: `https://adeebtechhub.online${response.data.path}`,
             enrollments
         };
     };
