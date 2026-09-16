@@ -96,6 +96,7 @@ const uploadAssignmentFiles = async ({ auth, files, courseTitle, assignmentTitle
 
     const courseFolder = await getOrCreateFolder(drive, courseTitle, rootFolder);
     const assignmentFolder = await getOrCreateFolder(drive, assignmentTitle, courseFolder);
+    await ensurePublicLinkPermission(drive, assignmentFolder);
     onProgress?.({ progress: 55, stage: 'Uploading to Google Drive' });
 
     const uploadedFiles = [];
@@ -123,7 +124,12 @@ const uploadAssignmentFiles = async ({ auth, files, courseTitle, assignmentTitle
                 }
             }
         );
-        uploadedFiles.push(uploaded.data);
+        await ensurePublicLinkPermission(drive, uploaded.data.id);
+        const refreshed = await drive.files.get({
+            fileId: uploaded.data.id,
+            fields: 'id,name,mimeType,size,webViewLink,thumbnailLink'
+        });
+        uploadedFiles.push(refreshed.data);
     }
 
     for (const emailAddress of [...new Set(teacherEmails.filter(Boolean))]) {
@@ -142,6 +148,15 @@ const uploadAssignmentFiles = async ({ auth, files, courseTitle, assignmentTitle
         fileId: assignmentFolder,
         fields: 'id,name,webViewLink'
     });
+
+    if (!folder.data.webViewLink) {
+        await ensurePublicLinkPermission(drive, assignmentFolder);
+        const refreshedFolder = await drive.files.get({
+            fileId: assignmentFolder,
+            fields: 'id,name,webViewLink'
+        });
+        folder.data.webViewLink = refreshedFolder.data.webViewLink;
+    }
 
     onProgress?.({ progress: 99, stage: 'Finishing upload' });
 
