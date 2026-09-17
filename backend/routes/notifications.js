@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const sanitizeHtml = require('sanitize-html');
 const { protect, authorize } = require('../middleware/auth');
+const { requireScreenAccess } = require('../middleware/screenAccess');
 const Notification = require('../models/Notification');
 const SystemSetting = require('../models/SystemSetting');
 const { sendToAll, sendToRole } = require('../utils/pushHelper');
@@ -143,7 +144,7 @@ router.get('/active', protect, async (req, res) => {
 // @route   GET /api/notifications
 // @desc    Get all notifications (Admin)
 // @access  Private (Admin)
-router.get('/', protect, authorize('admin'), async (req, res) => {
+router.get('/', protect, requireScreenAccess('notification_management'), async (req, res) => {
     try {
         const notifications = await Notification.find().sort('-createdAt');
         res.json({ success: true, data: notifications });

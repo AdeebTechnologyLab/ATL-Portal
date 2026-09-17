@@ -9,6 +9,7 @@ import {
 import { directoryAPI } from '../../services/api';
 import ProfileAvatar from '../../components/ui/ProfileAvatar';
 import Loader from '../../components/ui/Loader';
+import AssignScreenButton from '../../components/admin/AssignScreenButton';
 
 const FILTER_OPTIONS = [
     { value: 'all', label: 'All', icon: Users },
@@ -110,6 +111,7 @@ const TeacherDirectory = () => {
                         </h1>
                         <p className="text-gray-500 text-sm">All instructors and teachers - sorted by roll number</p>
                     </div>
+                    <AssignScreenButton screenId="teacher_directory" />
                 </div>
             </div>
 

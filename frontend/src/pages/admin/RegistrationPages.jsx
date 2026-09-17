@@ -5,7 +5,8 @@ import {
 } from 'lucide-react';
 import { registrationPageAPI } from '../../services/api';
 import toast from 'react-hot-toast';
-import ViewAsBar from '../../components/shared/ViewAsBar';
+import AssignScreenButton from '../../components/admin/AssignScreenButton';
+
 
 const formTypes = [
     { id: 'student', label: 'Student', icon: BookOpen, color: 'blue' },
@@ -165,16 +166,19 @@ const RegistrationPages = () => {
 
     return (
         <div className="space-y-4 sm:space-y-6">
-            <ViewAsBar />
+
             {/* Header */}
-            <div>
-                <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                    <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
-                    Registration Forms
-                </h1>
-                <p className="text-xs sm:text-base text-gray-500 dark:text-gray-400 mt-1">
-                    Edit the left-side content shown on each registration page
-                </p>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <div>
+                    <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                        <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
+                        Registration Forms
+                    </h1>
+                    <p className="text-xs sm:text-base text-gray-500 dark:text-gray-400 mt-1">
+                        Edit the left-side content shown on each registration page
+                    </p>
+                </div>
+                <AssignScreenButton screenId="registration_pages" />
             </div>
 
             {/* Tabs */}

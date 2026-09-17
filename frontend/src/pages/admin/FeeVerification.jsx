@@ -15,8 +15,9 @@ import { showToast } from '../../utils/customToast';
 import Loader, { ButtonLoader } from '../../components/ui/Loader';
 import { formatDate } from '../../utils/dateFormatter';
 import { io } from 'socket.io-client';
-import ViewAsBar from '../../components/shared/ViewAsBar';
+
 import { getSocketURL, getBackendOrigin } from '../../config/apiBaseUrl';
+import AssignScreenButton from '../../components/admin/AssignScreenButton';
 
 const FeeVerification = () => {
     const [activeTab, setActiveTab] = useState('pending');
@@ -425,7 +426,7 @@ const FeeVerification = () => {
 
     return (
         <div className="space-y-4 sm:space-y-6">
-            <ViewAsBar />
+
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
                 <div>
                     <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Fee Management</h1>
@@ -454,6 +455,7 @@ const FeeVerification = () => {
                         Payment Methods
                     </button>
                 </div>
+                <AssignScreenButton screenId="fee_verification" />
             </div>
 
             {/* Filters and Search */}

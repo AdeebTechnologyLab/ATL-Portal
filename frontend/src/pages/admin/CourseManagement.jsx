@@ -20,7 +20,8 @@ import Modal from '../../components/ui/Modal';
 import { courseAPI, userAPI, enrollmentAPI } from '../../services/api';
 import { getCourseIcon, getCourseColor, getCourseStyle } from '../../utils/courseIcons';
 import Loader, { ButtonLoader } from '../../components/ui/Loader';
-import ViewAsBar from '../../components/shared/ViewAsBar';
+import AssignScreenButton from '../../components/admin/AssignScreenButton';
+
 
 const CourseManagement = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -245,7 +246,7 @@ const CourseManagement = () => {
 
     return (
         <div className="space-y-6">
-            <ViewAsBar />
+
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div>
@@ -253,6 +254,7 @@ const CourseManagement = () => {
                     <p className="text-gray-500 text-sm">Create and manage all courses</p>
                 </div>
                 <div className="flex items-center gap-3">
+                    <AssignScreenButton screenId="course_management" />
                     <button
                         onClick={fetchData}
                         className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 hover:bg-gray-100 rounded-xl text-gray-500 transition-all active:scale-95 border border-gray-200 bg-white"

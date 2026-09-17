@@ -19,7 +19,7 @@ import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../context/ThemeContext';
 import { getLanguageMeta } from '../../constants/languages';
 import { FAQ_HIGHLIGHTS, FAQ_SECTIONS, ALL_FAQ_ITEMS } from '../../data/helpSupportFaq';
-import ViewAsBar from '../../components/shared/ViewAsBar';
+
 
 const SECTION_ICONS = {
   general: Sparkles,
@@ -106,7 +106,7 @@ const HelpSupport = () => {
       className="max-w-4xl mx-auto w-full min-w-0 px-3 sm:px-5 md:px-6 lg:px-8 py-4 sm:py-6 lg:py-10 pb-20 sm:pb-16"
       dir={langMeta.dir}
     >
-      <ViewAsBar />
+
       <div
         className="relative overflow-hidden rounded-2xl sm:rounded-3xl mb-6 sm:mb-8 p-4 sm:p-6 md:p-10 text-white"
         style={{

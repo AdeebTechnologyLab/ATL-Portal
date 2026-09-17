@@ -9,7 +9,8 @@ import { notificationAPI } from '../../services/api';
 import Badge from '../../components/ui/Badge';
 import Modal from '../../components/ui/Modal';
 import RichTextEditor from '../../components/ui/RichTextEditor';
-import ViewAsBar from '../../components/shared/ViewAsBar';
+import AssignScreenButton from '../../components/admin/AssignScreenButton';
+
 
 const NotificationManagement = () => {
     const [notifications, setNotifications] = useState([]);
@@ -143,19 +144,22 @@ const NotificationManagement = () => {
 
     return (
         <div className="space-y-6">
-            <ViewAsBar />
+
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
                     <h1 className="text-2xl font-bold text-gray-900">Notifications Management</h1>
                     <p className="text-gray-500">Manage dashboard popup announcements</p>
                 </div>
-                <button
-                    onClick={() => handleOpenModal('create')}
-                    className="px-6 py-2.5 bg-primary hover:bg-primary text-white rounded-xl font-bold transition-all shadow-lg shadow-primary/10 flex items-center justify-center gap-2"
-                >
-                    <Plus className="w-5 h-5" />
-                    Create Notification
-                </button>
+                <div className="flex items-center gap-3">
+                    <AssignScreenButton screenId="notification_management" />
+                    <button
+                        onClick={() => handleOpenModal('create')}
+                        className="px-6 py-2.5 bg-primary hover:bg-primary text-white rounded-xl font-bold transition-all shadow-lg shadow-primary/10 flex items-center justify-center gap-2"
+                    >
+                        <Plus className="w-5 h-5" />
+                        Create Notification
+                    </button>
+                </div>
             </div>
 
             {isLoading ? (

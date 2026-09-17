@@ -2,7 +2,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
 import { io } from 'socket.io-client';
-import { assignmentAPI, courseAPI, dailyTaskAPI, chatAPI, enrollmentAPI, feeAPI, certificateAPI, testAPI, taskAPI, teacherFinanceAPI, financeAPI } from '../../services/api';
+import { assignmentAPI, courseAPI, dailyTaskAPI, chatAPI, enrollmentAPI, feeAPI, certificateAPI, testAPI, taskAPI, teacherFinanceAPI, financeAPI, teacherScreenAssignmentAPI } from '../../services/api';
 import { isDueDateOverdue } from '../../utils/dueDate';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -31,7 +31,8 @@ import {
     MessageSquare,
     Wallet,
     ListTodo,
-    Search
+    Search,
+    UserPlus
 } from 'lucide-react';
 import { logout, loginSuccess } from '../../features/auth/authSlice';
 import { userAPI, authAPI } from '../../services/api';
@@ -39,6 +40,31 @@ import { useTranslation } from 'react-i18next';
 import ProfileAvatar from '../ui/ProfileAvatar';
 import Loader, { ButtonLoader } from '../ui/Loader';
 import SocialLinks from '../shared/SocialLinks';
+
+const SCREEN_ICON_MAP = {
+    FolderOpen, Settings, BookOpen, Users, GraduationCap, CreditCard,
+    Award, Bell, DollarSign: Wallet, ListTodo, Briefcase, FileText,
+    LayoutDashboard, Monitor: FolderOpen
+};
+
+const SCREEN_ROUTE_TO_PATH = {
+    '/admin/directory': '/teacher/student-directory',
+    '/admin/teacher-directory': '/teacher/teacher-directory',
+    '/admin/attendance-settings': '/teacher/attendance-settings',
+    '/admin/courses': '/teacher/courses',
+    '/admin/students': '/teacher/students',
+    '/admin/teachers': '/teacher/teachers',
+    '/admin/interns': '/teacher/interns',
+    '/admin/fees': '/teacher/fees',
+    '/admin/certificates': '/teacher/certificates',
+    '/admin/notifications': '/teacher/notifications',
+    '/admin/expense': '/teacher/expense',
+    '/admin/projects': '/teacher/projects',
+    '/admin/work-tasks': '/teacher/work-tasks',
+    '/admin/paid-tasks': '/teacher/paid-tasks',
+    '/admin/registration-pages': '/teacher/registration-pages',
+    '/admin/dashboard': '/teacher/dashboard'
+};
 import { getSocketURL } from '../../config/apiBaseUrl';
 
 const Sidebar = ({ isOpen, setIsOpen }) => {
@@ -59,6 +85,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
     const [discussionUnread, setDiscussionUnread] = useState(0);
     const [teacherProjectCount, setTeacherProjectCount] = useState(0);
     const [adminProjectCount, setAdminProjectCount] = useState(0);
+    const [assignedScreens, setAssignedScreens] = useState([]);
     const [availableRoles, setAvailableRoles] = useState([]);
     const [isSwitchingRole, setIsSwitchingRole] = useState(false);
     const [showRoleMenu, setShowRoleMenu] = useState(false);
@@ -279,6 +306,18 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         }
     }, [role, user]);
 
+    // Fetch assigned screens for teachers
+    useEffect(() => {
+        if (role !== 'teacher') return;
+        const fetchAssigned = async () => {
+            try {
+                const res = await teacherScreenAssignmentAPI.getMy();
+                setAssignedScreens(res.data.data || []);
+            } catch (_) { setAssignedScreens([]); }
+        };
+        fetchAssigned();
+    }, [role]);
+
     useEffect(() => {
         const fetchRoles = async () => {
             try {
@@ -488,6 +527,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                 { id: 'discussion-room', labelKey: 'Discussion Room', icon: MessageSquare, path: '/admin/discussion-room', badge: discussionUnread },
                 { id: 'attendance-settings', labelKey: 'nav.attendanceSettings', icon: Clock, path: '/admin/attendance-settings' },
                 { id: 'registration-pages', labelKey: 'Registration Forms', icon: FileText, path: '/admin/registration-pages' },
+                { id: 'manage-assignments', labelKey: 'Manage Screens', icon: UserPlus, path: '/admin/manage-assignments' },
                 { id: 'job-section-label', type: 'section', label: 'Job' },
                 { id: 'paid-tasks', labelKey: 'nav.paidTasks', icon: Briefcase, path: '/admin/paid-tasks', counters: { assigned: jobPostingCounts.totalAssigned || 0, submitted: jobPostingCounts.totalSubmitted || 0 } },
                 ...(jobChatSummary.totalAssigned > 0 ? [{ id: 'job-chat', labelKey: 'Job Chats', icon: MessageSquare, path: '/admin/job-chat', badge: jobChatSummary.totalUnread }] : []),
@@ -551,15 +591,30 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
             ],
         };
 
-        const isImpersonating = !!sessionStorage.getItem('adminBeforeImpersonate');
-        return baseItems[isImpersonating ? 'admin' : role] || baseItems.student;
+        // Add assigned admin screens for teachers
+        if (role === 'teacher' && assignedScreens.length > 0) {
+            const assignedItems = assignedScreens.map(screen => ({
+                id: `assigned-${screen.id}`,
+                labelKey: screen.name,
+                icon: SCREEN_ICON_MAP[screen.icon] || FolderOpen,
+                path: `/teacher/assigned/${screen.id}`,
+                isAssigned: true
+            }));
+            baseItems.teacher = [
+                ...baseItems.teacher.slice(0, -1),
+                { id: 'assigned-section-label', type: 'section', label: 'Assigned Screens' },
+                ...assignedItems,
+                baseItems.teacher[baseItems.teacher.length - 1]
+            ];
+        }
+
+        return baseItems[role] || baseItems.student;
     };
 
     const menuItems = getMenuItems();
 
     // Get role display name
-    const isImpersonating = !!sessionStorage.getItem('adminBeforeImpersonate');
-    const getRoleDisplayName = () => t(`roles.${isImpersonating ? 'admin' : role}`, { defaultValue: t('roles.user') });
+    const getRoleDisplayName = () => t(`roles.${role}`, { defaultValue: t('roles.user') });
 
     return (
         <>

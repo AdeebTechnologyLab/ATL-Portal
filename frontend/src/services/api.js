@@ -65,7 +65,6 @@ export const authAPI = {
     resetPassword: (token, data) => api.post(`/auth/reset-password/${token}`, data),
     getAvailableRoles: () => api.get('/auth/available-roles'),
     switchRole: (data) => api.post('/auth/switch-role', data),
-    adminImpersonate: (userId) => api.post('/auth/admin-impersonate', { userId }),
     updateThemePreference: (colorTheme, customTheme) => api.put('/auth/preferences/theme', { colorTheme, customTheme }),
     changePassword: (data) => api.put('/auth/change-password', data)
 };
@@ -396,6 +395,16 @@ export const paymentMethodAPI = {
 export const helpSupportAPI = {
     get: () => api.get('/help-support'),
     update: (data) => api.put('/help-support', data),
+};
+
+// Teacher Screen Assignment API
+export const teacherScreenAssignmentAPI = {
+    getAll: () => api.get('/teacher-screen-assignments'),
+    getMy: () => api.get('/teacher-screen-assignments/my'),
+    getScreenTeachers: (screenId) => api.get(`/teacher-screen-assignments/screen/${screenId}`),
+    getScreens: () => api.get('/teacher-screen-assignments/screens'),
+    assign: (screenId, teacherIds) => api.post('/teacher-screen-assignments', { screenId, teacherIds }),
+    remove: (screenId, teacherId) => api.delete('/teacher-screen-assignments', { data: { screenId, teacherId } }),
 };
 
 export default api;

@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { protect, authorize } = require('../middleware/auth');
+const { requireScreenAccess } = require('../middleware/screenAccess');
 const Certificate = require('../models/Certificate');
 const CertificateRequest = require('../models/CertificateRequest');
 const Course = require('../models/Course');
@@ -46,7 +47,7 @@ router.get('/my', protect, async (req, res) => {
 // @route   GET /api/certificates/requests
 // @desc    Get all pending certificate requests
 // @access  Private (Admin)
-router.get('/requests', protect, authorize('admin'), async (req, res) => {
+router.get('/requests', protect, requireScreenAccess('certificate_management'), async (req, res) => {
     try {
         console.log('📋 [ROUTES] Fetching pending certificate requests for user:', req.user.name);
         const requests = await CertificateRequest.find({ status: 'pending' })
@@ -183,7 +184,7 @@ router.put('/requests/:id/reject', protect, authorize('admin'), async (req, res)
 // @route   GET /api/certificates/courses
 // @desc    Get courses with enrolled students for certificate management
 // @access  Private (Admin)
-router.get('/courses', protect, authorize('admin'), async (req, res) => {
+router.get('/courses', protect, requireScreenAccess('certificate_management'), async (req, res) => {
     try {
         console.log('📚 [CERTIFICATES] Fetching courses for certificate management');
         const courses = await Course.find().sort('-createdAt');

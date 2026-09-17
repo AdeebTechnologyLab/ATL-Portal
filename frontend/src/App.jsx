@@ -50,6 +50,7 @@ const ExpenseManagement = lazy(() => import('./pages/admin/ExpenseManagement'));
 const ProjectManagement = lazy(() => import('./pages/admin/ProjectManagement'));
 const RegistrationPages = lazy(() => import('./pages/admin/RegistrationPages'));
 const AdminWorkLists = lazy(() => import('./pages/admin/AdminWorkLists'));
+const ManageScreens = lazy(() => import('./pages/admin/ManageScreens'));
 
 // Shared Pages (lazy loaded)
 const JobChat = lazy(() => import('./pages/shared/JobChat'));
@@ -82,14 +83,12 @@ const AdeebMeet = lazy(() => import('./pages/live/AdeebMeet'));
 // Protected Route Component
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const { isAuthenticated, role } = useSelector((state) => state.auth);
-  const isImpersonating = !!sessionStorage.getItem('adminBeforeImpersonate');
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
 
   if (allowedRoles && !allowedRoles.includes(role)) {
-    if (isImpersonating) return children;
     if (role === 'admin') return <Navigate to="/admin/dashboard" replace />;
     if (role === 'teacher') return <Navigate to="/teacher/dashboard" replace />;
     if (role === 'job') return <Navigate to="/job/dashboard" replace />;
@@ -169,6 +168,7 @@ const AppRoutes = () => {
         <Route path="projects" element={<ProjectManagement />} />
         <Route path="work-tasks" element={<AdminWorkLists />} />
         <Route path="registration-pages" element={<RegistrationPages />} />
+        <Route path="manage-assignments" element={<ManageScreens />} />
         <Route path="discussion-room" element={<DiscussionRoom />} />
         <Route path="help-support" element={<HelpSupport />} />
       </Route>
@@ -196,6 +196,20 @@ const AppRoutes = () => {
         <Route path="work-tasks" element={<AdminWorkLists />} />
         <Route path="settings" element={<Settings />} />
         <Route path="help-support" element={<HelpSupport />} />
+        {/* Assigned Admin Screens for Teachers */}
+        <Route path="assigned/student_directory" element={<StudentDirectory />} />
+        <Route path="assigned/teacher_directory" element={<TeacherDirectory />} />
+        <Route path="assigned/attendance_settings" element={<AttendanceSettings />} />
+        <Route path="assigned/course_management" element={<CourseManagement />} />
+        <Route path="assigned/student_management" element={<StudentsManagement />} />
+        <Route path="assigned/teacher_management" element={<TeachersManagement />} />
+        <Route path="assigned/intern_management" element={<InternsManagement />} />
+        <Route path="assigned/fee_verification" element={<FeeVerification />} />
+        <Route path="assigned/certificate_management" element={<CertificateManagement />} />
+        <Route path="assigned/notification_management" element={<NotificationManagement />} />
+        <Route path="assigned/expense_management" element={<ExpenseManagement />} />
+        <Route path="assigned/project_management" element={<ProjectManagement />} />
+        <Route path="assigned/paid_tasks" element={<PaidTasksManagement />} />
       </Route>
 
       {/* Student Routes */}

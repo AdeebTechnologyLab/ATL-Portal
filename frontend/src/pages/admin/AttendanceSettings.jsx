@@ -4,7 +4,8 @@ import { Clock, Plus, Trash2, X, Check, Calendar, Moon, Shield, Zap, MessageSqua
 import { settingsAPI, attendanceAPI } from "../../services/api";
 import { showToast } from "../../utils/customToast";
 import Loader from "../../components/ui/Loader";
-import ViewAsBar from '../../components/shared/ViewAsBar';
+import AssignScreenButton from '../../components/admin/AssignScreenButton';
+
 
 const STUDENT_SLOTS_KEY = "student_class_slots";
 const INTERN_SLOTS_KEY = "intern_class_slots";
@@ -336,11 +337,14 @@ const AttendanceSettings = () => {
     return (
         <div className="min-h-0 bg-gradient-to-br from-gray-50 via-white to-primary/5 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 p-0 sm:p-4 md:p-6">
             <div className="w-full">
-                <ViewAsBar />
 
-                <div className="mb-4 sm:mb-6">
-                    <h1 className="text-xl sm:text-3xl font-black text-gray-900 dark:text-white uppercase tracking-tight">Time Table</h1>
-                    <p className="text-xs sm:text-sm text-gray-400 mt-1">Manage class schedules and weekly off days.</p>
+
+                <div className="mb-4 sm:mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                    <div>
+                        <h1 className="text-xl sm:text-3xl font-black text-gray-900 dark:text-white uppercase tracking-tight">Time Table</h1>
+                        <p className="text-xs sm:text-sm text-gray-400 mt-1">Manage class schedules and weekly off days.</p>
+                    </div>
+                    <AssignScreenButton screenId="attendance_settings" />
                 </div>
 
                 {/* ── WhatsApp Notifications ── */}

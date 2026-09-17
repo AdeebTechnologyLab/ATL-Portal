@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { protect, authorize } = require('../middleware/auth');
+const { requireScreenAccess } = require('../middleware/screenAccess');
 const { uploadReceipt, cloudinary } = require('../config/cloudinary');
 const Fee = require('../models/Fee');
 const User = require('../models/User');
@@ -470,7 +471,7 @@ router.post('/:id/installments', protect, authorize('admin'), async (req, res) =
 // @route   GET /api/fees/pending
 // @desc    Get fees with pending verification (admin)
 // @access  Private (Admin)
-router.get('/pending', protect, authorize('admin'), async (req, res) => {
+router.get('/pending', protect, requireScreenAccess('fee_verification'), async (req, res) => {
     try {
         // Fetch all fees first
         const allFees = await Fee.find()
@@ -494,7 +495,7 @@ router.get('/pending', protect, authorize('admin'), async (req, res) => {
 // @route   GET /api/fees/all
 // @desc    Get all fees (admin)
 // @access  Private (Admin)
-router.get('/all', protect, authorize('admin'), async (req, res) => {
+router.get('/all', protect, requireScreenAccess('fee_verification'), async (req, res) => {
     try {
         const fees = await Fee.find()
             .populate('user', 'name email rollNo photo phone guardianName guardianRelation guardianPhone guardianOccupation')
@@ -510,7 +511,7 @@ router.get('/all', protect, authorize('admin'), async (req, res) => {
 // @route   GET /api/fees/user/:userId
 // @desc    Get all fees for a specific user (Admin)
 // @access  Private (Admin)
-router.get('/user/:userId', protect, authorize('admin'), async (req, res) => {
+router.get('/user/:userId', protect, requireScreenAccess('fee_verification'), async (req, res) => {
     try {
         const fees = await Fee.find({ user: req.params.userId })
             .populate('user', 'name email rollNo photo phone guardianName guardianRelation guardianPhone guardianOccupation')

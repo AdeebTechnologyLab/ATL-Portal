@@ -4,8 +4,9 @@ const FinanceEntry = require('../models/FinanceEntry');
 const FinanceProject = require('../models/FinanceProject');
 const Fee = require('../models/Fee');
 const { protect, authorize } = require('../middleware/auth');
+const { requireScreenAccess } = require('../middleware/screenAccess');
 
-router.use(protect, authorize('admin'));
+router.use(protect, requireScreenAccess('expense_management'));
 
 const projectData = (project, linkedTotals = {}) => {
     const plain = project.toObject ? project.toObject() : project;

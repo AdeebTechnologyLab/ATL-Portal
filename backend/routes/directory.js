@@ -1,14 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const { protect, authorize } = require('../middleware/auth');
+const { requireScreenAccess } = require('../middleware/screenAccess');
 const User = require('../models/User');
 const Enrollment = require('../models/Enrollment');
 const Certificate = require('../models/Certificate');
 
 // @route   GET /api/directory
 // @desc    Get all students/interns or teachers with enrollment data for admin directory
-// @access  Private (Admin only)
-router.get('/', protect, authorize('admin'), async (req, res) => {
+// @access  Private (Admin + Teachers with screen assignment)
+router.get('/', protect, requireScreenAccess('student_directory'), async (req, res) => {
     try {
         const { filter, type } = req.query; // filter: all, active, certified, not-registered. type: teachers or undefined
 

@@ -8,7 +8,7 @@ import toast from 'react-hot-toast';
 import { adminWorkTaskAPI, userAPI } from '../../services/api';
 import Loader from '../../components/ui/Loader';
 import ProfileAvatar from '../../components/ui/ProfileAvatar';
-import ViewAsBar from '../../components/shared/ViewAsBar';
+
 
 const AdminWorkLists = () => {
     const { role } = useSelector(state => state.auth);
@@ -208,7 +208,7 @@ const AdminWorkLists = () => {
         shareTimerRef.current = setTimeout(async () => {
             setShareSearching(true);
             try {
-                const response = await userAPI.search(query.trim());
+                const response = await userAPI.search(query.trim(), 'teacher');
                 setShareResults(response.data.data || []);
             } catch {
                 setShareResults([]);
@@ -266,7 +266,7 @@ const AdminWorkLists = () => {
     return (
         <div className="min-h-full bg-gray-50/60 p-4 dark:bg-transparent sm:p-6 lg:p-8">
             <div className="mx-auto max-w-7xl">
-                <ViewAsBar />
+
                 <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                     <div>
                         <p className="text-xs font-black uppercase tracking-[0.2em] text-primary">{isAdmin ? 'Shared Work Lists' : 'My Work Lists'}</p>

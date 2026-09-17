@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const PaymentMethod = require('../models/PaymentMethod');
 const { protect, authorize } = require('../middleware/auth');
+const { requireScreenAccess } = require('../middleware/screenAccess');
 
 // Public: Get all active payment methods (for students)
 router.get('/public', async (req, res) => {
@@ -14,7 +15,7 @@ router.get('/public', async (req, res) => {
 });
 
 // Admin: Get all payment methods (including inactive)
-router.get('/', protect, authorize('admin'), async (req, res) => {
+router.get('/', protect, requireScreenAccess('fee_verification'), async (req, res) => {
     try {
         const methods = await PaymentMethod.find().sort({ order: 1, createdAt: 1 });
         res.json({ success: true, data: methods });

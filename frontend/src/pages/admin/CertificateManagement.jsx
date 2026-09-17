@@ -9,7 +9,8 @@ import Badge from '../../components/ui/Badge';
 import Modal from '../../components/ui/Modal';
 import { courseAPI, enrollmentAPI, certificateAPI } from '../../services/api';
 import { formatDate } from '../../utils/dateFormatter';
-import ViewAsBar from '../../components/shared/ViewAsBar';
+import AssignScreenButton from '../../components/admin/AssignScreenButton';
+
 
 const CertificateManagement = () => {
     const { user } = useSelector((state) => state.auth);
@@ -433,7 +434,7 @@ const CertificateManagement = () => {
 
     return (
         <div className="space-y-6">
-            <ViewAsBar />
+
             {/* Header */}
             <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 p-6 sm:p-8 text-white shadow-2xl shadow-slate-900/10">
                 <div className="absolute -right-16 -top-20 h-56 w-56 rounded-full bg-primary/20 blur-3xl" />
@@ -446,6 +447,7 @@ const CertificateManagement = () => {
                         </div>
                         <h1 className="text-3xl sm:text-4xl font-black tracking-tight">Certificate Management</h1>
                         <p className="mt-2 text-sm sm:text-base text-white/60 font-medium">Issue, edit, verify and filter student, intern and teacher certificates from one clean dashboard.</p>
+                        <div className="mt-4"><AssignScreenButton screenId="certificate_management" /></div>
                     </div>
 
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 w-full xl:w-auto">

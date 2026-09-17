@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { protect, authorize } = require('../middleware/auth');
+const { requireScreenAccess } = require('../middleware/screenAccess');
 const User = require('../models/User');
 const Fee = require('../models/Fee');
 const Enrollment = require('../models/Enrollment');
@@ -152,8 +153,22 @@ router.post('/:id/wish', protect, async (req, res) => {
 
 // @route   GET /api/users
 // @desc    Get all users (admin only)
-// @access  Private/Admin
-router.get('/', protect, authorize('admin'), async (req, res) => {
+router.get('/', protect, async (req, res) => {
+    if (req.user.role === 'admin') {
+        // Admin can see all users
+    } else if (req.user.role === 'teacher') {
+        // Teachers need at least one management screen assignment
+        const TeacherScreenAssignment = require('../models/TeacherScreenAssignment');
+        const hasAccess = await TeacherScreenAssignment.exists({
+            teacher: req.user._id,
+            screenId: { $in: ['student_management', 'teacher_management', 'intern_management'] }
+        });
+        if (!hasAccess) {
+            return res.status(403).json({ success: false, message: 'Access denied.' });
+        }
+    } else {
+        return res.status(403).json({ success: false, message: 'Access denied.' });
+    }
     try {
         const users = await User.find().select('+password');
         res.json({ success: true, data: users });
@@ -165,7 +180,21 @@ router.get('/', protect, authorize('admin'), async (req, res) => {
 // @route   GET /api/users/pending-counts
 // @desc    Get count of unverified users grouped by role (admin only)
 // @access  Private/Admin
-router.get('/pending-counts', protect, authorize('admin'), async (req, res) => {
+router.get('/pending-counts', protect, async (req, res) => {
+    if (req.user.role === 'admin') {
+        // Admin can see all pending counts
+    } else if (req.user.role === 'teacher') {
+        const TeacherScreenAssignment = require('../models/TeacherScreenAssignment');
+        const hasAccess = await TeacherScreenAssignment.exists({
+            teacher: req.user._id,
+            screenId: { $in: ['student_management', 'teacher_management', 'intern_management'] }
+        });
+        if (!hasAccess) {
+            return res.status(403).json({ success: false, message: 'Access denied.' });
+        }
+    } else {
+        return res.status(403).json({ success: false, message: 'Access denied.' });
+    }
     try {
         const counts = await User.aggregate([
             { $match: { isVerified: false, role: { $ne: 'admin' } } },
@@ -289,7 +318,23 @@ router.get('/search', protect, authorize('admin', 'teacher'), async (req, res) =
 // @route   GET /api/users/role/:role
 // @desc    Get users by role (admin only)
 // @access  Private/Admin
-router.get('/role/:role', protect, authorize('admin'), async (req, res) => {
+router.get('/role/:role', protect, async (req, res) => {
+    const role = req.params.role;
+    if (req.user.role === 'admin') {
+        // Admin access
+    } else if (req.user.role === 'teacher') {
+        const screenMap = { student: 'student_management', teacher: 'teacher_management', intern: 'intern_management', job: 'job_portal' };
+        const screenId = screenMap[role];
+        if (screenId) {
+            const TeacherScreenAssignment = require('../models/TeacherScreenAssignment');
+            const hasAccess = await TeacherScreenAssignment.exists({ teacher: req.user._id, screenId });
+            if (!hasAccess) return res.status(403).json({ success: false, message: 'Access denied.' });
+        } else {
+            return res.status(403).json({ success: false, message: 'Access denied.' });
+        }
+    } else {
+        return res.status(403).json({ success: false, message: 'Access denied.' });
+    }
     try {
         // Use aggregation to get users with their enrollment stats
         const role = req.params.role;
@@ -468,7 +513,19 @@ router.put('/change-password-by-email', protect, authorize('admin'), async (req,
 // @route   GET /api/users/:id
 // @desc    Get single user
 // @access  Private/Admin
-router.get('/:id', protect, authorize('admin'), async (req, res) => {
+router.get('/:id', protect, async (req, res) => {
+    if (req.user.role === 'admin') {
+        // Admin access
+    } else if (req.user.role === 'teacher') {
+        const TeacherScreenAssignment = require('../models/TeacherScreenAssignment');
+        const hasAccess = await TeacherScreenAssignment.exists({
+            teacher: req.user._id,
+            screenId: { $in: ['student_management', 'teacher_management', 'intern_management', 'job_portal'] }
+        });
+        if (!hasAccess) return res.status(403).json({ success: false, message: 'Access denied.' });
+    } else {
+        return res.status(403).json({ success: false, message: 'Access denied.' });
+    }
     try {
         const user = await User.findById(req.params.id).select('+password');
         if (!user) {

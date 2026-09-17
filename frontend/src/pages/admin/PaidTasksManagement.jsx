@@ -11,6 +11,7 @@ import { taskAPI, userNotificationAPI, userAPI } from '../../services/api';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { getCategoryIcon, getCategoryColor, getCategoryBg } from '../../utils/taskCategoryIcons';
+import AssignScreenButton from '../../components/admin/AssignScreenButton';
 
 const PaidTasksManagement = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -536,6 +537,7 @@ const PaidTasksManagement = () => {
                     <p className="text-gray-500 dark:text-slate-400 text-xs sm:text-sm mt-0.5 sm:mt-1">Create and manage freelance tasks</p>
                 </div>
                 <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+                    <AssignScreenButton screenId="paid_tasks" />
                     <div className="grid grid-cols-3 items-center gap-1 sm:gap-1.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900 p-1 shadow-sm">
                         <button
                             type="button"

@@ -13,7 +13,8 @@ import Modal from '../../components/ui/Modal';
 import { userAPI, settingsAPI, enrollmentAPI, assignmentAPI, feeAPI, courseAPI, reportAPI, dailyTaskAPI } from '../../services/api';
 import { generateComprehensiveReport } from '../../utils/reportGenerator';
 import ImageCropper from '../../components/ui/ImageCropper';
-import ViewAsBar from '../../components/shared/ViewAsBar';
+import AssignScreenButton from '../../components/admin/AssignScreenButton';
+
 
 const InternsManagement = () => {
     const [searchQuery, setSearchQuery] = useState('');
@@ -944,7 +945,7 @@ const InternsManagement = () => {
 
     return (
         <div className="space-y-4 sm:space-y-6">
-            <ViewAsBar />
+
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 sm:gap-6">
                 <div>
@@ -952,6 +953,7 @@ const InternsManagement = () => {
                     <p className="text-gray-500 dark:text-slate-400 text-xs sm:text-sm">View and manage registered interns</p>
                 </div>
                 <div className="flex items-center gap-2 w-full md:w-auto">
+                    <AssignScreenButton screenId="intern_management" />
                     <button
                         onClick={toggleBioEditing}
                         className={`flex-1 md:flex-none px-4 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all border flex items-center justify-center gap-2 ${allowBioEditing

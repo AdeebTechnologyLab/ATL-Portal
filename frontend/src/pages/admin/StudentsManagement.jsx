@@ -14,7 +14,8 @@ import { generateComprehensiveReport } from '../../utils/reportGenerator';
 import Loader, { ButtonLoader } from '../../components/ui/Loader';
 import ImageCropper from '../../components/ui/ImageCropper';
 import { formatDate } from '../../utils/dateFormatter';
-import ViewAsBar from '../../components/shared/ViewAsBar';
+import AssignScreenButton from '../../components/admin/AssignScreenButton';
+
 
 const StudentsManagement = () => {
     const [searchQuery, setSearchQuery] = useState('');
@@ -916,13 +917,14 @@ const StudentsManagement = () => {
 
     return (
         <div className="space-y-4 sm:space-y-6">
-            <ViewAsBar />
+
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 sm:gap-6">
                 <div>
                     <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Students Management</h1>
                     <p className="text-gray-500 dark:text-slate-400 text-xs sm:text-sm">View and manage registered students</p>
                 </div>
                 <div className="flex items-center gap-2 w-full md:w-auto">
+                    <AssignScreenButton screenId="student_management" />
                     <button
                         onClick={toggleBioEditing}
                         className={`flex-1 md:flex-none px-4 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all border flex items-center justify-center gap-2 ${allowBioEditing

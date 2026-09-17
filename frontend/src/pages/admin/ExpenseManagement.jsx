@@ -10,7 +10,9 @@ import { financeAPI } from '../../services/api';
 import { userAPI } from '../../services/api';
 import ProfileAvatar from '../../components/ui/ProfileAvatar';
 import Loader from '../../components/ui/Loader';
-import ViewAsBar from '../../components/shared/ViewAsBar';
+import AssignScreenButton from '../../components/admin/AssignScreenButton';
+
+
 
 const categories = ['Rent', 'Salaries', 'Bills', 'Marketing', 'Equipment', 'Internet', 'Maintenance', 'Transport', 'Food', 'Pocket Money', 'Guest', 'Sim Balance', 'Shopping', 'Project', 'Loan', 'Other'];
 const categoryIcons = { 'Office Rent': '🏢', Salaries: '👥', Utilities: '💡', Marketing: '📣', Equipment: '💻', Internet: '🌐', Maintenance: '🛠️', Transport: '🚗', Food: '🍽️', Refreshment: '☕', 'Pocket Money': '👛', Guest: '🤝', Clean: '🧹', 'Sim Balance': '📶', Shopping: '🛍️', 'Course Income': '🎓', 'IOT Project': '📡', 'Website Project': '🌐', 'App Project': '📱', Other: '📦' };
@@ -464,10 +466,11 @@ const ExpenseManagement = ({ showProjectSections = true, projectsOnly = false })
 
     return (
         <div className="p-4 md:p-6 space-y-6">
-            <ViewAsBar />
+
             <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0"><h1 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white">{projectsOnly ? 'Projects' : 'Income, Expense & Projects'}</h1><p className="hidden sm:block text-sm text-gray-500 dark:text-slate-400">{projectsOnly ? 'Active work, collections and completed project tracking.' : 'Cash flow, project profitability and pending clearances in one place.'}</p></div>
                 <div className="ml-auto flex shrink-0 flex-row gap-2">
+                    <AssignScreenButton screenId="expense_management" />
                     {!projectsOnly && <button onClick={downloadFinanceReport} className="flex items-center justify-center gap-1.5 whitespace-nowrap rounded-xl border border-primary/25 bg-primary/10 px-3 py-2.5 text-xs font-bold text-primary transition-colors hover:bg-primary hover:text-white sm:gap-2 sm:px-4 sm:py-3 sm:text-sm"><Download className="h-4 w-4" /><span className="hidden md:inline">Download </span>Report</button>}
                     {showProjectSections && <button onClick={openNewProject} className="px-3 sm:px-4 py-2.5 sm:py-3 bg-slate-900 dark:bg-white dark:text-slate-900 text-white rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 sm:gap-2 whitespace-nowrap"><BriefcaseBusiness className="w-4 h-4" /> <span className="hidden sm:inline">Create </span>Project</button>}
                     {!projectsOnly && <button onClick={openNew} className="px-3 sm:px-4 py-2.5 sm:py-3 bg-primary text-white rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 sm:gap-2 whitespace-nowrap"><Plus className="w-4 h-4" /> <span className="hidden sm:inline">Add </span>Record</button>}
