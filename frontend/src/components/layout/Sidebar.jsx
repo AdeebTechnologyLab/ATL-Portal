@@ -486,7 +486,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                 { id: 'fees', labelKey: 'nav.feeVerification', icon: CreditCard, path: '/admin/fees', badge: adminPendingCounts.fees, secondaryBadge: adminPendingCounts.feesAwaiting },
                 { id: 'expenses', labelKey: 'Expenses', icon: Wallet, path: '/admin/expense' },
                 { id: 'discussion-room', labelKey: 'Discussion Room', icon: MessageSquare, path: '/admin/discussion-room', badge: discussionUnread },
-                { id: 'attendance-settings', labelKey: 'nav.attendanceSettings', icon: ClipboardList, path: '/admin/attendance-settings' },
+                { id: 'attendance-settings', labelKey: 'nav.attendanceSettings', icon: Clock, path: '/admin/attendance-settings' },
                 { id: 'registration-pages', labelKey: 'Registration Forms', icon: FileText, path: '/admin/registration-pages' },
                 { id: 'job-section-label', type: 'section', label: 'Job' },
                 { id: 'paid-tasks', labelKey: 'nav.paidTasks', icon: Briefcase, path: '/admin/paid-tasks', counters: { assigned: jobPostingCounts.totalAssigned || 0, submitted: jobPostingCounts.totalSubmitted || 0 } },

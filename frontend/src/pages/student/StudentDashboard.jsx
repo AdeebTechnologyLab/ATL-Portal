@@ -23,7 +23,7 @@ import GamesCard from '../../components/dashboard/GamesCard';
 import WorkspaceRestrictedBanner from '../../components/dashboard/WorkspaceRestrictedBanner';
 import StatCard from '../../components/ui/StatCard';
 import Badge from '../../components/ui/Badge';
-import { enrollmentAPI, feeAPI, assignmentAPI, liveClassAPI, chatAPI } from '../../services/api';
+import { enrollmentAPI, feeAPI, assignmentAPI, liveClassAPI, chatAPI, settingsAPI, attendanceAPI } from '../../services/api';
 import Modal from '../../components/ui/Modal'; // Assuming Modal component exists
 import { getCourseIcon, getCourseColor, getCourseStyle } from '../../utils/courseIcons';
 import { formatDate } from '../../utils/dateFormatter';
@@ -47,11 +47,15 @@ const StudentDashboard = () => {
     const [pendingAssignments, setPendingAssignments] = useState([]);
     const [withdrawModal, setWithdrawModal] = useState({ open: false, enrollmentId: null, courseTitle: '' });
     const [activeLiveClasses, setActiveLiveClasses] = useState([]);
+    const [timeTableClasses, setTimeTableClasses] = useState([]);
+    const [holidayDays, setHolidayDays] = useState([]);
+    const [showTimeTable, setShowTimeTable] = useState(false);
     const socketRef = useRef(null);
 
     useEffect(() => {
         fetchDashboardData();
         fetchActiveLiveClasses();
+        fetchTimeTable();
 
         // Request notification permission on dashboard load
         requestNotificationPermission();
@@ -188,6 +192,25 @@ const StudentDashboard = () => {
             console.error('Error fetching live classes:', error);
         }
     };
+
+    const fetchTimeTable = async () => {
+        try {
+            const res = await settingsAPI.getAll();
+            const allSettings = res.data.data || {};
+            const key = role === 'intern' ? 'intern_class_slots' : 'student_class_slots';
+            const slots = allSettings[key];
+            if (Array.isArray(slots) && slots.length > 0) {
+                setTimeTableClasses(slots);
+            }
+
+            const holidayRes = await attendanceAPI.getGlobalHolidays();
+            setHolidayDays(holidayRes.data.holidayDays || []);
+        } catch (error) {
+            console.error('Error fetching time table:', error);
+        }
+    };
+
+    const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
     const handleWithdrawClick = (e, course) => {
         e.stopPropagation(); // Prevent navigation
@@ -397,6 +420,122 @@ const StudentDashboard = () => {
                         </div>
                     </div>
                 </motion.div>
+
+                {/* Time Table Notification Card */}
+                {timeTableClasses.length > 0 && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.1 }}
+                        className="relative overflow-hidden rounded-2xl border border-primary/20 bg-white dark:bg-gray-900 shadow-sm"
+                    >
+                        <div className="p-3.5 sm:p-4">
+                            <div className="flex items-center justify-between mb-3">
+                                <div className="flex items-center gap-2">
+                                    <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center">
+                                        <Clock className="w-4.5 h-4.5 text-primary" />
+                                    </div>
+                                    <div>
+                                        <p className="text-[9px] font-black uppercase tracking-[0.2em] text-primary">
+                                            {role === 'intern' ? 'Internship' : 'Student'} Time Table
+                                        </p>
+                                        <h3 className="text-sm font-black text-gray-900 dark:text-white uppercase tracking-tight">
+                                            Today's Schedule
+                                        </h3>
+                                    </div>
+                                </div>
+                                <button
+                                    onClick={() => setShowTimeTable(!showTimeTable)}
+                                    className="text-[10px] font-black uppercase tracking-widest text-primary hover:text-primary/80 transition-colors"
+                                >
+                                    {showTimeTable ? 'Hide' : 'View All'}
+                                </button>
+                            </div>
+
+                            <AnimatePresence>
+                                {showTimeTable ? (
+                                    <motion.div
+                                        initial={{ opacity: 0, height: 0 }}
+                                        animate={{ opacity: 1, height: 'auto' }}
+                                        exit={{ opacity: 0, height: 0 }}
+                                        className="space-y-3"
+                                    >
+                                        {/* Class Slots */}
+                                        <div className="space-y-2">
+                                            {timeTableClasses.map((cls, index) => (
+                                                <div
+                                                    key={index}
+                                                    className="flex items-center gap-3 p-2.5 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700"
+                                                >
+                                                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                                                        <span className="text-[10px] font-black text-primary">{index + 1}</span>
+                                                    </div>
+                                                    <div className="flex-1 min-w-0">
+                                                        <p className="text-xs font-bold text-gray-900 dark:text-white truncate">{cls.name}</p>
+                                                        <p className="text-[10px] text-gray-400 font-medium">
+                                                            {cls.startTime} - {cls.endTime}
+                                                        </p>
+                                                    </div>
+                                                    <span className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase ${
+                                                        cls.mode === 'online'
+                                                            ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400'
+                                                            : 'bg-orange-100 text-orange-700 dark:bg-orange-900/20 dark:text-orange-400'
+                                                    }`}>
+                                                        {cls.mode === 'online' ? 'Online' : 'On-Site'}
+                                                    </span>
+                                                </div>
+                                            ))}
+                                        </div>
+
+                                        {/* Weekly Off Days */}
+                                        {holidayDays.length > 0 && (
+                                            <div className="pt-2 border-t border-gray-100 dark:border-gray-700">
+                                                <p className="text-[9px] font-black uppercase tracking-[0.2em] text-gray-400 mb-2">Weekly Off Days</p>
+                                                <div className="flex flex-wrap gap-1.5">
+                                                    {DAY_NAMES.map((day, index) => {
+                                                        const isOff = holidayDays.includes(index);
+                                                        if (!isOff) return null;
+                                                        return (
+                                                            <span
+                                                                key={day}
+                                                                className="px-2 py-1 rounded-lg bg-slate-900 text-white text-[9px] font-black uppercase"
+                                                            >
+                                                                {day}
+                                                            </span>
+                                                        );
+                                                    })}
+                                                </div>
+                                            </div>
+                                        )}
+                                    </motion.div>
+                                ) : (
+                                    <motion.div
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        className="flex items-center gap-2 overflow-x-auto pb-1"
+                                    >
+                                        {timeTableClasses.slice(0, 3).map((cls, index) => (
+                                            <div
+                                                key={index}
+                                                className="flex items-center gap-2 px-3 py-2 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shrink-0"
+                                            >
+                                                <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                                                <span className="text-[10px] font-bold text-gray-700 dark:text-gray-300 whitespace-nowrap">
+                                                    {cls.name} • {cls.startTime}
+                                                </span>
+                                            </div>
+                                        ))}
+                                        {timeTableClasses.length > 3 && (
+                                            <span className="text-[10px] font-black text-gray-400 shrink-0">
+                                                +{timeTableClasses.length - 3} more
+                                            </span>
+                                        )}
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
+                    </motion.div>
+                )}
 
                 <BirthdayWish />
 

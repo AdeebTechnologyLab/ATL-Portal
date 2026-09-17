@@ -1,15 +1,22 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Clock, Plus, Trash2, Edit2, X, Check, Calendar, Moon, Sun, Shield, Zap, Settings2, CheckCircle2, MessageSquare } from "lucide-react";
+import { Clock, Plus, Trash2, X, Check, Calendar, Moon, Shield, Zap, MessageSquare, Globe, MapPin, Users } from "lucide-react";
 import { settingsAPI, attendanceAPI } from "../../services/api";
 import { showToast } from "../../utils/customToast";
 import Loader from "../../components/ui/Loader";
 import ViewAsBar from '../../components/shared/ViewAsBar';
 
-const CLASS_TIME_KEY = "class_time_slots";
-const DEFAULT_SLOTS = ["Class 1 11AM", "Class 2 3PM", "Class 3 5PM", "Class 3 9PM"];
+const STUDENT_SLOTS_KEY = "student_class_slots";
+const INTERN_SLOTS_KEY = "intern_class_slots";
+const STUDENT_HOLIDAYS_KEY = "student_holiday_days";
+const INTERN_HOLIDAYS_KEY = "intern_holiday_days";
+
+const DEFAULT_CLASSES = [
+    { name: "Class 1", startTime: "09:00", endTime: "10:00", mode: "onsite" },
+    { name: "Class 2", startTime: "10:00", endTime: "11:00", mode: "online" },
+    { name: "Class 3", startTime: "11:00", endTime: "12:00", mode: "onsite" },
+];
 const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-const DAY_FULL = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 const SectionCard = ({ icon: Icon, accent, label, sublabel, children }) => (
     <motion.div
@@ -17,7 +24,6 @@ const SectionCard = ({ icon: Icon, accent, label, sublabel, children }) => (
         animate={{ opacity: 1, y: 0 }}
         className="bg-white dark:bg-gray-800 rounded-xl sm:rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden"
     >
-        {/* Card Header */}
         <div className="flex items-center gap-3 sm:gap-4 px-4 sm:px-6 pt-4 sm:pt-6 pb-3 sm:pb-4 border-b border-gray-50 dark:border-gray-700">
             <div className={`w-10 h-10 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl ${accent} flex items-center justify-center shrink-0 shadow-sm`}>
                 <Icon className="w-5 h-5" />
@@ -31,18 +37,229 @@ const SectionCard = ({ icon: Icon, accent, label, sublabel, children }) => (
     </motion.div>
 );
 
-const AttendanceSettings = () => {
-    const [slots, setSlots] = useState([]);
-    const [newSlot, setNewSlot] = useState("");
-    const [editingIndex, setEditingIndex] = useState(null);
-    const [editingValue, setEditingValue] = useState("");
-    const [isSavingSlots, setIsSavingSlots] = useState(false);
-    const [isLoadingSlots, setIsLoadingSlots] = useState(true);
+const ClassTimeSection = ({ classes, setClasses, isLoading, isSaving, setIsSaving, sectionKey, itemLabel = "Class", itemPrefix = "Class" }) => {
+    const handleAddClass = async () => {
+        const nextNum = classes.length + 1;
+        const newClass = { name: `${itemPrefix} ${nextNum}`, startTime: "09:00", endTime: "10:00", mode: "onsite" };
+        const updated = [...classes, newClass];
+        setClasses(updated);
+        await saveClasses(updated);
+    };
 
-    const [holidayDays, setHolidayDays] = useState([]);
-    const [isLoadingHolidays, setIsLoadingHolidays] = useState(true);
-    const [isSavingHoliday, setIsSavingHoliday] = useState(false);
-    const [syncedDay, setSyncedDay] = useState(null);
+    const handleDeleteClass = async (index) => {
+        const updated = classes.filter((_, i) => i !== index);
+        setClasses(updated);
+        await saveClasses(updated);
+    };
+
+    const handleClassChange = async (index, field, value) => {
+        const updated = classes.map((c, i) => i === index ? { ...c, [field]: value } : c);
+        setClasses(updated);
+        await saveClasses(updated);
+    };
+
+    const saveClasses = async (updated) => {
+        setIsSaving(true);
+        try {
+            await settingsAPI.update(sectionKey, updated);
+            showToast.success("Saved!", "Time table updated.");
+        } catch { showToast.error("Error", "Could not save."); }
+        finally { setIsSaving(false); }
+    };
+
+    return (
+        <>
+            {/* Header Row */}
+            <div className="grid grid-cols-[1fr_100px_100px_90px_36px] gap-2 mb-3 px-1">
+                <span className="text-[9px] font-black text-gray-400 uppercase tracking-wider">{itemLabel}</span>
+                <span className="text-[9px] font-black text-gray-400 uppercase tracking-wider text-center">Start</span>
+                <span className="text-[9px] font-black text-gray-400 uppercase tracking-wider text-center">End</span>
+                <span className="text-[9px] font-black text-gray-400 uppercase tracking-wider text-center">Mode</span>
+                <span></span>
+            </div>
+
+            {/* Slot List */}
+            <div className="rounded-2xl border border-gray-100 dark:border-gray-700 overflow-hidden">
+                <div className="flex items-center justify-between px-4 py-2 bg-gray-50 dark:bg-gray-700/40 border-b border-gray-100 dark:border-gray-700">
+                    <span className="text-[9px] font-black text-gray-400 uppercase tracking-[0.25em]">
+                        {classes.length} Class{classes.length !== 1 ? "es" : ""}
+                    </span>
+                    {isSaving && (
+                        <span className="flex items-center gap-1 text-[9px] font-black text-primary animate-pulse">
+                            <Zap className="w-3 h-3" /> Saving...
+                        </span>
+                    )}
+                </div>
+
+                {isLoading ? (
+                    <div className="py-10 flex justify-center"><Loader /></div>
+                ) : classes.length === 0 ? (
+                    <div className="py-10 text-center text-gray-400">
+                        <Clock className="w-7 h-7 mx-auto mb-2 opacity-30" />
+                                    <p className="text-xs font-bold">No {itemLabel.toLowerCase()}s yet. Add one below.</p>
+                    </div>
+                ) : (
+                    <AnimatePresence>
+                        {classes.map((cls, index) => (
+                            <motion.div key={index}
+                                initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}
+                                className="flex items-center gap-2 px-3 py-2.5 border-b border-gray-50 dark:border-gray-700 last:border-0 hover:bg-gray-50 dark:hover:bg-gray-700/20 transition-colors"
+                            >
+                                <div className="w-7 h-7 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                                    <span className="text-[9px] font-black text-primary">{index + 1}</span>
+                                </div>
+
+                                <input
+                                    type="text"
+                                    value={cls.name}
+                                    onChange={(e) => handleClassChange(index, 'name', e.target.value)}
+                                    className="min-w-0 flex-1 px-2 py-1.5 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700/50 text-xs font-bold text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                                />
+
+                                <input
+                                    type="time"
+                                    value={cls.startTime}
+                                    onChange={(e) => handleClassChange(index, 'startTime', e.target.value)}
+                                                className="w-[100px] px-2 py-1.5 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700/50 text-xs font-bold text-gray-800 dark:text-gray-100 text-center focus:outline-none focus:ring-2 focus:ring-primary/30 [color-scheme:light] dark:[color-scheme:dark]"
+                                            />
+
+                                            <input
+                                                type="time"
+                                                value={cls.endTime}
+                                                onChange={(e) => handleClassChange(index, 'endTime', e.target.value)}
+                                                className="w-[100px] px-2 py-1.5 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700/50 text-xs font-bold text-gray-800 dark:text-gray-100 text-center focus:outline-none focus:ring-2 focus:ring-primary/30 [color-scheme:light] dark:[color-scheme:dark]"
+                                />
+
+                                <select
+                                    value={cls.mode || "onsite"}
+                                    onChange={(e) => handleClassChange(index, 'mode', e.target.value)}
+                                    className={`w-[90px] px-1 py-1.5 rounded-lg border text-xs font-bold text-center focus:outline-none focus:ring-2 focus:ring-primary/30 cursor-pointer ${
+                                        cls.mode === 'online'
+                                            ? 'border-emerald-300 dark:border-emerald-700 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400'
+                                            : 'border-orange-300 dark:border-orange-700 bg-orange-50 dark:bg-orange-900/20 text-orange-700 dark:text-orange-400'
+                                    }`}
+                                >
+                                    <option value="online">Online</option>
+                                    <option value="onsite">On-Site</option>
+                                </select>
+
+                                <button onClick={() => handleDeleteClass(index)}
+                                    className="p-1.5 rounded-lg bg-red-50 dark:bg-red-900/30 text-red-500 hover:bg-red-100 transition-colors shrink-0">
+                                    <Trash2 className="w-3 h-3" />
+                                </button>
+                            </motion.div>
+                        ))}
+                    </AnimatePresence>
+                )}
+            </div>
+
+            <button onClick={handleAddClass} disabled={isSaving}
+                className="mt-4 w-full px-4 py-2.5 border-2 border-dashed border-gray-200 dark:border-gray-600 rounded-xl text-xs font-bold text-gray-400 hover:border-primary/40 hover:text-primary hover:bg-primary/5 transition-all flex items-center justify-center gap-2">
+                <Plus className="w-4 h-4" /> Add New Class
+            </button>
+        </>
+    );
+};
+
+const HolidaySection = ({ holidayDays, setHolidayDays, isLoading, isSaving, setIsSaving, syncedDay, setSyncedDay, sectionKey }) => {
+    const toggleDay = async (dayIndex) => {
+        setIsSaving(true);
+        const updated = holidayDays.includes(dayIndex)
+            ? holidayDays.filter(d => d !== dayIndex)
+            : [...holidayDays, dayIndex];
+        try {
+            await attendanceAPI.updateGlobalHolidays(updated);
+            setHolidayDays(updated);
+            setSyncedDay(dayIndex);
+            setTimeout(() => setSyncedDay(null), 1500);
+        } catch { showToast.error("Error", "Failed to update."); }
+        finally { setIsSaving(false); }
+    };
+
+    return (
+        <>
+            {isLoading ? (
+                <div className="py-8 flex justify-center"><Loader /></div>
+            ) : (
+                <>
+                    <div className="grid grid-cols-7 gap-1 sm:gap-2 mb-4 sm:mb-5">
+                        {DAY_NAMES.map((day, index) => {
+                            const isOff = holidayDays.includes(index);
+                            const isSyncing = syncedDay === index;
+                            return (
+                                <button key={day} onClick={() => toggleDay(index)} disabled={isSaving}
+                                    className={`relative min-w-0 flex flex-col items-center justify-center py-3 sm:py-4 rounded-lg sm:rounded-2xl border sm:border-2 font-black text-center transition-all duration-300 active:scale-90 ${isOff
+                                        ? "bg-slate-900 border-slate-900 text-white shadow-lg shadow-slate-900/20"
+                                        : "bg-white dark:bg-gray-700 border-gray-100 dark:border-gray-600 text-gray-400 hover:border-primary/30 hover:text-primary hover:bg-primary/5"
+                                    } ${isSaving ? "opacity-60 cursor-not-allowed" : "cursor-pointer"}`}
+                                >
+                                    {isOff ? (
+                                        <Moon className="w-3.5 h-3.5 mb-1 text-blue-300 fill-blue-400/20" />
+                                    ) : (
+                                        <div className="w-1.5 h-1.5 rounded-full bg-gray-200 group-hover:bg-primary/40 mb-1" />
+                                    )}
+                                    <span className="text-[8px] sm:text-[10px] uppercase tracking-normal sm:tracking-wider">{day}</span>
+
+                                    <AnimatePresence>
+                                        {isSyncing && (
+                                            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}
+                                                className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center shadow-md">
+                                                <Check className="w-3 h-3 text-white" strokeWidth={3} />
+                                            </motion.div>
+                                        )}
+                                        {isOff && !isSyncing && (
+                                            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }}
+                                                className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-white dark:bg-gray-800 rounded-full border-2 border-red-400 flex items-center justify-center shadow-sm">
+                                                <X className="w-2.5 h-2.5 text-red-400" strokeWidth={3} />
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
+                                </button>
+                            );
+                        })}
+                    </div>
+
+                    <div className="bg-gradient-to-r from-slate-50 to-gray-50 dark:from-gray-700/40 dark:to-gray-700/20 rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-slate-100 dark:border-gray-700">
+                        <div className="flex items-center gap-2 mb-3">
+                            <Shield className="w-4 h-4 text-primary" />
+                            <span className="text-[9px] font-black uppercase tracking-[0.25em] text-gray-900 dark:text-white">System Protocols</span>
+                        </div>
+                        <ul className="space-y-2">
+                            {[
+                                "Selected days are bypassed during global attendance cycles.",
+                                "No attendance records will be generated for bypassed days.",
+                                "Statistical calculations exclude these intervals automatically."
+                            ].map((txt, i) => (
+                                <li key={i} className="flex items-start gap-2 text-[11px] text-gray-500 dark:text-gray-400">
+                                    <div className="w-1 h-1 rounded-full bg-primary mt-1.5 shrink-0"></div>
+                                    {txt}
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                </>
+            )}
+        </>
+    );
+};
+
+const AttendanceSettings = () => {
+    const [activeFilter, setActiveFilter] = useState("student");
+    const [studentClasses, setStudentClasses] = useState([]);
+    const [internClasses, setInternClasses] = useState([]);
+    const [isSavingStudent, setIsSavingStudent] = useState(false);
+    const [isSavingIntern, setIsSavingIntern] = useState(false);
+    const [isLoadingStudent, setIsLoadingStudent] = useState(true);
+    const [isLoadingIntern, setIsLoadingIntern] = useState(true);
+
+    const [studentHolidays, setStudentHolidays] = useState([]);
+    const [internHolidays, setInternHolidays] = useState([]);
+    const [isLoadingStudentHolidays, setIsLoadingStudentHolidays] = useState(true);
+    const [isLoadingInternHolidays, setIsLoadingInternHolidays] = useState(true);
+    const [isSavingStudentHoliday, setIsSavingStudentHoliday] = useState(false);
+    const [isSavingInternHoliday, setIsSavingInternHoliday] = useState(false);
+    const [syncedStudentDay, setSyncedStudentDay] = useState(null);
+    const [syncedInternDay, setSyncedInternDay] = useState(null);
 
     const [whatsappEnabled, setWhatsappEnabled] = useState(() => {
         return localStorage.getItem('attendance_whatsapp_enabled') !== 'false';
@@ -50,54 +267,45 @@ const AttendanceSettings = () => {
     const [isSavingWA, setIsSavingWA] = useState(false);
 
     useEffect(() => {
-        fetchSlots();
-        fetchHolidays();
+        fetchStudentClasses();
+        fetchInternClasses();
+        fetchStudentHolidays();
+        fetchInternHolidays();
         fetchWhatsAppSetting();
     }, []);
 
-    const fetchSlots = async () => {
-        setIsLoadingSlots(true);
+    const fetchStudentClasses = async () => {
+        setIsLoadingStudent(true);
         try {
             const res = await settingsAPI.getAll();
-            const saved = res.data.data?.[CLASS_TIME_KEY];
-            setSlots(Array.isArray(saved) && saved.length > 0 ? saved : DEFAULT_SLOTS);
-        } catch { setSlots(DEFAULT_SLOTS); }
-        finally { setIsLoadingSlots(false); }
+            const saved = res.data.data?.[STUDENT_SLOTS_KEY];
+            setStudentClasses(Array.isArray(saved) && saved.length > 0 && saved[0].startTime ? saved : [...DEFAULT_CLASSES]);
+        } catch { setStudentClasses([...DEFAULT_CLASSES]); }
+        finally { setIsLoadingStudent(false); }
     };
 
-    const saveSlots = async (updatedSlots) => {
-        setIsSavingSlots(true);
+    const fetchInternClasses = async () => {
+        setIsLoadingIntern(true);
         try {
-            await settingsAPI.update(CLASS_TIME_KEY, updatedSlots);
-            showToast.success("Saved!", "Class time slots updated.");
-        } catch { showToast.error("Error", "Could not save slots."); }
-        finally { setIsSavingSlots(false); }
+            const res = await settingsAPI.getAll();
+            const saved = res.data.data?.[INTERN_SLOTS_KEY];
+            setInternClasses(Array.isArray(saved) && saved.length > 0 && saved[0].startTime ? saved : [...DEFAULT_CLASSES]);
+        } catch { setInternClasses([...DEFAULT_CLASSES]); }
+        finally { setIsLoadingIntern(false); }
     };
 
-    const handleAdd = async () => {
-        const trimmed = newSlot.trim();
-        if (!trimmed || slots.includes(trimmed)) return;
-        const updated = [...slots, trimmed];
-        setSlots(updated); setNewSlot(""); await saveSlots(updated);
-    };
-
-    const handleDelete = async (i) => {
-        const u = slots.filter((_, idx) => idx !== i);
-        setSlots(u); await saveSlots(u);
-    };
-
-    const handleEditSave = async (i) => {
-        const trimmed = editingValue.trim();
-        if (!trimmed) return;
-        const u = slots.map((s, idx) => idx === i ? trimmed : s);
-        setSlots(u); setEditingIndex(null); setEditingValue(""); await saveSlots(u);
-    };
-
-    const fetchHolidays = async () => {
+    const fetchStudentHolidays = async () => {
         try {
             const res = await attendanceAPI.getGlobalHolidays();
-            setHolidayDays(res.data.holidayDays || []);
-        } catch { } finally { setIsLoadingHolidays(false); }
+            setStudentHolidays(res.data.holidayDays || []);
+        } catch { } finally { setIsLoadingStudentHolidays(false); }
+    };
+
+    const fetchInternHolidays = async () => {
+        try {
+            const res = await attendanceAPI.getGlobalHolidays();
+            setInternHolidays(res.data.holidayDays || []);
+        } catch { } finally { setIsLoadingInternHolidays(false); }
     };
 
     const fetchWhatsAppSetting = async () => {
@@ -122,23 +330,7 @@ const AttendanceSettings = () => {
             showToast.success("Saved!", `WhatsApp notifications ${next ? 'enabled' : 'disabled'}.`);
         } catch {
             showToast.error("Error", "Could not save setting.");
-        } finally {
-            setIsSavingWA(false);
-        }
-    };
-
-    const toggleDay = async (dayIndex) => {
-        setIsSavingHoliday(true);
-        const updated = holidayDays.includes(dayIndex)
-            ? holidayDays.filter(d => d !== dayIndex)
-            : [...holidayDays, dayIndex];
-        try {
-            await attendanceAPI.updateGlobalHolidays(updated);
-            setHolidayDays(updated);
-            setSyncedDay(dayIndex);
-            setTimeout(() => setSyncedDay(null), 1500);
-        } catch { showToast.error("Error", "Failed to update."); }
-        finally { setIsSavingHoliday(false); }
+        } finally { setIsSavingWA(false); }
     };
 
     return (
@@ -147,17 +339,16 @@ const AttendanceSettings = () => {
                 <ViewAsBar />
 
                 <div className="mb-4 sm:mb-6">
-                    <h1 className="text-xl sm:text-3xl font-black text-gray-900 dark:text-white uppercase tracking-tight">Attendance Settings</h1>
+                    <h1 className="text-xl sm:text-3xl font-black text-gray-900 dark:text-white uppercase tracking-tight">Time Table</h1>
                     <p className="text-xs sm:text-sm text-gray-400 mt-1">Manage class schedules and weekly off days.</p>
                 </div>
 
-                <div className="grid grid-cols-1 xl:grid-cols-2 gap-3 sm:gap-5 items-start">
-
-                    {/* ── WhatsApp Notifications ── */}
+                {/* ── WhatsApp Notifications ── */}
+                <div className="mb-3 sm:mb-5">
                     <SectionCard icon={MessageSquare} accent="bg-green-50 text-green-600" label="Notifications" sublabel="WhatsApp Alerts">
                         <div className="flex items-center justify-between gap-3">
                             <div className="min-w-0">
-                                <p className="text-xs sm:text-sm font-bold text-gray-700 dark:text-gray-200">Attendance WhatsApp Message</p>
+                                <p className="text-xs sm:text-sm font-bold text-gray-700 dark:text-gray-200">Time Table WhatsApp Message</p>
                                 <p className="text-[10px] sm:text-[11px] text-gray-400 mt-1">Jab teacher attendance lagaye toh guardian ko WhatsApp par report bhejega.</p>
                             </div>
                             <button
@@ -176,150 +367,93 @@ const AttendanceSettings = () => {
                             {whatsappEnabled ? 'Active — Guardian ko WhatsApp jayega' : 'Inactive — WhatsApp disabled hai'}
                         </div>
                     </SectionCard>
+                </div>
 
-                    {/* ── Class Times ── */}
-                    <SectionCard icon={Clock} accent="bg-primary/10 text-primary" label="Schedule" sublabel="Class Time Slots">
-                        {/* Add Row */}
-                        <div className="flex gap-2 mb-4 sm:mb-5">
-                            <input
-                                type="text" value={newSlot}
-                                onChange={(e) => setNewSlot(e.target.value)}
-                                onKeyDown={(e) => e.key === "Enter" && handleAdd()}
-                                placeholder="e.g. Class 4 7PM"
-                                className="min-w-0 flex-1 px-3 sm:px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 text-xs sm:text-sm font-bold text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary/30 placeholder:font-normal placeholder:text-gray-400"
-                            />
-                            <button onClick={handleAdd} disabled={!newSlot.trim() || isSavingSlots}
-                                className="px-3 sm:px-5 py-2.5 bg-primary text-white rounded-xl font-black text-xs uppercase tracking-wider flex items-center gap-1.5 sm:gap-2 hover:bg-primary/90 active:scale-95 transition-all disabled:opacity-40 shadow-sm shadow-primary/20">
-                                <Plus className="w-4 h-4" /> <span className="hidden sm:inline">Add</span>
-                            </button>
-                        </div>
+                <div className="grid grid-cols-1 xl:grid-cols-2 gap-3 sm:gap-5 items-start">
 
-                        {/* Slot List */}
-                        <div className="rounded-2xl border border-gray-100 dark:border-gray-700 overflow-hidden">
-                            <div className="flex items-center justify-between px-4 py-2 bg-gray-50 dark:bg-gray-700/40 border-b border-gray-100 dark:border-gray-700">
-                                <span className="text-[9px] font-black text-gray-400 uppercase tracking-[0.25em]">
-                                    {slots.length} Slot{slots.length !== 1 ? "s" : ""}
-                                </span>
-                                {isSavingSlots && (
-                                    <span className="flex items-center gap-1 text-[9px] font-black text-primary animate-pulse">
-                                        <Zap className="w-3 h-3" /> Saving...
-                                    </span>
-                                )}
-                            </div>
+                    {/* ── Filter Tabs ── */}
+                    <div className="xl:col-span-2 flex gap-1.5 p-1 bg-gray-100 dark:bg-gray-700/50 rounded-xl mb-2">
+                        <button
+                            onClick={() => setActiveFilter("student")}
+                            className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-lg text-xs font-black uppercase tracking-wider transition-all duration-200 ${
+                                activeFilter === "student"
+                                    ? "bg-white dark:bg-gray-800 text-primary shadow-sm"
+                                    : "text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                            }`}
+                        >
+                            <Clock className="w-4 h-4" />
+                            Student
+                        </button>
+                        <button
+                            onClick={() => setActiveFilter("intern")}
+                            className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-lg text-xs font-black uppercase tracking-wider transition-all duration-200 ${
+                                activeFilter === "intern"
+                                    ? "bg-white dark:bg-gray-800 text-blue-600 shadow-sm"
+                                    : "text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                            }`}
+                        >
+                            <Users className="w-4 h-4" />
+                            Internship
+                        </button>
+                    </div>
 
-                            {isLoadingSlots ? (
-                                <div className="py-10 flex justify-center"><Loader /></div>
-                            ) : slots.length === 0 ? (
-                                <div className="py-10 text-center text-gray-400">
-                                    <Clock className="w-7 h-7 mx-auto mb-2 opacity-30" />
-                                    <p className="text-xs font-bold">No slots yet. Add one above.</p>
-                                </div>
-                            ) : (
-                                <AnimatePresence>
-                                    {slots.map((slot, index) => (
-                                        <motion.div key={slot + index}
-                                            initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}
-                                            className={`flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2.5 sm:py-3 group transition-colors border-b border-gray-50 dark:border-gray-700 last:border-0 ${editingIndex === index ? "bg-primary/5" : "hover:bg-gray-50 dark:hover:bg-gray-700/20"}`}
-                                        >
-                                            <div className="w-7 h-7 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-                                                <span className="text-[9px] font-black text-primary">{index + 1}</span>
-                                            </div>
+                    {/* ── Student ── */}
+                    {activeFilter === "student" && (
+                        <>
+                            <SectionCard icon={Clock} accent="bg-primary/10 text-primary" label="Student" sublabel="Class Time Slots">
+                                <ClassTimeSection
+                                    classes={studentClasses}
+                                    setClasses={setStudentClasses}
+                                    isLoading={isLoadingStudent}
+                                    isSaving={isSavingStudent}
+                                    setIsSaving={setIsSavingStudent}
+                                    sectionKey={STUDENT_SLOTS_KEY}
+                                />
+                            </SectionCard>
 
-                                            {editingIndex === index ? (
-                                                <input autoFocus type="text" value={editingValue}
-                                                    onChange={(e) => setEditingValue(e.target.value)}
-                                                    onKeyDown={(e) => { if (e.key === "Enter") handleEditSave(index); if (e.key === "Escape") { setEditingIndex(null); setEditingValue(""); } }}
-                                                    className="flex-1 px-3 py-1.5 rounded-lg border border-primary/40 bg-white dark:bg-gray-700 text-sm font-bold text-gray-800 dark:text-gray-100 focus:outline-none"
-                                                />
-                                            ) : (
-                                                <span className="flex-1 text-sm font-bold text-gray-700 dark:text-gray-200">{slot}</span>
-                                            )}
+                            <SectionCard icon={Calendar} accent="bg-indigo-50 text-indigo-500" label="Student" sublabel="Weekly Off Days">
+                                <HolidaySection
+                                    holidayDays={studentHolidays}
+                                    setHolidayDays={setStudentHolidays}
+                                    isLoading={isLoadingStudentHolidays}
+                                    isSaving={isSavingStudentHoliday}
+                                    setIsSaving={setIsSavingStudentHoliday}
+                                    syncedDay={syncedStudentDay}
+                                    setSyncedDay={setSyncedStudentDay}
+                                    sectionKey={STUDENT_HOLIDAYS_KEY}
+                                />
+                            </SectionCard>
+                        </>
+                    )}
 
-                                            <div className={`flex items-center gap-1 transition-opacity ${editingIndex === index ? "opacity-100" : "opacity-100 sm:opacity-0 sm:group-hover:opacity-100"}`}>
-                                                {editingIndex === index ? (
-                                                    <>
-                                                        <button onClick={() => handleEditSave(index)} className="p-1.5 rounded-lg bg-emerald-500 text-white hover:bg-emerald-600 transition-colors"><Check className="w-3 h-3" /></button>
-                                                        <button onClick={() => { setEditingIndex(null); setEditingValue(""); }} className="p-1.5 rounded-lg bg-gray-200 dark:bg-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-300 transition-colors"><X className="w-3 h-3" /></button>
-                                                    </>
-                                                ) : (
-                                                    <>
-                                                        <button onClick={() => { setEditingIndex(index); setEditingValue(slot); }} className="p-1.5 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-500 hover:bg-blue-100 transition-colors"><Edit2 className="w-3 h-3" /></button>
-                                                        <button onClick={() => handleDelete(index)} className="p-1.5 rounded-lg bg-red-50 dark:bg-red-900/30 text-red-500 hover:bg-red-100 transition-colors"><Trash2 className="w-3 h-3" /></button>
-                                                    </>
-                                                )}
-                                            </div>
-                                        </motion.div>
-                                    ))}
-                                </AnimatePresence>
-                            )}
-                        </div>
-                    </SectionCard>
+                    {/* ── Internship ── */}
+                    {activeFilter === "intern" && (
+                        <>
+                            <SectionCard icon={Users} accent="bg-blue-50 text-blue-600" label="Internship" sublabel="Class Time Slots">
+                                <ClassTimeSection
+                                    classes={internClasses}
+                                    setClasses={setInternClasses}
+                                    isLoading={isLoadingIntern}
+                                    isSaving={isSavingIntern}
+                                    setIsSaving={setIsSavingIntern}
+                                    sectionKey={INTERN_SLOTS_KEY}
+                                />
+                            </SectionCard>
 
-                    {/* ── Weekly Off Days ── */}
-                    <SectionCard icon={Calendar} accent="bg-indigo-50 text-indigo-500" label="Administrative Logic" sublabel="Weekly Off Days">
-                        {isLoadingHolidays ? (
-                            <div className="py-8 flex justify-center"><Loader /></div>
-                        ) : (
-                            <>
-                                <div className="grid grid-cols-7 gap-1 sm:gap-2 mb-4 sm:mb-5">
-                                    {DAY_NAMES.map((day, index) => {
-                                        const isOff = holidayDays.includes(index);
-                                        const isSyncing = syncedDay === index;
-                                        return (
-                                            <button key={day} onClick={() => toggleDay(index)} disabled={isSavingHoliday}
-                                                className={`relative min-w-0 flex flex-col items-center justify-center py-3 sm:py-4 rounded-lg sm:rounded-2xl border sm:border-2 font-black text-center transition-all duration-300 active:scale-90 ${isOff
-                                                    ? "bg-slate-900 border-slate-900 text-white shadow-lg shadow-slate-900/20"
-                                                    : "bg-white dark:bg-gray-700 border-gray-100 dark:border-gray-600 text-gray-400 hover:border-primary/30 hover:text-primary hover:bg-primary/5"
-                                                } ${isSavingHoliday ? "opacity-60 cursor-not-allowed" : "cursor-pointer"}`}
-                                            >
-                                                {isOff ? (
-                                                    <Moon className="w-3.5 h-3.5 mb-1 text-blue-300 fill-blue-400/20" />
-                                                ) : (
-                                                    <div className="w-1.5 h-1.5 rounded-full bg-gray-200 group-hover:bg-primary/40 mb-1" />
-                                                )}
-                                                <span className="text-[8px] sm:text-[10px] uppercase tracking-normal sm:tracking-wider">{day}</span>
-
-                                                <AnimatePresence>
-                                                    {isSyncing && (
-                                                        <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}
-                                                            className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center shadow-md">
-                                                            <Check className="w-3 h-3 text-white" strokeWidth={3} />
-                                                        </motion.div>
-                                                    )}
-                                                    {isOff && !isSyncing && (
-                                                        <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }}
-                                                            className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-white dark:bg-gray-800 rounded-full border-2 border-red-400 flex items-center justify-center shadow-sm">
-                                                            <X className="w-2.5 h-2.5 text-red-400" strokeWidth={3} />
-                                                        </motion.div>
-                                                    )}
-                                                </AnimatePresence>
-                                            </button>
-                                        );
-                                    })}
-                                </div>
-
-                                {/* Info */}
-                                <div className="bg-gradient-to-r from-slate-50 to-gray-50 dark:from-gray-700/40 dark:to-gray-700/20 rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-slate-100 dark:border-gray-700">
-                                    <div className="flex items-center gap-2 mb-3">
-                                        <Shield className="w-4 h-4 text-primary" />
-                                        <span className="text-[9px] font-black uppercase tracking-[0.25em] text-gray-900 dark:text-white">System Protocols</span>
-                                    </div>
-                                    <ul className="space-y-2">
-                                        {[
-                                            "Selected days are bypassed during global attendance cycles.",
-                                            "No attendance records will be generated for bypassed days.",
-                                            "Statistical calculations exclude these intervals automatically."
-                                        ].map((txt, i) => (
-                                            <li key={i} className="flex items-start gap-2 text-[11px] text-gray-500 dark:text-gray-400">
-                                                <div className="w-1 h-1 rounded-full bg-primary mt-1.5 shrink-0"></div>
-                                                {txt}
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-                            </>
-                        )}
-                    </SectionCard>
+                            <SectionCard icon={Calendar} accent="bg-purple-50 text-purple-500" label="Internship" sublabel="Weekly Off Days">
+                                <HolidaySection
+                                    holidayDays={internHolidays}
+                                    setHolidayDays={setInternHolidays}
+                                    isLoading={isLoadingInternHolidays}
+                                    isSaving={isSavingInternHoliday}
+                                    setIsSaving={setIsSavingInternHoliday}
+                                    syncedDay={syncedInternDay}
+                                    setSyncedDay={setSyncedInternDay}
+                                    sectionKey={INTERN_HOLIDAYS_KEY}
+                                />
+                            </SectionCard>
+                        </>
+                    )}
 
                 </div>
             </div>

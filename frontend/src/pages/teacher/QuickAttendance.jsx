@@ -14,10 +14,9 @@ import Badge from '../../components/ui/Badge';
 import Loader, { ButtonLoader } from '../../components/ui/Loader';
 
 const DEFAULT_CLASS_TIME_OPTIONS = [
-    { label: "Class 1 11AM", value: "Class 1 11AM" },
-    { label: "Class 2 3PM", value: "Class 2 3PM" },
-    { label: "Class 3 5PM", value: "Class 3 5PM" },
-    { label: "Class 3 9PM", value: "Class 3 9PM" }
+    { label: "Class 1 (09:00 - 10:00)", value: "Class 1 (09:00 - 10:00)" },
+    { label: "Class 2 (10:00 - 11:00)", value: "Class 2 (10:00 - 11:00)" },
+    { label: "Class 3 (11:00 - 12:00)", value: "Class 3 (11:00 - 12:00)" },
 ];
 
 export { DEFAULT_CLASS_TIME_OPTIONS };
@@ -73,6 +72,8 @@ const QuickAttendance = () => {
     const [courses, setCourses] = useState([]);
     const [holidayDays, setHolidayDays] = useState([]);
     const [classTimeOptions, setClassTimeOptions] = useState(DEFAULT_CLASS_TIME_OPTIONS);
+    const [studentClassTimeOptions, setStudentClassTimeOptions] = useState(DEFAULT_CLASS_TIME_OPTIONS);
+    const [internClassTimeOptions, setInternClassTimeOptions] = useState(DEFAULT_CLASS_TIME_OPTIONS);
     // Fail closed until the admin-controlled server setting is loaded.
     const [whatsappEnabled, setWhatsappEnabled] = useState(false);
     const socketRef = useRef(null);
@@ -157,11 +158,30 @@ const QuickAttendance = () => {
             // Fetch class time settings
             try {
                 const settingsRes = await settingsAPI.getAll();
-                const savedSlots = settingsRes.data.data?.class_time_slots;
-                if (Array.isArray(savedSlots) && savedSlots.length > 0) {
-                    setClassTimeOptions(savedSlots.map(s => ({ label: s, value: s })));
-                }
-                const savedWhatsApp = settingsRes.data.data?.whatsapp_attendance_enabled;
+                const allSettings = settingsRes.data.data || {};
+                
+                // Load both Student and Intern class time slots
+                const studentSlots = allSettings.student_class_slots;
+                const internSlots = allSettings.intern_class_slots;
+                const fallbackSlots = allSettings.class_time_slots;
+
+                const parseSlots = (slots) => {
+                    if (!Array.isArray(slots) || slots.length === 0) return [];
+                    return slots.map(s => {
+                        if (typeof s === 'object' && s.name) {
+                            const modeIcon = s.mode === 'online' ? '🌐' : '📍';
+                            const modeLabel = s.mode === 'online' ? 'Online' : 'On-Site';
+                            const label = `${s.name} (${s.startTime} - ${s.endTime}) ${modeIcon} ${modeLabel}`;
+                            return { label, value: `${s.name} (${s.startTime} - ${s.endTime})`, mode: s.mode || 'onsite' };
+                        }
+                        return { label: s, value: s, mode: 'onsite' };
+                    });
+                };
+
+                setStudentClassTimeOptions(parseSlots(studentSlots || fallbackSlots));
+                setInternClassTimeOptions(parseSlots(internSlots || fallbackSlots));
+
+                const savedWhatsApp = allSettings.whatsapp_attendance_enabled;
                 const enabled = savedWhatsApp === true || savedWhatsApp === 'true';
                 setWhatsappEnabled(enabled);
                 localStorage.setItem('attendance_whatsapp_enabled', String(enabled));
@@ -567,7 +587,20 @@ const QuickAttendance = () => {
             (filterStatus === 'not_marked' && !currentMark);
 
         return matchesSearch && matchesCourse && matchesLocation && matchesCategory && matchesAttendType && matchesClassTime && matchesStatus;
+    }).sort((a, b) => {
+        // Sort: Online first, then Onsite
+        const aIsOnline = (a.attendType || '').toLowerCase().includes('online');
+        const bIsOnline = (b.attendType || '').toLowerCase().includes('online');
+        if (aIsOnline && !bIsOnline) return -1;
+        if (!aIsOnline && bIsOnline) return 1;
+        return 0;
     });
+
+    // Get class time options based on selected category (Student or Intern)
+    const getClassTimeOptionsForStudent = (student) => {
+        const isIntern = student.audience === 'interns';
+        return isIntern ? internClassTimeOptions : studentClassTimeOptions;
+    };
 
     const isDateHoliday = () => {
         const [year, month, day] = selectedDate.split('-').map(Number);
@@ -784,8 +817,11 @@ const QuickAttendance = () => {
                                 className="w-full sm:w-32 px-2 py-1.5 sm:py-1 rounded-md text-[10px] font-bold text-gray-700 dark:text-slate-100 bg-transparent border-none focus:ring-0 outline-none cursor-pointer sm:max-w-[150px] truncate"
                             >
                                 <option value="all">All Times</option>
-                                {classTimeOptions.map(opt => (
-                                    <option key={opt.value} value={opt.value}>{opt.label}</option>
+                                {studentClassTimeOptions.map(opt => (
+                                    <option key={`s-${opt.value}`} value={opt.value}>[S] {opt.label}</option>
+                                ))}
+                                {internClassTimeOptions.map(opt => (
+                                    <option key={`i-${opt.value}`} value={opt.value}>[I] {opt.label}</option>
                                 ))}
                             </select>
                         </div>
@@ -899,7 +935,35 @@ const QuickAttendance = () => {
                                             <div className="flex flex-wrap gap-1 mt-1.5">
                                                 <span className="px-1.5 py-0.5 rounded bg-gray-100 dark:bg-slate-700 text-[8px] font-bold text-gray-500 dark:text-slate-300">{student.location || 'No location'}</span>
                                                 <span className="px-1.5 py-0.5 rounded bg-primary/10 text-[8px] font-bold text-primary">{student.audience === 'interns' ? 'Intern' : 'Student'}</span>
-                                                {student.classTime && <span className="px-1.5 py-0.5 rounded bg-amber-50 dark:bg-amber-950/30 text-[8px] font-bold text-amber-600">{student.classTime}</span>}
+                                            </div>
+                                            {/* Class Time Dropdown - Mobile */}
+                                            <div className="mt-2 flex items-center gap-2">
+                                                <select
+                                                    value={student.classTime || ''}
+                                                    onChange={(e) => handleClassTimeChange(student.id, e.target.value)}
+                                                    className="flex-1 px-2 py-1.5 rounded-lg border border-gray-200 dark:border-slate-600 text-[9px] font-bold text-gray-700 dark:text-slate-200 bg-gray-50 dark:bg-slate-700 focus:ring-1 focus:ring-primary outline-none"
+                                                >
+                                                    <option value="">🕐 Assign Class Time</option>
+                                                    {getClassTimeOptionsForStudent(student).map(opt => (
+                                                        <option key={opt.value} value={opt.value}>{opt.label}</option>
+                                                    ))}
+                                                </select>
+                                                {student.classTime && (() => {
+                                                    const allOpts = [...studentClassTimeOptions, ...internClassTimeOptions];
+                                                    const matched = allOpts.find(o => o.value === student.classTime);
+                                                    if (matched) {
+                                                        return (
+                                                            <span className={`px-2 py-1 rounded-lg text-[8px] font-black uppercase whitespace-nowrap ${
+                                                                matched.mode === 'online'
+                                                                    ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
+                                                                    : 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400'
+                                                            }`}>
+                                                                {matched.mode === 'online' ? '🌐 Online' : '📍 On-Site'}
+                                                            </span>
+                                                        );
+                                                    }
+                                                    return null;
+                                                })()}
                                             </div>
                                         </div>
                                     </div>
@@ -1030,16 +1094,34 @@ const QuickAttendance = () => {
                                                 </span>
                                             </td>
                                             <td className="hidden sm:table-cell px-1.5 py-1.5">
-                                                <select
-                                                    value={student.classTime || ''}
-                                                    onChange={(e) => handleClassTimeChange(student.id, e.target.value)}
-                                                    className="px-1.5 py-1 rounded border border-gray-200 text-[9px] font-bold text-gray-700 bg-white focus:ring-1 focus:ring-primary outline-none max-w-[120px] truncate"
-                                                >
-                                                    <option value="">Unassigned</option>
-                                                    {classTimeOptions.map(opt => (
-                                                        <option key={opt.value} value={opt.value}>{opt.label}</option>
-                                                    ))}
-                                                </select>
+                                                <div className="flex items-center gap-1">
+                                                    <select
+                                                        value={student.classTime || ''}
+                                                        onChange={(e) => handleClassTimeChange(student.id, e.target.value)}
+                                                        className="px-1.5 py-1 rounded border border-gray-200 text-[9px] font-bold text-gray-700 bg-white focus:ring-1 focus:ring-primary outline-none max-w-[120px] truncate"
+                                                    >
+                                                        <option value="">Unassigned</option>
+                                                        {getClassTimeOptionsForStudent(student).map(opt => (
+                                                            <option key={opt.value} value={opt.value}>{opt.label}</option>
+                                                        ))}
+                                                    </select>
+                                                    {student.classTime && (() => {
+                                                        const allOpts = [...studentClassTimeOptions, ...internClassTimeOptions];
+                                                        const matched = allOpts.find(o => o.value === student.classTime);
+                                                        if (matched) {
+                                                            return (
+                                                                <span className={`px-1.5 py-0.5 rounded text-[7px] font-black uppercase whitespace-nowrap ${
+                                                                    matched.mode === 'online'
+                                                                        ? 'bg-emerald-100 text-emerald-700'
+                                                                        : 'bg-orange-100 text-orange-700'
+                                                                }`}>
+                                                                    {matched.mode === 'online' ? '🌐 Online' : '📍 On-Site'}
+                                                                </span>
+                                                            );
+                                                        }
+                                                        return null;
+                                                    })()}
+                                                </div>
                                             </td>
                                             <td className="px-3 py-1.5">
                                                 <div className="flex items-center justify-center gap-1 flex-nowrap">
@@ -1183,7 +1265,8 @@ const QuickAttendance = () => {
                                                 className="w-full px-3 py-2.5 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-600 text-gray-700 dark:text-white rounded-xl text-xs font-bold outline-none focus:border-primary sm:col-span-2"
                                             >
                                                 <option value="all">All Times</option>
-                                                {classTimeOptions.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+                                                {studentClassTimeOptions.map(opt => <option key={`s-${opt.value}`} value={opt.value}>[S] {opt.label}</option>)}
+                                                {internClassTimeOptions.map(opt => <option key={`i-${opt.value}`} value={opt.value}>[I] {opt.label}</option>)}
                                             </select>
                                         </div>
 
