@@ -6,6 +6,7 @@ import ChatMediaButton from '../../../components/shared/ChatMediaButton';
 import VoiceRecorder from '../../../components/shared/VoiceRecorder';
 import ChatMediaDisplay from '../../../components/shared/ChatMediaDisplay';
 import Loader, { ButtonLoader } from '../../../components/ui/Loader';
+import { formatTime } from '../../../utils/dateFormatter';
 import { getSocketURL } from '../../../config/apiBaseUrl';
 
 const SOCKET_URL = getSocketURL();
@@ -171,7 +172,7 @@ const TaskChat = ({ taskId, currentUser }) => {
                                     )}
                                 </div>
                                 <span className="text-[9px] text-gray-400 mt-1 px-1 font-medium">
-                                    {new Date(msg.createdAt).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}
+                                    {formatTime(msg.createdAt)}
                                 </span>
                             </div>
                         );

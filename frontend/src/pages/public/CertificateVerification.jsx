@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Award, Calendar, CheckCircle, AlertCircle, ArrowRight, ExternalLink, BookOpen, MapPin, Phone, Mail, Globe, Clock, MessageCircle } from 'lucide-react';
 import { certificateAPI } from '../../services/api';
 import { ButtonLoader } from '../../components/ui/Loader';
+import { formatDate } from '../../utils/dateFormatter';
 
 const CertificateVerification = () => {
     const [rollNo, setRollNo] = useState('');
@@ -209,7 +210,7 @@ const CertificateVerification = () => {
                                                             <div>
                                                                 <p className="text-sm text-gray-400 dark:text-gray-500 mb-1 uppercase tracking-wider font-semibold">Issued On</p>
                                                                 <p className="font-medium text-gray-700 dark:text-gray-300">
-                                                                    {cert.issuedAt ? new Date(cert.issuedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : '—'}
+                                                                    {cert.issuedAt ? formatDate(cert.issuedAt) : '—'}
                                                                 </p>
                                                             </div>
                                                         </div>
@@ -260,7 +261,7 @@ const CertificateVerification = () => {
                                                              <div className="space-y-1">
                                                                  <p className="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest font-bold">Passout Date</p>
                                                                  <p className="font-bold text-gray-900 dark:text-white">
-                                                                     {new Date(cert.passoutDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+                                                                     {formatDate(cert.passoutDate)}
                                                                  </p>
                                                              </div>
                                                          )}
@@ -268,7 +269,7 @@ const CertificateVerification = () => {
                                                              <div className="space-y-1">
                                                                  <p className="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest font-bold">Issued On</p>
                                                                  <p className="font-bold text-gray-900 dark:text-white">
-                                                                     {new Date(cert.issuedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+                                                                     {formatDate(cert.issuedAt)}
                                                                  </p>
                                                              </div>
                                                          )}

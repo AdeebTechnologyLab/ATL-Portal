@@ -11,6 +11,7 @@ import Badge from '../../components/ui/Badge';
 import Modal from '../../components/ui/Modal';
 import { userAPI, settingsAPI, taskAPI } from '../../services/api';
 import ImageCropper from '../../components/ui/ImageCropper';
+import { formatDate } from '../../utils/dateFormatter';
 
 const JobsManagement = () => {
     const [searchQuery, setSearchQuery] = useState('');
@@ -185,7 +186,7 @@ const JobsManagement = () => {
                 ['Preferred Mode', user.preferredMode],
                 ['Tasks Done', user.completedTasks?.toString() || tasksDone.length.toString()],
                 ['Rating', user.rating?.toString() || '0'],
-                ['Registration Date', user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A']
+                ['Registration Date', formatDate(user.createdAt)]
             ];
             fields.forEach(([label, value]) => {
                 doc.setFont('helvetica', 'bold');
@@ -381,7 +382,7 @@ const JobsManagement = () => {
             alternateRowStyles: { fillColor: [250, 245, 255] }
         });
 
-        doc.save(`Jobs_${type}_${new Date().toLocaleDateString()}.pdf`);
+        doc.save(`Jobs_${type}_${formatDate(new Date())}.pdf`);
         setShowExportOptions(false);
     };
 

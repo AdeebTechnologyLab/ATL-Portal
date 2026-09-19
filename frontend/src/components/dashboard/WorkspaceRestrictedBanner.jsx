@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { AlertCircle, CreditCard, PauseCircle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { formatDate } from '../../utils/dateFormatter';
 
 const WorkspaceRestrictedBanner = ({
     role,
@@ -66,7 +67,7 @@ const WorkspaceRestrictedBanner = ({
                     <div className="mt-4 rounded-2xl border p-4 text-sm border-red-200 dark:border-red-400/30 bg-white dark:bg-black/20 text-red-800 dark:text-red-100">
                         <p className="font-black text-base">{overdueInstallment.courseTitle}</p>
                         <p className="mt-1 font-semibold">
-                            Installment #{overdueInstallment.installmentNumber} — Due: {new Date(overdueInstallment.dueDate).toLocaleDateString('en-GB')}
+                            Installment #{overdueInstallment.installmentNumber} — Due: {formatDate(overdueInstallment.dueDate)}
                         </p>
                     </div>
                 )}

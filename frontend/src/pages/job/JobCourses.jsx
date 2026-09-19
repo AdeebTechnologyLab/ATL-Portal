@@ -5,6 +5,7 @@ import {
     FileText, ClipboardList, CheckCircle, Clock, Upload, Award, Star
 } from 'lucide-react';
 import Badge from '../../components/ui/Badge';
+import { formatDate } from '../../utils/dateFormatter';
 
 const JobCourses = () => {
     const [selectedCourse, setSelectedCourse] = useState(null);
@@ -197,7 +198,7 @@ const JobCourses = () => {
                                 </span>
                                 <span className="flex items-center gap-1">
                                     <Calendar className="w-4 h-4" />
-                                    {new Date(course.startDate).toLocaleDateString()}
+                                    {formatDate(course.startDate)}
                                 </span>
                             </div>
                             <div className="flex items-center text-primary font-medium">
@@ -402,7 +403,7 @@ const JobCourses = () => {
                                         <div className="flex gap-4 text-sm">
                                             <span className="flex items-center gap-1 text-gray-500">
                                                 <Calendar className="w-4 h-4" />
-                                                Due: {new Date(assignment.dueDate).toLocaleDateString()}
+                                                Due: {formatDate(assignment.dueDate)}
                                             </span>
                                             <span className="flex items-center gap-1 text-gray-500">
                                                 <Award className="w-4 h-4" />
@@ -441,7 +442,7 @@ const JobCourses = () => {
                         <h2 className="text-xl font-semibold text-gray-900 mb-2">{selectedAssignment.title}</h2>
                         <p className="text-gray-500 mb-4">{selectedAssignment.description}</p>
                         <div className="flex gap-4 text-sm text-gray-500 mb-6">
-                            <span>Due: {new Date(selectedAssignment.dueDate).toLocaleDateString()}</span>
+                                            <span>Due: {formatDate(selectedAssignment.dueDate)}</span>
                             <span>Total Marks: {selectedAssignment.totalMarks}</span>
                         </div>
 
@@ -521,7 +522,7 @@ const JobCourses = () => {
                                                 <div key={work.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                                                     <div>
                                                         <p className="text-sm font-medium text-gray-700">{work.description}</p>
-                                                        <p className="text-xs text-gray-400">{new Date(work.date).toLocaleDateString()}</p>
+                                                        <p className="text-xs text-gray-400">{formatDate(work.date)}</p>
                                                     </div>
                                                     <div className="flex items-center gap-2">
                                                         <input

@@ -15,7 +15,8 @@ const ScheduleNotificationBar = () => {
     useEffect(() => {
         const fetchSchedule = async () => {
             try {
-                const res = await attendanceAPI.getGlobalHolidays();
+                const holidayApi = user?.role === 'intern' ? attendanceAPI.getInternHolidays : attendanceAPI.getStudentHolidays;
+                const res = await holidayApi();
                 setOffDays(res.data.holidayDays || []);
             } catch (err) {
                 console.error('Failed to fetch schedule:', err);
@@ -24,7 +25,7 @@ const ScheduleNotificationBar = () => {
             }
         };
         fetchSchedule();
-    }, []);
+    }, [user?.role]);
 
     const todayIndex = new Intl.DateTimeFormat('en-US', {
         timeZone: 'Asia/Karachi',

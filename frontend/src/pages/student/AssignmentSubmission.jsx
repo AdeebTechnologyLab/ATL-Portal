@@ -9,7 +9,7 @@ import {
 import Badge from '../../components/ui/Badge';
 import Loader, { ButtonLoader } from '../../components/ui/Loader';
 import { assignmentAPI, courseAPI, dailyTaskAPI, enrollmentAPI, chatAPI, feeAPI, googleDriveAPI } from '../../services/api';
-import { formatDate } from '../../utils/dateFormatter';
+import { formatDate, formatTime } from '../../utils/dateFormatter';
 import RichTextEditor from '../../components/ui/RichTextEditor';
 import RichTextContent from '../../components/ui/RichTextContent';
 import { isRichTextEmpty } from '../../utils/richText';
@@ -1149,7 +1149,7 @@ const AssignmentSubmission = () => {
                                                                     </div>
                                                                     <p className="text-[9px] sm:text-[10px] text-gray-400 font-medium flex items-center gap-1 sm:gap-1.5 uppercase tracking-wide sm:tracking-wider mt-1">
                                                                         <Clock className="w-3.5 h-3.5" />
-                                                                        {new Date(task.date || task.createdAt).toLocaleDateString('en-GB')} at {new Date(task.createdAt).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}
+                                                                        {formatDate(task.date || task.createdAt)} at {formatTime(task.createdAt)}
                                                                     </p>
                                                                 </div>
                                                             </div>

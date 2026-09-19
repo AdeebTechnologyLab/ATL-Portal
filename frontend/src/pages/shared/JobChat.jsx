@@ -8,6 +8,7 @@ import VoiceRecorder from '../../components/shared/VoiceRecorder';
 import ChatMediaDisplay from '../../components/shared/ChatMediaDisplay';
 import Loader from '../../components/ui/Loader';
 import ProfileAvatar from '../../components/ui/ProfileAvatar';
+import { formatTime } from '../../utils/dateFormatter';
 
 const JobChat = () => {
     const { user } = useSelector(state => state.auth);
@@ -207,7 +208,7 @@ const JobChat = () => {
                             {messages.length === 0 && <div className="mx-auto mt-14 max-w-xs text-center"><div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-white shadow-sm dark:bg-slate-900"><Send className="h-5 w-5 text-primary" /></div><p className="font-bold text-gray-700 dark:text-slate-200">Start the conversation</p><p className="mt-1 text-xs text-gray-400">Send a message about this job.</p></div>}
                             {messages.map(message => {
                                 const mine = String(message.sender?._id || message.sender) === String(user?.id || user?._id);
-                                return <div key={message._id} className={`flex items-end gap-2 ${mine ? 'justify-end' : 'justify-start'}`}>{!mine && <ProfileAvatar src={message.sender?.photo} name={message.sender?.name} size="xs" />}<div className={`max-w-[82%] px-3.5 py-2.5 shadow-sm sm:max-w-[70%] ${mine ? 'rounded-2xl rounded-br-sm bg-primary text-white' : 'rounded-2xl rounded-bl-sm border border-gray-200 bg-white text-gray-800 dark:border-slate-700 dark:bg-slate-800 dark:text-gray-100'}`}><p className="whitespace-pre-wrap break-words text-[13px] leading-relaxed sm:text-sm">{message.text}</p><ChatMediaDisplay media={message.media} isMine={mine} /><p className={`mt-1.5 text-right text-[9px] ${mine ? 'text-white/65' : 'text-gray-400'}`}>{new Date(message.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p></div></div>;
+                                return <div key={message._id} className={`flex items-end gap-2 ${mine ? 'justify-end' : 'justify-start'}`}>{!mine && <ProfileAvatar src={message.sender?.photo} name={message.sender?.name} size="xs" />}<div className={`max-w-[82%] px-3.5 py-2.5 shadow-sm sm:max-w-[70%] ${mine ? 'rounded-2xl rounded-br-sm bg-primary text-white' : 'rounded-2xl rounded-bl-sm border border-gray-200 bg-white text-gray-800 dark:border-slate-700 dark:bg-slate-800 dark:text-gray-100'}`}><p className="whitespace-pre-wrap break-words text-[13px] leading-relaxed sm:text-sm">{message.text}</p><ChatMediaDisplay media={message.media} isMine={mine} /><p className={`mt-1.5 text-right text-[9px] ${mine ? 'text-white/65' : 'text-gray-400'}`}>{formatTime(message.createdAt)}</p></div></div>;
                             })}
                             <div ref={endRef} />
                         </div>

@@ -50,7 +50,7 @@ const SCREEN_ICON_MAP = {
 const SCREEN_ROUTE_TO_PATH = {
     '/admin/directory': '/teacher/student-directory',
     '/admin/teacher-directory': '/teacher/teacher-directory',
-    '/admin/attendance-settings': '/teacher/attendance-settings',
+    '/admin/time-table-settings': '/teacher/time-table-settings',
     '/admin/courses': '/teacher/courses',
     '/admin/students': '/teacher/students',
     '/admin/teachers': '/teacher/teachers',
@@ -525,7 +525,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                 { id: 'fees', labelKey: 'nav.feeVerification', icon: CreditCard, path: '/admin/fees', badge: adminPendingCounts.fees, secondaryBadge: adminPendingCounts.feesAwaiting },
                 { id: 'expenses', labelKey: 'Expenses', icon: Wallet, path: '/admin/expense' },
                 { id: 'discussion-room', labelKey: 'Discussion Room', icon: MessageSquare, path: '/admin/discussion-room', badge: discussionUnread },
-                { id: 'attendance-settings', labelKey: 'nav.attendanceSettings', icon: Clock, path: '/admin/attendance-settings' },
+                { id: 'time-table-settings', labelKey: 'nav.attendanceSettings', icon: Clock, path: '/admin/time-table-settings' },
                 { id: 'registration-pages', labelKey: 'Registration Forms', icon: FileText, path: '/admin/registration-pages' },
                 { id: 'manage-assignments', labelKey: 'Manage Screens', icon: UserPlus, path: '/admin/manage-assignments' },
                 { id: 'job-section-label', type: 'section', label: 'Job' },

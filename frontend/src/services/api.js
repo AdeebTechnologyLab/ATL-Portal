@@ -149,6 +149,12 @@ export const attendanceAPI = {
     // Global holiday management (admin only for updates)
     getGlobalHolidays: () => api.get('/attendance/global-holidays'),
     updateGlobalHolidays: (holidayDays) => api.put('/attendance/global-holidays', { holidayDays }),
+    // Student-specific holidays
+    getStudentHolidays: () => api.get('/attendance/student-holidays'),
+    updateStudentHolidays: (holidayDays) => api.put('/attendance/student-holidays', { holidayDays }),
+    // Intern-specific holidays
+    getInternHolidays: () => api.get('/attendance/intern-holidays'),
+    updateInternHolidays: (holidayDays) => api.put('/attendance/intern-holidays', { holidayDays }),
     getStats: (courseId) => api.get(`/attendance/stats/${courseId}`),
     getStudentAttendance: (userId) => api.get(`/attendance/student/${userId}`)
 };

@@ -106,10 +106,6 @@ const ClassTimeSection = ({ classes, setClasses, isLoading, isSaving, setIsSavin
                                 initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}
                                 className="flex items-center gap-2 px-3 py-2.5 border-b border-gray-50 dark:border-gray-700 last:border-0 hover:bg-gray-50 dark:hover:bg-gray-700/20 transition-colors"
                             >
-                                <div className="w-7 h-7 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-                                    <span className="text-[9px] font-black text-primary">{index + 1}</span>
-                                </div>
-
                                 <input
                                     type="text"
                                     value={cls.name}
@@ -162,14 +158,14 @@ const ClassTimeSection = ({ classes, setClasses, isLoading, isSaving, setIsSavin
     );
 };
 
-const HolidaySection = ({ holidayDays, setHolidayDays, isLoading, isSaving, setIsSaving, syncedDay, setSyncedDay, sectionKey }) => {
+const HolidaySection = ({ holidayDays, setHolidayDays, isLoading, isSaving, setIsSaving, syncedDay, setSyncedDay, sectionKey, updateHolidays }) => {
     const toggleDay = async (dayIndex) => {
         setIsSaving(true);
         const updated = holidayDays.includes(dayIndex)
             ? holidayDays.filter(d => d !== dayIndex)
             : [...holidayDays, dayIndex];
         try {
-            await attendanceAPI.updateGlobalHolidays(updated);
+            await (updateHolidays || attendanceAPI.updateGlobalHolidays)(updated);
             setHolidayDays(updated);
             setSyncedDay(dayIndex);
             setTimeout(() => setSyncedDay(null), 1500);
@@ -297,14 +293,14 @@ const AttendanceSettings = () => {
 
     const fetchStudentHolidays = async () => {
         try {
-            const res = await attendanceAPI.getGlobalHolidays();
+            const res = await attendanceAPI.getStudentHolidays();
             setStudentHolidays(res.data.holidayDays || []);
         } catch { } finally { setIsLoadingStudentHolidays(false); }
     };
 
     const fetchInternHolidays = async () => {
         try {
-            const res = await attendanceAPI.getGlobalHolidays();
+            const res = await attendanceAPI.getInternHolidays();
             setInternHolidays(res.data.holidayDays || []);
         } catch { } finally { setIsLoadingInternHolidays(false); }
     };
@@ -425,6 +421,7 @@ const AttendanceSettings = () => {
                                     syncedDay={syncedStudentDay}
                                     setSyncedDay={setSyncedStudentDay}
                                     sectionKey={STUDENT_HOLIDAYS_KEY}
+                                    updateHolidays={attendanceAPI.updateStudentHolidays}
                                 />
                             </SectionCard>
                         </>
@@ -454,6 +451,7 @@ const AttendanceSettings = () => {
                                     syncedDay={syncedInternDay}
                                     setSyncedDay={setSyncedInternDay}
                                     sectionKey={INTERN_HOLIDAYS_KEY}
+                                    updateHolidays={attendanceAPI.updateInternHolidays}
                                 />
                             </SectionCard>
                         </>

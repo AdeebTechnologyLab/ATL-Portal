@@ -14,6 +14,7 @@ import { userAPI, settingsAPI, enrollmentAPI, assignmentAPI, feeAPI, courseAPI, 
 import { generateComprehensiveReport } from '../../utils/reportGenerator';
 import ImageCropper from '../../components/ui/ImageCropper';
 import AssignScreenButton from '../../components/admin/AssignScreenButton';
+import { formatDate } from '../../utils/dateFormatter';
 
 
 const InternsManagement = () => {
@@ -515,7 +516,7 @@ const InternsManagement = () => {
                 i.email || 'N/A',
                 i.phone || 'N/A',
                 i.cnic || 'N/A',
-                i.dob ? new Date(i.dob).toLocaleDateString() : 'N/A',
+                i.dob ? formatDate(i.dob) : 'N/A',
                 i.degree || 'N/A',
                 i.university || 'N/A',
                 i.cgpa || 'N/A',
@@ -584,7 +585,7 @@ const InternsManagement = () => {
                 ['Guardian Job', i.guardianOccupation],
                 ['Attendance Type', i.attendType],
                 ['Heard About', i.heardAbout],
-                ['Admission Date', i.createdAt ? new Date(i.createdAt).toLocaleDateString() : 'N/A']
+                ['Admission Date', formatDate(i.createdAt)]
             ];
 
             fields.forEach(([label, value]) => {
@@ -1398,7 +1399,7 @@ const InternsManagement = () => {
                                             </div>
                                             {isPaused && enrollment.pausedAt && (
                                                 <p className="text-[10px] text-amber-600 font-medium mt-0.5">
-                                                    Paused on {new Date(enrollment.pausedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+                                                    Paused on {formatDate(enrollment.pausedAt)}
                                                 </p>
                                             )}
                                         </div>

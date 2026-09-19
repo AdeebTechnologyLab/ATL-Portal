@@ -12,6 +12,7 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { getCategoryIcon, getCategoryColor, getCategoryBg } from '../../utils/taskCategoryIcons';
 import AssignScreenButton from '../../components/admin/AssignScreenButton';
+import { formatDate } from '../../utils/dateFormatter';
 
 const PaidTasksManagement = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -842,7 +843,7 @@ const PaidTasksManagement = () => {
                             <div className="flex items-center justify-between text-sm mb-4">
                                 <span className="flex items-center gap-1 text-gray-500 dark:text-slate-400">
                                     <Calendar className="w-4 h-4" />
-                                    {task.isLifetime ? 'Lifetime' : (task.deadline && new Date(task.deadline).toLocaleDateString())}
+                                    {task.isLifetime ? 'Lifetime' : (task.deadline && formatDate(task.deadline))}
                                 </span>
                                 <span className={task.type === 'product' ? "font-bold text-primary" : "font-bold text-primary"}>
                                     Rs {isNaN(Number(task.budget)) ? task.budget : Number(task.budget).toLocaleString()}

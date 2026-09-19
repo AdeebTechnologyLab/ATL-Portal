@@ -12,7 +12,7 @@ import VoiceRecorder from '../../../components/shared/VoiceRecorder';
 import ChatMediaDisplay from '../../../components/shared/ChatMediaDisplay';
 import { googleDriveAPI } from '../../../services/api';
 import ProfileAvatar from '../../../components/ui/ProfileAvatar';
-import { formatDate } from '../../../utils/dateFormatter';
+import { formatDate, formatTime } from '../../../utils/dateFormatter';
 import { getSocketURL } from '../../../config/apiBaseUrl';
 
 const SOCKET_URL = getSocketURL();
@@ -160,14 +160,6 @@ const StudentChatTab = ({ course, isRestricted }) => {
         } finally {
             setIsSending(false);
         }
-    };
-
-    const formatTime = (date) => {
-        return new Date(date).toLocaleTimeString('en-US', {
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: true
-        });
     };
 
     const getDisplayDate = (date) => {

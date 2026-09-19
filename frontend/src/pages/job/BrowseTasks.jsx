@@ -11,6 +11,7 @@ import { taskAPI } from '../../services/api';
 import { getCategoryIcon, getCategoryColor, getCategoryBg } from '../../utils/taskCategoryIcons';
 import Loader, { ButtonLoader } from '../../components/ui/Loader';
 import BirthdayWish from '../../components/dashboard/BirthdayWish';
+import { formatDate } from '../../utils/dateFormatter';
 
 const BrowseTasks = () => {
     const { user } = useSelector((state) => state.auth);
@@ -392,7 +393,7 @@ const BrowseTasks = () => {
                             <div className="flex items-center justify-between gap-3 text-xs sm:text-sm mb-3 sm:mb-4">
                                 <span className="flex items-center gap-1 text-gray-500 dark:text-slate-400">
                                     <Calendar className="w-4 h-4" />
-                                    {task.isLifetime ? 'Lifetime' : (task.deadline && new Date(task.deadline).toLocaleDateString())}
+                                    {task.isLifetime ? 'Lifetime' : (task.deadline && formatDate(task.deadline))}
                                 </span>
                                 <span className={task.type === 'product' ? "font-bold text-primary" : "font-bold text-primary"}>
                                     Rs {isNaN(Number(task.budget)) ? task.budget : Number(task.budget).toLocaleString()}
@@ -411,7 +412,7 @@ const BrowseTasks = () => {
                                                 <div>
                                                     <p className="font-semibold text-gray-700 dark:text-slate-200 whitespace-nowrap">Cycle {payment.cycle || 1}</p>
                                                     <p className="text-gray-500 dark:text-slate-400 whitespace-nowrap">
-                                                        {payment.paidAt ? new Date(payment.paidAt).toLocaleDateString() : 'Payment date unavailable'}
+                                                        {payment.paidAt ? formatDate(payment.paidAt) : 'Payment date unavailable'}
                                                     </p>
                                                 </div>
                                                 <span className="font-black text-emerald-700">
@@ -694,7 +695,7 @@ const BrowseTasks = () => {
                     <div className="space-y-4">
                         <div className="p-4 bg-gray-50 rounded-xl">
                             <h3 className="font-semibold text-gray-900">{selectedTask.title}</h3>
-                            <p className="text-sm text-gray-500 mt-1">Deadline: {selectedTask.isLifetime ? 'Lifetime' : (selectedTask.deadline && new Date(selectedTask.deadline).toLocaleDateString())}</p>
+                            <p className="text-sm text-gray-500 mt-1">Deadline: {selectedTask.isLifetime ? 'Lifetime' : (selectedTask.deadline && formatDate(selectedTask.deadline))}</p>
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">Work Description / Notes *</label>

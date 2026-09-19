@@ -6,6 +6,7 @@ import Badge from '../../../components/ui/Badge';
 import { attendanceAPI } from '../../../services/api';
 import { useSelector } from 'react-redux';
 import { toAttendanceDateKey } from '../../../utils/attendanceDate';
+import { formatTime } from '../../../utils/dateFormatter';
 import { io } from 'socket.io-client';
 import { getSocketURL } from '../../../config/apiBaseUrl';
 
@@ -161,11 +162,7 @@ const StudentAttendanceTab = ({ course }) => {
                         const config = status ? getStatusConfig(status) : null;
                         const isToday = date.toDateString() === new Date().toDateString();
                         const markedTime = record?.markedAt
-                            ? new Date(record.markedAt).toLocaleTimeString('en-US', {
-                                hour: '2-digit',
-                                minute: '2-digit',
-                                hour12: true
-                            })
+                            ? formatTime(record.markedAt)
                             : null;
 
                         return (
@@ -192,7 +189,7 @@ const StudentAttendanceTab = ({ course }) => {
                                         <config.icon className={`hidden sm:block w-4 h-4 mt-1 ${config.text}`} />
                                         {record.markedAt && (
                                             <span className={`hidden text-[8px] font-bold opacity-60 ${config.text}`}>
-                                                {new Date(record.markedAt).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}
+                                                {formatTime(record.markedAt)}
                                             </span>
                                         )}
                                     </div>

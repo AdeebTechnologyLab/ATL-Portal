@@ -9,6 +9,14 @@ const { sendToAll, sendToRole } = require('../utils/pushHelper');
 
 const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
+const toAMPM = (time24) => {
+    if (!time24) return time24;
+    const [h, m] = time24.split(':').map(Number);
+    const period = h >= 12 ? 'PM' : 'AM';
+    const hour12 = h % 12 || 12;
+    return `${hour12}:${String(m).padStart(2, '0')} ${period}`;
+};
+
 // Sanitization options for HTML content - expanded to support CSS styling
 const sanitizeOptions = {
     allowedTags: ['p', 'br', 'strong', 'em', 'b', 'i', 'u', 'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'a', 'span', 'div', 'img', 'blockquote', 'code', 'pre', 'hr', 'table', 'thead', 'tbody', 'tr', 'th', 'td'],
@@ -98,37 +106,58 @@ router.get('/active', protect, async (req, res) => {
         if (userRole !== 'job') {
             const scheduleNotifications = [];
 
-            // Class Time Slots notification
-            const classTimeSetting = await SystemSetting.findOne({ key: 'class_time_slots' });
-            if (classTimeSetting && Array.isArray(classTimeSetting.value) && classTimeSetting.value.length > 0) {
-                const slotList = classTimeSetting.value.map((s, i) =>
-                    `<li style="margin-bottom:4px;"><strong>Slot ${i + 1}:</strong> ${s}</li>`
-                ).join('');
-                scheduleNotifications.push({
-                    _id: 'schedule-class-time-slots',
-                    title: '📢 Class Time Slots',
-                    message: `<p style="margin-bottom:8px;">Current <strong>Class Time Slots</strong>:</p><ul style="padding-left:18px;margin:0;">${slotList}</ul><p style="margin-top:8px;font-size:12px;color:#666;">Please check your assigned slot.</p>`,
-                    type: 'blue',
-                    isHtml: true,
-                    createdAt: classTimeSetting.updatedAt || classTimeSetting.createdAt
-                });
+            const audienceLabel = userRole === 'intern' ? 'Internship' : 'Student';
+
+            // Class Time Slots + Weekly Off Days combined notification (role-specific)
+            const classTimeKey = userRole === 'intern' ? 'intern_class_slots' : 'student_class_slots';
+            const holidayKey = userRole === 'intern' ? 'internHolidayDays' : 'studentHolidayDays';
+            let [classTimeSetting, offDaysSetting] = await Promise.all([
+                SystemSetting.findOne({ key: classTimeKey }),
+                SystemSetting.findOne({ key: holidayKey })
+            ]);
+
+            // Fallback to legacy keys if role-specific keys have no data
+            if (!classTimeSetting) {
+                classTimeSetting = await SystemSetting.findOne({ key: 'class_time_slots' });
+            }
+            if (!offDaysSetting) {
+                offDaysSetting = await SystemSetting.findOne({ key: 'globalHolidayDays' });
             }
 
-            // Weekly Off Days notification
-            const offDaysSetting = await SystemSetting.findOne({ key: 'globalHolidayDays' });
-            if (offDaysSetting && Array.isArray(offDaysSetting.value)) {
-                const offDayNames = offDaysSetting.value.map(d => DAY_NAMES[d]).filter(Boolean);
-                const dayBadges = DAY_NAMES.map((name, i) => {
-                    const isOff = offDaysSetting.value.includes(i);
-                    return `<span style="display:inline-block;padding:4px 10px;margin:3px;border-radius:8px;font-size:12px;font-weight:bold;${isOff ? 'background:#fed7aa;color:#c2410c;border:1px solid #fb923c;' : 'background:#e5e7eb;color:#6b7280;border:1px solid #d1d5db;'}">${name.substring(0, 3).toUpperCase()}</span>`;
-                }).join('');
+            const hasSlots = classTimeSetting && Array.isArray(classTimeSetting.value) && classTimeSetting.value.length > 0;
+            const hasOffDays = offDaysSetting && Array.isArray(offDaysSetting.value);
+
+            if (hasSlots || hasOffDays) {
+                let messageHtml = '';
+
+                // Class Time Slots section
+                if (hasSlots) {
+                    const slotList = classTimeSetting.value.map((s, i) => {
+                        const slot = typeof s === 'object' ? `${s.name} (${toAMPM(s.startTime)} - ${toAMPM(s.endTime)}) ${s.mode === 'online' ? 'Online' : 'On-Site'}` : s;
+                        return `<li style="margin-bottom:4px;">${slot}</li>`;
+                    }).join('');
+                    messageHtml += `<p style="margin-bottom:8px;">Current <strong>Class Time Slots</strong>:</p><ul style="padding-left:18px;margin:0;">${slotList}</ul>`;
+                }
+
+                // Weekly Off Days section
+                if (hasOffDays) {
+                    const offDayNames = offDaysSetting.value.map(d => DAY_NAMES[d]).filter(Boolean);
+                    const dayBadges = DAY_NAMES.map((name, i) => {
+                        const isOff = offDaysSetting.value.includes(i);
+                        return `<span style="display:inline-block;padding:4px 10px;margin:3px;border-radius:8px;font-size:12px;font-weight:bold;${isOff ? 'background:#fed7aa;color:#c2410c;border:1px solid #fb923c;' : 'background:#e5e7eb;color:#6b7280;border:1px solid #d1d5db;'}">${name.substring(0, 3).toUpperCase()}</span>`;
+                    }).join('');
+                    messageHtml += `<p style="margin-top:12px;margin-bottom:8px;"><strong>Weekly Off Days</strong>:</p><div style="margin:10px 0;">${dayBadges}</div><p style="font-size:12px;color:#666;">Off days: <strong>${offDayNames.length > 0 ? offDayNames.join(', ') : 'None'}</strong></p>`;
+                }
+
+                messageHtml += `<p style="margin-top:8px;font-size:12px;color:#666;">Please check your schedule.</p>`;
+
                 scheduleNotifications.push({
-                    _id: 'schedule-weekly-off-days',
-                    title: '📅 Weekly Off Days',
-                    message: `<p style="margin-bottom:8px;">Current <strong>Weekly Off Days</strong>:</p><div style="margin:10px 0;">${dayBadges}</div><p style="font-size:12px;color:#666;">Off days: <strong>${offDayNames.length > 0 ? offDayNames.join(', ') : 'None'}</strong></p>`,
+                    _id: `schedule-combined-${userRole}`,
+                    title: `📢 ${audienceLabel} Time Table`,
+                    message: messageHtml,
                     type: 'blue',
                     isHtml: true,
-                    createdAt: offDaysSetting.updatedAt || offDaysSetting.createdAt
+                    createdAt: new Date()
                 });
             }
 

@@ -39,6 +39,7 @@ import {
 import { AudioLevelMonitor } from '../../lib/adeebMeet/audioLevelMonitor';
 import { playChatNotificationSound } from '../../lib/adeebMeet/chatNotify';
 import { enrollmentAPI } from '../../services/api';
+import { formatTime } from '../../utils/dateFormatter';
 
 const SOCKET_URL = getSocketURL();
 
@@ -549,7 +550,7 @@ const AdeebMeet = () => {
             senderId: myUserId,
             senderName: user?.name,
             senderPhoto: user?.photo,
-            time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }),
+            time: formatTime(new Date()),
         };
         managerRef.current.sendChatMessage(roomName, data);
         appendMessage(data);

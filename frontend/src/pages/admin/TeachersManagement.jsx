@@ -13,6 +13,7 @@ import Modal from '../../components/ui/Modal';
 import { userAPI, settingsAPI, courseAPI } from '../../services/api';
 import ImageCropper from '../../components/ui/ImageCropper';
 import AssignScreenButton from '../../components/admin/AssignScreenButton';
+import { formatDate } from '../../utils/dateFormatter';
 
 
 const TeachersManagement = () => {
@@ -277,7 +278,7 @@ const TeachersManagement = () => {
                 ['Experience', t.experience],
                 ['Location', t.location],
                 ['Address', t.address],
-                ['Joining Date', t.createdAt ? new Date(t.createdAt).toLocaleDateString() : 'N/A']
+                ['Joining Date', formatDate(t.createdAt)]
             ];
             fields.forEach(([label, value]) => {
                 doc.setFont('helvetica', 'bold');

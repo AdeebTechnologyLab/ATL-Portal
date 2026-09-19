@@ -9,6 +9,7 @@ import {
 import { directoryAPI } from '../../services/api';
 import Loader from '../../components/ui/Loader';
 import AssignScreenButton from '../../components/admin/AssignScreenButton';
+import { formatDate, formatTime } from '../../utils/dateFormatter';
 
 
 const FILTER_OPTIONS = [
@@ -294,7 +295,7 @@ const StudentDirectory = () => {
                                             <div className="text-xs font-medium">
                                                 {user.lastSeen ? (
                                                     <span className="text-gray-600">
-                                                        {new Date(user.lastSeen).toLocaleDateString()} <span className="text-gray-400">{new Date(user.lastSeen).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}</span>
+                                                        {formatDate(user.lastSeen)} <span className="text-gray-400">{formatTime(user.lastSeen)}</span>
                                                     </span>
                                                 ) : (
                                                     <span className="text-gray-400 italic">Never</span>

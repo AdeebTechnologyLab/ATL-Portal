@@ -5,6 +5,7 @@ import { ChevronLeft, Trash2, UserPlus, Monitor, Users } from 'lucide-react';
 import { teacherScreenAssignmentAPI } from '../../services/api';
 import Loader from '../../components/ui/Loader';
 import AssignScreenModal from '../../components/admin/AssignScreenModal';
+import { formatDate } from '../../utils/dateFormatter';
 import toast from 'react-hot-toast';
 
 const SCREEN_LABELS = {
@@ -121,7 +122,7 @@ const ManageScreens = () => {
                                             <p className="font-bold text-gray-900 text-sm">{a.teacher?.name}</p>
                                             <p className="text-[10px] text-gray-500">{a.teacher?.email} {a.teacher?.rollNo ? `• ${a.teacher.rollNo}` : ''}</p>
                                         </div>
-                                        <span className="text-[10px] text-gray-400">{new Date(a.createdAt).toLocaleDateString()}</span>
+                                        <span className="text-[10px] text-gray-400">{formatDate(a.createdAt)}</span>
                                         <button
                                             onClick={() => handleRemove(screenId, a.teacher?._id)}
                                             className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"

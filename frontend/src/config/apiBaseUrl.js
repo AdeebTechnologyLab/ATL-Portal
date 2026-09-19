@@ -14,7 +14,7 @@ export const getApiBaseUrl = () => {
 
         // Localhost / 127.0.0.1 — development
         if (isLocalHost(host)) {
-            return import.meta.env.DEV ? '/api' : 'http://localhost:5000/api';
+            return import.meta.env.DEV ? '/api' : 'https://localhost:5000/api';
         }
 
         // Production deployment
@@ -26,7 +26,7 @@ export const getApiBaseUrl = () => {
         return PRODUCTION_API;
     }
 
-    return import.meta.env.DEV ? '/api' : 'http://localhost:5000/api';
+    return import.meta.env.DEV ? '/api' : 'https://localhost:5000/api';
 };
 
 /** Socket / uploads origin without /api suffix */
@@ -34,7 +34,7 @@ export const getBackendOrigin = () => {
     const base = getApiBaseUrl();
     if (base === '/api') {
         if (typeof window !== 'undefined' && isLocalHost(window.location.hostname)) {
-            return 'http://localhost:5000';
+            return 'https://localhost:5000';
         }
         return PRODUCTION_SOCKET;
     }
@@ -43,6 +43,6 @@ export const getBackendOrigin = () => {
 
 /** Socket URL for io() connections */
 export const getSocketURL = () => {
-    const rawUrl = import.meta.env.VITE_API_URL || (typeof window !== 'undefined' && !isLocalHost(window.location.hostname) ? PRODUCTION_API : 'http://localhost:5000/api');
+    const rawUrl = import.meta.env.VITE_API_URL || (typeof window !== 'undefined' && !isLocalHost(window.location.hostname) ? PRODUCTION_API : 'https://localhost:5000/api');
     return rawUrl === '/api' ? PRODUCTION_SOCKET : rawUrl.replace(/\/api\/?$/, '');
 };

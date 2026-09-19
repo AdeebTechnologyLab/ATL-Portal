@@ -6,6 +6,7 @@ import {
     Briefcase, Clock, FileText, CheckCircle, XCircle, AlertCircle
 } from 'lucide-react';
 import { taskAPI } from '../../services/api';
+import { formatDate } from '../../utils/dateFormatter';
 
 const JobDashboard = () => {
     const { user } = useSelector((state) => state.auth);
@@ -36,7 +37,7 @@ const JobDashboard = () => {
     };
 
     const applicationSteps = [
-        { id: 1, title: 'Account Created', status: 'completed', date: new Date(user?.createdAt).toLocaleDateString() || 'Done' },
+        { id: 1, title: 'Account Created', status: 'completed', date: formatDate(user?.createdAt) || 'Done' },
         { id: 2, title: 'Profile Complete', status: user?.phone ? 'completed' : 'current', date: user?.phone ? 'Done' : 'In Progress' },
         { id: 3, title: 'Browse Tasks', status: tasks.length > 0 ? 'completed' : 'pending', date: tasks.length > 0 ? 'Available' : 'Pending' },
         { id: 4, title: 'Apply for Tasks', status: assignedTasks.length > 0 ? 'completed' : 'pending', date: assignedTasks.length > 0 ? 'Applied' : 'Pending' },

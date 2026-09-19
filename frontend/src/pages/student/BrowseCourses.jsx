@@ -647,8 +647,8 @@ const BrowseCourses = () => {
                             <div className="flex items-center gap-4 mt-3 text-sm text-gray-500">
                                 <span className="flex items-center gap-1">
                                     <Calendar className="w-4 h-4" />
-                                    {selectedCourse.startDate && new Date(selectedCourse.startDate).toLocaleDateString()} -
-                                    {selectedCourse.endDate && new Date(selectedCourse.endDate).toLocaleDateString()}
+                                    {selectedCourse.startDate && formatDate(selectedCourse.startDate)} -
+                                    {selectedCourse.endDate && formatDate(selectedCourse.endDate)}
                                 </span>
                             </div>
                         </div>

@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CalendarDays, Eye, ReceiptText, X } from 'lucide-react';
 import { taskAPI } from '../../services/api';
+import { formatDate } from '../../utils/dateFormatter';
 
 const PaymentHistory = () => {
     const { user } = useSelector((state) => state.auth);
@@ -43,10 +44,6 @@ const PaymentHistory = () => {
     }, [tasks, user]);
 
     const totalPaid = payments.reduce((sum, payment) => sum + Number(payment.amount || 0), 0);
-
-    const formatDate = (date) => date
-        ? new Intl.DateTimeFormat('en-PK', { day: '2-digit', month: 'short', year: 'numeric' }).format(new Date(date))
-        : 'Date unavailable';
 
     if (loading) {
         return (

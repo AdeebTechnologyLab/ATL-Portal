@@ -287,6 +287,70 @@ router.put('/global-holidays', protect, authorize('admin'), async (req, res) => 
     }
 });
 
+// @route   GET /api/attendance/student-holidays
+// @desc    Get student-specific holiday days
+// @access  Private
+router.get('/student-holidays', protect, async (req, res) => {
+    try {
+        const holidaySetting = await SystemSetting.findOne({ key: 'studentHolidayDays' });
+        res.json({ success: true, holidayDays: holidaySetting?.value || [] });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+});
+
+// @route   PUT /api/attendance/student-holidays
+// @desc    Update student-specific holiday days (Admin only)
+// @access  Private (Admin)
+router.put('/student-holidays', protect, authorize('admin'), async (req, res) => {
+    try {
+        const { holidayDays } = req.body;
+        if (!Array.isArray(holidayDays) || !holidayDays.every(d => d >= 0 && d <= 6)) {
+            return res.status(400).json({ success: false, message: 'Invalid holiday days. Must be array of numbers 0-6' });
+        }
+        const setting = await SystemSetting.findOneAndUpdate(
+            { key: 'studentHolidayDays' },
+            { value: holidayDays, description: 'Student weekly off days (0=Sunday, 6=Saturday)', updatedBy: req.user.id },
+            { new: true, upsert: true }
+        );
+        res.json({ success: true, holidayDays: setting.value });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+});
+
+// @route   GET /api/attendance/intern-holidays
+// @desc    Get intern-specific holiday days
+// @access  Private
+router.get('/intern-holidays', protect, async (req, res) => {
+    try {
+        const holidaySetting = await SystemSetting.findOne({ key: 'internHolidayDays' });
+        res.json({ success: true, holidayDays: holidaySetting?.value || [] });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+});
+
+// @route   PUT /api/attendance/intern-holidays
+// @desc    Update intern-specific holiday days (Admin only)
+// @access  Private (Admin)
+router.put('/intern-holidays', protect, authorize('admin'), async (req, res) => {
+    try {
+        const { holidayDays } = req.body;
+        if (!Array.isArray(holidayDays) || !holidayDays.every(d => d >= 0 && d <= 6)) {
+            return res.status(400).json({ success: false, message: 'Invalid holiday days. Must be array of numbers 0-6' });
+        }
+        const setting = await SystemSetting.findOneAndUpdate(
+            { key: 'internHolidayDays' },
+            { value: holidayDays, description: 'Intern weekly off days (0=Sunday, 6=Saturday)', updatedBy: req.user.id },
+            { new: true, upsert: true }
+        );
+        res.json({ success: true, holidayDays: setting.value });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+});
+
 // @route   GET /api/attendance/stats/:courseId
 // @desc    Get attendance statistics for a course (excluding holidays)
 // @access  Private (Teacher, Admin)

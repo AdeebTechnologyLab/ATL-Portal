@@ -163,7 +163,7 @@ const AppRoutes = () => {
         <Route path="directory" element={<StudentDirectory />} />
         <Route path="teacher-directory" element={<TeacherDirectory />} />
         <Route path="settings" element={<Settings />} />
-        <Route path="attendance-settings" element={<AttendanceSettings />} />
+        <Route path="time-table-settings" element={<AttendanceSettings />} />
         <Route path="expense" element={<ExpenseManagement showProjectSections={false} />} />
         <Route path="projects" element={<ProjectManagement />} />
         <Route path="work-tasks" element={<AdminWorkLists />} />

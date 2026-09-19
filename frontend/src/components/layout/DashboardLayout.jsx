@@ -73,6 +73,7 @@ import ProfileCompletionBanner from '../shared/ProfileCompletionBanner';
 import { userNotificationAPI, assignmentAPI, courseAPI, authAPI, attendanceAPI, feeAPI } from '../../services/api';
 import useAutoLogout from '../../hooks/useAutoLogout';
 import { useTheme } from '../../context/ThemeContext';
+import { formatDate } from '../../utils/dateFormatter';
 import Loader, { FullScreenLoader, ButtonLoader } from '../ui/Loader';
 import ProfileAvatar from '../ui/ProfileAvatar';
 import { useTranslation } from 'react-i18next';
@@ -97,7 +98,7 @@ const DashboardLayout = () => {
     const location = useLocation();
     const hideGlobalChatWidget = location.pathname.includes('/discussion-room');
     const navigate = useNavigate();
-    const { isDark, toggleTheme, timeFormat } = useTheme();
+    const { isDark, toggleTheme, timeFormat, dateFormat } = useTheme();
     const [currentDateTime, setCurrentDateTime] = useState(() => new Date());
     const [pendingTasks, setPendingTasks] = useState([]);
     const [isPageLoading, setIsPageLoading] = useState(false);
@@ -146,18 +147,31 @@ const DashboardLayout = () => {
         hour12: timeFormat !== '24-hour'
     }).format(currentDateTime);
 
-    const headerDate = new Intl.DateTimeFormat('en-GB', {
-        timeZone: 'Asia/Karachi',
-        weekday: 'long',
-        day: '2-digit',
-        month: 'long',
-        year: 'numeric'
-    }).format(currentDateTime);
+    const headerDate = (() => {
+        const d = currentDateTime;
+        const year = d.getFullYear();
+        const monthIndex = d.getMonth();
+        const dateNum = d.getDate();
+        const monthShort = d.toLocaleString('en-US', { month: 'short' });
+        const monthNumStr = String(monthIndex + 1).padStart(2, '0');
+        const dateNumStr = String(dateNum).padStart(2, '0');
+        const weekday = d.toLocaleString('en-US', { timeZone: 'Asia/Karachi', weekday: 'long' });
+
+        let dateStr;
+        switch (dateFormat) {
+            case 'MM/DD/YYYY': dateStr = `${monthNumStr}/${dateNumStr}/${year}`; break;
+            case 'DD/MM/YYYY': dateStr = `${dateNumStr}/${monthNumStr}/${year}`; break;
+            case 'YYYY-MM-DD': dateStr = `${year}-${monthNumStr}-${dateNumStr}`; break;
+            default: dateStr = `${dateNumStr} ${monthShort} ${year}`;
+        }
+        return `${weekday}, ${dateStr}`;
+    })();
 
     useEffect(() => {
         const checkWeeklyOffDay = async () => {
             try {
-                const response = await attendanceAPI.getGlobalHolidays();
+                const holidayApi = role === 'intern' ? attendanceAPI.getInternHolidays : attendanceAPI.getStudentHolidays;
+                const response = await holidayApi();
                 const offDays = response.data.holidayDays || [];
                 const pakistanDayName = new Intl.DateTimeFormat('en-US', {
                     timeZone: 'Asia/Karachi',
@@ -185,7 +199,7 @@ const DashboardLayout = () => {
             clearInterval(interval);
             document.removeEventListener('visibilitychange', checkWhenVisible);
         };
-    }, []);
+    }, [role]);
 
     // Fetch notifications and tasks
     useEffect(() => {
@@ -434,7 +448,7 @@ const DashboardLayout = () => {
         if (diffMins < 60) return `${diffMins} min ago`;
         if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
         if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
-        return notifDate.toLocaleDateString();
+        return formatDate(notifDate);
     };
 
     return (

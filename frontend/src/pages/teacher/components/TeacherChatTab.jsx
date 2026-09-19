@@ -9,7 +9,7 @@ import { chatAPI } from '../../../services/api';
 import ProfileAvatar from '../../../components/ui/ProfileAvatar';
 import { showToast } from '../../../utils/customToast';
 import Loader, { ButtonLoader } from '../../../components/ui/Loader';
-import { formatDate } from '../../../utils/dateFormatter';
+import { formatDate, formatTime } from '../../../utils/dateFormatter';
 import { getSocketURL } from '../../../config/apiBaseUrl';
 import ChatMediaButton from '../../../components/shared/ChatMediaButton';
 import VoiceRecorder from '../../../components/shared/VoiceRecorder';
@@ -197,14 +197,6 @@ const TeacherChatTab = ({ course, students, onUnreadCountChange }) => {
             console.error('Error clearing chat:', error);
             showToast.error('Failed to Clear', 'Could not delete chat history.');
         }
-    };
-
-    const formatTime = (date) => {
-        return new Date(date).toLocaleTimeString('en-US', {
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: true
-        });
     };
 
     const getDisplayDate = (date) => {
