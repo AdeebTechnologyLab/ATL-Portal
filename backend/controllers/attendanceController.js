@@ -16,12 +16,14 @@ const lockTodayAttendance = async () => {
 
     console.log(`🔒 Auto-saving PKT attendance for ${yesterdayMoment.format('YYYY-MM-DD')} (PKT Day: ${yesterdayDayOfWeek}, triggered at ${new Date().toISOString()})...`);
 
-    // Get global holiday settings
-    const holidaySetting = await SystemSetting.findOne({ key: 'globalHolidayDays' });
-    const globalHolidayDays = holidaySetting?.value || [];
-    const isGlobalHoliday = globalHolidayDays.includes(yesterdayDayOfWeek);
+    // Get audience-specific holiday settings
+    const studentHolidaySetting = await SystemSetting.findOne({ key: 'studentHolidayDays' });
+    const studentHolidayDays = studentHolidaySetting?.value || [];
 
-    console.log(`📅 Global holidays: ${globalHolidayDays.join(', ') || 'None'}, Yesterday is holiday: ${isGlobalHoliday}`);
+    const internHolidaySetting = await SystemSetting.findOne({ key: 'internHolidayDays' });
+    const internHolidayDays = internHolidaySetting?.value || [];
+
+    console.log(`📅 Student holidays: [${studentHolidayDays.join(', ')}] Intern holidays: [${internHolidayDays.join(', ')}]`);
 
     // 1. Get all active courses
     const activeCourses = await Course.find({ isActive: true });
@@ -34,8 +36,12 @@ const lockTodayAttendance = async () => {
 
     for (const course of activeCourses) {
         try {
-            // Check if yesterday is a global holiday
-            if (isGlobalHoliday) {
+            // Check if yesterday is a holiday for this course's audience
+            const isCourseHoliday = (course.targetAudience === 'interns')
+                ? internHolidayDays.includes(yesterdayDayOfWeek)
+                : studentHolidayDays.includes(yesterdayDayOfWeek);
+
+            if (isCourseHoliday) {
                 // Create or update attendance record as holiday
                 let attendance = await findAttendanceByCourseDay(
                     Attendance,

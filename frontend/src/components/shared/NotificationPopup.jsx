@@ -7,6 +7,7 @@ import { notificationAPI, authAPI } from '../../services/api';
 import { useDispatch } from 'react-redux';
 import { updateUser } from '../../features/auth/authSlice';
 import { useTheme } from '../../context/ThemeContext';
+import { to12Hour } from '../../utils/dateFormatter';
 
 const NotificationPopup = () => {
     const [activeNotifications, setActiveNotifications] = useState([]);
@@ -43,10 +44,14 @@ const NotificationPopup = () => {
                 
                 // Inject Class Time Notification using fresh data
                 if (latestUser?.classTime) {
+                    const classTime12 = latestUser.classTime.replace(
+                        /(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})/,
+                        (_, h1, m1, h2, m2) => `${to12Hour(h1 + ':' + m1)} - ${to12Hour(h2 + ':' + m2)}`
+                    );
                     const isIntern = latestUser.role === 'intern';
                     const classTimeMsg = isIntern
-                        ? `Your designated class time is <strong>${latestUser.classTime}</strong>. Please ensure you are punctual for all your sessions.`
-                        : `Aap ki class ka waqt <strong>${latestUser.classTime}</strong> hai. Meharbani farma kar apni class mein waqt par pahunchein.`;
+                        ? `Your designated class time is <strong>${classTime12}</strong>. Please ensure you are punctual for all your sessions.`
+                        : `Aap ki class ka waqt <strong>${classTime12}</strong> hai. Meharbani farma kar apni class mein waqt par pahunchein.`;
                     const classTimeTitle = isIntern ? 'Class Time Assigned' : 'Class Time Muqarrar Ho Gaya';
                     fetched.unshift({
                         _id: 'class-time-notice',

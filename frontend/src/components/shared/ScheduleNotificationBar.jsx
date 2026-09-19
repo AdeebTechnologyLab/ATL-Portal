@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Calendar, Clock, Coffee } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { attendanceAPI } from '../../services/api';
+import { to12Hour } from '../../utils/dateFormatter';
 
 const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const DAY_ABBR = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -33,6 +34,10 @@ const ScheduleNotificationBar = () => {
     }).format(new Date());
 
     const classTime = user?.classTime || null;
+    const classTime12 = classTime ? classTime.replace(
+        /(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})/,
+        (_, h1, m1, h2, m2) => `${to12Hour(h1 + ':' + m1)} - ${to12Hour(h2 + ':' + m2)}`
+    ) : classTime;
 
     if (loading) return null;
 
@@ -60,7 +65,7 @@ const ScheduleNotificationBar = () => {
                         </div>
                         <div className="min-w-0">
                             <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-500">Class Time</p>
-                            <p className="text-sm font-bold text-gray-800 dark:text-gray-200 truncate">{classTime}</p>
+                            <p className="text-sm font-bold text-gray-800 dark:text-gray-200 truncate">{classTime12}</p>
                         </div>
                     </div>
                 )}

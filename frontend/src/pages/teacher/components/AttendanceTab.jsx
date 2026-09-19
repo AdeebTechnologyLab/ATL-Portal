@@ -51,6 +51,7 @@ const AttendanceTab = ({ course, students }) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [isLocked, setIsLocked] = useState(false);
     const [holidayDays, setHolidayDays] = useState([]);
+    const [audienceHolidayDays, setAudienceHolidayDays] = useState([]);
     const [isHoliday, setIsHoliday] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     // Fail closed until the admin-controlled server setting is loaded.
@@ -86,13 +87,18 @@ const AttendanceTab = ({ course, students }) => {
     useEffect(() => {
         fetchAttendance();
         checkLockStatus();
-    }, [course._id, selectedDate, holidayDays]);
+    }, [course._id, selectedDate, holidayDays, audienceHolidayDays]);
 
-    // Fetch global holiday settings
+    // Fetch global + audience-specific holiday settings
     const fetchGlobalHolidays = async () => {
         try {
-            const response = await attendanceAPI.getGlobalHolidays();
-            setHolidayDays(response.data.holidayDays || []);
+            const isIntern = course.targetAudience === 'interns';
+            const [globalRes, audienceRes] = await Promise.all([
+                attendanceAPI.getGlobalHolidays(),
+                isIntern ? attendanceAPI.getInternHolidays() : attendanceAPI.getStudentHolidays()
+            ]);
+            setHolidayDays(globalRes.data.holidayDays || []);
+            setAudienceHolidayDays(audienceRes.data.holidayDays || []);
         } catch (err) {
             console.error('Error fetching holiday settings:', err);
         }
@@ -127,11 +133,11 @@ const AttendanceTab = ({ course, students }) => {
         if (courseStart && selectedDate < courseStart) locked = true;
         if (courseEnd && selectedDate > courseEnd) locked = true;
 
-        // 3. Check if selected date is a holiday
+        // 3. Check if selected date is a holiday (audience-specific only)
         const [year, month, day] = selectedDate.split('-').map(Number);
         const selectedDateObj = new Date(year, month - 1, day);
         const dayOfWeek = selectedDateObj.getDay();
-        const dateIsHoliday = holidayDays.includes(dayOfWeek);
+        const dateIsHoliday = audienceHolidayDays.includes(dayOfWeek);
         setIsHoliday(dateIsHoliday);
 
         // Lock if it's a holiday (no attendance marking allowed)

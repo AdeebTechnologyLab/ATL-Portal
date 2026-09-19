@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Clock, Plus, Trash2, X, Check, Calendar, Moon, Shield, Zap, MessageSquare, Globe, MapPin, Users } from "lucide-react";
 import { settingsAPI, attendanceAPI } from "../../services/api";
 import { showToast } from "../../utils/customToast";
+import { to12Hour } from "../../utils/dateFormatter";
 import Loader from "../../components/ui/Loader";
 import AssignScreenButton from '../../components/admin/AssignScreenButton';
 
@@ -71,7 +72,7 @@ const ClassTimeSection = ({ classes, setClasses, isLoading, isSaving, setIsSavin
     return (
         <>
             {/* Header Row */}
-            <div className="grid grid-cols-[1fr_100px_100px_90px_36px] gap-2 mb-3 px-1">
+            <div className="grid grid-cols-[1fr_120px_120px_90px_36px] gap-2 mb-3 px-1">
                 <span className="text-[9px] font-black text-gray-400 uppercase tracking-wider">{itemLabel}</span>
                 <span className="text-[9px] font-black text-gray-400 uppercase tracking-wider text-center">Start</span>
                 <span className="text-[9px] font-black text-gray-400 uppercase tracking-wider text-center">End</span>
@@ -113,19 +114,25 @@ const ClassTimeSection = ({ classes, setClasses, isLoading, isSaving, setIsSavin
                                     className="min-w-0 flex-1 px-2 py-1.5 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700/50 text-xs font-bold text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary/30"
                                 />
 
-                                <input
-                                    type="time"
-                                    value={cls.startTime}
-                                    onChange={(e) => handleClassChange(index, 'startTime', e.target.value)}
-                                                className="w-[100px] px-2 py-1.5 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700/50 text-xs font-bold text-gray-800 dark:text-gray-100 text-center focus:outline-none focus:ring-2 focus:ring-primary/30 [color-scheme:light] dark:[color-scheme:dark]"
-                                            />
+                                <div className="flex items-center gap-1">
+                                    <input
+                                        type="time"
+                                        value={cls.startTime}
+                                        onChange={(e) => handleClassChange(index, 'startTime', e.target.value)}
+                                        className="w-[100px] px-2 py-1.5 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700/50 text-xs font-bold text-gray-800 dark:text-gray-100 text-center focus:outline-none focus:ring-2 focus:ring-primary/30 [color-scheme:light] dark:[color-scheme:dark]"
+                                    />
+                                    <span className="text-[9px] font-bold text-primary whitespace-nowrap">{to12Hour(cls.startTime)}</span>
+                                </div>
 
-                                            <input
-                                                type="time"
-                                                value={cls.endTime}
-                                                onChange={(e) => handleClassChange(index, 'endTime', e.target.value)}
-                                                className="w-[100px] px-2 py-1.5 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700/50 text-xs font-bold text-gray-800 dark:text-gray-100 text-center focus:outline-none focus:ring-2 focus:ring-primary/30 [color-scheme:light] dark:[color-scheme:dark]"
-                                />
+                                <div className="flex items-center gap-1">
+                                    <input
+                                        type="time"
+                                        value={cls.endTime}
+                                        onChange={(e) => handleClassChange(index, 'endTime', e.target.value)}
+                                        className="w-[100px] px-2 py-1.5 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700/50 text-xs font-bold text-gray-800 dark:text-gray-100 text-center focus:outline-none focus:ring-2 focus:ring-primary/30 [color-scheme:light] dark:[color-scheme:dark]"
+                                    />
+                                    <span className="text-[9px] font-bold text-primary whitespace-nowrap">{to12Hour(cls.endTime)}</span>
+                                </div>
 
                                 <select
                                     value={cls.mode || "onsite"}

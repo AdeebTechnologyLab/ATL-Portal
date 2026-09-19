@@ -26,6 +26,7 @@ import autoTable from 'jspdf-autotable';
 import { format, differenceInDays, addDays, isBefore, parseISO } from 'date-fns';
 import { io } from 'socket.io-client';
 import { getLocalDateString, getTodayAttendanceDateKey } from '../../utils/attendanceDate';
+import { to12Hour } from '../../utils/dateFormatter';
 
 const formatLastSeen = (lastSeen) => {
     if (!lastSeen) return 'Offline';
@@ -71,6 +72,8 @@ const QuickAttendance = () => {
     const [showMobileFilters, setShowMobileFilters] = useState(false);
     const [courses, setCourses] = useState([]);
     const [holidayDays, setHolidayDays] = useState([]);
+    const [studentHolidayDays, setStudentHolidayDays] = useState([]);
+    const [internHolidayDays, setInternHolidayDays] = useState([]);
     const [classTimeOptions, setClassTimeOptions] = useState(DEFAULT_CLASS_TIME_OPTIONS);
     const [studentClassTimeOptions, setStudentClassTimeOptions] = useState(DEFAULT_CLASS_TIME_OPTIONS);
     const [internClassTimeOptions, setInternClassTimeOptions] = useState(DEFAULT_CLASS_TIME_OPTIONS);
@@ -171,7 +174,9 @@ const QuickAttendance = () => {
                         if (typeof s === 'object' && s.name) {
                             const modeIcon = s.mode === 'online' ? '🌐' : '📍';
                             const modeLabel = s.mode === 'online' ? 'Online' : 'On-Site';
-                            const label = `${s.name} (${s.startTime} - ${s.endTime}) ${modeIcon} ${modeLabel}`;
+                            const start12 = to12Hour(s.startTime);
+                            const end12 = to12Hour(s.endTime);
+                            const label = `${s.name} (${start12} - ${end12}) ${modeIcon} ${modeLabel}`;
                             return { label, value: `${s.name} (${s.startTime} - ${s.endTime})`, mode: s.mode || 'onsite' };
                         }
                         return { label: s, value: s, mode: 'onsite' };
@@ -217,9 +222,19 @@ const QuickAttendance = () => {
             });
             setStudents(allStudents);
 
-            // 3. Fetch Holidays
-            const holidayRes = await attendanceAPI.getGlobalHolidays();
-            setHolidayDays(holidayRes.data.holidayDays || []);
+            // 3. Fetch Holidays (global + student + intern) - each wrapped independently
+            try {
+                const holidayRes = await attendanceAPI.getGlobalHolidays();
+                setHolidayDays(holidayRes.data.holidayDays || []);
+            } catch { /* use defaults */ }
+            try {
+                const studentRes = await attendanceAPI.getStudentHolidays();
+                setStudentHolidayDays(studentRes.data.holidayDays || []);
+            } catch { /* use defaults */ }
+            try {
+                const internRes = await attendanceAPI.getInternHolidays();
+                setInternHolidayDays(internRes.data.holidayDays || []);
+            } catch { /* use defaults */ }
 
         } catch (error) {
             console.error('Error fetching quick attendance data:', error);
@@ -602,10 +617,18 @@ const QuickAttendance = () => {
         return isIntern ? internClassTimeOptions : studentClassTimeOptions;
     };
 
-    const isDateHoliday = () => {
+    const isDateHoliday = (audience) => {
         const [year, month, day] = selectedDate.split('-').map(Number);
         const dateObj = new Date(year, month - 1, day);
-        return holidayDays.includes(dateObj.getDay());
+        const dayOfWeek = dateObj.getDay();
+        if (audience === 'interns') return internHolidayDays.includes(dayOfWeek);
+        return studentHolidayDays.includes(dayOfWeek);
+    };
+
+    const isDateHolidayForCurrentFilter = () => {
+        if (filterCategory === 'students') return isDateHoliday('students');
+        if (filterCategory === 'interns') return isDateHoliday('interns');
+        return isDateHoliday('students') && isDateHoliday('interns');
     };
 
     const markedCount = filteredStudents.filter(s => attendanceMarks[`${s.courseId}-${s.id}`]?.status).length;
@@ -655,7 +678,7 @@ const QuickAttendance = () => {
             </div>
 
             {/* Attendance Progress â€” top bar */}
-            {!isDateHoliday() && (
+            {!isDateHolidayForCurrentFilter() && (
                 <div className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-700 shadow-sm p-4 sm:p-5 flex flex-col gap-4">
                     <div className="w-full flex-1 min-w-[180px] space-y-1.5">
                         <div className="flex items-center justify-between gap-1.5">
@@ -702,7 +725,7 @@ const QuickAttendance = () => {
             )}
 
             {/* Warning if Holiday */}
-            {isDateHoliday() && (
+            {isDateHolidayForCurrentFilter() && (
                 <motion.div
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -969,7 +992,7 @@ const QuickAttendance = () => {
                                     </div>
                                     <div className="grid grid-cols-2 gap-2 mt-3 pt-2.5 border-t border-gray-200/70 dark:border-slate-700">
                                         <button
-                                            disabled={isDateHoliday()}
+                                            disabled={isDateHoliday(student.audience)}
                                             onClick={() => handleMark(student, 'present')}
                                             className={`py-2.5 rounded-lg font-black text-[10px] uppercase tracking-wider border transition-all ${
                                                 currentMark?.status === 'present'
@@ -980,7 +1003,7 @@ const QuickAttendance = () => {
                                             Present
                                         </button>
                                         <button
-                                            disabled={isDateHoliday()}
+                                            disabled={isDateHoliday(student.audience)}
                                             onClick={() => handleMark(student, 'absent')}
                                             className={`py-2.5 rounded-lg font-black text-[10px] uppercase tracking-wider border transition-all ${
                                                 currentMark?.status === 'absent'
@@ -1126,7 +1149,7 @@ const QuickAttendance = () => {
                                             <td className="px-3 py-1.5">
                                                 <div className="flex items-center justify-center gap-1 flex-nowrap">
                                                     <button
-                                                        disabled={isDateHoliday()}
+                                                        disabled={isDateHoliday(student.audience)}
                                                         onClick={() => handleMark(student, 'present')}
                                                         className={`px-2.5 py-1.5 rounded-lg font-black text-[9px] uppercase tracking-[0.1em] transition-all flex items-center justify-center border-2 whitespace-nowrap ${currentMark?.status === 'present'
                                                             ? 'bg-present-fixed border-present-fixed text-white shadow-lg shadow-present-fixed/20'
@@ -1136,7 +1159,7 @@ const QuickAttendance = () => {
                                                         Present
                                                     </button>
                                                     <button
-                                                        disabled={isDateHoliday()}
+                                                        disabled={isDateHoliday(student.audience)}
                                                         onClick={() => handleMark(student, 'absent')}
                                                         className={`px-2.5 py-1.5 rounded-lg font-black text-[9px] uppercase tracking-[0.1em] transition-all flex items-center justify-center border-2 whitespace-nowrap ${currentMark?.status === 'absent'
                                                             ? 'bg-absent-fixed border-absent-fixed text-white shadow-lg shadow-absent-fixed/20'

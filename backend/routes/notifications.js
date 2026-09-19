@@ -106,59 +106,64 @@ router.get('/active', protect, async (req, res) => {
         if (userRole !== 'job') {
             const scheduleNotifications = [];
 
-            const audienceLabel = userRole === 'intern' ? 'Internship' : 'Student';
+            // For teachers, show BOTH Student and Intern time tables
+            // For students, show only Student time table
+            // For interns, show only Intern time table
+            const rolesToShow = (userRole === 'teacher')
+                ? [{ key: 'student', label: 'Student', classTimeKey: 'student_class_slots', holidayKey: 'studentHolidayDays' },
+                   { key: 'intern', label: 'Internship', classTimeKey: 'intern_class_slots', holidayKey: 'internHolidayDays' }]
+                : [{ key: userRole, label: userRole === 'intern' ? 'Internship' : 'Student', classTimeKey: userRole === 'intern' ? 'intern_class_slots' : 'student_class_slots', holidayKey: userRole === 'intern' ? 'internHolidayDays' : 'studentHolidayDays' }];
 
-            // Class Time Slots + Weekly Off Days combined notification (role-specific)
-            const classTimeKey = userRole === 'intern' ? 'intern_class_slots' : 'student_class_slots';
-            const holidayKey = userRole === 'intern' ? 'internHolidayDays' : 'studentHolidayDays';
-            let [classTimeSetting, offDaysSetting] = await Promise.all([
-                SystemSetting.findOne({ key: classTimeKey }),
-                SystemSetting.findOne({ key: holidayKey })
-            ]);
+            for (const roleConfig of rolesToShow) {
+                let [classTimeSetting, offDaysSetting] = await Promise.all([
+                    SystemSetting.findOne({ key: roleConfig.classTimeKey }),
+                    SystemSetting.findOne({ key: roleConfig.holidayKey })
+                ]);
 
-            // Fallback to legacy keys if role-specific keys have no data
-            if (!classTimeSetting) {
-                classTimeSetting = await SystemSetting.findOne({ key: 'class_time_slots' });
-            }
-            if (!offDaysSetting) {
-                offDaysSetting = await SystemSetting.findOne({ key: 'globalHolidayDays' });
-            }
-
-            const hasSlots = classTimeSetting && Array.isArray(classTimeSetting.value) && classTimeSetting.value.length > 0;
-            const hasOffDays = offDaysSetting && Array.isArray(offDaysSetting.value);
-
-            if (hasSlots || hasOffDays) {
-                let messageHtml = '';
-
-                // Class Time Slots section
-                if (hasSlots) {
-                    const slotList = classTimeSetting.value.map((s, i) => {
-                        const slot = typeof s === 'object' ? `${s.name} (${toAMPM(s.startTime)} - ${toAMPM(s.endTime)}) ${s.mode === 'online' ? 'Online' : 'On-Site'}` : s;
-                        return `<li style="margin-bottom:4px;">${slot}</li>`;
-                    }).join('');
-                    messageHtml += `<p style="margin-bottom:8px;">Current <strong>Class Time Slots</strong>:</p><ul style="padding-left:18px;margin:0;">${slotList}</ul>`;
+                // Fallback to legacy keys if role-specific keys have no data
+                if (!classTimeSetting) {
+                    classTimeSetting = await SystemSetting.findOne({ key: 'class_time_slots' });
+                }
+                if (!offDaysSetting) {
+                    offDaysSetting = await SystemSetting.findOne({ key: 'globalHolidayDays' });
                 }
 
-                // Weekly Off Days section
-                if (hasOffDays) {
-                    const offDayNames = offDaysSetting.value.map(d => DAY_NAMES[d]).filter(Boolean);
-                    const dayBadges = DAY_NAMES.map((name, i) => {
-                        const isOff = offDaysSetting.value.includes(i);
-                        return `<span style="display:inline-block;padding:4px 10px;margin:3px;border-radius:8px;font-size:12px;font-weight:bold;${isOff ? 'background:#fed7aa;color:#c2410c;border:1px solid #fb923c;' : 'background:#e5e7eb;color:#6b7280;border:1px solid #d1d5db;'}">${name.substring(0, 3).toUpperCase()}</span>`;
-                    }).join('');
-                    messageHtml += `<p style="margin-top:12px;margin-bottom:8px;"><strong>Weekly Off Days</strong>:</p><div style="margin:10px 0;">${dayBadges}</div><p style="font-size:12px;color:#666;">Off days: <strong>${offDayNames.length > 0 ? offDayNames.join(', ') : 'None'}</strong></p>`;
+                const hasSlots = classTimeSetting && Array.isArray(classTimeSetting.value) && classTimeSetting.value.length > 0;
+                const hasOffDays = offDaysSetting && Array.isArray(offDaysSetting.value);
+
+                if (hasSlots || hasOffDays) {
+                    let messageHtml = '';
+
+                    // Class Time Slots section
+                    if (hasSlots) {
+                        const slotList = classTimeSetting.value.map((s, i) => {
+                            const slot = typeof s === 'object' ? `${s.name} (${toAMPM(s.startTime)} - ${toAMPM(s.endTime)}) ${s.mode === 'online' ? 'Online' : 'On-Site'}` : s;
+                            return `<li style="margin-bottom:4px;">${slot}</li>`;
+                        }).join('');
+                        messageHtml += `<p style="margin-bottom:8px;">Current <strong>Class Time Slots</strong>:</p><ul style="padding-left:18px;margin:0;">${slotList}</ul>`;
+                    }
+
+                    // Weekly Off Days section
+                    if (hasOffDays) {
+                        const offDayNames = offDaysSetting.value.map(d => DAY_NAMES[d]).filter(Boolean);
+                        const dayBadges = DAY_NAMES.map((name, i) => {
+                            const isOff = offDaysSetting.value.includes(i);
+                            return `<span style="display:inline-block;padding:4px 10px;margin:3px;border-radius:8px;font-size:12px;font-weight:bold;${isOff ? 'background:#fed7aa;color:#c2410c;border:1px solid #fb923c;' : 'background:#e5e7eb;color:#6b7280;border:1px solid #d1d5db;'}">${name.substring(0, 3).toUpperCase()}</span>`;
+                        }).join('');
+                        messageHtml += `<p style="margin-top:12px;margin-bottom:8px;"><strong>Weekly Off Days</strong>:</p><div style="margin:10px 0;">${dayBadges}</div><p style="font-size:12px;color:#666;">Off days: <strong>${offDayNames.length > 0 ? offDayNames.join(', ') : 'None'}</strong></p>`;
+                    }
+
+                    messageHtml += `<p style="margin-top:8px;font-size:12px;color:#666;">Please check your schedule.</p>`;
+
+                    scheduleNotifications.push({
+                        _id: `schedule-combined-${roleConfig.key}`,
+                        title: `📢 ${roleConfig.label} Time Table`,
+                        message: messageHtml,
+                        type: 'blue',
+                        isHtml: true,
+                        createdAt: new Date()
+                    });
                 }
-
-                messageHtml += `<p style="margin-top:8px;font-size:12px;color:#666;">Please check your schedule.</p>`;
-
-                scheduleNotifications.push({
-                    _id: `schedule-combined-${userRole}`,
-                    title: `📢 ${audienceLabel} Time Table`,
-                    message: messageHtml,
-                    type: 'blue',
-                    isHtml: true,
-                    createdAt: new Date()
-                });
             }
 
             notifications = [...scheduleNotifications, ...dbNotifications];
