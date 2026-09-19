@@ -200,6 +200,7 @@ export const certificateAPI = {
     rejectRequest: (id) => api.put(`/certificates/requests/${id}/reject`),
     delete: (id) => api.delete(`/certificates/${id}`),
     verify: (rollNo) => api.get(`/certificates/verify/${rollNo}`),
+    verifyMarks: (rollNo) => api.get(`/certificates/verify/${rollNo}/marks`),
     // Teacher certificate methods
     getTeachers: () => api.get('/certificates/teachers'),
     issueTeacher: (data) => api.post('/certificates/issue-teacher', data),

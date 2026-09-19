@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Award, Calendar, CheckCircle, AlertCircle, ArrowRight, ExternalLink, BookOpen, MapPin, Phone, Mail, Globe, Clock, MessageCircle } from 'lucide-react';
+import { Search, Award, Calendar, CheckCircle, AlertCircle, ArrowRight, ExternalLink, BookOpen, MapPin, Phone, Mail, Globe, Clock, MessageCircle, FileText, RefreshCw, Zap, TrendingUp, ChevronDown } from 'lucide-react';
 import { certificateAPI } from '../../services/api';
 import { ButtonLoader } from '../../components/ui/Loader';
 import { formatDate } from '../../utils/dateFormatter';
@@ -11,14 +11,14 @@ const CertificateVerification = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const [certificates, setCertificates] = useState(null);
+    const [marksData, setMarksData] = useState(null);
+    const [expandedProjects, setExpandedProjects] = useState({});
 
     const handleSearch = async (e) => {
         e.preventDefault();
         let query = rollNo.trim();
         if (!query) return;
 
-        // Normalize roll number: ATL-0001 or 0001 -> 0001
-        // We strip ATL- prefix if present to match the DB format
         if (query.toUpperCase().startsWith('ATL-')) {
             query = query.substring(4);
         }
@@ -26,10 +26,19 @@ const CertificateVerification = () => {
         setIsLoading(true);
         setError(null);
         setCertificates(null);
+        setMarksData(null);
 
         try {
             const response = await certificateAPI.verify(query);
             setCertificates(response.data.certificates);
+
+            // Fetch marks data in parallel (ignore if fails — student may not have marks)
+            try {
+                const marksResponse = await certificateAPI.verifyMarks(query);
+                setMarksData(marksResponse.data.marks);
+            } catch {
+                setMarksData(null);
+            }
         } catch (err) {
             setError(err.response?.data?.message || 'No certificates found for this roll number');
         } finally {
@@ -58,11 +67,12 @@ const CertificateVerification = () => {
                             <span className="text-xs font-semibold text-gray-400 uppercase tracking-widest">Trusted Verification Portal</span>
                         </div>
 
-                        <h1 className="text-5xl md:text-6xl font-black mb-5 tracking-tight leading-[1.1]">
-                            Certificate <span className="text-primary">Verification</span>
+                        <h1 className="text-5xl md:text-6xl font-black mb-3 tracking-tight leading-[1.1]">
+                            <span className="text-white">Adeeb </span><span className="text-primary">Technology </span><span className="text-white">Lab</span>
                         </h1>
+                        <p className="text-lg md:text-xl font-black text-white mb-2 uppercase tracking-widest">Status <span className="text-primary">Verification</span></p>
                         <p className="text-base md:text-lg text-gray-400 max-w-xl mx-auto leading-relaxed">
-                            Verify the authenticity of certificates issued by <span className="text-white font-semibold">Adeeb Technology Lab</span>. Enter the student's Roll Number below.
+                            Verify the authenticity of student records, certifications & academic performance. Enter the Roll Number below to get started.
                         </p>
                     </motion.div>
 
@@ -306,6 +316,116 @@ const CertificateVerification = () => {
                                                         </div>
                                                     </div>
                                                 </div>
+
+                                                {/* Compact Marks Summary */}
+                                                {marksData && cert.position !== 'Teacher' && (() => {
+                                                    const certMarks = marksData.find(m => m.courseTitle === cert.course);
+                                                    if (!certMarks) return null;
+                                                    const gradeColors = {
+                                                        'A+': 'text-emerald-600 bg-emerald-50 border-emerald-200',
+                                                        'A': 'text-emerald-600 bg-emerald-50 border-emerald-200',
+                                                        'B+': 'text-sky-600 bg-sky-50 border-sky-200',
+                                                        'B': 'text-sky-600 bg-sky-50 border-sky-200',
+                                                        'C+': 'text-amber-600 bg-amber-50 border-amber-200',
+                                                        'C': 'text-amber-600 bg-amber-50 border-amber-200',
+                                                        'D': 'text-red-600 bg-red-50 border-red-200',
+                                                        'F': 'text-red-600 bg-red-50 border-red-200',
+                                                        'N/A': 'text-gray-400 bg-gray-50 border-gray-200'
+                                                    };
+                                                    const gc = gradeColors[certMarks.grade] || gradeColors['N/A'];
+                                                    const isIntern = certMarks.role === 'intern';
+
+                                                    if (isIntern) {
+                                                        const items = certMarks.assignmentsList?.length > 0
+                                                            ? certMarks.assignmentsList
+                                                            : (certMarks.projects?.length > 0 ? certMarks.projects : []);
+                                                        const isExpanded = expandedProjects[cert.course] || false;
+                                                        return (
+                                                            <div className="mt-4 p-4 bg-gradient-to-br from-gray-50 to-gray-100/50 dark:from-gray-800 dark:to-gray-800/50 rounded-2xl border border-gray-200/60 dark:border-gray-700/60">
+                                                                <div
+                                                                    className="flex items-center justify-between mb-3 cursor-pointer select-none"
+                                                                    onClick={() => setExpandedProjects(prev => ({ ...prev, [cert.course]: !prev[cert.course] }))}
+                                                                >
+                                                                    <p className="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest font-bold flex items-center gap-1.5">
+                                                                        <TrendingUp className="w-3.5 h-3.5" /> Projects
+                                                                        {items.length > 0 && <span className="text-gray-400 font-normal">({items.length})</span>}
+                                                                    </p>
+                                                                    <div className="flex items-center gap-2">
+                                                                        {certMarks.average > 0 && (
+                                                                            <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-xs font-black ${gc}`}>
+                                                                                {certMarks.grade} · {certMarks.average}%
+                                                                            </div>
+                                                                        )}
+                                                                        <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} />
+                                                                    </div>
+                                                                </div>
+                                                                <AnimatePresence>
+                                                                {isExpanded && items.length > 0 && (
+                                                                    <motion.div
+                                                                        initial={{ height: 0, opacity: 0 }}
+                                                                        animate={{ height: 'auto', opacity: 1 }}
+                                                                        exit={{ height: 0, opacity: 0 }}
+                                                                        transition={{ duration: 0.2 }}
+                                                                        className="overflow-hidden"
+                                                                    >
+                                                                        <div className="space-y-1.5">
+                                                                            {items.map((p, i) => {
+                                                                                const pgc = p.grade ? (gradeColors[p.grade] || gradeColors['N/A']) : 'text-gray-400 bg-gray-50 border-gray-200';
+                                                                                const statusLabel = p.status === 'pending' ? 'Pending' : p.status === 'submitted' ? 'Submitted' : null;
+                                                                                return (
+                                                                                    <div key={i} className="flex items-center justify-between px-3 py-2 bg-white dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800">
+                                                                                        <div className="flex items-center gap-2 truncate max-w-[70%]">
+                                                                                            <span className="text-[9px] font-black text-gray-400 bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded-md shrink-0">#{i + 1}</span>
+                                                                                            <span className="text-xs font-bold text-gray-700 dark:text-gray-300 truncate">{p.name}</span>
+                                                                                        </div>
+                                                                                        {p.grade ? (
+                                                                                            <span className={`text-[10px] font-black px-2 py-0.5 rounded-md border ${pgc}`}>{p.grade} · {p.marks}/{p.total}</span>
+                                                                                        ) : (
+                                                                                            <span className="text-[10px] font-black px-2 py-0.5 rounded-md border text-gray-400 bg-gray-50 border-gray-200">{statusLabel || '—'}</span>
+                                                                                        )}
+                                                                                    </div>
+                                                                                );
+                                                                            })}
+                                                                        </div>
+                                                                    </motion.div>
+                                                                )}
+                                                                </AnimatePresence>
+                                                            </div>
+                                                        );
+                                                    }
+
+                                                    return (
+                                                        <div className="mt-4 p-4 bg-gradient-to-br from-gray-50 to-gray-100/50 dark:from-gray-800 dark:to-gray-800/50 rounded-2xl border border-gray-200/60 dark:border-gray-700/60">
+                                                            <div className="flex items-center justify-between mb-3">
+                                                                <p className="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest font-bold flex items-center gap-1.5">
+                                                                    <TrendingUp className="w-3.5 h-3.5" /> Marks Summary
+                                                                </p>
+                                                                {certMarks.average > 0 && (
+                                                                    <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-xs font-black ${gc}`}>
+                                                                        {certMarks.grade} · {certMarks.average}%
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                            <div className="grid grid-cols-3 gap-3">
+                                                                <div className="text-center p-2.5 bg-white dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800">
+                                                                    <FileText className="w-4 h-4 text-blue-500 mx-auto mb-1" />
+                                                                    <p className="text-[9px] text-gray-400 uppercase tracking-wider font-bold">Assignments</p>
+                                                                    <p className="text-sm font-black text-gray-900 dark:text-white">{certMarks.assignments.count > 0 ? `${certMarks.assignments.avg}%` : '—'}</p>
+                                                                </div>
+                                                                <div className="text-center p-2.5 bg-white dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800">
+                                                                    <RefreshCw className="w-4 h-4 text-primary mx-auto mb-1" />
+                                                                    <p className="text-[9px] text-gray-400 uppercase tracking-wider font-bold">Daily Tasks</p>
+                                                                    <p className="text-sm font-black text-gray-900 dark:text-white">{certMarks.dailyTasks.count > 0 ? `${certMarks.dailyTasks.avg}%` : '—'}</p>
+                                                                </div>
+                                                                <div className="text-center p-2.5 bg-white dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800">
+                                                                    <Zap className="w-4 h-4 text-purple-500 mx-auto mb-1" />
+                                                                    <p className="text-[9px] text-gray-400 uppercase tracking-wider font-bold">Tests</p>
+                                                                    <p className="text-sm font-black text-gray-900 dark:text-white">{certMarks.tests.count > 0 ? `${certMarks.tests.avg}%` : '—'}</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                })()}
 
                                             </div>
                                         </div>

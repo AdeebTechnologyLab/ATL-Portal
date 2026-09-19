@@ -8,6 +8,9 @@ const Course = require('../models/Course');
 const Enrollment = require('../models/Enrollment');
 const User = require('../models/User');
 const Fee = require('../models/Fee');
+const Assignment = require('../models/Assignment');
+const DailyTask = require('../models/DailyTask');
+const Test = require('../models/Test');
 
 // @route   GET /api/certificates/my
 // @desc    Get logged-in user's certificates
@@ -596,6 +599,149 @@ router.get('/verify/:rollNo', async (req, res) => {
         res.json({ success: true, certificates: result });
     } catch (error) {
         console.error('Verify error:', error);
+        res.status(500).json({ success: false, message: error.message });
+    }
+});
+
+// @route   GET /api/certificates/verify/:rollNo/marks
+// @desc    Get marks data for a roll number (public, compact format)
+// @access  Public
+router.get('/verify/:rollNo/marks', async (req, res) => {
+    try {
+        let searchRollNo = req.params.rollNo.trim();
+        if (searchRollNo.toUpperCase().startsWith('ATL-')) {
+            searchRollNo = searchRollNo.substring(4);
+        }
+
+        const users = await User.find({
+            rollNo: searchRollNo,
+            role: { $in: ['student', 'intern', 'teacher'] }
+        });
+
+        if (!users || users.length === 0) {
+            return res.status(404).json({ success: false, message: 'No record found' });
+        }
+
+        const userIds = users.map(u => u._id);
+        const enrollments = await Enrollment.find({ user: { $in: userIds } }).populate('course', 'title location');
+        const assignments = await Assignment.find({ course: { $in: enrollments.map(e => e.course?._id).filter(Boolean) } });
+        const dailyTasks = await DailyTask.find({ user: { $in: userIds }, course: { $in: enrollments.map(e => e.course?._id).filter(Boolean) } });
+        const tests = await Test.find({ course: { $in: enrollments.map(e => e.course?._id).filter(Boolean) } });
+
+        const result = [];
+
+        for (const enrollment of enrollments) {
+            const courseId = enrollment.course?._id;
+            const courseTitle = enrollment.course?.title || 'Course';
+            const userId = enrollment.user?.toString();
+
+            // Assignment marks for this user + course
+            const courseAssignments = assignments
+                .filter(a => {
+                    if (String(a.course?._id || a.course) !== String(courseId)) return false;
+                    if (a.assignTo === 'all') return true;
+                    if (a.assignTo === 'selected' && a.assignedUsers?.some(u => String(u) === String(userId))) return true;
+                    return false;
+                })
+                .sort((a, b) => new Date(a.dueDate || a.createdAt) - new Date(b.dueDate || b.createdAt))
+                .map((a, index) => {
+                    const mySub = a.submissions?.find(s =>
+                        String(s.user?._id || s.user) === String(userId)
+                    );
+                    const marks = mySub?.marks;
+                    const total = a.totalMarks || 100;
+                    if (marks !== undefined && marks !== null) {
+                        const pct = (marks / total) * 100;
+                        let grade = 'F';
+                        if (pct >= 90) grade = 'A+';
+                        else if (pct >= 85) grade = 'A';
+                        else if (pct >= 80) grade = 'B+';
+                        else if (pct >= 75) grade = 'B';
+                        else if (pct >= 70) grade = 'C+';
+                        else if (pct >= 65) grade = 'C';
+                        else if (pct >= 60) grade = 'D';
+                        return { number: index + 1, name: a.title || 'Assignment', marks, total, grade, status: mySub.status || 'graded', type: 'Assignment' };
+                    }
+                    const submitted = mySub && mySub.submittedAt;
+                    return { number: index + 1, name: a.title || 'Assignment', marks: null, total, grade: null, status: submitted ? 'submitted' : 'pending', type: 'Assignment' };
+                });
+
+            // Daily tasks for this user + course
+            const courseTasks = dailyTasks
+                .filter(t => String(t.user?._id || t.user) === String(userId) && String(t.course?._id || t.course) === String(courseId))
+                .sort((a, b) => new Date(a.date || a.createdAt) - new Date(b.date || b.createdAt))
+                .filter(t => (t.marks !== undefined && t.marks !== null && t.marks > 0) || t.status === 'graded' || t.status === 'verified')
+                .map((t, index) => ({
+                    number: index + 1,
+                    name: t.content || 'Project',
+                    date: t.date || t.createdAt,
+                    marks: t.marks,
+                    total: 10,
+                    type: 'Daily Task',
+                    grade: t.marks >= 9 ? 'A+' : t.marks >= 8 ? 'A' : t.marks >= 7 ? 'B+' : t.marks >= 6 ? 'B' : t.marks >= 5 ? 'C+' : t.marks >= 4 ? 'C' : t.marks >= 3 ? 'D' : 'F'
+                }));
+
+            // Test marks for this user + course
+            const courseTests = tests
+                .filter(t => String(t.course?._id || t.course) === String(courseId))
+                .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
+                .map((t, index) => {
+                    const mySub = t.submissions?.find(s =>
+                        String(s.user?._id || s.user || '') === String(userId || '')
+                    );
+                    if (mySub) {
+                        return {
+                            number: index + 1,
+                            marks: mySub.score || 0,
+                            total: mySub.totalPossibleScore || t.totalMarks || 100,
+                            type: 'Test'
+                        };
+                    }
+                    return null;
+                })
+                .filter(Boolean);
+
+            const gradedItems = [...courseAssignments.filter(a => a.marks !== null), ...courseTasks, ...courseTests];
+            const allGrades = [...courseAssignments, ...courseTasks, ...courseTests];
+            const average = gradedItems.length > 0
+                ? parseFloat((gradedItems.reduce((sum, g) => sum + (g.marks / g.total) * 100, 0) / gradedItems.length).toFixed(1))
+                : 0;
+
+            let grade = 'N/A';
+            if (average >= 90) grade = 'A+';
+            else if (average >= 85) grade = 'A';
+            else if (average >= 80) grade = 'B+';
+            else if (average >= 75) grade = 'B';
+            else if (average >= 70) grade = 'C+';
+            else if (average >= 65) grade = 'C';
+            else if (average >= 60) grade = 'D';
+            else if (average > 0) grade = 'F';
+
+            result.push({
+                courseTitle,
+                courseLocation: enrollment.course?.location || null,
+                enrollmentStatus: enrollment.status || 'enrolled',
+                enrolledAt: enrollment.enrolledAt,
+                completedAt: enrollment.completedAt,
+                role: users.find(u => u._id.toString() === userId)?.role || 'student',
+                assignments: { count: courseAssignments.length, avg: courseAssignments.length > 0 ? parseFloat((courseAssignments.reduce((s, g) => s + (g.marks / g.total) * 100, 0) / courseAssignments.length).toFixed(1)) : null },
+                assignmentsList: courseAssignments.map(a => ({ name: a.name, grade: a.grade, marks: a.marks, total: a.total, status: a.status })),
+                dailyTasks: { count: courseTasks.length, avg: courseTasks.length > 0 ? parseFloat((courseTasks.reduce((s, g) => s + (g.marks / g.total) * 100, 0) / courseTasks.length).toFixed(1)) : null },
+                projects: courseTasks.map(t => ({ name: t.name, grade: t.grade, marks: t.marks, total: t.total })),
+                tests: { count: courseTests.length, avg: courseTests.length > 0 ? parseFloat((courseTests.reduce((s, g) => s + (g.marks / g.total) * 100, 0) / courseTests.length).toFixed(1)) : null },
+                average,
+                grade,
+                totalGraded: allGrades.length
+            });
+        }
+
+        if (result.length === 0) {
+            return res.status(404).json({ success: false, message: 'No marks data found' });
+        }
+
+        res.json({ success: true, marks: result });
+    } catch (error) {
+        console.error('Verify marks error:', error);
         res.status(500).json({ success: false, message: error.message });
     }
 });
