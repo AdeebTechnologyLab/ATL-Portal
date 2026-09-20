@@ -4,7 +4,7 @@ const crypto = require('crypto');
 const { sendEmail, isEmailConfigured } = require('../utils/email');
 const { getClientUrl } = require('../config/client');
 const { protect } = require('../middleware/auth');
-const { uploadPhoto, uploadRegistration } = require('../config/cloudinary');
+const { uploadPhoto, uploadRegistration, deleteCloudinaryImage } = require('../config/cloudinary');
 const User = require('../models/User');
 
 const getLinkedAccountQuery = (user) => {
@@ -581,6 +581,10 @@ router.put('/profile', protect, uploadPhoto.single('photo'), async (req, res) =>
 
         // Add new photo if uploaded
         if (req.file) {
+            // Delete old image from Cloudinary if user already has one
+            if (currentUser.photo) {
+                await deleteCloudinaryImage(currentUser.photo);
+            }
             updates.photo = req.file.path;
         }
 

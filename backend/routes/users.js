@@ -7,7 +7,7 @@ const Fee = require('../models/Fee');
 const Enrollment = require('../models/Enrollment');
 const PaidTask = require('../models/PaidTask');
 const Course = require('../models/Course');
-const { uploadPhoto } = require('../config/cloudinary');
+const { uploadPhoto, deleteCloudinaryImage } = require('../config/cloudinary');
 const moment = require('moment-timezone');
 const { sendPushNotification } = require('../utils/pushHelper');
 
@@ -542,17 +542,21 @@ router.get('/:id', protect, async (req, res) => {
 // @access  Private/Admin
 router.put('/:id', protect, authorize('admin'), uploadPhoto.single('photo'), async (req, res) => {
     try {
+        // Get the current user first (needed for old photo deletion)
+        const currentUser = await User.findById(req.params.id);
+        if (!currentUser) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
         const updateData = { ...req.body };
 
         // If photo uploaded, update path
         if (req.file) {
+            // Delete old image from Cloudinary if user already has one
+            if (currentUser.photo) {
+                await deleteCloudinaryImage(currentUser.photo);
+            }
             updateData.photo = req.file.path;
-        }
-
-        // Get the current user to find their email
-        const currentUser = await User.findById(req.params.id);
-        if (!currentUser) {
-            return res.status(404).json({ success: false, message: 'User not found' });
         }
 
         if (typeof updateData.email === 'string') {

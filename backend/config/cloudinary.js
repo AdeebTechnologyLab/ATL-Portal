@@ -9,13 +9,46 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
+// Extract Cloudinary public_id from a full URL
+// e.g. "https://res.cloudinary.com/adeeb-tech-lab/image/upload/v123/lms/photos/abc123.jpg"
+// returns "lms/photos/abc123"
+const extractPublicId = (url) => {
+    if (!url || typeof url !== 'string') return null;
+    try {
+        const matches = url.match(/\/upload\/(?:v\d+\/)?(.+?)(?:\.\w+)?$/);
+        return matches ? matches[1] : null;
+    } catch {
+        return null;
+    }
+};
+
+// Delete an image from Cloudinary by URL (safe to call even if URL is invalid)
+const deleteCloudinaryImage = async (url) => {
+    const publicId = extractPublicId(url);
+    if (!publicId) return;
+    try {
+        await cloudinary.uploader.destroy(publicId);
+    } catch (err) {
+        console.error('Failed to delete old Cloudinary image:', err.message);
+    }
+};
+
 // Storage for profile photos
+// Uses fixed public_id (user_<id>) for logged-in users so the URL stays the same on updates.
+// For registration (no req.user), generates a random public_id.
 const photoStorage = new CloudinaryStorage({
     cloudinary: cloudinary,
-    params: {
-        folder: 'lms/photos',
-        allowed_formats: ['jpg', 'jpeg', 'png', 'gif', 'webp', 'heic', 'heif', 'bmp', 'tiff'],
-        transformation: [{ width: 400, height: 400, crop: 'fill' }]
+    params: async (req, file) => {
+        const opts = {
+            folder: 'lms/photos',
+            allowed_formats: ['jpg', 'jpeg', 'png', 'gif', 'webp', 'heic', 'heif', 'bmp', 'tiff'],
+            transformation: [{ width: 400, height: 400, crop: 'fill' }]
+        };
+        if (req.user && req.user.id) {
+            opts.public_id = `user_${req.user.id}`;
+            opts.overwrite = true;
+        }
+        return opts;
     }
 });
 
@@ -96,5 +129,7 @@ module.exports = {
     uploadSubmission,
     uploadChatFiles,
     uploadCourse,
-    uploadRegistration
+    uploadRegistration,
+    extractPublicId,
+    deleteCloudinaryImage
 };
