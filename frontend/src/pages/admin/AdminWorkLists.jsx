@@ -2,13 +2,20 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
     Check, ChevronDown, ChevronRight, Circle, ListPlus, MoreVertical,
-    Plus, Search, Trash2, X, UserPlus, UserMinus
+    Pencil, Plus, Search, Trash2, X, UserPlus, UserMinus
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { adminWorkTaskAPI, userAPI } from '../../services/api';
 import Loader from '../../components/ui/Loader';
 import ProfileAvatar from '../../components/ui/ProfileAvatar';
 
+
+const memberLabel = (person) => {
+    if (!person) return 'User';
+    if (person.rollNo) return `#${person.rollNo}`;
+    if (person.role) return person.role.charAt(0).toUpperCase() + person.role.slice(1);
+    return 'User';
+};
 
 const AdminWorkLists = () => {
     const { role } = useSelector(state => state.auth);
@@ -26,6 +33,7 @@ const AdminWorkLists = () => {
     const [addingToListId, setAddingToListId] = useState('');
     const [newTaskTitle, setNewTaskTitle] = useState('');
     const [expandedTaskId, setExpandedTaskId] = useState('');
+    const [editingTaskId, setEditingTaskId] = useState('');
     const [completedOpen, setCompletedOpen] = useState({});
     const [drafts, setDrafts] = useState({});
     const [savingId, setSavingId] = useState('');
@@ -179,9 +187,47 @@ const AdminWorkLists = () => {
     };
 
     const toggleTask = (list, item) => {
+        if (editingTaskId === item._id) return;
         updateTask(list, item, {
             status: item.status === 'completed' ? 'pending' : 'completed'
         });
+    };
+
+    const startEditTask = (item) => {
+        setEditingTaskId(item._id);
+        setExpandedTaskId(item._id);
+        updateDraft(item, {
+            title: item.title || '',
+            description: item.description || '',
+            status: item.status || 'pending'
+        });
+    };
+
+    const cancelEditTask = (item) => {
+        setEditingTaskId('');
+        setDrafts(current => {
+            const next = { ...current };
+            delete next[item._id];
+            return next;
+        });
+    };
+
+    const saveEditTask = async (list, item) => {
+        const draft = getDraft(item);
+        const title = (draft.title || '').trim();
+        if (!title) {
+            toast.error('Task title khali nahi ho sakta.');
+            return;
+        }
+        const changes = {};
+        if (title !== item.title) changes.title = title;
+        if ((draft.description || '') !== (item.description || '')) changes.description = draft.description || '';
+        if (Object.keys(changes).length === 0) {
+            cancelEditTask(item);
+            return;
+        }
+        await updateTask(list, item, changes);
+        setEditingTaskId('');
     };
 
     const deleteTask = async (list, item) => {
@@ -302,16 +348,16 @@ const AdminWorkLists = () => {
                                 <section key={list._id} className="relative overflow-visible rounded-3xl border border-gray-100 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-[#141418]">
                                     <div className="mb-5 flex items-center justify-between gap-3">
                                         <h2 className="min-w-0 truncate text-xl font-bold text-gray-900 dark:text-white">{list.title}</h2>
-                                        {canManage && <div className="relative">
+                                        {(canManage || isTeacher) && <div className="relative">
                                             <button onClick={() => setMenuListId(menuListId === list._id ? '' : list._id)} className="rounded-full p-2 text-gray-400 hover:bg-gray-100 dark:hover:bg-white/10">
                                                 <MoreVertical className="h-5 w-5" />
                                             </button>
                                             {menuListId === list._id && (
                                                 <div className="absolute right-0 top-10 z-30 w-44 overflow-hidden rounded-xl border border-gray-100 bg-white py-1 shadow-xl dark:border-white/10 dark:bg-gray-900">
-                                                    <button onClick={() => renameList(list)} className="w-full px-4 py-2.5 text-left text-sm font-semibold text-gray-700 hover:bg-gray-50 dark:text-white/80 dark:hover:bg-white/5">Rename list</button>
+                                                    {canManage && <button onClick={() => renameList(list)} className="w-full px-4 py-2.5 text-left text-sm font-semibold text-gray-700 hover:bg-gray-50 dark:text-white/80 dark:hover:bg-white/5">Rename list</button>}
                                                     <button onClick={() => openShareModal(list._id)} className="w-full px-4 py-2.5 text-left text-sm font-semibold text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-500/10">Add user</button>
-                                                    {list.sharedWith && list.sharedWith.length > 0 && <button onClick={() => openRemoveUserModal(list._id)} className="w-full px-4 py-2.5 text-left text-sm font-semibold text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-500/10">Remove user</button>}
-                                                    <button onClick={() => deleteList(list)} className="w-full px-4 py-2.5 text-left text-sm font-semibold text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10">Delete list</button>
+                                                    {canManage && list.sharedWith && list.sharedWith.length > 0 && <button onClick={() => openRemoveUserModal(list._id)} className="w-full px-4 py-2.5 text-left text-sm font-semibold text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-500/10">Remove user</button>}
+                                                    {canManage && <button onClick={() => deleteList(list)} className="w-full px-4 py-2.5 text-left text-sm font-semibold text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10">Delete list</button>}
                                                 </div>
                                             )}
                                         </div>}
@@ -322,7 +368,7 @@ const AdminWorkLists = () => {
                                             {list.sharedWith.map(member => (
                                                 <span key={member._id || member} className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-xs font-bold text-primary">
                                                     <ProfileAvatar src={member.photo} name={member.name || 'User'} size="xs" border="border border-primary/30" />
-                                                    {member.name || 'User'} · #{member.rollNo || '?'}
+                                                    {member.name || 'User'} · {memberLabel(member)}
                                                     {canManage && (
                                                         <button onClick={() => removeUserFromList(list._id, member._id || member)} disabled={removingUserId === (member._id || member)} className="ml-0.5 rounded-full p-0.5 text-primary/60 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 disabled:opacity-50">
                                                             <X className="h-3 w-3" />
@@ -340,7 +386,7 @@ const AdminWorkLists = () => {
 
                                     {addingToListId === list._id && (
                                         <form onSubmit={event => createTask(event, list._id)} className="mb-4 rounded-2xl border border-blue-200 bg-blue-50 p-3 dark:border-blue-500/20 dark:bg-blue-500/10">
-                                            <input autoFocus required maxLength={200} value={newTaskTitle} onChange={event => setNewTaskTitle(event.target.value)} placeholder="Task title..." className="w-full rounded-xl border border-blue-200 bg-white px-3 py-2.5 text-sm font-semibold outline-none focus:border-blue-500 dark:border-white/10 dark:bg-black/30 dark:text-white" />
+                                            <textarea autoFocus required rows={3} value={newTaskTitle} onChange={event => setNewTaskTitle(event.target.value)} onKeyDown={event => { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); event.currentTarget.form?.requestSubmit(); } }} placeholder="Task title... (Enter = add, Shift+Enter = nayi line)" className="w-full resize-y rounded-xl border border-blue-200 bg-white px-3 py-2.5 text-sm font-semibold outline-none focus:border-blue-500 dark:border-white/10 dark:bg-black/30 dark:text-white" />
                                             <div className="mt-2 flex justify-end gap-2">
                                                 <button type="button" onClick={() => setAddingToListId('')} className="px-3 py-2 text-xs font-bold text-gray-500">Cancel</button>
                                                 <button disabled={savingId === `new-${list._id}`} className="rounded-lg bg-blue-600 px-4 py-2 text-xs font-black text-white disabled:opacity-50">Add task</button>
@@ -361,30 +407,81 @@ const AdminWorkLists = () => {
                                                         <button onClick={() => toggleTask(list, item)} className="mt-0.5 h-5 w-5 shrink-0 text-gray-500 hover:text-blue-600">
                                                             <Circle className="h-5 w-5" />
                                                         </button>
-                                                        <button onClick={() => setExpandedTaskId(expanded ? '' : item._id)} className="min-w-0 flex-1 text-left">
+                                                        {editingTaskId === item._id && item.canEdit ? (
+                                                            <textarea
+                                                                autoFocus
+                                                                required
+                                                                rows={1}
+                                                                ref={el => { if (el) { el.style.height = 'auto'; el.style.height = `${el.scrollHeight}px`; } }}
+                                                                value={draft.title || ''}
+                                                                onChange={event => {
+                                                                    updateDraft(item, { title: event.target.value });
+                                                                    event.target.style.height = 'auto';
+                                                                    event.target.style.height = `${event.target.scrollHeight}px`;
+                                                                }}
+                                                                onKeyDown={event => { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); saveEditTask(list, item); } }}
+                                                                placeholder="Task title..."
+                                                                className="min-w-0 flex-1 resize-none rounded-lg border border-blue-300 bg-white px-2 py-1.5 text-sm font-medium text-gray-800 outline-none focus:border-blue-500 dark:border-blue-500/30 dark:bg-black/20 dark:text-white"
+                                                            />
+                                                        ) : (
+                                                        <button onClick={() => { if (editingTaskId !== item._id) setExpandedTaskId(expanded ? '' : item._id); }} className="min-w-0 flex-1 text-left">
                                                             <p className="break-words text-sm font-medium text-gray-800 dark:text-white/90">{item.title}</p>
-                                                            {item.description && !expanded && <p className="mt-0.5 truncate text-xs text-gray-400">{item.description}</p>}
-                                                            {item.createdBy && (
-                                                                <div className="mt-1 flex items-center gap-1.5">
-                                                                    <ProfileAvatar src={item.createdBy.photo} name={item.createdBy.name || 'User'} size="xs" border="border border-gray-200 dark:border-white/10" />
-                                                                    <span className="text-[10px] text-gray-400">{item.createdBy.name || 'User'} · #{item.createdBy.rollNo || '?'}</span>
-                                                                </div>
-                                                            )}
+                                                            {item.description && !expanded && <p className="mt-0.5 truncate text-xs text-gray-400">{item.description}</p>}                                            {item.createdBy && (
+                                                <div className="mt-1 flex items-center gap-1.5">
+                                                    <ProfileAvatar src={item.createdBy.photo} name={item.createdBy.name || 'User'} size="xs" border="border border-gray-200 dark:border-white/10" />
+                                                    <span className="truncate text-[10px] font-medium text-gray-500 dark:text-white/40">{item.createdBy.name || 'User'}</span>
+                                                    {item.createdByRole === 'admin' && !item.createdBy.rollNo ? (
+                                                        <span className="rounded-full bg-primary/10 px-1.5 py-px text-[9px] font-bold uppercase tracking-wide text-primary">Admin</span>
+                                                    ) : item.createdBy.rollNo ? (
+                                                        <span className="text-[10px] text-gray-400">#{item.createdBy.rollNo}</span>
+                                                    ) : null}
+                                                </div>
+                                            )}
                                                         </button>
-                                                        <button onClick={() => setExpandedTaskId(expanded ? '' : item._id)} className="rounded p-1 text-gray-400">
+                                                        )}
+                                                        {item.canEdit && editingTaskId !== item._id && (
+                                                            <button onClick={() => startEditTask(item)} title="Edit task" className="rounded p-1 text-gray-400 hover:text-blue-600">
+                                                                <Pencil className="h-4 w-4" />
+                                                            </button>
+                                                        )}
+                                                        <button onClick={() => { if (editingTaskId !== item._id) setExpandedTaskId(expanded ? '' : item._id); }} className="rounded p-1 text-gray-400">
                                                             {expanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
                                                         </button>
                                                     </div>
                                                     {expanded && (
                                                         <div className="ml-8 space-y-2 border-l-2 border-gray-100 pb-3 pl-3 dark:border-white/10">
                                                             {item.canEdit ? (
-                                                                <textarea rows={3} value={draft.description} onChange={event => updateDraft(item, { description: event.target.value })} placeholder="Description / notes..." className="w-full resize-none rounded-lg border border-gray-200 bg-gray-50 p-2.5 text-xs outline-none focus:border-primary dark:border-white/10 dark:bg-black/20 dark:text-white" />
+                                                                <div className="space-y-2">
+                                                                    {editingTaskId === item._id ? (
+                                                                        <>
+                                                                            <textarea rows={3} value={draft.description} onChange={event => updateDraft(item, { description: event.target.value })} placeholder="Description / notes..." className="w-full resize-none rounded-lg border border-gray-200 bg-gray-50 p-2.5 text-xs outline-none focus:border-primary dark:border-white/10 dark:bg-black/20 dark:text-white" />
+                                                                            <div className="flex justify-end gap-2">
+                                                                                <button onClick={() => cancelEditTask(item)} className="rounded-lg px-3 py-2 text-xs font-bold text-gray-500 hover:text-gray-700 dark:text-white/50">Cancel</button>
+                                                                                <button onClick={() => saveEditTask(list, item)} disabled={savingId === item._id} className="rounded-lg bg-blue-600 px-4 py-2 text-xs font-black text-white hover:bg-blue-700 disabled:opacity-50">{savingId === item._id ? 'Saving...' : 'Save'}</button>
+                                                                            </div>
+                                                                        </>
+                                                                    ) : (
+                                                                        <>
+                                                                            <textarea rows={3} value={draft.description} onChange={event => updateDraft(item, { description: event.target.value })} placeholder="Description / notes..." className="w-full resize-none rounded-lg border border-gray-200 bg-gray-50 p-2.5 text-xs outline-none focus:border-primary dark:border-white/10 dark:bg-black/20 dark:text-white" />
+                                                                            <div className="flex justify-end gap-2">
+                                                                                <button onClick={() => startEditTask(item)} className="inline-flex items-center gap-1.5 rounded-lg bg-blue-50 px-3 py-2 text-xs font-bold text-blue-600 hover:bg-blue-100 dark:bg-blue-500/10 dark:hover:bg-blue-500/20">
+                                                                                    <Pencil className="h-3.5 w-3.5" /> Edit
+                                                                                </button>
+                                                                                <button
+                                                                                    onClick={() => updateTask(list, item, { description: draft.description })}
+                                                                                    disabled={savingId === item._id || (draft.description || '') === (item.description || '')}
+                                                                                    className="rounded-lg bg-primary px-3 py-2 text-xs font-black text-white disabled:opacity-40"
+                                                                                >
+                                                                                    {savingId === item._id ? 'Saving...' : 'Save description'}
+                                                                                </button>
+                                                                                {item.canDelete && <button onClick={() => deleteTask(list, item)} className="rounded-lg p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10"><Trash2 className="h-4 w-4" /></button>}
+                                                                            </div>
+                                                                        </>
+                                                                    )}
+                                                                </div>
                                                             ) : item.description ? (
                                                                 <p className="rounded-lg bg-gray-50 p-2.5 text-xs text-gray-600 dark:bg-black/20 dark:text-white/70">{item.description}</p>
                                                             ) : null}
-                                                            <div className="flex justify-end gap-2">
-                                                                {item.canDelete && <button onClick={() => deleteTask(list, item)} className="rounded-lg p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10"><Trash2 className="h-4 w-4" /></button>}
-                                                            </div>
                                                         </div>
                                                     )}
                                                 </div>
@@ -463,7 +560,7 @@ const AdminWorkLists = () => {
                                     <ProfileAvatar src={user.photo} name={user.name || 'User'} size="sm" border="border border-primary/30" />
                                     <div className="min-w-0 flex-1">
                                         <p className="truncate text-sm font-bold text-gray-900 dark:text-white">{user.name}</p>
-                                        <p className="truncate text-xs text-gray-400">#{user.rollNo || '?'} · {user.role}</p>
+                                        <p className="truncate text-xs text-gray-400">{memberLabel(user)} · {user.role}</p>
                                     </div>
                                     {shareAdding === user._id ? (
                                         <span className="text-xs text-blue-600">Adding...</span>
@@ -501,7 +598,7 @@ const AdminWorkLists = () => {
                                         <ProfileAvatar src={member.photo} name={member.name || 'User'} size="sm" border="border border-primary/30" />
                                         <div className="min-w-0 flex-1">
                                             <p className="truncate text-sm font-bold text-gray-900 dark:text-white">{member.name || 'User'}</p>
-                                            <p className="truncate text-xs text-gray-400">#{member.rollNo || '?'} · {member.role}</p>
+                                            <p className="truncate text-xs text-gray-400">{memberLabel(member)} · {member.role}</p>
                                         </div>
                                         {removingUserId === (member._id || member) ? (
                                             <span className="text-xs text-red-600">Removing...</span>

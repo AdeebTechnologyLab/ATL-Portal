@@ -1,5 +1,27 @@
 const express = require('express');
 const router = express.Router();
+
+// Teachers with any management screen (student/teacher/intern) get the same
+// data & actions as admin inside those assigned screens.
+const requireManagementAccess = async (req, res, next) => {
+    if (req.user.role === 'admin') return next();
+    if (req.user.role !== 'teacher') {
+        return res.status(403).json({ success: false, message: 'Access denied.' });
+    }
+    try {
+        const TeacherScreenAssignment = require('../models/TeacherScreenAssignment');
+        const hasAccess = await TeacherScreenAssignment.exists({
+            teacher: req.user._id,
+            screenId: { $in: ['student_management', 'teacher_management', 'intern_management'] }
+        });
+        if (!hasAccess) {
+            return res.status(403).json({ success: false, message: 'You do not have access to this action. Contact admin.' });
+        }
+        next();
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
 const { protect, authorize } = require('../middleware/auth');
 const { requireScreenAccess } = require('../middleware/screenAccess');
 const User = require('../models/User');
@@ -540,7 +562,7 @@ router.get('/:id', protect, async (req, res) => {
 // @route   PUT /api/users/:id
 // @desc    Update user (admin only)
 // @access  Private/Admin
-router.put('/:id', protect, authorize('admin'), uploadPhoto.single('photo'), async (req, res) => {
+router.put('/:id', protect, requireManagementAccess, uploadPhoto.single('photo'), async (req, res) => {
     try {
         // Get the current user first (needed for old photo deletion)
         const currentUser = await User.findById(req.params.id);
@@ -629,7 +651,7 @@ router.put('/:id', protect, authorize('admin'), uploadPhoto.single('photo'), asy
 // @route   DELETE /api/users/:id
 // @desc    Delete user (admin only)
 // @access  Private/Admin
-router.delete('/:id', protect, authorize('admin'), async (req, res) => {
+router.delete('/:id', protect, requireManagementAccess, async (req, res) => {
     try {
         console.log(`[USER DELETE] Admin ${req.user.id} is attempting to PERMANENTLY DELETE user: ${req.params.id}`);
         const user = await User.findByIdAndDelete(req.params.id);
@@ -648,7 +670,7 @@ router.delete('/:id', protect, authorize('admin'), async (req, res) => {
 // @route   PUT /api/users/:id/verify
 // @desc    Verify a user (admin only)
 // @access  Private/Admin
-router.put('/:id/verify', protect, authorize('admin'), async (req, res) => {
+router.put('/:id/verify', protect, requireManagementAccess, async (req, res) => {
     try {
         const user = await User.findByIdAndUpdate(
             req.params.id,
@@ -672,7 +694,7 @@ router.put('/:id/verify', protect, authorize('admin'), async (req, res) => {
 // @route   PUT /api/users/:id/unverify
 // @desc    Unverify a user (admin only)
 // @access  Private/Admin
-router.put('/:id/unverify', protect, authorize('admin'), async (req, res) => {
+router.put('/:id/unverify', protect, requireManagementAccess, async (req, res) => {
     try {
         const user = await User.findByIdAndUpdate(
             req.params.id,
@@ -696,7 +718,7 @@ router.put('/:id/unverify', protect, authorize('admin'), async (req, res) => {
 // @route   PUT /api/users/:id/active-status
 // @desc    Activate/deactivate a teacher and stop their current assignments
 // @access  Private/Admin
-router.put('/:id/active-status', protect, authorize('admin'), async (req, res) => {
+router.put('/:id/active-status', protect, requireManagementAccess, async (req, res) => {
     try {
         const teacher = await User.findOne({ _id: req.params.id, role: 'teacher' });
         if (!teacher) {

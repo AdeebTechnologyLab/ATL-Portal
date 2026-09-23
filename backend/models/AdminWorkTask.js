@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 
 const workItemSchema = new mongoose.Schema({
-    title: { type: String, required: true, trim: true, maxlength: 200 },
-    description: { type: String, trim: true, default: '', maxlength: 3000 },
+    title: { type: String, required: true, trim: true },
+    description: { type: String, trim: true, default: '' },
     status: {
         type: String,
         enum: ['pending', 'in_progress', 'completed'],

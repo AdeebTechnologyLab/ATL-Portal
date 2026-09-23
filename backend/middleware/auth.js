@@ -10,7 +10,7 @@ const protect = async (req, res, next) => {
         try {
             token = req.headers.authorization.split(' ')[1];
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
-            const authenticatedUser = await User.findById(decoded.id).select('name email role isVerified password lastSeen');
+            const authenticatedUser = await User.findById(decoded.id).select('name email role rollNo isVerified password lastSeen');
 
             if (!authenticatedUser) {
                 console.log(`❌ Auth failed: User not found for token`);

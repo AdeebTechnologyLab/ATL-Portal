@@ -113,7 +113,7 @@ router.post('/request', protect, authorize('teacher'), async (req, res) => {
 // @route   PUT /api/certificates/requests/:id/approve
 // @desc    Approve request and issue certificate
 // @access  Private (Admin)
-router.put('/requests/:id/approve', protect, authorize('admin'), async (req, res) => {
+router.put('/requests/:id/approve', protect, requireScreenAccess('certificate_management'), async (req, res) => {
     try {
         const { rollNo, skills, duration, passoutDate, certificateLink } = req.body;
         const request = await CertificateRequest.findById(req.params.id);
@@ -167,7 +167,7 @@ router.put('/requests/:id/approve', protect, authorize('admin'), async (req, res
 // @route   PUT /api/certificates/requests/:id/reject
 // @desc    Reject certificate request
 // @access  Private (Admin)
-router.put('/requests/:id/reject', protect, authorize('admin'), async (req, res) => {
+router.put('/requests/:id/reject', protect, requireScreenAccess('certificate_management'), async (req, res) => {
     try {
         const request = await CertificateRequest.findById(req.params.id);
 
@@ -273,7 +273,7 @@ router.get('/courses', protect, requireScreenAccess('certificate_management'), a
 // @route   POST /api/certificates/issue
 // @desc    Issue certificate to a student
 // @access  Private (Admin)
-router.post('/issue', protect, authorize('admin'), async (req, res) => {
+router.post('/issue', protect, requireScreenAccess('certificate_management'), async (req, res) => {
     try {
         const { userId, courseId, skills, passoutDate, certificateLink, rollNo } = req.body;
 
@@ -358,7 +358,7 @@ router.post('/issue', protect, authorize('admin'), async (req, res) => {
 // @route   PUT /api/certificates/:id
 // @desc    Update certificate details (passoutDate, skills, certificateLink)
 // @access  Private (Admin)
-router.put('/:id', protect, authorize('admin'), async (req, res) => {
+router.put('/:id', protect, requireScreenAccess('certificate_management'), async (req, res) => {
     try {
         const { passoutDate, skills, certificateLink, rollNo, duration } = req.body;
 
@@ -749,7 +749,7 @@ router.get('/verify/:rollNo/marks', async (req, res) => {
 // @route   DELETE /api/certificates/:id
 // @desc    Delete certificate
 // @access  Private (Admin)
-router.delete('/:id', protect, authorize('admin'), async (req, res) => {
+router.delete('/:id', protect, requireScreenAccess('certificate_management'), async (req, res) => {
     try {
         const certificate = await Certificate.findById(req.params.id);
         if (!certificate) {
@@ -775,7 +775,7 @@ router.delete('/:id', protect, authorize('admin'), async (req, res) => {
 // @route   GET /api/certificates/teachers
 // @desc    Get all teachers with their certificate status + assigned courses
 // @access  Private (Admin)
-router.get('/teachers', protect, authorize('admin'), async (req, res) => {
+router.get('/teachers', protect, requireScreenAccess('certificate_management'), async (req, res) => {
     try {
         const teachers = await User.find({ role: 'teacher' }).sort('name');
 
@@ -835,7 +835,7 @@ router.get('/teachers', protect, authorize('admin'), async (req, res) => {
 // @route   POST /api/certificates/issue-teacher
 // @desc    Issue a certificate to a teacher (not tied to a course)
 // @access  Private (Admin)
-router.post('/issue-teacher', protect, authorize('admin'), async (req, res) => {
+router.post('/issue-teacher', protect, requireScreenAccess('certificate_management'), async (req, res) => {
     try {
         const { userId, skills, passoutDate, certificateLink, rollNo, duration, selectedCourses } = req.body;
 
@@ -882,7 +882,7 @@ router.post('/issue-teacher', protect, authorize('admin'), async (req, res) => {
 // @route   POST /api/certificates/backfill-teacher-ids
 // @desc    One-time backfill: assign t0001... IDs to existing teachers without IDs
 // @access  Private (Admin)
-router.post('/backfill-teacher-ids', protect, authorize('admin'), async (req, res) => {
+router.post('/backfill-teacher-ids', protect, requireScreenAccess('certificate_management'), async (req, res) => {
     try {
         const Counter = require('../models/Counter');
         const teachers = await User.find({ role: 'teacher', $or: [{ rollNo: null }, { rollNo: { $exists: false } }, { rollNo: { $not: /^t\d+$/ } }] }).sort('createdAt');

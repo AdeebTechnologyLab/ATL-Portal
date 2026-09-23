@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const { requireScreenAccess } = require('../middleware/screenAccess');
 const { protect, authorize } = require('../middleware/auth');
 const RegistrationPage = require('../models/RegistrationPage');
 
@@ -170,7 +171,7 @@ router.get('/:formType', async (req, res) => {
 // @route   PUT /api/registration-pages/:formType
 // @desc    Update registration page content
 // @access   Private (Admin only)
-router.put('/:formType', protect, authorize('admin'), async (req, res) => {
+router.put('/:formType', protect, requireScreenAccess('registration_pages'), async (req, res) => {
     try {
         const { formType } = req.params;
         const updateData = req.body;
@@ -190,7 +191,7 @@ router.put('/:formType', protect, authorize('admin'), async (req, res) => {
 // @route   PUT /api/registration-pages
 // @desc    Update all registration pages at once
 // @access   Private (Admin only)
-router.put('/', protect, authorize('admin'), async (req, res) => {
+router.put('/', protect, requireScreenAccess('registration_pages'), async (req, res) => {
     try {
         const { pages } = req.body;
 

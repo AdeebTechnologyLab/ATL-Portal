@@ -190,7 +190,7 @@ router.get('/', protect, requireScreenAccess('notification_management'), async (
 // @route   POST /api/notifications
 // @desc    Create a notification (Admin)
 // @access  Private (Admin)
-router.post('/', protect, authorize('admin'), async (req, res) => {
+router.post('/', protect, requireScreenAccess('notification_management'), async (req, res) => {
     try {
         const { title, message, type, startDate, endDate, isHtml, showLifetime, isActive, targetAudience, targetLocation } = req.body;
 
@@ -242,7 +242,7 @@ router.post('/', protect, authorize('admin'), async (req, res) => {
 // @route   PUT /api/notifications/:id
 // @desc    Update a notification (Admin)
 // @access  Private (Admin)
-router.put('/:id', protect, authorize('admin'), async (req, res) => {
+router.put('/:id', protect, requireScreenAccess('notification_management'), async (req, res) => {
     try {
         let notification = await Notification.findById(req.params.id);
 
@@ -275,7 +275,7 @@ router.put('/:id', protect, authorize('admin'), async (req, res) => {
 // @route   DELETE /api/notifications/:id
 // @desc    Delete a notification (Admin)
 // @access  Private (Admin)
-router.delete('/:id', protect, authorize('admin'), async (req, res) => {
+router.delete('/:id', protect, requireScreenAccess('notification_management'), async (req, res) => {
     try {
         const notification = await Notification.findById(req.params.id);
 

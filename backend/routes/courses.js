@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { protect, authorize } = require('../middleware/auth');
+const { requireScreenAccess } = require('../middleware/screenAccess');
 const Course = require('../models/Course');
 const Enrollment = require('../models/Enrollment');
 const Assignment = require('../models/Assignment');
@@ -243,7 +244,7 @@ router.get('/:id', async (req, res) => {
 // @route   POST /api/courses
 // @desc    Create new course
 // @access  Private (Admin only)
-router.post('/', protect, authorize('admin'), uploadCourse.single('image'), async (req, res) => {
+router.post('/', protect, requireScreenAccess('course_management'), uploadCourse.single('image'), async (req, res) => {
     try {
         const bodyData = { ...req.body };
 
@@ -284,7 +285,7 @@ router.post('/', protect, authorize('admin'), uploadCourse.single('image'), asyn
 // @route   PUT /api/courses/:id
 // @desc    Update course
 // @access  Private (Admin only)
-router.put('/:id', protect, authorize('admin'), uploadCourse.single('image'), async (req, res) => {
+router.put('/:id', protect, requireScreenAccess('course_management'), uploadCourse.single('image'), async (req, res) => {
     try {
         const bodyData = { ...req.body };
 
@@ -336,7 +337,7 @@ router.put('/:id', protect, authorize('admin'), uploadCourse.single('image'), as
 // @route   DELETE /api/courses/:id
 // @desc    Delete course
 // @access  Private (Admin only)
-router.delete('/:id', protect, authorize('admin'), async (req, res) => {
+router.delete('/:id', protect, requireScreenAccess('course_management'), async (req, res) => {
     try {
         const course = await Course.findById(req.params.id);
 
@@ -384,7 +385,7 @@ router.get('/:id/students', protect, authorize('admin', 'teacher'), async (req, 
 // @route   PUT /api/courses/:courseId/pause-teacher/:teacherId
 // @desc    Admin pauses a teacher from a specific course
 // @access  Private (Admin)
-router.put('/:courseId/pause-teacher/:teacherId', protect, authorize('admin'), async (req, res) => {
+router.put('/:courseId/pause-teacher/:teacherId', protect, requireScreenAccess('course_management'), async (req, res) => {
     try {
         const course = await Course.findById(req.params.courseId);
         if (!course) return res.status(404).json({ success: false, message: 'Course not found' });
@@ -410,7 +411,7 @@ router.put('/:courseId/pause-teacher/:teacherId', protect, authorize('admin'), a
 // @route   PUT /api/courses/:courseId/resume-teacher/:teacherId
 // @desc    Admin resumes a teacher for a specific course
 // @access  Private (Admin)
-router.put('/:courseId/resume-teacher/:teacherId', protect, authorize('admin'), async (req, res) => {
+router.put('/:courseId/resume-teacher/:teacherId', protect, requireScreenAccess('course_management'), async (req, res) => {
     try {
         const course = await Course.findById(req.params.courseId);
         if (!course) return res.status(404).json({ success: false, message: 'Course not found' });

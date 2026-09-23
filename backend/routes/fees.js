@@ -2,6 +2,29 @@ const express = require('express');
 const router = express.Router();
 const { protect, authorize } = require('../middleware/auth');
 const { requireScreenAccess } = require('../middleware/screenAccess');
+
+// Read-only fee data is needed by several assigned screens (intern/student
+// management use verified fees for the "Active" stat). Management-screen
+// teachers get read access; write actions still require fee_verification.
+const requireFeeReadAccess = async (req, res, next) => {
+    if (req.user.role === 'admin') return next();
+    if (req.user.role !== 'teacher') {
+        return res.status(403).json({ success: false, message: 'Access denied.' });
+    }
+    try {
+        const TeacherScreenAssignment = require('../models/TeacherScreenAssignment');
+        const hasAccess = await TeacherScreenAssignment.exists({
+            teacher: req.user._id,
+            screenId: { $in: ['fee_verification', 'student_management', 'teacher_management', 'intern_management', 'course_management'] }
+        });
+        if (!hasAccess) {
+            return res.status(403).json({ success: false, message: 'You do not have access to fee data. Contact admin.' });
+        }
+        next();
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
 const { uploadReceipt, cloudinary } = require('../config/cloudinary');
 const Fee = require('../models/Fee');
 const User = require('../models/User');
@@ -183,7 +206,7 @@ router.post('/:id/pay', protect, uploadReceipt.single('receipt'), async (req, re
 // @route   PUT /api/fees/:feeId/installments/:installmentId/verify
 // @desc    Verify a fee installment & assign roll number if first payment
 // @access  Private (Admin)
-router.put('/:feeId/installments/:installmentId/verify', protect, authorize('admin'), async (req, res) => {
+router.put('/:feeId/installments/:installmentId/verify', protect, requireScreenAccess('fee_verification'), async (req, res) => {
     try {
         const fee = await Fee.findById(req.params.feeId);
         if (!fee) {
@@ -306,7 +329,7 @@ router.put('/:feeId/installments/:installmentId/verify', protect, authorize('adm
 // @route   PUT /api/fees/:feeId/installments/:installmentId/reject
 // @desc    Reject a payment proof (admin)
 // @access  Private (Admin)
-router.put('/:feeId/installments/:installmentId/reject', protect, authorize('admin'), async (req, res) => {
+router.put('/:feeId/installments/:installmentId/reject', protect, requireScreenAccess('fee_verification'), async (req, res) => {
     try {
         const fee = await Fee.findById(req.params.feeId);
         if (!fee) return res.status(404).json({ success: false, message: 'Fee not found' });
@@ -369,7 +392,7 @@ router.put('/:feeId/installments/:installmentId/reject', protect, authorize('adm
 // @route   POST /api/fees/:id/installments
 // @desc    Set up installment plan for a student (admin)
 // @access  Private (Admin)
-router.post('/:id/installments', protect, authorize('admin'), async (req, res) => {
+router.post('/:id/installments', protect, requireScreenAccess('fee_verification'), async (req, res) => {
     try {
         const { installments } = req.body; // Array of { amount, dueDate }
         const fee = await Fee.findById(req.params.id);
@@ -471,7 +494,7 @@ router.post('/:id/installments', protect, authorize('admin'), async (req, res) =
 // @route   GET /api/fees/pending
 // @desc    Get fees with pending verification (admin)
 // @access  Private (Admin)
-router.get('/pending', protect, requireScreenAccess('fee_verification'), async (req, res) => {
+router.get('/pending', protect, requireFeeReadAccess, async (req, res) => {
     try {
         // Fetch all fees first
         const allFees = await Fee.find()
@@ -495,7 +518,7 @@ router.get('/pending', protect, requireScreenAccess('fee_verification'), async (
 // @route   GET /api/fees/all
 // @desc    Get all fees (admin)
 // @access  Private (Admin)
-router.get('/all', protect, requireScreenAccess('fee_verification'), async (req, res) => {
+router.get('/all', protect, requireFeeReadAccess, async (req, res) => {
     try {
         const fees = await Fee.find()
             .populate('user', 'name email rollNo photo phone guardianName guardianRelation guardianPhone guardianOccupation')
@@ -511,7 +534,7 @@ router.get('/all', protect, requireScreenAccess('fee_verification'), async (req,
 // @route   GET /api/fees/user/:userId
 // @desc    Get all fees for a specific user (Admin)
 // @access  Private (Admin)
-router.get('/user/:userId', protect, requireScreenAccess('fee_verification'), async (req, res) => {
+router.get('/user/:userId', protect, requireFeeReadAccess, async (req, res) => {
     try {
         const fees = await Fee.find({ user: req.params.userId })
             .populate('user', 'name email rollNo photo phone guardianName guardianRelation guardianPhone guardianOccupation')
@@ -527,7 +550,7 @@ router.get('/user/:userId', protect, requireScreenAccess('fee_verification'), as
 // @route   DELETE /api/fees/:id/installments/:installmentId
 // @desc    Delete a specific installment (admin)
 // @access  Private (Admin)
-router.delete('/:id/installments/:installmentId', protect, authorize('admin'), async (req, res) => {
+router.delete('/:id/installments/:installmentId', protect, requireScreenAccess('fee_verification'), async (req, res) => {
     try {
         const fee = await Fee.findById(req.params.id);
         if (!fee) return res.status(404).json({ success: false, message: 'Fee not found' });
@@ -624,7 +647,7 @@ router.get('/check-status/:courseId', protect, async (req, res) => {
 // @route   DELETE /api/fees/:id
 // @desc    Delete fee and cleanup associated Cloudinary images (admin)
 // @access  Private (Admin)
-router.delete('/:id', protect, authorize('admin'), async (req, res) => {
+router.delete('/:id', protect, requireScreenAccess('fee_verification'), async (req, res) => {
     try {
         const fee = await Fee.findById(req.params.id);
         if (!fee) return res.status(404).json({ success: false, message: 'Fee not found' });

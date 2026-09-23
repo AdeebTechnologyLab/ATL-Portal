@@ -70,23 +70,29 @@ const CertificateManagement = () => {
             console.log('🔄 [CERT] Starting to fetch data...');
             console.log('👤 [CERT] User:', user);
 
-            const [requestsRes, coursesRes, teachersRes] = await Promise.all([
+            // Use allSettled so one failing endpoint (e.g. teachers for non-admin users)
+            // doesn't blank out the whole page.
+            const [requestsResult, coursesResult, teachersResult] = await Promise.allSettled([
                 certificateAPI.getRequests(),
                 certificateAPI.getCourses(),
                 certificateAPI.getTeachers()
             ]);
+            const requestsRes = requestsResult.status === 'fulfilled' ? requestsResult.value : null;
+            const coursesRes = coursesResult.status === 'fulfilled' ? coursesResult.value : null;
+            const teachersRes = teachersResult.status === 'fulfilled' ? teachersResult.value : null;
 
             console.log('✅ [CERT] Requests Response:', requestsRes);
             console.log('✅ [CERT] Courses Response:', coursesRes);
 
-            const requestsData = requestsRes.data.requests || requestsRes.data || [];
+            const requestsData = requestsRes?.data?.requests || requestsRes?.data || [];
             console.log('📋 [CERT] Requests Data:', requestsData);
             setRequests(requestsData);
 
             // Handle both direct array and nested structure
-            const coursesData = Array.isArray(coursesRes.data)
-                ? coursesRes.data
-                : (coursesRes.data.courses || []);
+            const coursesData = !coursesRes ? []
+                : Array.isArray(coursesRes.data)
+                    ? coursesRes.data
+                    : (coursesRes.data.courses || []);
 
             console.log('📚 [CERT] Courses Data:', coursesData);
 
@@ -124,11 +130,11 @@ const CertificateManagement = () => {
                 });
             });
             setCourses(formattedCourses);
-            setTeachers(teachersRes.data.teachers || []);
             setPlatformCounts({
-                students: coursesRes.data.totalPlatformStudents || 0,
-                teachers: coursesRes.data.totalPlatformTeachers || teachersRes.data.teachers?.length || 0
+                students: coursesRes?.data?.totalPlatformStudents || 0,
+                teachers: coursesRes?.data?.totalPlatformTeachers || teachersRes?.data?.teachers?.length || 0
             });
+            setTeachers(teachersRes?.data?.teachers || []);
         } catch (error) {
             console.error('❌ [CERT] Error fetching data:', error);
             console.error('❌ [CERT] Error Status:', error.response?.status);

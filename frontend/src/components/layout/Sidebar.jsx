@@ -591,7 +591,8 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
             ],
         };
 
-        // Add assigned admin screens for teachers
+        // Add assigned admin screens for teachers (appended at the end,
+        // so conditional items like 'Job Posting' stay in their own section)
         if (role === 'teacher' && assignedScreens.length > 0) {
             const assignedItems = assignedScreens.map(screen => ({
                 id: `assigned-${screen.id}`,
@@ -601,10 +602,9 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                 isAssigned: true
             }));
             baseItems.teacher = [
-                ...baseItems.teacher.slice(0, -1),
+                ...baseItems.teacher,
                 { id: 'assigned-section-label', type: 'section', label: 'Assigned Screens' },
-                ...assignedItems,
-                baseItems.teacher[baseItems.teacher.length - 1]
+                ...assignedItems
             ];
         }
 
