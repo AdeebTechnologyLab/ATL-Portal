@@ -2455,3 +2455,17 @@ Google Drive assignment uploads are configured.
 🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/6a467f98c84056dfbbfb509c/messages/697a351a5eb66a5a70fff545
 🔐 Auth OK: Salman Adeeb (job) - PUT /api/chat/job/6a467f98c84056dfbbfb509c/read/697a351a5eb66a5a70fff545
 🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/my
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/tasks/counts
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/6a467f98c84056dfbbfb509c/messages/697a351a5eb66a5a70fff545
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - PUT /api/chat/job/6a467f98c84056dfbbfb509c/read/697a351a5eb66a5a70fff545
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications
+🔐 Auth OK: Salman Adeeb (job) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/discussion/unread
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/6a467f98c84056dfbbfb509c/messages/697a351a5eb66a5a70fff545
+🔐 Auth OK: Salman Adeeb (job) - PUT /api/chat/job/6a467f98c84056dfbbfb509c/read/697a351a5eb66a5a70fff545
+🔐 Auth OK: Salman Adeeb (job) - GET /api/chat/job/tasks
