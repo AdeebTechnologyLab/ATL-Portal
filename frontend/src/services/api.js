@@ -250,6 +250,18 @@ export const dailyTaskAPI = {
 };
 
 // Test APIs
+export const quizGameAPI = {
+    getSummary: () => api.get('/quiz-game/summary'),
+    getTests: (courseId) => api.get(`/quiz-game/tests/${courseId}`),
+    create: (testId) => api.post('/quiz-game/create', { testId }),
+    join: (gameId) => api.post(`/quiz-game/${gameId}/join`),
+    answer: (gameId, questionIndex, selectedOption) => api.post(`/quiz-game/${gameId}/answer`, { questionIndex, selectedOption }),
+    finish: (gameId) => api.post(`/quiz-game/${gameId}/finish`),
+    get: (gameId) => api.get(`/quiz-game/${gameId}`),
+    getOpen: () => api.get('/quiz-game/open'),
+    getMyHistory: () => api.get('/quiz-game/my/history')
+};
+
 export const testAPI = {
     getByCourse: (courseId) => api.get(`/tests/course/${courseId}`),
     create: (data) => api.post('/tests', data),

@@ -9,11 +9,20 @@ const Enrollment = require('../models/Enrollment');
 // @access  Private (Teacher, Admin)
 router.post('/', protect, authorize('teacher', 'admin'), async (req, res) => {
     try {
-        const { title, link, description, visibility, courseId, autoEndMinutes } = req.body;
+        const { title, link, description, visibility, courseId, autoEndMinutes, startAt } = req.body;
 
         if (!title || !link) {
             return res.status(400).json({ success: false, message: 'Title and link are required' });
         }
+
+        // Scheduled start: agar startAt future mein hai to meeting abhi 'scheduled' rahegi
+        // (students ko tab dikhegi jab start time aa jaye). Auto-End countdown bhi
+        // scheduled start se hi chalta hai.
+        const requestedStart = startAt ? new Date(startAt) : new Date();
+        const effectiveStart = isNaN(requestedStart.getTime()) || requestedStart <= new Date()
+            ? new Date()
+            : requestedStart;
+        const isStartingNow = effectiveStart.getTime() <= Date.now() + 1000;
 
         const liveClass = await LiveClass.create({
             title,
@@ -23,13 +32,13 @@ router.post('/', protect, authorize('teacher', 'admin'), async (req, res) => {
             course: courseId || null,
             createdBy: req.user.id,
             isActive: true,
-            startTime: new Date(),
+            startTime: effectiveStart,
             autoEndMinutes: autoEndMinutes ? parseInt(autoEndMinutes) : null
         });
 
-        // Emit socket event to notify students/interns
+        // Emit socket event only when the class actually starts now
         const io = req.app.get('io');
-        if (io) {
+        if (io && isStartingNow) {
             io.emit('live_class_started', {
                 id: liveClass._id,
                 title: liveClass.title,
@@ -49,7 +58,10 @@ router.post('/', protect, authorize('teacher', 'admin'), async (req, res) => {
 // @access  Private (Teacher, Admin)
 router.get('/', protect, authorize('teacher', 'admin'), async (req, res) => {
     try {
-        let liveClasses = await LiveClass.find({ createdBy: req.user.id })
+        // Teachers sab teachers ki meetings dekh sakte hain (manage sirf apni);
+        // admin sab dekhta hai.
+        const query = req.user.role === 'admin' ? {} : {};
+        let liveClasses = await LiveClass.find(query)
             .populate('createdBy', 'name')
             .populate('course', 'title')
             .sort('-createdAt');
@@ -75,26 +87,29 @@ router.get('/active', protect, async (req, res) => {
         const userId = req.user.id;
         const userRole = req.user.role;
 
-        // Check if user has at least one active enrollment
-        const activeEnrollment = await Enrollment.findOne({
-            user: userId,
-            status: { $in: ['enrolled', 'pending'] }
-        });
+        // Enrollment check sirf students/interns ke liye — teachers ko hamesha meetings dikhengi
+        if (userRole === 'student' || userRole === 'intern') {
+            const activeEnrollment = await Enrollment.findOne({
+                user: userId,
+                status: { $in: ['enrolled', 'pending'] }
+            });
 
-        if (!activeEnrollment) {
-            return res.json({ success: true, data: [] });
+            if (!activeEnrollment) {
+                return res.json({ success: true, data: [] });
+            }
         }
 
         // Build visibility query based on user role
-        let visibilityQuery = { isActive: true };
-        
+        // Scheduled meetings (startTime future mein) abhi nahi dikhti — start hone par hi
+        let visibilityQuery = { isActive: true, startTime: { $lte: new Date() } };
+
         if (userRole === 'student') {
             visibilityQuery.visibility = { $in: ['all', 'student'] };
         } else if (userRole === 'intern') {
             visibilityQuery.visibility = { $in: ['all', 'intern'] };
         } else {
-            // For other roles, show all active classes
-            visibilityQuery.visibility = 'all';
+            // Teachers/admin sab meetings dekhte hain (kisi bhi teacher ki)
+            visibilityQuery.visibility = { $in: ['all', 'student', 'intern'] };
         }
 
         let liveClasses = await LiveClass.find(visibilityQuery)

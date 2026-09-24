@@ -401,7 +401,10 @@ const AdeebMeet = () => {
         peers.forEach((p) => monitor.addStream(p.peerId, p.remoteStream));
         monitor.start();
 
-        return () => {};
+        // Peer chala jaye to uska analyser zaroor hatana — warna sources map barhta jata hai (memory leak)
+        return () => {
+            peers.forEach((p) => monitor.removeStream(p.peerId));
+        };
     }, [peers]);
 
     useEffect(
@@ -1324,7 +1327,7 @@ const VideoTile = ({
                 className={`bg-[#1a1a1a] ${isFullTile && !isScreenShare ? '' : 'w-full h-full'} ${isLocal && !isScreenShare ? 'mirror object-cover' : ''} ${isScreenShare || isScreenStage ? 'object-contain' : 'object-cover'}`}
             />
             <div className="absolute bottom-3 left-3 right-3 flex items-end justify-between gap-2 z-10 pointer-events-none">
-                <div className="flex items-center gap-2 px-2.5 py-1 rounded-lg border min-w-0 pointer-events-auto bg-black/50 border-white/10">
+                <div className="meet-name-chip flex items-center gap-2 px-2.5 py-1 rounded-xl min-w-0 pointer-events-auto">
                     <img src={avatarUrl} alt="" className="w-8 h-8 rounded-full object-cover shrink-0" />
                     <span className="text-[10px] font-bold truncate max-w-[120px]">{name}</span>
                     {isMuted && <MicOff className="w-3 h-3 text-red-400 shrink-0" />}
@@ -1401,12 +1404,22 @@ const RemoteVideoTile = ({
 
         attachStreamToVideo(videoRef.current, stream);
 
+        let lastAudioId = null;
+        let lastVideoId = null;
         const updateTracks = () => {
-            attachStreamToVideo(videoRef.current, stream);
             const audio = stream.getAudioTracks()[0];
             const video = stream.getVideoTracks()[0];
-            setIsMuted(!audio || !audio.enabled);
-            setIsVideoOff(!video || !video.enabled || video.readyState !== 'live');
+            // Sirf tab re-attach/state update karo jab tracks actually badal hon —
+            // har-second play() + re-render CPU kha jata tha.
+            const audioId = audio?.id ?? null;
+            const videoId = video?.id ?? null;
+            if (audioId !== lastAudioId || videoId !== lastVideoId) {
+                lastAudioId = audioId;
+                lastVideoId = videoId;
+                attachStreamToVideo(videoRef.current, stream);
+                setIsMuted(!audio || !audio.enabled);
+                setIsVideoOff(!video || !video.enabled || video.readyState !== 'live');
+            }
         };
 
         updateTracks();

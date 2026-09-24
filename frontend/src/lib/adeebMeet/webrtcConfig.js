@@ -22,11 +22,12 @@ export const AUDIO_CONSTRAINTS = {
     autoGainControl: true,
 };
 
-/** Full HD camera capture for clear video in meet */
+/** Lightweight camera capture — mesh mein har peer video dobara encode karta hai,
+ *  is liye heavy constraints poora computer hang karwa deti hain. 480p@15 kaafi hai. */
 export const VIDEO_CONSTRAINTS = {
-    width: { ideal: 1920, max: 1920 },
-    height: { ideal: 1080, max: 1080 },
-    frameRate: { ideal: 24, max: 30 },
+    width: { ideal: 640, max: 1280 },
+    height: { ideal: 480, max: 720 },
+    frameRate: { ideal: 15, max: 20 },
 };
 
 export const isMobileDevice = () =>
@@ -57,9 +58,9 @@ export const isDisplayMediaSupported = () => {
 /** Prefer entire screen (monitor) in the browser picker — Chrome pre-selects "Entire Screen" */
 const ENTIRE_SCREEN_VIDEO = {
     displaySurface: 'monitor',
-    width: { max: 1920 },
+    width: { max: 1280 },
     height: { max: 720 },
-    frameRate: { max: 30 },
+    frameRate: { max: 10 },
 };
 
 /** Constraint sets tried in order (entire screen first, then fallbacks) */

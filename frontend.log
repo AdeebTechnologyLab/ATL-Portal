@@ -3,108 +3,267 @@
 > vite
 
 
-  [32m[1mVITE[22m v7.3.1[39m  [2mready in [0m[1m2813[22m[2m[0m ms[22m
+  [32m[1mVITE[22m v7.3.1[39m  [2mready in [0m[1m2922[22m[2m[0m ms[22m
 
   [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m5173[22m/[39m
 [2m  [32m➜[39m  [1mNetwork[22m[2m: use [22m[1m--host[22m[2m to expose[22m
 [2m[32m  ➜[39m[22m[2m  press [22m[1mh + enter[22m[2m to show help[22m
-[2m10:20:45 PM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/health[39m
+[2m12:50:15 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/health[39m
 AggregateError [ECONNREFUSED]: 
     at internalConnectMultiple (node:net:1134:18)
     at afterConnectMultiple (node:net:1715:7)
 Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
   npx update-browserslist-db@latest
   Why you should do it regularly: https://github.com/browserslist/update-db#readme
-[2m10:21:03 PM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/health[39m
+[2m2:19:05 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/chat/job/tasks[39m
+Error: read ECONNRESET
+    at TCP.onStreamRead (node:internal/stream_base_commons:216:20)
+[2m2:19:05 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/courses[39m
+Error: read ECONNRESET
+    at TCP.onStreamRead (node:internal/stream_base_commons:216:20)
+[2m2:19:05 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/tasks/counts[39m
+Error: read ECONNRESET
+    at TCP.onStreamRead (node:internal/stream_base_commons:216:20)
+[2m2:19:05 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/teacher/finance/projects[39m
+Error: read ECONNRESET
+    at TCP.onStreamRead (node:internal/stream_base_commons:216:20)
+[2m2:19:08 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/stats/games[39m
 AggregateError [ECONNREFUSED]: 
     at internalConnectMultiple (node:net:1134:18)
     at afterConnectMultiple (node:net:1715:7)
-[2m10:21:30 PM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/health[39m
+[2m2:19:21 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/index.css[22m
+[2m2:19:40 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/index.css[22m
+[2m2:19:52 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/index.css[22m
+[2m2:25:13 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/teacher/TeacherCourses.jsx, /src/index.css[22m
+[2m2:33:03 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/index.css[22m
+[2m2:33:10 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/index.css[22m
+[2m2:33:17 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/index.css[22m
+[2m2:33:30 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/index.css[22m
+[2m2:34:29 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/index.css[22m
+[2m2:34:35 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/index.css[22m
+[2m2:47:41 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f9f0ff525fb948dcac3bc[39m
+Error: read ECONNRESET
+    at TCP.onStreamRead (node:internal/stream_base_commons:216:20)
+[2m2:47:41 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f9ea5f525fb948dcac3ab[39m
 AggregateError [ECONNREFUSED]: 
     at internalConnectMultiple (node:net:1134:18)
     at afterConnectMultiple (node:net:1715:7)
-[2m10:25:49 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/components/layout/DashboardLayout.jsx, /src/index.css[22m
-[2m10:33:21 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/index.css, /src/components/layout/Sidebar.jsx[22m
-[2m10:33:47 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/index.css, /src/components/layout/Sidebar.jsx[22m
-[2m10:41:13 PM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/chat/job/tasks[39m
+[2m2:47:41 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f9e73f525fb948dcac3a4[39m
 AggregateError [ECONNREFUSED]: 
     at internalConnectMultiple (node:net:1134:18)
     at afterConnectMultiple (node:net:1715:7)
-[2m10:41:13 PM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/tasks/counts[39m
+[2m2:47:41 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f9e25f525fb948dcac39a[39m
 AggregateError [ECONNREFUSED]: 
     at internalConnectMultiple (node:net:1134:18)
     at afterConnectMultiple (node:net:1715:7)
-[2m10:41:13 PM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/tasks/my[39m
+[2m2:47:41 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f9e01f525fb948dcac393[39m
 AggregateError [ECONNREFUSED]: 
     at internalConnectMultiple (node:net:1134:18)
     at afterConnectMultiple (node:net:1715:7)
-[2m10:41:13 PM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/tasks[39m
+[2m2:47:41 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f9dbef525fb948dcac389[39m
 AggregateError [ECONNREFUSED]: 
     at internalConnectMultiple (node:net:1134:18)
     at afterConnectMultiple (node:net:1715:7)
-[2m10:41:30 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/shared/JobChat.jsx, /src/index.css[22m
-[2m10:41:43 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/shared/JobChat.jsx, /src/index.css[22m
-[2m10:42:27 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/index.css, /src/components/layout/Sidebar.jsx[22m
-[2m10:42:27 PM[22m [31m[1m[vite][22m[39m [31mInternal server error: D:\Downloads\ATL-Portal\frontend\src\components\layout\Sidebar.jsx: Identifier 'io' has already been declared. (6:9)
-
-[0m [90m 4 |[31m [36mimport[31m { io } [36mfrom[31m [32m'socket.io-client'[31m[33m;[31m
- [90m 5 |[31m [36mimport[31m { getSocketURL } [36mfrom[31m [32m'../../config/apiBaseUrl'[31m[33m;[31m
-[31m[1m>[22m[31m[90m 6 |[31m [36mimport[31m { io } [36mfrom[31m [32m'socket.io-client'[31m[33m;[31m
- [90m   |[31m          [31m[1m^[22m[31m
- [90m 7 |[31m [36mimport[31m { assignmentAPI[33m,[31m courseAPI[33m,[31m dailyTaskAPI[33m,[31m chatAPI[33m,[31m enrollmentAPI[33m,[31m feeAPI[33m,[31m certificateAPI[33m,[31m testAPI[33m,[31m taskAPI[33m,[31m teacherFinanceAPI[33m,[31m financeAPI[33m,[31m teacherScreenAssignmentAPI } [36mfrom[31m [32m'../../services/api'[31m[33m;[31m
- [90m 8 |[31m [36mimport[31m { isDueDateOverdue } [36mfrom[31m [32m'../../utils/dueDate'[31m[33m;[31m
- [90m 9 |[31m [36mimport[31m { motion[33m,[31m [33mAnimatePresence[31m } [36mfrom[31m [32m'framer-motion'[31m[33m;[31m[0m[39m
-  Plugin: [35mvite:react-babel[39m
-  File: [36mD:/Downloads/ATL-Portal/frontend/src/components/layout/Sidebar.jsx[39m:6:9
-[33m  4  |  import { io } from 'socket.io-client';
-  5  |  import { getSocketURL } from '../../config/apiBaseUrl';
-  6  |  import { io } from 'socket.io-client';
-     |                ^
-  7  |  import { assignmentAPI, courseAPI, dailyTaskAPI, chatAPI, enrollmentAPI, feeAPI, certificateAPI, testAPI, taskAPI, te...
-  8  |  import { isDueDateOverdue } from '../../utils/dueDate';[39m
-      at constructor (D:\Downloads\ATL-Portal\frontend\node_modules\@babel\parser\lib\index.js:367:19)
-      at JSXParserMixin.raise (D:\Downloads\ATL-Portal\frontend\node_modules\@babel\parser\lib\index.js:6624:19)
-      at ScopeHandler.checkRedeclarationInScope (D:\Downloads\ATL-Portal\frontend\node_modules\@babel\parser\lib\index.js:1646:19)
-      at ScopeHandler.declareName (D:\Downloads\ATL-Portal\frontend\node_modules\@babel\parser\lib\index.js:1612:12)
-      at JSXParserMixin.declareNameFromIdentifier (D:\Downloads\ATL-Portal\frontend\node_modules\@babel\parser\lib\index.js:7594:16)
-      at JSXParserMixin.checkIdentifier (D:\Downloads\ATL-Portal\frontend\node_modules\@babel\parser\lib\index.js:7590:12)
-      at JSXParserMixin.checkLVal (D:\Downloads\ATL-Portal\frontend\node_modules\@babel\parser\lib\index.js:7527:12)
-      at JSXParserMixin.finishImportSpecifier (D:\Downloads\ATL-Portal\frontend\node_modules\@babel\parser\lib\index.js:14342:10)
-      at JSXParserMixin.parseImportSpecifier (D:\Downloads\ATL-Portal\frontend\node_modules\@babel\parser\lib\index.js:14499:17)
-      at JSXParserMixin.parseNamedImportSpecifiers (D:\Downloads\ATL-Portal\frontend\node_modules\@babel\parser\lib\index.js:14478:36)
-      at JSXParserMixin.parseImportSpecifiersAndAfter (D:\Downloads\ATL-Portal\frontend\node_modules\@babel\parser\lib\index.js:14318:37)
-      at JSXParserMixin.parseImport (D:\Downloads\ATL-Portal\frontend\node_modules\@babel\parser\lib\index.js:14311:17)
-      at JSXParserMixin.parseStatementContent (D:\Downloads\ATL-Portal\frontend\node_modules\@babel\parser\lib\index.js:12952:27)
-      at JSXParserMixin.parseStatementLike (D:\Downloads\ATL-Portal\frontend\node_modules\@babel\parser\lib\index.js:12843:17)
-      at JSXParserMixin.parseModuleItem (D:\Downloads\ATL-Portal\frontend\node_modules\@babel\parser\lib\index.js:12820:17)
-      at JSXParserMixin.parseBlockOrModuleBlockBody (D:\Downloads\ATL-Portal\frontend\node_modules\@babel\parser\lib\index.js:13392:36)
-      at JSXParserMixin.parseBlockBody (D:\Downloads\ATL-Portal\frontend\node_modules\@babel\parser\lib\index.js:13385:10)
-      at JSXParserMixin.parseProgram (D:\Downloads\ATL-Portal\frontend\node_modules\@babel\parser\lib\index.js:12698:10)
-      at JSXParserMixin.parseTopLevel (D:\Downloads\ATL-Portal\frontend\node_modules\@babel\parser\lib\index.js:12688:25)
-      at JSXParserMixin.parse (D:\Downloads\ATL-Portal\frontend\node_modules\@babel\parser\lib\index.js:14568:25)
-      at parse (D:\Downloads\ATL-Portal\frontend\node_modules\@babel\parser\lib\index.js:14602:38)
-      at parser (D:\Downloads\ATL-Portal\frontend\node_modules\@babel\core\lib\parser\index.js:41:34)
-      at parser.next (<anonymous>)
-      at normalizeFile (D:\Downloads\ATL-Portal\frontend\node_modules\@babel\core\lib\transformation\normalize-file.js:64:37)
-      at normalizeFile.next (<anonymous>)
-      at run (D:\Downloads\ATL-Portal\frontend\node_modules\@babel\core\lib\transformation\index.js:22:50)
-      at run.next (<anonymous>)
-      at transform (D:\Downloads\ATL-Portal\frontend\node_modules\@babel\core\lib\transform.js:22:33)
-      at transform.next (<anonymous>)
-      at step (D:\Downloads\ATL-Portal\frontend\node_modules\gensync\index.js:261:32)
-      at D:\Downloads\ATL-Portal\frontend\node_modules\gensync\index.js:273:13
-      at async.call.result.err.err (D:\Downloads\ATL-Portal\frontend\node_modules\gensync\index.js:223:11)
-      at D:\Downloads\ATL-Portal\frontend\node_modules\gensync\index.js:189:28
-      at D:\Downloads\ATL-Portal\frontend\node_modules\@babel\core\lib\gensync-utils\async.js:67:7
-      at D:\Downloads\ATL-Portal\frontend\node_modules\gensync\index.js:113:33
-      at step (D:\Downloads\ATL-Portal\frontend\node_modules\gensync\index.js:287:14)
-      at D:\Downloads\ATL-Portal\frontend\node_modules\gensync\index.js:273:13
-      at async.call.result.err.err (D:\Downloads\ATL-Portal\frontend\node_modules\gensync\index.js:223:11)
-[2m10:44:40 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/index.css, /src/components/layout/Sidebar.jsx[22m
-[2m10:47:50 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/index.css, /src/components/shared/ChatMediaButton.jsx[22m
-[2m10:48:05 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/shared/JobChat.jsx, /src/index.css[22m
-[2m10:48:15 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/index.css[22m
-[2m10:48:37 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/index.css[22m
-[2m10:48:43 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/index.css, /src/components/shared/ChatWidget.jsx[22m
-[2m10:48:48 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/index.css[22m
-[2m10:48:58 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/index.css[22m
+[2m2:47:41 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f9d75f525fb948dcac382[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m2:47:41 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f9d00f525fb948dcac36e[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m2:47:41 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f9c8af525fb948dcac364[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m2:47:42 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f9b13f525fb948dcac354[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m2:47:42 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/stats/games[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m2:47:42 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f78ca99f8d4e879bf7923[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m2:47:42 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f776a99f8d4e879bf78ef[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m2:47:42 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f76cc99f8d4e879bf78c5[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m2:47:42 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f765b99f8d4e879bf78b5[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m2:47:42 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f75ef99f8d4e879bf78a8[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m2:47:42 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f756f99f8d4e879bf7891[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m2:47:42 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f74b299f8d4e879bf787c[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m2:47:42 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f6f8699f8d4e879bf77e5[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m2:47:42 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f6f0d99f8d4e879bf77d5[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m2:47:42 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f6c6099f8d4e879bf778f[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m2:47:42 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f681c99f8d4e879bf771d[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m2:47:42 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f67dd99f8d4e879bf770b[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m2:47:42 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f679e99f8d4e879bf7701[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m2:47:42 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f675099f8d4e879bf76f1[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m2:47:42 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f670799f8d4e879bf76ea[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m2:47:42 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f66a999f8d4e879bf76b2[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m2:47:42 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f666999f8d4e879bf769e[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m2:47:42 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f662099f8d4e879bf7697[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m2:47:42 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f65c599f8d4e879bf7683[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m2:47:42 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f657699f8d4e879bf7665[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m2:47:42 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f653899f8d4e879bf7649[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m2:47:42 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f64de99f8d4e879bf7637[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m2:47:42 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f649199f8d4e879bf7628[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m2:47:42 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f5e6599f8d4e879bf7558[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m2:47:42 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f5df899f8d4e879bf754b[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m2:47:42 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f5da299f8d4e879bf7544[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m2:47:42 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f5d4d99f8d4e879bf7537[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m2:47:42 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f5ce699f8d4e879bf752a[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m2:47:42 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f5ca299f8d4e879bf751f[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m2:47:42 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f5c2599f8d4e879bf7504[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m2:49:20 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/chat/discussion/unread[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m2:49:20 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/user-notifications[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m2:49:20 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/courses/teacher/dashboard[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m2:49:20 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/user-notifications/unread-count[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m2:49:22 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/stats/games[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m2:49:33 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/chat/job/tasks[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m2:49:33 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/tasks/counts[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m2:49:33 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/teacher/finance/projects[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m2:49:33 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/courses[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m2:49:37 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/stats/games[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m2:49:45 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx, /src/components/layout/DashboardLayout.jsx, /src/components/layout/Sidebar.jsx, /src/components/shared/NotificationPopup.jsx, /src/components/shared/ChatWidget.jsx, /src/components/shared/ChatMediaButton.jsx, /src/components/shared/VoiceRecorder.jsx, /src/pages/auth/Login.jsx, /src/pages/job/JobDashboard.jsx, /src/pages/teacher/TeacherCourses.jsx, /src/components/dashboard/BirthdayWish.jsx, /src/components/dashboard/GamesCard.jsx, /src/pages/student/StudentDashboard.jsx, /src/pages/teacher/QuickAttendance.jsx, /src/pages/admin/AdminWorkLists.jsx, /src/pages/shared/DiscussionRoom.jsx, /src/pages/teacher/TeacherProfile.jsx, /src/index.css[22m
+[2m2:51:45 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx, /src/index.css[22m
+[2m2:51:55 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx, /src/index.css[22m
+[2m2:52:19 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/index.css, /src/components/dashboard/GamesCard.jsx[22m
+[2m2:52:39 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/index.css, /src/components/dashboard/GamesCard.jsx[22m
+[2m2:53:08 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/index.css[22m
+[2m2:53:23 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f5c2599f8d4e879bf7504[39m
+Error: read ECONNRESET
+    at TCP.onStreamRead (node:internal/stream_base_commons:216:20)
+[2m2:53:24 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/stats/games[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m2:53:54 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/index.css[22m
+[2m2:54:32 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/index.css, /src/components/dashboard/GamesCard.jsx[22m
+[2m3:01:28 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx, /src/index.css[22m
+[2m3:02:21 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/index.css[22m
+[2m3:03:36 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/index.css[22m
+[2m3:05:56 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/index.css[22m
+[2m3:08:20 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/components/layout/DashboardLayout.jsx, /src/index.css[22m
+[2m3:12:48 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/index.css, /src/pages/shared/QuizGame.jsx[22m
+[2m3:18:30 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/index.css, /src/pages/shared/QuizGame.jsx[22m
+[2m3:20:51 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/index.css, /src/pages/shared/QuizGame.jsx[22m

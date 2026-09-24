@@ -55,6 +55,7 @@ const ManageScreens = lazy(() => import('./pages/admin/ManageScreens'));
 // Shared Pages (lazy loaded)
 const JobChat = lazy(() => import('./pages/shared/JobChat'));
 const DiscussionRoom = lazy(() => import('./pages/shared/DiscussionRoom'));
+const QuizGame = lazy(() => import('./pages/shared/QuizGame'));
 
 // Teacher Pages (lazy loaded)
 const TeacherProfile = lazy(() => import('./pages/teacher/TeacherProfile'));
@@ -171,6 +172,7 @@ const AppRoutes = () => {
         <Route path="manage-assignments" element={<ManageScreens />} />
         <Route path="discussion-room" element={<DiscussionRoom />} />
         <Route path="help-support" element={<HelpSupport />} />
+        <Route path="quiz-game" element={<QuizGame />} />
       </Route>
 
       {/* Public Verification Route */}
@@ -228,6 +230,7 @@ const AppRoutes = () => {
         <Route path="settings" element={<Settings />} />
         <Route path="help-support" element={<HelpSupport />} />
         <Route path="work-tasks" element={<AdminWorkLists />} />
+        <Route path="quiz-game" element={<QuizGame />} />
       </Route>
 
       {/* Intern Routes */}
@@ -246,6 +249,7 @@ const AppRoutes = () => {
         <Route path="settings" element={<Settings />} />
         <Route path="help-support" element={<HelpSupport />} />
         <Route path="work-tasks" element={<AdminWorkLists />} />
+        <Route path="quiz-game" element={<QuizGame />} />
       </Route>
 
       {/* Job Routes - Paid Tasks System */}

@@ -55,7 +55,8 @@ const TeacherCourses = ({ isDashboard = false, initialSearchMode = 'courses' }) 
         link: '',
         description: '',
         visibility: 'all',
-        autoEndMinutes: ''
+        autoEndMinutes: '',
+        startAt: ''
     });
     const [activeLiveClasses, setActiveLiveClasses] = useState([]);
     const [isCreatingLiveClass, setIsCreatingLiveClass] = useState(false);
@@ -142,10 +143,11 @@ const TeacherCourses = ({ isDashboard = false, initialSearchMode = 'courses' }) 
             await liveClassAPI.create({
                 ...liveClassForm,
                 link: finalLink,
-                autoEndMinutes: liveClassForm.autoEndMinutes ? parseInt(liveClassForm.autoEndMinutes) : null
+                autoEndMinutes: liveClassForm.autoEndMinutes ? parseInt(liveClassForm.autoEndMinutes) : null,
+                startAt: liveClassForm.startAt || null
             });
             setShowLiveClassModal(false);
-            setLiveClassForm({ title: '', link: '', description: '', visibility: 'all', autoEndMinutes: '' });
+            setLiveClassForm({ title: '', link: '', description: '', visibility: 'all', autoEndMinutes: '', startAt: '' });
             fetchActiveLiveClasses();
         } catch (error) {
             console.error('Error creating live class:', error);
@@ -835,6 +837,26 @@ const TeacherCourses = ({ isDashboard = false, initialSearchMode = 'courses' }) 
                                         rows={2}
                                         className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
                                     />
+                                </div>
+
+                                {/* Scheduled Start Time */}
+                                <div className="bg-primary/5 border border-primary/10 rounded-xl p-4">
+                                    <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
+                                        <Calendar className="w-4 h-4 text-primary" />
+                                        Meeting Start Time (Optional)
+                                    </label>
+                                    <input
+                                        type="datetime-local"
+                                        value={liveClassForm.startAt}
+                                        onChange={(e) => setLiveClassForm({ ...liveClassForm, startAt: e.target.value })}
+                                        min={new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16)}
+                                        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-white"
+                                    />
+                                    <p className="text-xs text-gray-400 mt-1.5">
+                                        {liveClassForm.startAt
+                                            ? `Meeting will automatically go live at ${new Date(liveClassForm.startAt).toLocaleString()}`
+                                            : 'Leave empty to start the meeting right now (future time select karo to meeting usi waqt live hogi)'}
+                                    </p>
                                 </div>
 
                                 {/* Auto-end timer */}

@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Trophy, Crown, Medal, Zap, ChevronDown } from 'lucide-react';
-import { statsAPI } from '../../services/api';
+import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { Trophy, Crown, Medal, Zap, ChevronDown, Brain, Swords } from 'lucide-react';
+import { statsAPI, quizGameAPI } from '../../services/api';
 import { getBackendOrigin } from '../../config/apiBaseUrl';
 
 const MEDAL_COLORS = ['#FFD700', '#C0C0C0', '#CD7F32'];
@@ -217,7 +219,7 @@ const SpaceGame = ({ onScore }) => {
                 onScore(sc);
                 const best = Math.max(sc, highScore);
                 setHighScore(best);
-                try { localStorage.setItem('atl_highscore', String(best)); } catch {}
+                try { localStorage.setItem('atl_highscore', String(best)); } catch { /* storage unavailable */ }
                 window.removeEventListener('keydown', onKey);
                 canvas.removeEventListener('click', onClick);
                 canvas.removeEventListener('touchstart', onClick);
@@ -287,6 +289,9 @@ const GamesCard = () => {
     const [leaders, setLeaders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [open, setOpen] = useState(false);
+    const [openRooms, setOpenRooms] = useState([]);
+    const navigate = useNavigate();
+    const { role } = useSelector((state) => state.auth);
 
     const fetchLeaders = useCallback(async () => {
         try {
@@ -303,6 +308,15 @@ const GamesCard = () => {
         const interval = setInterval(fetchLeaders, 5000);
         return () => clearInterval(interval);
     }, [fetchLeaders]);
+
+    // Open quiz challenges (dusre students ke waiting rooms)
+    useEffect(() => {
+        quizGameAPI.getOpen().then(res => setOpenRooms(res.data.data || [])).catch(() => {});
+        const interval = setInterval(() => {
+            quizGameAPI.getOpen().then(res => setOpenRooms(res.data.data || [])).catch(() => {});
+        }, 10000);
+        return () => clearInterval(interval);
+    }, []);
 
     const handleGameScore = useCallback(async (score) => {
         try {
@@ -340,6 +354,30 @@ const GamesCard = () => {
             {/* Collapsible content */}
             {open && (
                 <div className="px-4 pb-4">
+                    {/* Quiz Battle — 1v1 multiplayer MCQ race */}
+                    <button
+                        onClick={() => navigate(`/${role}/quiz-game`)}
+                        className="mb-3 flex w-full items-center gap-3 rounded-xl border border-violet-200 bg-gradient-to-r from-violet-500/10 to-indigo-500/10 p-3 text-left transition-all hover:border-violet-400/60 hover:shadow-md dark:border-violet-500/25 dark:from-violet-500/15 dark:to-indigo-500/15"
+                    >
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600 shadow-lg shadow-violet-500/25">
+                            <Brain className="h-5 w-5 text-white" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                            <p className="flex items-center gap-1.5 text-sm font-black text-gray-900 dark:text-white">
+                                Quiz Battle
+                                {openRooms.length > 0 && (
+                                    <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[9px] font-black text-white">{openRooms.length}</span>
+                                )}
+                            </p>
+                            <p className="truncate text-[11px] text-gray-500 dark:text-gray-400">
+                                {openRooms.length > 0
+                                    ? `${openRooms[0].host?.name} ne challenge khara kiya — join karo!`
+                                    : '1v1 MCQ race — subject chuno aur challenge bhejo'}
+                            </p>
+                        </div>
+                        <Swords className="h-4 w-4 shrink-0 text-violet-500" />
+                    </button>
+
                     <SpaceGame onScore={handleGameScore} />
 
                     <div className="mt-4">

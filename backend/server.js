@@ -65,6 +65,7 @@ const registrationPageRoutes = require('./routes/registrationPages');
 const googleDriveRoutes = require('./routes/googleDrive');
 const paymentMethodRoutes = require('./routes/paymentMethods');
 const adminWorkTaskRoutes = require('./routes/adminWorkTasks');
+const quizGameRoutes = require('./routes/quizGame');
 const helpSupportRoutes = require('./routes/helpSupport');
 const teacherScreenAssignmentRoutes = require('./routes/teacherScreenAssignments');
 
@@ -150,6 +151,13 @@ io.on('connection', (socket) => {
         } catch (err) {
             console.error('Error updating lastSeen on join_chat:', err);
         }
+    });
+
+    // Quiz Battle: players game-room mein join hote hain taake
+    // next/ended events dono ko pohanchen
+    socket.on('join_quiz_game', (roomId) => {
+        if (!roomId) return;
+        socket.join(String(roomId));
     });
 
     socket.on('heartbeat', async (userId) => {
@@ -498,6 +506,7 @@ app.use('/api/reports', reportRoutes);
 app.use('/api/registration-pages', registrationPageRoutes);
 app.use('/api/google-drive', googleDriveRoutes);
 app.use('/api/admin-work-tasks', adminWorkTaskRoutes);
+app.use('/api/quiz-game', quizGameRoutes);
 app.use('/api/payment-methods', paymentMethodRoutes);
 app.use('/api/help-support', helpSupportRoutes);
 app.use('/api/teacher-screen-assignments', teacherScreenAssignmentRoutes);

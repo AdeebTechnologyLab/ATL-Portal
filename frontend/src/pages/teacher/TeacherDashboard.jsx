@@ -54,7 +54,8 @@ const TeacherDashboard = () => {
         link: '',
         description: '',
         visibility: 'all',
-        autoEndMinutes: ''
+        autoEndMinutes: '',
+        startAt: ''
     });
     const [activeLiveClasses, setActiveLiveClasses] = useState([]);
     const [isCreatingLiveClass, setIsCreatingLiveClass] = useState(false);
@@ -170,10 +171,11 @@ const TeacherDashboard = () => {
             await liveClassAPI.create({
                 ...liveClassForm,
                 link: finalLink,
-                autoEndMinutes: liveClassForm.autoEndMinutes ? parseInt(liveClassForm.autoEndMinutes) : null
+                autoEndMinutes: liveClassForm.autoEndMinutes ? parseInt(liveClassForm.autoEndMinutes) : null,
+                startAt: liveClassForm.startAt || null
             });
             setShowLiveClassModal(false);
-            setLiveClassForm({ title: '', link: '', description: '', visibility: 'all', autoEndMinutes: '' });
+            setLiveClassForm({ title: '', link: '', description: '', visibility: 'all', autoEndMinutes: '', startAt: '' });
             fetchActiveLiveClasses();
         } catch (error) {
             console.error('Error creating live class:', error);
@@ -307,7 +309,7 @@ const TeacherDashboard = () => {
                         <div className="flex gap-2 sm:gap-3 flex-wrap">
                             <button
                                 onClick={() => {
-                                    setLiveClassForm({ title: '', link: '', description: '', visibility: 'all', autoEndMinutes: '' });
+                                    setLiveClassForm({ title: '', link: '', description: '', visibility: 'all', autoEndMinutes: '', startAt: '' });
                                     setLiveClassModalType('google');
                                     setShowLiveClassModal(true);
                                 }}
@@ -318,7 +320,7 @@ const TeacherDashboard = () => {
                             </button>
                             <button
                                 onClick={() => {
-                                    setLiveClassForm({ title: '', link: '', description: '', visibility: 'all', autoEndMinutes: '' });
+                                    setLiveClassForm({ title: '', link: '', description: '', visibility: 'all', autoEndMinutes: '', startAt: '' });
                                     setLiveClassModalType('adeeb');
                                     setShowLiveClassModal(true);
                                 }}
@@ -612,7 +614,7 @@ const TeacherDashboard = () => {
                                                 <p className="font-semibold text-gray-900">{lc.title}</p>
                                                 <div className="flex items-center gap-3 flex-wrap">
                                                     <p className="text-sm text-gray-500">
-                                                        Visible to: {lc.visibility === 'all' ? 'All Students & Interns' : lc.visibility === 'student' ? 'Students Only' : 'Interns Only'}
+                                                        By {lc.createdBy?.name || 'Teacher'} · Visible to: {lc.visibility === 'all' ? 'All Students & Interns' : lc.visibility === 'student' ? 'Students Only' : 'Interns Only'}
                                                     </p>
                                                     {hasTimer && secondsLeft !== null && (
                                                         <span className={`flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded-full ${isExpiringSoon
@@ -646,13 +648,15 @@ const TeacherDashboard = () => {
                                                     Open
                                                 </a>
                                             )}
-                                            <button
-                                                onClick={() => handleEndLiveClass(lc._id)}
-                                                className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors flex items-center gap-2"
-                                            >
-                                                <StopCircle className="w-4 h-4" />
-                                                End Class
-                                            </button>
+                                            {(lc.createdBy?._id || lc.createdBy) === (user?.id || user?._id) && (
+                                                <button
+                                                    onClick={() => handleEndLiveClass(lc._id)}
+                                                    className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors flex items-center gap-2"
+                                                >
+                                                    <StopCircle className="w-4 h-4" />
+                                                    End Class
+                                                </button>
+                                            )}
                                         </div>
                                     </div>
                                 );
@@ -731,6 +735,26 @@ const TeacherDashboard = () => {
                                     />
                                 </div>
 
+                                {/* Scheduled Start Time */}
+                                <div className="bg-primary/5 border border-primary/10 rounded-xl p-4">
+                                    <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
+                                        <Calendar className="w-4 h-4 text-primary" />
+                                        Meeting Start Time (Optional)
+                                    </label>
+                                    <input
+                                        type="datetime-local"
+                                        value={liveClassForm.startAt}
+                                        onChange={(e) => setLiveClassForm({ ...liveClassForm, startAt: e.target.value })}
+                                        min={new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16)}
+                                        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-white"
+                                    />
+                                    <p className="text-xs text-gray-400 mt-1.5">
+                                        {liveClassForm.startAt
+                                            ? `Meeting will automatically go live at ${new Date(liveClassForm.startAt).toLocaleString()}`
+                                            : 'Leave empty to start the meeting right now (calendar se future time select karo to meeting usi waqt live hogi)' }
+                                    </p>
+                                </div>
+
                                 {/* Auto-end timer */}
                                 <div className="bg-primary/5 border border-primary/10 rounded-xl p-4">
                                     <label className="flex items-center gap-2 text-sm font-semibold text-orange-700 mb-3">
@@ -764,7 +788,7 @@ const TeacherDashboard = () => {
                                     {liveClassForm.autoEndMinutes ? (
                                         <p className="text-xs text-primary flex items-center gap-1">
                                             <Timer className="w-3 h-3" />
-                                            Class will auto-remove after <strong>{liveClassForm.autoEndMinutes} minute{liveClassForm.autoEndMinutes !== '1' ? 's' : ''}</strong>
+                                            Class will auto-remove {liveClassForm.startAt ? 'from the scheduled start, ' : ''}<strong>{liveClassForm.autoEndMinutes} minute{liveClassForm.autoEndMinutes !== '1' ? 's' : ''}</strong> after it goes live
                                         </p>
                                     ) : (
                                         <p className="text-xs text-gray-400">Leave empty to end the class manually</p>

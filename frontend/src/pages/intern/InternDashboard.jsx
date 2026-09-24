@@ -4,10 +4,11 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import {
-    Clock, CheckCircle, BookOpen, CreditCard, Users, TrendingUp, Bell, Video, ExternalLink, MessageSquare
+    Clock, CheckCircle, BookOpen, CreditCard, Users, TrendingUp, Bell, Video, ExternalLink, MessageSquare, Timer
 } from 'lucide-react';
 import StatCard from '../../components/ui/StatCard';
 import Badge from '../../components/ui/Badge';
+import GamesCard from '../../components/dashboard/GamesCard';
 import { enrollmentAPI, assignmentAPI, feeAPI, liveClassAPI, chatAPI, settingsAPI, attendanceAPI } from '../../services/api';
 import { getCourseIcon } from '../../utils/courseIcons';
 import { calculateOutstandingFees } from '../../utils/feeHelpers';
@@ -99,6 +100,30 @@ const InternDashboard = () => {
                 socketRef.current.disconnect();
             }
         };
+    }, []);
+
+    // Auto-End countdown: har second update hota hai, expire pe class UI se hat jati hai
+    useEffect(() => {
+        const tick = () => {
+            setActiveLiveClasses(prev => {
+                const now = Date.now();
+                const expired = [];
+                const updated = prev.map(lc => {
+                    if (!lc.autoEndMinutes) return lc;
+                    const expiresAt = new Date(lc.startTime).getTime() + lc.autoEndMinutes * 60 * 1000;
+                    const secondsLeft = Math.max(0, Math.round((expiresAt - now) / 1000));                    if (secondsLeft === 0) expired.push(lc._id);
+                    return { ...lc, _secondsLeft: secondsLeft };
+                });
+                if (expired.length > 0) {
+                    liveClassAPI.cleanupExpired().catch(() => { });
+                    return updated.filter(lc => !expired.includes(lc._id));
+                }
+                return updated;
+            });
+        };
+        const interval = setInterval(tick, 1000);
+        tick();
+        return () => clearInterval(interval);
     }, []);
 
     const fetchActiveLiveClasses = async () => {
@@ -251,6 +276,9 @@ const InternDashboard = () => {
 
     return (
         <div className="space-y-6">
+            {/* Quiz Battle + Games */}
+            <GamesCard />
+
             {/* Live Class Banner - Big and Prominent */}
             <AnimatePresence>
                 {activeLiveClasses.length > 0 && (
@@ -293,6 +321,18 @@ const InternDashboard = () => {
                                             <h2 className="text-2xl md:text-3xl font-black uppercase tracking-tight">
                                                 {liveClass.title}
                                             </h2>
+                                            {liveClass.autoEndMinutes ? (() => {
+                                                const secondsLeft = liveClass._secondsLeft ?? Math.max(0, Math.round((new Date(liveClass.startTime).getTime() + liveClass.autoEndMinutes * 60 * 1000 - Date.now()) / 1000));
+                                                const mins = Math.floor(secondsLeft / 60);
+                                                const secs = secondsLeft % 60;
+                                                const isExpiringSoon = secondsLeft <= 60;
+                                                return (
+                                                    <span className={`inline-flex items-center gap-1.5 mt-2 text-xs font-black px-2.5 py-1 rounded-full ${isExpiringSoon ? 'bg-white text-red-600 animate-pulse' : 'bg-white/20 text-white'}`}>
+                                                        <Timer className="w-3.5 h-3.5" />
+                                                        Ends in {String(mins).padStart(2, '0')}:{String(secs).padStart(2, '0')}
+                                                    </span>
+                                                );
+                                            })() : null}
                                             {liveClass.description && (
                                                 <p className="text-white/80 mt-1 text-sm md:text-base">{liveClass.description}</p>
                                             )}

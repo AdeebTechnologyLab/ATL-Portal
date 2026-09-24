@@ -8,7 +8,7 @@ import {
     isDisplayMediaSupported,
 } from './webrtcConfig';
 
-const VIDEO_SEND_BITRATE = 2_500_000;
+const VIDEO_SEND_BITRATE = 600_000;
 
 async function applyVideoSenderBitrate(pc) {
     for (const sender of pc.getSenders()) {

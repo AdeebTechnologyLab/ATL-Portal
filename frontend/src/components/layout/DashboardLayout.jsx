@@ -110,7 +110,8 @@ const DashboardLayout = () => {
     const dispatch = useDispatch();
 
     const isLearner = role === 'student' || role === 'intern';
-    const feeAccessAllowedPaths = [`/${role}/dashboard`, `/${role}/courses`, `/${role}/assignments`, `/${role}/discussion-room`, `/${role}/fees`, `/${role}/profile`, `/${role}/settings`, `/${role}/help-support`];
+    // Quiz Battle fee ke baghair bhi khelna allowed hai
+    const feeAccessAllowedPaths = [`/${role}/dashboard`, `/${role}/courses`, `/${role}/assignments`, `/${role}/discussion-room`, `/${role}/fees`, `/${role}/profile`, `/${role}/settings`, `/${role}/help-support`, `/${role}/quiz-game`];
     const isFeeAccessAllowedPath = feeAccessAllowedPaths.some(path => location.pathname.startsWith(path));
     const shouldShowFeeLock = isLearner && feeAccessStatus.hasOverdue && !isFeeAccessAllowedPath;
 
