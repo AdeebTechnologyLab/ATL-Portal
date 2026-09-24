@@ -97,6 +97,8 @@ const DashboardLayout = () => {
     const { user, role } = useSelector((state) => state.auth);
     const location = useLocation();
     const hideGlobalChatWidget = location.pathname.includes('/discussion-room');
+    // Job Chat screen pe floating chat icon nahi chahiye (sirf widget hide, layout wesa hi)
+    const hideChatIcon = hideGlobalChatWidget || location.pathname.includes('/job-chat');
     const navigate = useNavigate();
     const { isDark, toggleTheme, timeFormat, dateFormat } = useTheme();
     const [currentDateTime, setCurrentDateTime] = useState(() => new Date());
@@ -1145,7 +1147,7 @@ const DashboardLayout = () => {
             </AnimatePresence>
 
             {/* Global Chat Widget */}
-            {!hideGlobalChatWidget && <ChatWidget />}
+            {!hideChatIcon && <ChatWidget />}
         </div>
     );
 };

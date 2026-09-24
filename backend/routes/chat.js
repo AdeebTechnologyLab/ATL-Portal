@@ -748,7 +748,13 @@ router.post('/job/:taskId/send', protect, authorize('admin', 'teacher', 'job'), 
 
 router.put('/job/:taskId/read/:senderId', protect, async (req, res) => {
     try {
-        await GlobalMessage.updateMany({ task: req.params.taskId, recipient: req.user.id, isRead: false }, { $set: { isRead: true } });
+        // Per-sender mark-read: sirf us job user ke messages read mark honge jis chat khuli hai,
+        // baqi contacts ke unread badges barkarar rahenge.
+        const filter = { task: req.params.taskId, recipient: req.user.id, isRead: false };
+        if (req.params.senderId && req.params.senderId !== 'all') {
+            filter.sender = req.params.senderId;
+        }
+        await GlobalMessage.updateMany(filter, { $set: { isRead: true } });
         res.json({ success: true });
     } catch (error) { res.status(500).json({ success: false, message: error.message }); }
 });

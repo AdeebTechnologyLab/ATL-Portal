@@ -3912,6 +3912,7 @@ const ChatWidget = () => {
 
                                         <ChatMediaButton
                                             onMediaUploaded={setPendingMedia}
+                                            media={pendingMedia}
                                         />
 
                                         <VoiceRecorder

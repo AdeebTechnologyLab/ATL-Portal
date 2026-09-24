@@ -7,11 +7,19 @@ import {
 } from 'lucide-react';
 import Badge from '../../components/ui/Badge';
 import Modal from '../../components/ui/Modal';
-import { taskAPI } from '../../services/api';
+import { taskAPI, googleDriveAPI } from '../../services/api';
 import { getCategoryIcon, getCategoryColor, getCategoryBg } from '../../utils/taskCategoryIcons';
 import Loader, { ButtonLoader } from '../../components/ui/Loader';
 import BirthdayWish from '../../components/dashboard/BirthdayWish';
 import { formatDate } from '../../utils/dateFormatter';
+
+const GoogleDriveIcon = ({ className = '' }) => (
+    <svg viewBox="0 0 24 24" aria-hidden="true" className={className}>
+        <path fill="currentColor" d="M8.1 3h5.2l7.3 12.6H15.4L8.1 3Z" opacity="0.95" />
+        <path fill="currentColor" d="M8.1 3 1.4 14.6 4 19.1 10.7 7.5 8.1 3Z" opacity="0.75" />
+        <path fill="currentColor" d="M4 19.1h13.5l2.6-4.5H6.6L4 19.1Z" />
+    </svg>
+);
 
 const BrowseTasks = () => {
     const { user } = useSelector((state) => state.auth);
@@ -23,6 +31,11 @@ const BrowseTasks = () => {
     const [viewModalOpen, setViewModalOpen] = useState(false);
     const [applicationMessage, setApplicationMessage] = useState('');
     const [submission, setSubmission] = useState({ notes: '', projectLink: '', bankName: '', accountName: '', accountNumber: '', requestedAmount: '' });
+    const [driveStatus, setDriveStatus] = useState({ configured: false, connected: false, googleEmail: '' });
+    const [driveFile, setDriveFile] = useState(null);
+    const [driveUploadItems, setDriveUploadItems] = useState([]);
+    const [isDriveUploading, setIsDriveUploading] = useState(false);
+    const [driveError, setDriveError] = useState('');
     const [tasks, setTasks] = useState([]);
     const [myTasks, setMyTasks] = useState([]);
     const [isFetching, setIsFetching] = useState(true);
@@ -63,6 +76,13 @@ const BrowseTasks = () => {
         e?.stopPropagation();
         setCurrentImageIndex((prev) => (prev === 0 ? galleryImages.length - 1 : prev - 1));
     };
+
+    // Google Drive connection status
+    useEffect(() => {
+        googleDriveAPI.getStatus()
+            .then(response => setDriveStatus(response.data))
+            .catch(() => setDriveStatus({ configured: false, connected: false, googleEmail: '' }));
+    }, []);
 
     // Fetch tasks on component mount
     useEffect(() => {
@@ -229,6 +249,61 @@ const BrowseTasks = () => {
         }
     };
 
+    const handleConnectGoogleDrive = async () => {
+        try {
+            setDriveError('');
+            const response = await googleDriveAPI.getAuthUrl();
+            window.location.assign(response.data.url);
+        } catch (error) {
+            setDriveError(error.response?.data?.message || 'Google Drive connection is not configured yet.');
+        }
+    };
+
+    const handleDriveUpload = async (event) => {
+        const files = Array.from(event.target.files || []);
+        event.target.value = '';
+        if (!files.length || !selectedTask) return;
+
+        setIsDriveUploading(true);
+        setDriveError('');
+        try {
+            const formData = new FormData();
+            files.forEach(file => formData.append('files', file));
+            formData.append('uploadId', `job-${Date.now()}`);
+            const response = await googleDriveAPI.upload(formData);
+            const uploaded = response.data.file;
+            setDriveFile(uploaded);
+            setDriveUploadItems((uploaded.files || []).map(file => ({
+                clientId: `drive-${file.id}`,
+                name: file.name,
+                size: Number(file.size || 0),
+                status: 'uploaded',
+                uploadedFile: file
+            })));
+        } catch (error) {
+            const responseCode = error.response?.data?.code;
+            if (responseCode === 'GOOGLE_DRIVE_REAUTH_REQUIRED') {
+                setDriveStatus(previous => ({ ...previous, connected: false, googleEmail: '' }));
+                setDriveError('Drive permission was not allowed. Click Connect Google Drive again, then tick the Drive file access checkbox and continue.');
+            } else {
+                setDriveError(error.response?.data?.message || 'Files could not be uploaded to Drive.');
+            }
+        } finally {
+            setIsDriveUploading(false);
+        }
+    };
+
+    const handleRemoveDriveItem = async (item) => {
+        if (!item.uploadedFile?.id) return;
+        try {
+            await googleDriveAPI.deleteFile(item.uploadedFile.id);
+            setDriveUploadItems(previous => previous.filter(entry => entry.clientId !== item.clientId));
+            setDriveFile(null);
+        } catch (error) {
+            setDriveError(error.response?.data?.message || 'Could not delete the file.');
+        }
+    };
+
     const handleSubmitWork = async () => {
         if (!submission.notes.trim() || !submission.bankName.trim() || !submission.accountName.trim() || !submission.accountNumber.trim() || !submission.requestedAmount || !selectedTask) {
             alert('Please fill all required fields');
@@ -239,13 +314,23 @@ const BrowseTasks = () => {
         try {
             const formData = new FormData();
             formData.append('notes', submission.notes);
-            formData.append('projectLink', submission.projectLink);
+            // Google Drive upload hone par folder link Project Link ke sath save hota hai
+            const driveLink = driveFile?.webViewLink || '';
+            const manualLink = submission.projectLink.trim();
+            formData.append('projectLink', [manualLink, driveLink].filter(Boolean).join(' | '));
+            if (driveFile) {
+                formData.append('googleDriveFileId', driveFile.id || '');
+                formData.append('googleDriveFileName', driveFile.name || 'Google Drive Files');
+            }
             const accountDetails = `Bank: ${submission.bankName} | Account Name: ${submission.accountName} | Account Number: ${submission.accountNumber}`;
             formData.append('accountDetails', accountDetails);
             formData.append('requestedAmount', submission.requestedAmount.replace(/,/g, ''));
             await taskAPI.submit(selectedTask._id, formData);
             setSubmitModalOpen(false);
             setSubmission({ notes: '', projectLink: '', bankName: '', accountName: '', accountNumber: '', requestedAmount: '' });
+            setDriveFile(null);
+            setDriveUploadItems([]);
+            setDriveError('');
             setSelectedTask(null);
             fetchTasks();
         } catch (err) {
@@ -706,6 +791,80 @@ const BrowseTasks = () => {
                                 rows={3}
                                 className="w-full px-4 py-3 border border-gray-200 rounded-xl"
                             />
+                        </div>
+                        {/* Google Drive Upload Panel */}
+                        <div className="rounded-xl border border-primary/30 bg-gradient-to-br from-primary/10 to-white p-4">
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                <div className="flex items-center gap-3 min-w-0">
+                                    <div className="w-11 h-11 rounded-xl bg-primary text-white flex items-center justify-center shadow-md shadow-primary/25 shrink-0">
+                                        <GoogleDriveIcon className="w-6 h-6" />
+                                    </div>
+                                    <div className="min-w-0">
+                                        <div className="flex items-center gap-2">
+                                            <p className="text-sm font-bold text-gray-900">Google Drive Upload</p>
+                                            {driveStatus.connected && <span className="text-[8px] font-black uppercase tracking-wider text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full">Connected</span>}
+                                        </div>
+                                        <p className="text-[11px] text-gray-500 truncate">
+                                            {driveStatus.connected
+                                                ? (driveStatus.googleEmail || 'Your Google account')
+                                                : 'Files yahan se upload karo — folder link apne aap Project Link mein add hoga.'}
+                                        </p>
+                                    </div>
+                                </div>
+                                {driveStatus.connected ? (
+                                    <label className={`min-h-11 px-4 py-2.5 rounded-xl bg-primary hover:bg-orange-600 text-white text-[10px] font-black uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-md transition-all ${isDriveUploading ? 'opacity-60 pointer-events-none' : ''}`}>
+                                        <Upload className="w-4 h-4" />
+                                        {isDriveUploading ? 'Uploading...' : 'Choose Files'}
+                                        <input
+                                            type="file"
+                                            multiple
+                                            className="hidden"
+                                            accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.zip"
+                                            onChange={handleDriveUpload}
+                                            disabled={isDriveUploading}
+                                        />
+                                    </label>
+                                ) : (
+                                    <button
+                                        type="button"
+                                        onClick={handleConnectGoogleDrive}
+                                        disabled={!driveStatus.configured}
+                                        className="min-h-11 px-4 py-2.5 rounded-xl bg-primary hover:bg-orange-600 text-white text-[10px] font-black uppercase tracking-wider shadow-md disabled:opacity-50"
+                                    >
+                                        {driveError ? 'Reconnect & Allow Access' : 'Connect Google Drive'}
+                                    </button>
+                                )}
+                            </div>
+                            {driveError && <p className="mt-2 text-[11px] font-semibold text-red-500">{driveError}</p>}
+                            {driveFile?.webViewLink && (
+                                <div className="mt-3 flex items-center justify-between gap-3 rounded-lg bg-white border border-emerald-200 p-2.5">
+                                    <p className="text-xs font-bold text-emerald-700">
+                                        {driveFile.files?.length ?? 0} file{((driveFile.files?.length ?? 0) === 1) ? '' : 's'} uploaded to Drive
+                                    </p>
+                                    <a href={driveFile.webViewLink} target="_blank" rel="noopener noreferrer" className="text-[10px] font-black uppercase text-primary hover:underline">Open Folder</a>
+                                </div>
+                            )}
+                            {driveUploadItems.length > 0 && (
+                                <div className="mt-2 space-y-1.5">
+                                    {driveUploadItems.map(item => (
+                                        <div key={item.clientId} className="flex items-center justify-between gap-2 rounded-lg bg-white border border-slate-200 px-2.5 py-1.5">
+                                            <span className="text-[11px] text-gray-600 truncate">{item.name}</span>
+                                            <div className="flex items-center gap-1.5 shrink-0">
+                                                {item.status === 'uploaded' && <CheckCircle className="w-3.5 h-3.5 text-emerald-500" />}
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleRemoveDriveItem(item)}
+                                                    disabled={isDriveUploading}
+                                                    className="text-gray-400 hover:text-red-500 disabled:opacity-40"
+                                                    title="Remove file"
+                                                >
+                                                    <X className="w-3.5 h-3.5" />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">

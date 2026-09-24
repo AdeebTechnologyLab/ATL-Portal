@@ -2,6 +2,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
 import { io } from 'socket.io-client';
+import { getSocketURL } from '../../config/apiBaseUrl';
 import { assignmentAPI, courseAPI, dailyTaskAPI, chatAPI, enrollmentAPI, feeAPI, certificateAPI, testAPI, taskAPI, teacherFinanceAPI, financeAPI, teacherScreenAssignmentAPI } from '../../services/api';
 import { isDueDateOverdue } from '../../utils/dueDate';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -65,12 +66,26 @@ const SCREEN_ROUTE_TO_PATH = {
     '/admin/registration-pages': '/teacher/registration-pages',
     '/admin/dashboard': '/teacher/dashboard'
 };
-import { getSocketURL } from '../../config/apiBaseUrl';
 
 const Sidebar = ({ isOpen, setIsOpen }) => {
     const { t } = useTranslation();
     const navigate = useNavigate();
     const location = useLocation();
+    // Real-time counts: har route change / tab focus / tab return pe counts dobara fetch hote hain
+    const [dataRefreshTick, setDataRefreshTick] = useState(0);
+    useEffect(() => {
+        const bump = () => setDataRefreshTick(tick => tick + 1);
+        const onVisibility = () => { if (document.visibilityState === 'visible') bump(); };
+        window.addEventListener('focus', bump);
+        document.addEventListener('visibilitychange', onVisibility);
+        return () => {
+            window.removeEventListener('focus', bump);
+            document.removeEventListener('visibilitychange', onVisibility);
+        };
+    }, []);
+    useEffect(() => {
+        setDataRefreshTick(tick => tick + 1);
+    }, [location.pathname]);
     const dispatch = useDispatch();
     const { user, role } = useSelector((state) => state.auth);
     const [pendingCount, setPendingCount] = useState(0);
@@ -112,9 +127,15 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
             } catch (_) { /* no job chats yet */ }
         };
         loadJobSummary();
+        // Realtime: jab job user message bheje, sidebar badge foran update ho
+        const socket = io(getSocketURL(), { withCredentials: true });
+        socket.on('new_global_message', () => loadJobSummary());
         const timer = setInterval(loadJobSummary, 30000);
-        return () => clearInterval(timer);
-    }, [role]);
+        return () => {
+            clearInterval(timer);
+            socket.disconnect();
+        };
+    }, [role, dataRefreshTick]);
 
     useEffect(() => {
         if (role !== 'job' || !user) return;
@@ -177,7 +198,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
             window.clearInterval(timer);
             window.removeEventListener('job-applications-updated', loadApplicationCount);
         };
-    }, [role, user]);
+    }, [role, user, dataRefreshTick]);
 
     useEffect(() => {
         if (!user || !role) return;
@@ -263,7 +284,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         loadTeacherProjects();
         const timer = setInterval(loadTeacherProjects, 30000);
         return () => clearInterval(timer);
-    }, [role]);
+    }, [role, dataRefreshTick]);
 
     useEffect(() => {
         if (role !== 'admin') return;
@@ -279,13 +300,13 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         loadAdminProjects();
         const timer = setInterval(loadAdminProjects, 30000);
         return () => clearInterval(timer);
-    }, [role]);
+    }, [role, dataRefreshTick]);
 
     useEffect(() => {
         if (role === 'student' || role === 'intern') {
             fetchPendingCount();
             if (role === 'student') fetchStudentNavCounts();
-            const interval = setInterval(fetchPendingCount, 5 * 60 * 1000);
+            const interval = setInterval(fetchPendingCount, 60 * 1000);
             const navInterval = role === 'student' ? setInterval(fetchStudentNavCounts, 60 * 1000) : null;
             return () => {
                 clearInterval(interval);
@@ -294,17 +315,17 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         } else if (role === 'admin') {
             fetchAdminPendingCounts();
             window.addEventListener('admin-pending-counts-changed', fetchAdminPendingCounts);
-            const interval = setInterval(fetchAdminPendingCounts, 2 * 60 * 1000); // Admin refresh more frequent
+            const interval = setInterval(fetchAdminPendingCounts, 60 * 1000);
             return () => {
                 clearInterval(interval);
                 window.removeEventListener('admin-pending-counts-changed', fetchAdminPendingCounts);
             };
         } else if (role === 'teacher') {
             fetchTeacherSubmissionCount();
-            const interval = setInterval(fetchTeacherSubmissionCount, 5 * 60 * 1000);
+            const interval = setInterval(fetchTeacherSubmissionCount, 60 * 1000);
             return () => clearInterval(interval);
         }
-    }, [role, user]);
+    }, [role, user, dataRefreshTick]);
 
     // Fetch assigned screens for teachers
     useEffect(() => {

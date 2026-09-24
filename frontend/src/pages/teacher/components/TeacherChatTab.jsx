@@ -363,6 +363,7 @@ const TeacherChatTab = ({ course, students, onUnreadCountChange }) => {
                             <div className="flex gap-2 items-end">
                                 <ChatMediaButton
                                     onMediaUploaded={setPendingMedia}
+                                    media={pendingMedia}
                                     driveStatus={driveStatus}
                                     disabled={isSending}
                                 />

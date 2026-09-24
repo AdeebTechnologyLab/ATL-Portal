@@ -86,6 +86,8 @@ const paidTaskSchema = new mongoose.Schema({
         notes: String,
         projectLink: String,
         fileUrl: String,
+        googleDriveFileId: String,
+        googleDriveFileName: String,
         accountDetails: String,
         requestedAmount: { type: Number, min: 1 },
         submittedAt: Date,

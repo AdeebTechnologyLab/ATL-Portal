@@ -595,6 +595,7 @@ const DiscussionRoom = () => {
                     )}
                     <ChatMediaButton
                         onMediaUploaded={setPendingMedia}
+                        media={pendingMedia}
                         driveStatus={driveStatus}
                         disabled={sending}
                     />

@@ -39,8 +39,11 @@ const presentList = (list, user) => {
         isOwner: owner,
         items: (data.items || []).map(item => ({
             ...item,
-            canDelete: admin || owner || (!item.isAdminCreated && String(item.createdBy || '') === String(user._id)),
-            canEdit: admin || owner || (!item.isAdminCreated && String(item.createdBy || '') === String(user._id))
+            // Edit/delete permissions: list ka har member (admin, owner, ya shared teacher)
+            // list ke andar kisi bhi task ko edit/delete kar sakta hai — apna,
+            // doosre teacher ka, ya admin ka. List access hi permission hai.
+            canDelete: true,
+            canEdit: true
         }))
     };
 };
@@ -156,13 +159,13 @@ router.put('/:id/items/:itemId', async (req, res) => {
         if (!canAccessList(list, req.user)) return res.status(403).json({ success: false, message: 'You cannot access this list.' });
         const item = list.items.id(req.params.itemId);
         if (!item) return res.status(404).json({ success: false, message: 'Task not found.' });
-        const ownsItem = !item.isAdminCreated && String(item.createdBy || '') === String(req.user._id);
-        const listOwner = isListOwner(list, req.user);
-        if (!isAdmin(req.user) && !ownsItem && !listOwner && Object.keys(req.body).some(key => key !== 'status')) {
-            return res.status(403).json({ success: false, message: 'Task details cannot be edited.' });
+        // List access hi permission hai: har member kisi bhi task ke details edit kar sakta hai
+        if (req.body.title !== undefined) {
+            const title = String(req.body.title).trim();
+            if (!title) return res.status(400).json({ success: false, message: 'Task title cannot be empty.' });
+            item.title = title;
         }
-        if (req.body.title !== undefined && (isAdmin(req.user) || ownsItem || listOwner)) item.title = req.body.title;
-        if (req.body.description !== undefined && (isAdmin(req.user) || ownsItem || listOwner)) item.description = req.body.description;
+        if (req.body.description !== undefined) item.description = req.body.description;
         if (req.body.status !== undefined) {
             item.status = req.body.status;
             item.completedAt = req.body.status === 'completed' ? new Date() : null;
@@ -183,9 +186,7 @@ router.delete('/:id/items/:itemId', async (req, res) => {
         if (!canAccessList(list, req.user)) return res.status(403).json({ success: false, message: 'You cannot access this list.' });
         const item = list.items.id(req.params.itemId);
         if (!item) return res.status(404).json({ success: false, message: 'Task not found.' });
-        const ownsItem = !item.isAdminCreated && String(item.createdBy || '') === String(req.user._id);
-        const listOwner = isListOwner(list, req.user);
-        if (!isAdmin(req.user) && !ownsItem && !listOwner) return res.status(403).json({ success: false, message: 'Cannot delete this task.' });
+        // List access hi permission hai: har member koi bhi task delete kar sakta hai
         item.deleteOne();
         list.updatedBy = req.user.id;
         list.markModified('items');

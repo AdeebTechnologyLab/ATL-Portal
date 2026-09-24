@@ -185,6 +185,7 @@ const TaskChat = ({ taskId, currentUser }) => {
             <form onSubmit={handleSendMessage} className="p-3 bg-white border-t border-gray-100 flex gap-2">
                 <ChatMediaButton
                     onMediaUploaded={setPendingMedia}
+                    media={pendingMedia}
                     driveStatus={driveStatus}
                     disabled={isSending}
                 />

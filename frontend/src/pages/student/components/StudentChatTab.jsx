@@ -306,6 +306,7 @@ const StudentChatTab = ({ course, isRestricted }) => {
                             <div className="flex gap-2">
                                 <ChatMediaButton
                                     onMediaUploaded={setPendingMedia}
+                                    media={pendingMedia}
                                     driveStatus={driveStatus}
                                     disabled={isRestricted}
                                 />

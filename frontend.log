@@ -3,51 +3,65 @@
 > vite
 
 
-  [32m[1mVITE[22m v7.3.1[39m  [2mready in [0m[1m2663[22m[2m[0m ms[22m
+  [32m[1mVITE[22m v7.3.1[39m  [2mready in [0m[1m2813[22m[2m[0m ms[22m
 
   [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m5173[22m/[39m
 [2m  [32m➜[39m  [1mNetwork[22m[2m: use [22m[1m--host[22m[2m to expose[22m
+[2m[32m  ➜[39m[22m[2m  press [22m[1mh + enter[22m[2m to show help[22m
+[2m10:20:45 PM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/health[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
 Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
   npx update-browserslist-db@latest
   Why you should do it regularly: https://github.com/browserslist/update-db#readme
-[2m11:35:08 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/admin/AdminWorkLists.jsx, /src/index.css[22m
-[2m11:35:31 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/admin/AdminWorkLists.jsx, /src/index.css[22m
-[2m11:35:45 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/admin/AdminWorkLists.jsx, /src/index.css[22m
-[2m11:39:03 PM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/chat/job/tasks[39m
+[2m10:21:03 PM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/health[39m
 AggregateError [ECONNREFUSED]: 
     at internalConnectMultiple (node:net:1134:18)
     at afterConnectMultiple (node:net:1715:7)
-[2m11:39:03 PM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/tasks/counts[39m
+[2m10:21:30 PM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/health[39m
 AggregateError [ECONNREFUSED]: 
     at internalConnectMultiple (node:net:1134:18)
     at afterConnectMultiple (node:net:1715:7)
-[2m11:39:03 PM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/finance/projects[39m
+[2m10:25:49 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/components/layout/DashboardLayout.jsx, /src/index.css[22m
+[2m10:33:21 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/index.css, /src/components/layout/Sidebar.jsx[22m
+[2m10:33:47 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/index.css, /src/components/layout/Sidebar.jsx[22m
+[2m10:41:13 PM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/chat/job/tasks[39m
 AggregateError [ECONNREFUSED]: 
     at internalConnectMultiple (node:net:1134:18)
     at afterConnectMultiple (node:net:1715:7)
-[2m11:39:24 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/admin/AdminWorkLists.jsx, /src/index.css[22m
-[2m11:44:30 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/admin/AdminWorkLists.jsx, /src/index.css[22m
-[2m11:46:35 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/admin/AdminWorkLists.jsx, /src/index.css[22m
-[2m11:46:58 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/admin/AdminWorkLists.jsx, /src/index.css[22m
-[2m11:49:56 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/admin/AdminWorkLists.jsx, /src/index.css[22m
-[2m11:50:02 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/admin/AdminWorkLists.jsx, /src/index.css[22m
-[2m11:50:03 PM[22m [31m[1m[vite][22m[39m [31mInternal server error: D:\Downloads\ATL-Portal\frontend\src\pages\admin\AdminWorkLists.jsx: Identifier 'memberLabel' has already been declared. (20:6)
+[2m10:41:13 PM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/tasks/counts[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m10:41:13 PM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/tasks/my[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m10:41:13 PM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/tasks[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m10:41:30 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/shared/JobChat.jsx, /src/index.css[22m
+[2m10:41:43 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/shared/JobChat.jsx, /src/index.css[22m
+[2m10:42:27 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/index.css, /src/components/layout/Sidebar.jsx[22m
+[2m10:42:27 PM[22m [31m[1m[vite][22m[39m [31mInternal server error: D:\Downloads\ATL-Portal\frontend\src\components\layout\Sidebar.jsx: Identifier 'io' has already been declared. (6:9)
 
-[0m [90m 18 |[31m }[33m;[31m
- [90m 19 |[31m
-[31m[1m>[22m[31m[90m 20 |[31m [36mconst[31m memberLabel [33m=[31m (person) [33m=>[31m {
- [90m    |[31m       [31m[1m^[22m[31m
- [90m 21 |[31m     [36mif[31m ([33m![31mperson) [36mreturn[31m [32m'User'[31m[33m;[31m
- [90m 22 |[31m     [36mif[31m (person[33m.[31mrollNo) [36mreturn[31m [32m`#${person.rollNo}`[31m[33m;[31m
- [90m 23 |[31m     [36mif[31m (person[33m.[31mrole) [36mreturn[31m person[33m.[31mrole[33m.[31mcharAt([35m0[31m)[33m.[31mtoUpperCase() [33m+[31m person[33m.[31mrole[33m.[31mslice([35m1[31m)[33m;[31m[0m[39m
+[0m [90m 4 |[31m [36mimport[31m { io } [36mfrom[31m [32m'socket.io-client'[31m[33m;[31m
+ [90m 5 |[31m [36mimport[31m { getSocketURL } [36mfrom[31m [32m'../../config/apiBaseUrl'[31m[33m;[31m
+[31m[1m>[22m[31m[90m 6 |[31m [36mimport[31m { io } [36mfrom[31m [32m'socket.io-client'[31m[33m;[31m
+ [90m   |[31m          [31m[1m^[22m[31m
+ [90m 7 |[31m [36mimport[31m { assignmentAPI[33m,[31m courseAPI[33m,[31m dailyTaskAPI[33m,[31m chatAPI[33m,[31m enrollmentAPI[33m,[31m feeAPI[33m,[31m certificateAPI[33m,[31m testAPI[33m,[31m taskAPI[33m,[31m teacherFinanceAPI[33m,[31m financeAPI[33m,[31m teacherScreenAssignmentAPI } [36mfrom[31m [32m'../../services/api'[31m[33m;[31m
+ [90m 8 |[31m [36mimport[31m { isDueDateOverdue } [36mfrom[31m [32m'../../utils/dueDate'[31m[33m;[31m
+ [90m 9 |[31m [36mimport[31m { motion[33m,[31m [33mAnimatePresence[31m } [36mfrom[31m [32m'framer-motion'[31m[33m;[31m[0m[39m
   Plugin: [35mvite:react-babel[39m
-  File: [36mD:/Downloads/ATL-Portal/frontend/src/pages/admin/AdminWorkLists.jsx[39m:20:6
-[33m  18 |  };
-  19 |  
-  20 |  const memberLabel = (person) => {
-     |        ^
-  21 |      if (!person) return 'User';
-  22 |      if (person.rollNo) return `#${person.rollNo}`;[39m
+  File: [36mD:/Downloads/ATL-Portal/frontend/src/components/layout/Sidebar.jsx[39m:6:9
+[33m  4  |  import { io } from 'socket.io-client';
+  5  |  import { getSocketURL } from '../../config/apiBaseUrl';
+  6  |  import { io } from 'socket.io-client';
+     |                ^
+  7  |  import { assignmentAPI, courseAPI, dailyTaskAPI, chatAPI, enrollmentAPI, feeAPI, certificateAPI, testAPI, taskAPI, te...
+  8  |  import { isDueDateOverdue } from '../../utils/dueDate';[39m
       at constructor (D:\Downloads\ATL-Portal\frontend\node_modules\@babel\parser\lib\index.js:367:19)
       at JSXParserMixin.raise (D:\Downloads\ATL-Portal\frontend\node_modules\@babel\parser\lib\index.js:6624:19)
       at ScopeHandler.checkRedeclarationInScope (D:\Downloads\ATL-Portal\frontend\node_modules\@babel\parser\lib\index.js:1646:19)
@@ -55,10 +69,12 @@ AggregateError [ECONNREFUSED]:
       at JSXParserMixin.declareNameFromIdentifier (D:\Downloads\ATL-Portal\frontend\node_modules\@babel\parser\lib\index.js:7594:16)
       at JSXParserMixin.checkIdentifier (D:\Downloads\ATL-Portal\frontend\node_modules\@babel\parser\lib\index.js:7590:12)
       at JSXParserMixin.checkLVal (D:\Downloads\ATL-Portal\frontend\node_modules\@babel\parser\lib\index.js:7527:12)
-      at JSXParserMixin.parseVarId (D:\Downloads\ATL-Portal\frontend\node_modules\@babel\parser\lib\index.js:13488:10)
-      at JSXParserMixin.parseVar (D:\Downloads\ATL-Portal\frontend\node_modules\@babel\parser\lib\index.js:13459:12)
-      at JSXParserMixin.parseVarStatement (D:\Downloads\ATL-Portal\frontend\node_modules\@babel\parser\lib\index.js:13306:10)
-      at JSXParserMixin.parseStatementContent (D:\Downloads\ATL-Portal\frontend\node_modules\@babel\parser\lib\index.js:12927:23)
+      at JSXParserMixin.finishImportSpecifier (D:\Downloads\ATL-Portal\frontend\node_modules\@babel\parser\lib\index.js:14342:10)
+      at JSXParserMixin.parseImportSpecifier (D:\Downloads\ATL-Portal\frontend\node_modules\@babel\parser\lib\index.js:14499:17)
+      at JSXParserMixin.parseNamedImportSpecifiers (D:\Downloads\ATL-Portal\frontend\node_modules\@babel\parser\lib\index.js:14478:36)
+      at JSXParserMixin.parseImportSpecifiersAndAfter (D:\Downloads\ATL-Portal\frontend\node_modules\@babel\parser\lib\index.js:14318:37)
+      at JSXParserMixin.parseImport (D:\Downloads\ATL-Portal\frontend\node_modules\@babel\parser\lib\index.js:14311:17)
+      at JSXParserMixin.parseStatementContent (D:\Downloads\ATL-Portal\frontend\node_modules\@babel\parser\lib\index.js:12952:27)
       at JSXParserMixin.parseStatementLike (D:\Downloads\ATL-Portal\frontend\node_modules\@babel\parser\lib\index.js:12843:17)
       at JSXParserMixin.parseModuleItem (D:\Downloads\ATL-Portal\frontend\node_modules\@babel\parser\lib\index.js:12820:17)
       at JSXParserMixin.parseBlockOrModuleBlockBody (D:\Downloads\ATL-Portal\frontend\node_modules\@babel\parser\lib\index.js:13392:36)
@@ -84,98 +100,11 @@ AggregateError [ECONNREFUSED]:
       at step (D:\Downloads\ATL-Portal\frontend\node_modules\gensync\index.js:287:14)
       at D:\Downloads\ATL-Portal\frontend\node_modules\gensync\index.js:273:13
       at async.call.result.err.err (D:\Downloads\ATL-Portal\frontend\node_modules\gensync\index.js:223:11)
-[2m11:50:32 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/admin/AdminWorkLists.jsx, /src/index.css[22m
-[2m11:57:03 PM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/chat/job/tasks[39m
-AggregateError [ECONNREFUSED]: 
-    at internalConnectMultiple (node:net:1134:18)
-    at afterConnectMultiple (node:net:1715:7)
-[2m11:57:03 PM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/tasks/counts[39m
-AggregateError [ECONNREFUSED]: 
-    at internalConnectMultiple (node:net:1134:18)
-    at afterConnectMultiple (node:net:1715:7)
-[2m11:57:03 PM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/finance/projects[39m
-AggregateError [ECONNREFUSED]: 
-    at internalConnectMultiple (node:net:1134:18)
-    at afterConnectMultiple (node:net:1715:7)
-[2m11:57:33 PM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/chat/job/tasks[39m
-AggregateError [ECONNREFUSED]: 
-    at internalConnectMultiple (node:net:1134:18)
-    at afterConnectMultiple (node:net:1715:7)
-[2m11:57:33 PM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/tasks/counts[39m
-AggregateError [ECONNREFUSED]: 
-    at internalConnectMultiple (node:net:1134:18)
-    at afterConnectMultiple (node:net:1715:7)
-[2m11:57:33 PM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/finance/projects[39m
-AggregateError [ECONNREFUSED]: 
-    at internalConnectMultiple (node:net:1134:18)
-    at afterConnectMultiple (node:net:1715:7)
-[2m11:58:29 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/admin/AdminWorkLists.jsx, /src/index.css[22m
-[2m12:09:46 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/index.css, /src/components/layout/Sidebar.jsx[22m
-[2m12:10:35 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/index.css, /src/components/layout/Sidebar.jsx[22m
-[2m12:14:49 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/index.css, /src/components/layout/Sidebar.jsx[22m
-[2m12:34:20 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/user-notifications[39m
-Error: read ECONNRESET
-    at TCP.onStreamRead (node:internal/stream_base_commons:216:20)
-[2m12:34:20 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/chat/discussion/unread[39m
-Error: read ECONNRESET
-    at TCP.onStreamRead (node:internal/stream_base_commons:216:20)
-[2m12:34:20 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/courses/teacher/dashboard[39m
-Error: read ECONNRESET
-    at TCP.onStreamRead (node:internal/stream_base_commons:216:20)
-[2m12:34:20 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/user-notifications/unread-count[39m
-Error: read ECONNRESET
-    at TCP.onStreamRead (node:internal/stream_base_commons:216:20)
-[2m12:34:40 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/chat/job/tasks[39m
-AggregateError [ECONNREFUSED]: 
-    at internalConnectMultiple (node:net:1134:18)
-    at afterConnectMultiple (node:net:1715:7)
-[2m12:34:40 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/tasks/counts[39m
-AggregateError [ECONNREFUSED]: 
-    at internalConnectMultiple (node:net:1134:18)
-    at afterConnectMultiple (node:net:1715:7)
-[2m12:34:40 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/teacher/finance/projects[39m
-AggregateError [ECONNREFUSED]: 
-    at internalConnectMultiple (node:net:1134:18)
-    at afterConnectMultiple (node:net:1715:7)
-[2m12:34:51 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/chat/discussion/unread[39m
-Error: read ECONNRESET
-    at TCP.onStreamRead (node:internal/stream_base_commons:216:20)
-[2m12:35:11 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/tasks/counts[39m
-Error: read ECONNRESET
-    at TCP.onStreamRead (node:internal/stream_base_commons:216:20)
-[2m12:35:11 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/chat/job/tasks[39m
-Error: read ECONNRESET
-    at TCP.onStreamRead (node:internal/stream_base_commons:216:20)
-[2m12:35:11 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/teacher/finance/projects[39m
-Error: read ECONNRESET
-    at TCP.onStreamRead (node:internal/stream_base_commons:216:20)
-[2m12:36:47 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/index.css[22m
-[2m12:37:13 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/index.css[22m
-[2m12:41:55 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/chat/job/tasks[39m
-AggregateError [ECONNREFUSED]: 
-    at internalConnectMultiple (node:net:1134:18)
-    at afterConnectMultiple (node:net:1715:7)
-[2m12:41:55 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/tasks/counts[39m
-AggregateError [ECONNREFUSED]: 
-    at internalConnectMultiple (node:net:1134:18)
-    at afterConnectMultiple (node:net:1715:7)
-[2m12:41:55 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/teacher/finance/projects[39m
-AggregateError [ECONNREFUSED]: 
-    at internalConnectMultiple (node:net:1134:18)
-    at afterConnectMultiple (node:net:1715:7)
-[2m12:41:56 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/chat/discussion/unread[39m
-AggregateError [ECONNREFUSED]: 
-    at internalConnectMultiple (node:net:1134:18)
-    at afterConnectMultiple (node:net:1715:7)
-[2m12:41:56 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/user-notifications[39m
-AggregateError [ECONNREFUSED]: 
-    at internalConnectMultiple (node:net:1134:18)
-    at afterConnectMultiple (node:net:1715:7)
-[2m12:41:56 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/user-notifications/unread-count[39m
-AggregateError [ECONNREFUSED]: 
-    at internalConnectMultiple (node:net:1134:18)
-    at afterConnectMultiple (node:net:1715:7)
-[2m12:41:56 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/courses/teacher/dashboard[39m
-AggregateError [ECONNREFUSED]: 
-    at internalConnectMultiple (node:net:1134:18)
-    at afterConnectMultiple (node:net:1715:7)
+[2m10:44:40 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/index.css, /src/components/layout/Sidebar.jsx[22m
+[2m10:47:50 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/index.css, /src/components/shared/ChatMediaButton.jsx[22m
+[2m10:48:05 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/shared/JobChat.jsx, /src/index.css[22m
+[2m10:48:15 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/index.css[22m
+[2m10:48:37 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/index.css[22m
+[2m10:48:43 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/index.css, /src/components/shared/ChatWidget.jsx[22m
+[2m10:48:48 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/index.css[22m
+[2m10:48:58 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/index.css[22m

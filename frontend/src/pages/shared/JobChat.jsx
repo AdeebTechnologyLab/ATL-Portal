@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
+import { io } from 'socket.io-client';
 import { ArrowLeft, Briefcase, MessageCircle, Search, Send, ShieldCheck, Trash2 } from 'lucide-react';
 import { chatAPI, googleDriveAPI } from '../../services/api';
+import { getSocketURL } from '../../config/apiBaseUrl';
 import ChatMediaButton from '../../components/shared/ChatMediaButton';
 import VoiceRecorder from '../../components/shared/VoiceRecorder';
 import ChatMediaDisplay from '../../components/shared/ChatMediaDisplay';
@@ -48,6 +50,22 @@ const JobChat = () => {
         }, 5000);
         return () => clearInterval(timer);
     }, [activeJob, activeContact]);
+    // Realtime: naya message aate hi conversations list aur unread badges refresh
+    useEffect(() => {
+        const socket = io(getSocketURL(), { withCredentials: true });
+        const myId = String(user?.id || user?._id || '');
+        socket.on('new_global_message', (message) => {
+            const senderId = String(message?.sender?._id || message?.senderId || message?.sender || '');
+            const isMine = senderId === myId;
+            loadJobs(true);
+            if (!isMine && activeJob && activeContact
+                && String(message?.taskId || '') === String(activeJob._id)
+                && senderId === String(activeContact._id)) {
+                loadMessages(activeJob, activeContact);
+            }
+        });
+        return () => socket.disconnect();
+    }, [user?.id, user?._id, activeJob, activeContact]);
     useEffect(() => { endRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages]);
     useEffect(() => {
         googleDriveAPI.getStatus().then(res => setDriveStatus(res.data)).catch(() => {});
@@ -92,6 +110,8 @@ const JobChat = () => {
         setMessages([]);
     };
 
+    const totalUnread = jobs.reduce((sum, job) => sum + Number(job.totalUnread || 0), 0);
+
     const visibleJobs = jobs.filter(job => {
         const query = searchQuery.trim().toLowerCase();
         if (!query) return true;
@@ -120,7 +140,7 @@ const JobChat = () => {
                                 <p className="font-black text-gray-900 dark:text-white">Conversations</p>
                                 <p className="text-[11px] text-gray-400">{jobs.length} job thread{jobs.length === 1 ? '' : 's'}</p>
                             </div>
-                            <span className="flex h-8 min-w-8 items-center justify-center rounded-full bg-primary/10 px-2 text-xs font-black text-primary">{jobs.reduce((sum, job) => sum + Number(job.totalUnread || 0), 0)}</span>
+                            <span className={`flex h-8 min-w-8 items-center justify-center rounded-full px-2 text-xs font-black ${totalUnread > 0 ? 'bg-red-500 text-white' : 'bg-primary/10 text-primary'}`}>{totalUnread}</span>
                         </div>
                         <div className="flex items-center gap-2 rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 dark:border-slate-700 dark:bg-slate-800">
                             <Search className="h-4 w-4 text-gray-400" />
@@ -213,7 +233,7 @@ const JobChat = () => {
                             <div ref={endRef} />
                         </div>
                         <form onSubmit={send} className="flex shrink-0 gap-2 border-t border-gray-200 bg-white p-3 dark:border-slate-700 dark:bg-slate-900 sm:p-4">
-                            <ChatMediaButton onMediaUploaded={setPendingMedia} driveStatus={driveStatus} disabled={sending} />
+                            <ChatMediaButton onMediaUploaded={setPendingMedia} media={pendingMedia} driveStatus={driveStatus} disabled={sending} />
                             <VoiceRecorder onVoiceUploaded={(media) => setPendingMedia(prev => [...prev, ...media])} disabled={sending} />
                             <div className="flex min-w-0 flex-1 items-center rounded-2xl border border-gray-200 bg-gray-50 px-4 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/10 dark:border-slate-700 dark:bg-slate-800"><input value={text} onChange={e => setText(e.target.value)} placeholder="Type your message..." className="min-w-0 flex-1 border-0 bg-transparent py-3 text-sm text-gray-900 outline-none ring-0 placeholder:text-gray-400 focus:border-0 focus:ring-0 dark:text-white" /></div>
                             <button disabled={(!text.trim() && pendingMedia.length === 0) || sending} className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary text-white shadow-lg shadow-primary/20 transition-transform hover:scale-105 disabled:scale-100 disabled:opacity-40"><Send className="h-5 w-5" /></button>

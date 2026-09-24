@@ -3,12 +3,16 @@ import { Paperclip, Upload, X } from 'lucide-react';
 import { chatAPI } from '../../services/api';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const ChatMediaButton = ({ onMediaUploaded, disabled = false }) => {
+const ChatMediaButton = ({ onMediaUploaded, media, disabled = false }) => {
     const fileInputRef = useRef(null);
     const [uploading, setUploading] = useState(false);
     const [progress, setProgress] = useState(0);
     const [error, setError] = useState('');
-    const [selectedFiles, setSelectedFiles] = useState([]);
+    const [internalFiles, setInternalFiles] = useState([]);
+
+    // Controlled: jab parent `media` deta hai (jaise pendingMedia), chips usi se render hote hain —
+    // parent send ke baad state clear kare to pending previews bhi foran gayab ho jate hain.
+    const selectedFiles = media ?? internalFiles;
 
     const handleFileSelect = async (e) => {
         const files = Array.from(e.target.files || []);
@@ -33,8 +37,8 @@ const ChatMediaButton = ({ onMediaUploaded, disabled = false }) => {
                 size: Number(f.size || files[i]?.size || 0),
                 thumbnail: f.thumbnail || ''
             }));
-            setSelectedFiles(prev => {
-                const updated = [...prev, ...mediaItems];
+            setInternalFiles(prev => {
+                const updated = [...(media ?? prev), ...mediaItems];
                 onMediaUploaded(updated);
                 return updated;
             });
@@ -49,7 +53,7 @@ const ChatMediaButton = ({ onMediaUploaded, disabled = false }) => {
 
     const removeFile = (index) => {
         const updated = selectedFiles.filter((_, i) => i !== index);
-        setSelectedFiles(updated);
+        setInternalFiles(updated);
         onMediaUploaded(updated);
     };
 
