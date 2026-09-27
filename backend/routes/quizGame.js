@@ -157,26 +157,26 @@ router.post('/create', async (req, res) => {
             }]
         });
 
-        // Sab students/interns ko notification: challenge khara ho gaya hai
+        // Sab students/interns/teachers/admins ko notification: challenge khara ho gaya hai
         try {
             const opponents = await User.find({
-                role: { $in: ['student', 'intern'] },
+                role: { $in: ['student', 'intern', 'teacher', 'admin'] },
                 _id: { $ne: req.user.id }
-            }).select('_id');
-            const payload = {
-                title: '🧠 Quiz Battle Challenge!',
-                body: `${req.user.name} ne "${test.title}" ke liye challenge khara kiya hai — pehle join karo!`,
-                icon: '/logo.png',
-                url: `/${req.user.role === 'intern' ? 'intern' : 'student'}/quiz-game`,
-                data: { gameId: String(game._id), type: 'quiz_challenge' }
-            };
+            }).select('_id role');
+            const pathForRole = (role) => (['intern', 'teacher', 'admin'].includes(role) ? role : 'student');
             opponents.forEach(opponent => {
                 emitTo(req, opponent._id, 'quiz_challenge', {
                     gameId: String(game._id),
                     hostName: req.user.name,
                     testTitle: test.title
                 });
-                sendPushNotification(opponent._id.toString(), payload);
+                sendPushNotification(opponent._id.toString(), {
+                    title: '🧠 Quiz Battle Challenge!',
+                    body: `${req.user.name} ne "${test.title}" ke liye challenge khara kiya hai — pehle join karo!`,
+                    icon: '/logo.png',
+                    url: `/${pathForRole(opponent.role)}/quiz-game`,
+                    data: { gameId: String(game._id), type: 'quiz_challenge' }
+                });
             });
         } catch (notifyError) {
             console.error('Quiz challenge notification error:', notifyError.message);

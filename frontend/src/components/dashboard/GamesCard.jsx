@@ -1,9 +1,11 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import toast from 'react-hot-toast';
+import { io } from 'socket.io-client';
 import { Trophy, Crown, Medal, Zap, ChevronDown, Brain, Swords } from 'lucide-react';
 import { statsAPI, quizGameAPI } from '../../services/api';
-import { getBackendOrigin } from '../../config/apiBaseUrl';
+import { getBackendOrigin, getSocketURL } from '../../config/apiBaseUrl';
 
 const MEDAL_COLORS = ['#FFD700', '#C0C0C0', '#CD7F32'];
 const MEDAL_ICONS = [Crown, Medal, Medal];
@@ -308,6 +310,35 @@ const GamesCard = () => {
         const interval = setInterval(fetchLeaders, 5000);
         return () => clearInterval(interval);
     }, [fetchLeaders]);
+
+    // Real-time challenge notifications: jab koi game create kare
+    // to sab users ko toast dikhe — Play dabao to game join + start
+    useEffect(() => {
+        const socket = io(getSocketURL(), { withCredentials: true });
+        socket.on('quiz_challenge', ({ gameId, hostName }) => {
+            toast((t) => (
+                <div className="flex items-center gap-3">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600">
+                        <Brain className="h-4 w-4 text-white" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                        <p className="text-sm font-black text-gray-900 dark:text-white">Quiz Battle Challenge! 🧠</p>
+                        <p className="truncate text-[11px] text-gray-500 dark:text-gray-400">{hostName} ne challenge khara kiya — foran join karo!</p>
+                    </div>
+                    <button
+                        onClick={() => {
+                            toast.dismiss(t.id);
+                            navigate(`/${role}/quiz-game`, { state: { gameId } });
+                        }}
+                        className="shrink-0 rounded-xl bg-gradient-to-r from-violet-500 to-indigo-600 px-3 py-1.5 text-xs font-black text-white shadow"
+                    >
+                        Play
+                    </button>
+                </div>
+            ), { duration: 15000 });
+        });
+        return () => socket.disconnect();
+    }, [navigate, role]);
 
     // Open quiz challenges (dusre students ke waiting rooms)
     useEffect(() => {

@@ -171,6 +171,32 @@ const QuizGame = () => {
         }
     }, [location.state?.gameId]);
 
+    // Challenge notification ke Play button se aaye to foran join karo
+    // (agar room abhi bhi khali hai). Apna hi room ho to resume hota hai.
+    useEffect(() => {
+        const gameId = location.state?.gameId;
+        if (!gameId) return;
+        let cancelled = false;
+        (async () => {
+            try {
+                const res = await quizGameAPI.get(gameId);
+                const fresh = res.data.data;
+                if (cancelled) return;
+                if (fresh.status === 'waiting' && !fresh.isPlayer) {
+                    await joinGame(gameId); // join -> active -> game start
+                } else {
+                    refreshGame(gameId); // apna hi room ya active/ended game resume
+                }
+            } catch {
+                if (!cancelled) {
+                    setError('Yeh game ab available nahi — naya challenge bhejo');
+                    setFlow('subject');
+                }
+            }
+        })();
+        return () => { cancelled = true; };
+    }, [location.state?.gameId]);
+
     // Subject list
     useEffect(() => {
         if (flow !== 'subject') return;
@@ -296,7 +322,7 @@ const QuizGame = () => {
                             <Brain className="h-10 w-10" />
                         </div>
                         <h1 className="text-3xl font-black tracking-tight sm:text-4xl">Quiz Battle</h1>
-                        <p className="mt-2 text-sm text-white/60">Subject chuno, test select karo, aur kisi bhi student/intern ke sath 1v1 MCQ race khelo</p>
+                        <p className="mt-2 text-sm text-white/60">Subject chuno, test select karo, aur kisi bhi student/intern/teacher ke sath 1v1 MCQ race khelo</p>
                     </div>
 
                     {error && <div className="mb-4 rounded-xl border border-red-400/30 bg-red-500/10 px-4 py-3 text-sm font-semibold text-red-300">{error}</div>}
@@ -437,7 +463,10 @@ const QuizGame = () => {
                         {game?.testTitle} · {GAME_QUESTIONS} MCQs
                     </p>
                     <p className="mt-1 text-xs text-white/40">
-                        Doosra student/intern join karte hi game apne aap start ho jayega ({Math.floor(waitElapsed / 60)}:{String(waitElapsed % 60).padStart(2, '0')} elapsed)
+                        Doosra student/intern/teacher join karte hi game apne aap start ho jayega ({Math.floor(waitElapsed / 60)}:{String(waitElapsed % 60).padStart(2, '0')} elapsed)
+                    </p>
+                    <p className="mt-2 text-[11px] font-bold text-violet-300">
+                        Sab ko notification chala gaya hai 🔔 — Play dabate hi game start!
                     </p>
 
                     {host && (

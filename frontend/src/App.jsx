@@ -198,6 +198,7 @@ const AppRoutes = () => {
         <Route path="work-tasks" element={<AdminWorkLists />} />
         <Route path="settings" element={<Settings />} />
         <Route path="help-support" element={<HelpSupport />} />
+        <Route path="quiz-game" element={<QuizGame />} />
         {/* Assigned Admin Screens for Teachers */}
         <Route path="assigned/student_directory" element={<StudentDirectory />} />
         <Route path="assigned/teacher_directory" element={<TeacherDirectory />} />
