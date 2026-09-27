@@ -113,8 +113,9 @@ const QuizGame = () => {
             if (f !== 'playing') return;
             const next = Number(nextIndex) || (cqi + 1);
             setOpponentAnswered(false);
-            if (next >= GAME_QUESTIONS) {
-                // Dono ne aakhri answer diya -> finish
+            const total = g?.questions?.length || GAME_QUESTIONS;
+            if (next >= total) {
+                // Aakhri answer ho gaya -> result (solo aur duel dono)
                 finishGame(g?._id || gameIdRef.current);
             } else {
                 setCurrentQuestionIndex(next);
@@ -153,6 +154,13 @@ const QuizGame = () => {
             const fresh = res.data.data;
             setGame(fresh);
             gameIdRef.current = id;
+            // Solo safety: saare answers submit ho gaye (socket event miss hua) to result dikhao
+            const mine = (fresh.players || []).find(p => String(p.user) === myId);
+            if (fresh.status === 'active' && fresh.mode === 'solo' && mine &&
+                Object.keys(mine.answers || {}).length >= (fresh.questions?.length || 999)) {
+                finishGame(fresh._id);
+                return;
+            }
             if (fresh.status === 'ended') {
                 setFlow('result');
             } else if (fresh.status === 'active' && stateRef.current.flow !== 'playing') {
@@ -224,17 +232,18 @@ const QuizGame = () => {
         }
     };
 
-    const createGame = async (testId) => {
+    const createGame = async (testId, mode = 'duel') => {
         setIsBusy(true);
         setError('');
         try {
-            const res = await quizGameAPI.create(testId);
-            setGame(res.data.data);
-            gameIdRef.current = res.data.data._id;
+            const res = await quizGameAPI.create(testId, mode);
+            const created = res.data.data;
+            setGame(created);
+            gameIdRef.current = created._id;
             setCurrentQuestionIndex(0);
             setMyAnswers({});
             setSelectedTestId(testId);
-            setFlow('lobby');
+            setFlow(created.mode === 'solo' || created.status === 'active' ? 'playing' : 'lobby');
         } catch (err) {
             setError(err.response?.data?.message || 'Game create nahi hua');
         } finally {
@@ -426,20 +435,34 @@ const QuizGame = () => {
                     {error && <div className="mb-4 rounded-xl border border-red-400/30 bg-red-500/10 px-4 py-3 text-sm font-semibold text-red-300">{error}</div>}
                     <div className="space-y-3">
                         {tests.map(test => (
-                            <button
+                            <div
                                 key={test._id}
-                                onClick={() => createGame(test._id)}
-                                disabled={isBusy}
-                                className="flex w-full items-center justify-between rounded-2xl border border-white/10 bg-white/[0.05] p-5 text-left transition-all hover:border-violet-400/50 hover:bg-violet-500/10 disabled:opacity-50"
+                                className="flex w-full items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.05] p-5 transition-all hover:border-violet-400/50 hover:bg-violet-500/10"
                             >
-                                <div>
+                                <div className="min-w-0 flex-1">
                                     <p className="font-black">{test.title}</p>
                                     <p className="text-xs text-white/50">{test.questionCount} questions · {test.totalMarks} marks</p>
                                 </div>
-                                {isBusy ? <Loader2 className="h-5 w-5 animate-spin text-violet-400" /> : <Play className="h-5 w-5 text-violet-400" />}
-                            </button>
+                                <button
+                                    onClick={() => createGame(test._id, 'solo')}
+                                    disabled={isBusy}
+                                    className="flex shrink-0 items-center gap-1.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 px-4 py-2.5 text-xs font-black uppercase tracking-wider shadow-lg shadow-emerald-500/25 disabled:opacity-50"
+                                >
+                                    <Play className="h-3.5 w-3.5" /> Solo
+                                </button>
+                                <button
+                                    onClick={() => createGame(test._id, 'duel')}
+                                    disabled={isBusy}
+                                    className="flex shrink-0 items-center gap-1.5 rounded-xl bg-gradient-to-r from-violet-500 to-indigo-600 px-4 py-2.5 text-xs font-black uppercase tracking-wider shadow-lg shadow-violet-500/25 disabled:opacity-50"
+                                >
+                                    <Swords className="h-3.5 w-3.5" /> 1v1
+                                </button>
+                            </div>
                         ))}
                     </div>
+                    <p className="mt-4 text-center text-xs text-white/40">
+                        <span className="font-bold text-emerald-300">Solo</span> = akele practice karo (foran start) · <span className="font-bold text-violet-300">1v1</span> = challenge bhejo, doosra join kare to race shuru
+                    </p>
                 </div>
             </div>
         );
@@ -507,6 +530,7 @@ const QuizGame = () => {
 
     /* ------------------------------ RESULT ------------------------------ */
     if (flow === 'result' && game) {
+        const soloMode = game.mode === 'solo';
         const iWon = game.isTie ? false : String(game.winner) === myId;
         return (
             <div className="min-h-screen bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-950 px-4 py-8 text-white">
@@ -517,12 +541,12 @@ const QuizGame = () => {
                         className="mb-6 text-center"
                     >
                         <div className={`mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-3xl shadow-2xl ${
-                            game.isTie ? 'bg-white/10' : iWon ? 'bg-gradient-to-br from-amber-400 to-orange-500 shadow-amber-500/30' : 'bg-gradient-to-br from-slate-600 to-slate-700'
+                            soloMode ? 'bg-gradient-to-br from-emerald-400 to-teal-600 shadow-emerald-500/30' : game.isTie ? 'bg-white/10' : iWon ? 'bg-gradient-to-br from-amber-400 to-orange-500 shadow-amber-500/30' : 'bg-gradient-to-br from-slate-600 to-slate-700'
                         }`}>
-                            {game.isTie ? <Swords className="h-10 w-10" /> : iWon ? <Trophy className="h-10 w-10" /> : <Target className="h-10 w-10" />}
+                            {soloMode ? <Brain className="h-10 w-10" /> : game.isTie ? <Swords className="h-10 w-10" /> : iWon ? <Trophy className="h-10 w-10" /> : <Target className="h-10 w-10" />}
                         </div>
                         <h1 className="text-3xl font-black">
-                            {game.isTie ? "It's a Tie!" : iWon ? 'You Won! 🎉' : 'Better luck next time'}
+                            {soloMode ? 'Practice Complete!' : game.isTie ? "It's a Tie!" : iWon ? 'You Won! 🎉' : 'Better luck next time'}
                         </h1>
                         <p className="mt-1 text-sm text-white/60">{game.testTitle}</p>
                     </motion.div>
@@ -667,7 +691,11 @@ const QuizGame = () => {
                         {/* Status line */}
                         <div className="mt-5 text-center text-xs font-bold">
                             {mySelected !== undefined ? (
-                                opponentAnswered || totalPlayed >= 2 ? (
+                                game.mode === 'solo' ? (
+                                    <span className="text-emerald-400 flex items-center justify-center gap-1.5">
+                                        <CheckCircle2 className="h-3.5 w-3.5" /> Answer record ho gaya — Solo mode mein aakhri question ke baad result khud aa jayega
+                                    </span>
+                                ) : opponentAnswered || totalPlayed >= 2 ? (
                                     <span className="text-emerald-400">Dono ne answer kar diya — next aa raha hai…</span>
                                 ) : (
                                     <span className="text-amber-300 flex items-center justify-center gap-1.5">
@@ -675,7 +703,7 @@ const QuizGame = () => {
                                     </span>
                                 )
                             ) : (
-                                <span className="text-white/40">Answer chuno — dono select karenge to next question apne aap aayega</span>
+                                <span className="text-white/40">{game.mode === 'solo' ? 'Answer chuno — aakhri question ke baad result dikhega' : 'Answer chuno — dono select karenge to next question apne aap aayega'}</span>
                             )}
                         </div>
                     </motion.div>

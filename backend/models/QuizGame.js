@@ -58,6 +58,12 @@ const quizGameSchema = new mongoose.Schema({
         options: [String],
         correctOption: Number
     }],
+    // 'solo' = practice mode (turant start, khud finish), 'duel' = 1v1 race
+    mode: {
+        type: String,
+        enum: ['solo', 'duel'],
+        default: 'duel'
+    },
     status: {
         type: String,
         enum: ['waiting', 'active', 'ended'],

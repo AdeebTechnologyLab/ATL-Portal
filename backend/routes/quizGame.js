@@ -125,8 +125,9 @@ router.get('/tests/:courseId', async (req, res) => {
 // @desc    Create a waiting room (player 1)
 router.post('/create', async (req, res) => {
     try {
-        const { testId } = req.body;
+        const { testId, mode } = req.body;
         if (!testId) return res.status(400).json({ success: false, message: 'Test is required' });
+        const isSolo = mode === 'solo';
 
         // Pehle koi purana waiting/active game nahi hona chahiye
         const existing = await QuizGame.findOne({
@@ -148,7 +149,8 @@ router.post('/create', async (req, res) => {
             test: test._id,
             testTitle: test.title,
             questions,
-            status: 'waiting',
+            mode: isSolo ? 'solo' : 'duel',
+            status: isSolo ? 'active' : 'waiting',
             players: [{
                 user: req.user.id,
                 role: req.user.role,
@@ -157,8 +159,10 @@ router.post('/create', async (req, res) => {
             }]
         });
 
-        // Sab students/interns/teachers/admins ko notification: challenge khara ho gaya hai
-        try {
+        // Solo practice: kisi ko notification nahi, koi waiting nahi
+        if (!isSolo) {
+            // Sab students/interns/teachers ko notification: challenge khara ho gaya hai
+            try {
             const opponents = await User.find({
                 role: { $in: ['student', 'intern', 'teacher', 'admin'] },
                 _id: { $ne: req.user.id }
@@ -178,8 +182,9 @@ router.post('/create', async (req, res) => {
                     data: { gameId: String(game._id), type: 'quiz_challenge' }
                 });
             });
-        } catch (notifyError) {
-            console.error('Quiz challenge notification error:', notifyError.message);
+            } catch (notifyError) {
+                console.error('Quiz challenge notification error:', notifyError.message);
+            }
         }
 
         res.status(201).json({ success: true, data: presentGame(game, req.user.id) });
