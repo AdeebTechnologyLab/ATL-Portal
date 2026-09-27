@@ -127,13 +127,20 @@ const QuizGame = () => {
             if (id) refreshGame(id);
         };
 
+        // Player 2 join kare to turant socket room join karo
+        const onGameJoined = ({ gameId, room }) => {
+            socketRef.current?.emit('join_quiz_game', room);
+        };
+
         socket.on('quiz_game_opponent_answered', onOpponentAnswered);
         socket.on('quiz_game_next', onNext);
         socket.on('quiz_game_ended', onEnded);
+        socket.on('quiz_game_joined', onGameJoined);
         return () => {
             socket.off('quiz_game_opponent_answered', onOpponentAnswered);
             socket.off('quiz_game_next', onNext);
             socket.off('quiz_game_ended', onEnded);
+            socket.off('quiz_game_joined', onGameJoined);
         };
     }, []);
 

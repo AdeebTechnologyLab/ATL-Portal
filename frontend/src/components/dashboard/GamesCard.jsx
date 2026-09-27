@@ -293,7 +293,7 @@ const GamesCard = () => {
     const [open, setOpen] = useState(false);
     const [openRooms, setOpenRooms] = useState([]);
     const navigate = useNavigate();
-    const { role } = useSelector((state) => state.auth);
+    const { role, user } = useSelector((state) => state.auth);
 
     const fetchLeaders = useCallback(async () => {
         try {
@@ -315,6 +315,10 @@ const GamesCard = () => {
     // to sab users ko toast dikhe — Play dabao to game join + start
     useEffect(() => {
         const socket = io(getSocketURL(), { withCredentials: true });
+        // Personal room join karo taake quiz_challenge events pohanchen
+        const userId = user?.id || user?._id;
+        if (userId) socket.emit('join_chat', String(userId));
+
         socket.on('quiz_challenge', ({ gameId, hostName }) => {
             toast((t) => (
                 <div className="flex items-center gap-3">
@@ -322,7 +326,7 @@ const GamesCard = () => {
                         <Brain className="h-4 w-4 text-white" />
                     </div>
                     <div className="min-w-0 flex-1">
-                        <p className="text-sm font-black text-gray-900 dark:text-white">Quiz Battle Challenge! 🧠</p>
+                        <p className="text-sm font-black text-gray-900 dark:text-white">Quiz Battle Challenge!</p>
                         <p className="truncate text-[11px] text-gray-500 dark:text-gray-400">{hostName} ne challenge khara kiya — foran join karo!</p>
                     </div>
                     <button
@@ -338,7 +342,7 @@ const GamesCard = () => {
             ), { duration: 15000 });
         });
         return () => socket.disconnect();
-    }, [navigate, role]);
+    }, [navigate, role, user]);
 
     // Open quiz challenges (dusre students ke waiting rooms)
     useEffect(() => {
