@@ -8,7 +8,10 @@ router.use(protect);
 
 const isAdmin = (user) => user.role === 'admin';
 const isTeacher = (user) => user.role === 'teacher';
-const isListOwner = (list, user) => String(list.createdBy) === String(user._id);
+const isListOwner = (list, user) => {
+    const createdById = list.createdBy?._id || list.createdBy;
+    return String(createdById) === String(user._id);
+};
 const canManageList = (list, user) => isAdmin(user) || isListOwner(list, user);
 
 const canAccessList = (list, user) => isAdmin(user)
