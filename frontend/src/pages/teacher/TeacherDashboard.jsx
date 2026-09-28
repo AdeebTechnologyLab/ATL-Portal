@@ -51,7 +51,7 @@ const TeacherDashboard = () => {
     const [liveClassModalType, setLiveClassModalType] = useState('google'); // 'google' | 'adeeb'
     const [liveClassForm, setLiveClassForm] = useState({
         title: '',
-        link: '',
+        link: 'https://meet.google.com/ayf-xaxd-ixz',
         description: '',
         visibility: 'all',
         autoEndMinutes: '',
@@ -175,7 +175,7 @@ const TeacherDashboard = () => {
                 startAt: liveClassForm.startAt || null
             });
             setShowLiveClassModal(false);
-            setLiveClassForm({ title: '', link: '', description: '', visibility: 'all', autoEndMinutes: '', startAt: '' });
+            setLiveClassForm({ title: '', link: 'https://meet.google.com/ayf-xaxd-ixz', description: '', visibility: 'all', autoEndMinutes: '', startAt: '' });
             fetchActiveLiveClasses();
         } catch (error) {
             console.error('Error creating live class:', error);
@@ -309,7 +309,7 @@ const TeacherDashboard = () => {
                         <div className="flex gap-2 sm:gap-3 flex-wrap">
                             <button
                                 onClick={() => {
-                                    setLiveClassForm({ title: '', link: '', description: '', visibility: 'all', autoEndMinutes: '', startAt: '' });
+                                    setLiveClassForm({ title: '', link: 'https://meet.google.com/ayf-xaxd-ixz', description: '', visibility: 'all', autoEndMinutes: '', startAt: '' });
                                     setLiveClassModalType('google');
                                     setShowLiveClassModal(true);
                                 }}
@@ -320,7 +320,7 @@ const TeacherDashboard = () => {
                             </button>
                             <button
                                 onClick={() => {
-                                    setLiveClassForm({ title: '', link: '', description: '', visibility: 'all', autoEndMinutes: '', startAt: '' });
+                                    setLiveClassForm({ title: '', link: 'https://meet.google.com/ayf-xaxd-ixz', description: '', visibility: 'all', autoEndMinutes: '', startAt: '' });
                                     setLiveClassModalType('adeeb');
                                     setShowLiveClassModal(true);
                                 }}

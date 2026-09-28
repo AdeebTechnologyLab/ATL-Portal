@@ -52,7 +52,7 @@ const TeacherCourses = ({ isDashboard = false, initialSearchMode = 'courses' }) 
     const [liveClassModalType, setLiveClassModalType] = useState('google'); // 'google' | 'adeeb'
     const [liveClassForm, setLiveClassForm] = useState({
         title: '',
-        link: '',
+        link: 'https://meet.google.com/ayf-xaxd-ixz',
         description: '',
         visibility: 'all',
         autoEndMinutes: '',
@@ -147,7 +147,7 @@ const TeacherCourses = ({ isDashboard = false, initialSearchMode = 'courses' }) 
                 startAt: liveClassForm.startAt || null
             });
             setShowLiveClassModal(false);
-            setLiveClassForm({ title: '', link: '', description: '', visibility: 'all', autoEndMinutes: '', startAt: '' });
+            setLiveClassForm({ title: '', link: 'https://meet.google.com/ayf-xaxd-ixz', description: '', visibility: 'all', autoEndMinutes: '', startAt: '' });
             fetchActiveLiveClasses();
         } catch (error) {
             console.error('Error creating live class:', error);
@@ -352,7 +352,7 @@ const TeacherCourses = ({ isDashboard = false, initialSearchMode = 'courses' }) 
                     <div className="flex items-center gap-2 flex-wrap">
                         <button
                             onClick={() => {
-                                setLiveClassForm({ title: '', link: '', description: '', visibility: 'all', autoEndMinutes: '' });
+                                setLiveClassForm({ title: '', link: 'https://meet.google.com/ayf-xaxd-ixz', description: '', visibility: 'all', autoEndMinutes: '' });
                                 setLiveClassModalType('google');
                                 setShowLiveClassModal(true);
                             }}
@@ -364,7 +364,7 @@ const TeacherCourses = ({ isDashboard = false, initialSearchMode = 'courses' }) 
                         </button>
                         <button
                             onClick={() => {
-                                setLiveClassForm({ title: '', link: '', description: '', visibility: 'all', autoEndMinutes: '' });
+                                setLiveClassForm({ title: '', link: 'https://meet.google.com/ayf-xaxd-ixz', description: '', visibility: 'all', autoEndMinutes: '' });
                                 setLiveClassModalType('adeeb');
                                 setShowLiveClassModal(true);
                             }}
@@ -778,9 +778,9 @@ const TeacherCourses = ({ isDashboard = false, initialSearchMode = 'courses' }) 
                         <motion.div
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
-                            className="bg-white rounded-2xl p-6 w-full max-w-xl"
+                            className="bg-white rounded-2xl w-full max-w-xl max-h-[90vh] flex flex-col overflow-hidden"
                         >
-                            <div className="flex items-center justify-between mb-6">
+                            <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-gray-100 shrink-0">
                                 <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2">
                                     {liveClassModalType === 'google' ? <Video className="w-6 h-6 text-red-500" /> : <Users className="w-6 h-6 text-primary" />}
                                     {liveClassModalType === 'google' ? 'Google Meet Link' : 'Start Adeeb Meet'}
@@ -793,7 +793,8 @@ const TeacherCourses = ({ isDashboard = false, initialSearchMode = 'courses' }) 
                                 </button>
                             </div>
 
-                            <form onSubmit={handleCreateLiveClass} className="space-y-4">
+                            <form onSubmit={handleCreateLiveClass} className="flex flex-col flex-1 overflow-hidden">
+                            <div className="overflow-y-auto flex-1 px-6 py-4 space-y-4">
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1">
                                         Class Title *
@@ -917,15 +918,16 @@ const TeacherCourses = ({ isDashboard = false, initialSearchMode = 'courses' }) 
                                                 className={`px-4 py-3 rounded-xl font-medium transition-all ${liveClassForm.visibility === opt.value
                                                     ? 'bg-primary text-white'
                                                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                                                    }`}
+                                                }`}
                                             >
                                                 {opt.label}
                                             </button>
                                         ))}
                                     </div>
                                 </div>
+                            </div>
 
-                                <div className="flex gap-3 pt-4">
+                            <div className="flex gap-3 px-6 py-4 border-t border-gray-100 shrink-0">
                                     <button
                                         type="button"
                                         onClick={() => setShowLiveClassModal(false)}
