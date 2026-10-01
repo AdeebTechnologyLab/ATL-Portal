@@ -182,9 +182,15 @@ userSchema.index({ lastSeen: -1 });
 
 // Match password
 userSchema.methods.matchPassword = async function (enteredPassword) {
-    // Plain text comparison
+    if (!enteredPassword || !this.password) return false;
+
+    // Legacy bcrypt hashes (old seed scripts) vs current plain-text storage
+    const looksBcrypt = typeof this.password === 'string' && this.password.startsWith('$2');
+    if (looksBcrypt) {
+        return bcrypt.compare(String(enteredPassword), this.password);
+    }
+    // Plain text comparison (current system behavior)
     return enteredPassword === this.password;
-    // return await bcrypt.compare(enteredPassword, this.password);
 };
 
 // Generate JWT token

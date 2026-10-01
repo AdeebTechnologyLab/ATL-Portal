@@ -77,7 +77,6 @@ const Login = () => {
             const response = await authAPI.login({
                 email: formData.email,
                 password: formData.password,
-                role: formData.role,
                 rememberMe: formData.rememberMe
             });
 

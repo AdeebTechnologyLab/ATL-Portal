@@ -12,6 +12,29 @@ const Assignment = require('../models/Assignment');
 const DailyTask = require('../models/DailyTask');
 const Test = require('../models/Test');
 
+// Certificate is hidden from the student/teacher portal until passoutDate arrives.
+// Empty/missing passoutDate = visible immediately (backward compatible).
+const isPassoutDateReached = (passoutDate) => {
+    if (!passoutDate) return true;
+    const raw = String(passoutDate).trim();
+    if (!raw) return true;
+
+    let releaseDay;
+    const dateOnly = raw.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (dateOnly) {
+        // Local calendar day (avoid UTC timezone off-by-one)
+        releaseDay = new Date(Number(dateOnly[1]), Number(dateOnly[2]) - 1, Number(dateOnly[3]));
+    } else {
+        const parsed = new Date(raw);
+        if (Number.isNaN(parsed.getTime())) return true;
+        releaseDay = new Date(parsed.getFullYear(), parsed.getMonth(), parsed.getDate());
+    }
+
+    const now = new Date();
+    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    return releaseDay.getTime() <= startOfToday.getTime();
+};
+
 // @route   GET /api/certificates/my
 // @desc    Get logged-in user's certificates
 // @access  Private
@@ -21,8 +44,12 @@ router.get('/my', protect, async (req, res) => {
             .populate('course', 'title description location')
             .sort('-issuedAt');
 
+        // Hide certificates until the admin-selected passout date arrives
+        const visibleCertificates = certificates.filter(cert => isPassoutDateReached(cert.passoutDate));
+
         // Auto-sync: if certificate exists but enrollment is missing or not completed, fix it
-        for (const cert of certificates) {
+        // Only for certificates the user can currently see (passout date reached)
+        for (const cert of visibleCertificates) {
             if (cert.course) {
                 const existing = await Enrollment.findOne({ user: req.user.id, course: cert.course._id });
                 if (!existing) {
@@ -41,7 +68,7 @@ router.get('/my', protect, async (req, res) => {
             }
         }
 
-        res.json({ success: true, certificates });
+        res.json({ success: true, certificates: visibleCertificates });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }

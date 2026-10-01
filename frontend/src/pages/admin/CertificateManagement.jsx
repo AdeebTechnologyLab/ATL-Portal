@@ -1086,6 +1086,9 @@ const CertificateManagement = () => {
                                     onChange={(e) => setEditData({ ...editData, passoutDate: e.target.value })}
                                     className="w-full px-4 py-3 bg-gray-50 border border-transparent focus:border-primary focus:bg-white rounded-2xl transition-all outline-none font-bold text-sm"
                                 />
+                                <p className="text-[10px] text-gray-400 font-medium ml-1 leading-snug">
+                                    Certificate will only appear to the student after this date.
+                                </p>
                             </div>
                             <div className="sm:col-span-2 space-y-1.5">
                                 <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Certificate Link (Optional)</label>
@@ -1181,6 +1184,9 @@ const CertificateManagement = () => {
                                     onChange={(e) => setEditCertData({ ...editCertData, passoutDate: e.target.value })}
                                     className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 outline-none font-bold"
                                 />
+                                <p className="text-[11px] text-gray-400 mt-1 ml-1">
+                                    Student will see this certificate only after this date.
+                                </p>
                             </div>
                             <div>
                                 <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5 ml-1">Certificate Link</label>
@@ -1311,6 +1317,9 @@ const CertificateManagement = () => {
                                     onChange={(e) => setTeacherCertData({ ...teacherCertData, passoutDate: e.target.value })}
                                     className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 outline-none font-bold"
                                 />
+                                <p className="text-[11px] text-gray-400 mt-1">
+                                    Teacher will see this certificate only after this date.
+                                </p>
                             </div>
                             <div>
                                 <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5 ml-1">Certificate Link (Cloudinary/Drive)</label>

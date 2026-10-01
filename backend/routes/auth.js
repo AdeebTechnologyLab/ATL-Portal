@@ -263,7 +263,7 @@ router.post('/register', uploadRegistration.fields([
 // @access  Public
 router.post('/login', async (req, res) => {
     try {
-        const { email, password, rememberMe } = req.body;
+        const { email, password, rememberMe, preferredRole } = req.body;
 
         // Validate
         if (!email || !password) {
@@ -303,8 +303,22 @@ router.post('/login', async (req, res) => {
             });
         }
 
-        // Prioritize 'job' role if available, otherwise pick the first matching account
-        let user = matchedUsers.find(u => u.role === 'job') || matchedUsers[0];
+        // Role priority: preferredRole (if valid & matched) > admin > teacher > student > intern > job
+        // Admin must never lose to other roles when the same email/password works for multiple accounts.
+        const rolePriority = ['admin', 'teacher', 'student', 'intern', 'job'];
+        const requestedRole = typeof preferredRole === 'string' ? preferredRole.trim().toLowerCase() : '';
+        const requestedMatch = requestedRole
+            ? matchedUsers.find(u => u.role === requestedRole)
+            : null;
+
+        let user = requestedMatch
+            || matchedUsers.find(u => u.role === 'admin')
+            || matchedUsers.find(u => u.role === 'teacher')
+            || matchedUsers.find(u => u.role === 'student')
+            || matchedUsers.find(u => u.role === 'intern')
+            || matchedUsers.find(u => u.role === 'job')
+            || matchedUsers.find(u => rolePriority.includes(u.role))
+            || matchedUsers[0];
 
         if (!user) {
             return res.status(401).json({ success: false, message: 'Invalid credentials' });
