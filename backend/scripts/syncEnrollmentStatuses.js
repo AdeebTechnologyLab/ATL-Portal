@@ -14,6 +14,7 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 
 const { syncAllCertificateEnrollments } = require('../utils/enrollmentStatusSync');
+const { updateEnrollmentStatus } = require('./generateInstallments');
 
 const run = async () => {
     const mongoUri = process.env.MONGODB_URI || process.env.MONGO_URI;
@@ -27,6 +28,11 @@ const run = async () => {
     console.log('✅ Connected\n');
 
     const changes = await syncAllCertificateEnrollments();
+
+    // isActive bhi dobara compute karo (fee/overdue ke hisab se) —
+    // pehle wale galat logic ne passoutDate tak wale students ko lock kar diya tha
+    console.log('\n🔄 Recomputing enrollment isActive from fee status...');
+    await updateEnrollmentStatus();
 
     const completed = changes.filter(c => c.action === 'completed');
     const reopened = changes.filter(c => c.action === 'reopened');

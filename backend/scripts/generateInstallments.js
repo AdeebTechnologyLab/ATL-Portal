@@ -17,6 +17,7 @@ const Certificate = require('../models/Certificate');
 const Enrollment = require('../models/Enrollment');
 const moment = require('moment-timezone');
 const { sendPushNotification } = require('../utils/pushHelper');
+const { isPassoutDateReached } = require('../utils/enrollmentStatusSync');
 
 /**
  * Generate installments for all eligible enrollments
@@ -58,8 +59,14 @@ const generateInstallments = async (io) => {
                 });
 
                 if (hasCertificate) {
-                    console.log(`✅ User ${fee.user?.name || fee.user} has certificate for ${fee.course?.title} - skipping`);
-                    continue;
+                    // Fee generation sirf tab rukegi jab certificate RELEASE ho
+                    // jaye (passoutDate aa jaye). PassoutDate tak monthly challan
+                    // pehle ki tarah generate hoti rahegi.
+                    if (isPassoutDateReached(hasCertificate.passoutDate)) {
+                        console.log(`✅ User ${fee.user?.name || fee.user} has released certificate for ${fee.course?.title} - skipping`);
+                        continue;
+                    }
+                    console.log(`🎓 User ${fee.user?.name || fee.user} certificate passoutDate abhi door hai - fee generation jaari rahegi (${fee.course?.title})`);
                 }
 
                 // Check if first installment is verified
@@ -193,14 +200,28 @@ const updateEnrollmentStatus = async () => {
                 });
 
                 if (hasCertificate) {
-                    // User has certificate, mark enrollment as completed
-                    if (enrollment.status !== 'completed') {
-                        enrollment.status = 'completed';
-                        enrollment.isActive = false;
+                    // Certificate released (passoutDate aa gaya / khali hai) tab hi
+                    // enrollment complete hogi. PassoutDate tak student enrolled
+                    // rahega — attendance/assignments/tests/fee sab chalte rahenge.
+                    const released = isPassoutDateReached(hasCertificate.passoutDate);
+                    if (released) {
+                        if (enrollment.status !== 'completed') {
+                            enrollment.status = 'completed';
+                            enrollment.isActive = false;
+                            await enrollment.save();
+                            updatedCount++;
+                        }
+                        continue;
+                    }
+                    // PassoutDate abhi door hai: agar kisi ne ghalati se completed
+                    // kar diya ho to wapas enrolled karo, phir normal fee logic chalao
+                    if (enrollment.status === 'completed') {
+                        enrollment.status = 'enrolled';
+                        enrollment.completedAt = null;
                         await enrollment.save();
                         updatedCount++;
                     }
-                    continue;
+                    // fall through — niche wala normal fee/isActive logic chalta rahega
                 }
 
                 // Check first installment
