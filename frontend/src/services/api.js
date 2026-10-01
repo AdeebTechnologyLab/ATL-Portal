@@ -376,6 +376,7 @@ export const registrationPageAPI = {
 
 export const adminWorkTaskAPI = {
     getAll: () => api.get('/admin-work-tasks'),
+    getCounts: () => api.get('/admin-work-tasks/counts'),
     create: (data) => api.post('/admin-work-tasks', data),
     update: (id, data) => api.put(`/admin-work-tasks/${id}`, data),
     delete: (id) => api.delete(`/admin-work-tasks/${id}`),

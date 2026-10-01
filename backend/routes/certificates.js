@@ -11,29 +11,16 @@ const Fee = require('../models/Fee');
 const Assignment = require('../models/Assignment');
 const DailyTask = require('../models/DailyTask');
 const Test = require('../models/Test');
+const {
+    isPassoutDateReached,
+    syncEnrollmentStatusesForCertificates
+} = require('../utils/enrollmentStatusSync');
+
+// NOTE: isPassoutDateReached helper ab utils/enrollmentStatusSync.js se aata hai
 
 // Certificate is hidden from the student/teacher portal until passoutDate arrives.
 // Empty/missing passoutDate = visible immediately (backward compatible).
-const isPassoutDateReached = (passoutDate) => {
-    if (!passoutDate) return true;
-    const raw = String(passoutDate).trim();
-    if (!raw) return true;
-
-    let releaseDay;
-    const dateOnly = raw.match(/^(\d{4})-(\d{2})-(\d{2})/);
-    if (dateOnly) {
-        // Local calendar day (avoid UTC timezone off-by-one)
-        releaseDay = new Date(Number(dateOnly[1]), Number(dateOnly[2]) - 1, Number(dateOnly[3]));
-    } else {
-        const parsed = new Date(raw);
-        if (Number.isNaN(parsed.getTime())) return true;
-        releaseDay = new Date(parsed.getFullYear(), parsed.getMonth(), parsed.getDate());
-    }
-
-    const now = new Date();
-    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    return releaseDay.getTime() <= startOfToday.getTime();
-};
+// (isPassoutDateReached helper ab utils/enrollmentStatusSync.js se aata hai)
 
 // @route   GET /api/certificates/my
 // @desc    Get logged-in user's certificates
@@ -44,23 +31,22 @@ router.get('/my', protect, async (req, res) => {
             .populate('course', 'title description location')
             .sort('-issuedAt');
 
-        // Course completion / enrollment behaves exactly as after normal verification,
-        // even while the certificate itself is still hidden until passoutDate.
+        // Course completion sirf passoutDate aane par hoti hai — is se pehle
+        // enrollment 'enrolled' rehti hai taake live classes / logs chalte rahein.
         for (const cert of certificates) {
             if (cert.course) {
                 const existing = await Enrollment.findOne({ user: req.user.id, course: cert.course._id });
                 if (!existing) {
+                    const released = isPassoutDateReached(cert.passoutDate);
                     await Enrollment.create({
                         user: req.user.id,
                         course: cert.course._id,
-                        status: 'completed',
+                        status: released ? 'completed' : 'enrolled',
                         registrationDate: cert.issuedAt || new Date(),
-                        completedAt: cert.issuedAt || new Date()
+                        completedAt: released ? (cert.issuedAt || new Date()) : null
                     });
-                } else if (existing.status !== 'completed') {
-                    existing.status = 'completed';
-                    existing.completedAt = cert.issuedAt || new Date();
-                    await existing.save();
+                } else {
+                    await syncEnrollmentStatusesForCertificates([cert]);
                 }
             }
         }
@@ -179,11 +165,9 @@ router.put('/requests/:id/approve', protect, requireScreenAccess('certificate_ma
         request.status = 'issued';
         await request.save();
 
-        // Update enrollment status
-        await Enrollment.findOneAndUpdate(
-            { user: request.user, course: request.course },
-            { status: 'completed', completedAt: new Date() }
-        );
+        // Enrollment passoutDate tak 'enrolled' rahegi — foran complete nahi hogi
+        const certForSync = { user: request.user, course: request.course, passoutDate: certificate.passoutDate, issuedAt: certificate.issuedAt };
+        await syncEnrollmentStatusesForCertificates([certForSync]);
 
         res.json({ success: true, certificate });
     } catch (error) {
@@ -370,11 +354,9 @@ router.post('/issue', protect, requireScreenAccess('certificate_management'), as
             issuedBy: req.user.id
         });
 
-        // Update enrollment status to completed
-        await Enrollment.findOneAndUpdate(
-            { user: userId, course: courseId },
-            { status: 'completed', completedAt: new Date() }
-        );
+        // Enrollment passoutDate tak 'enrolled' rahegi — foran complete nahi hogi
+        const certForSync = { user: userId, course: courseId, passoutDate: certificate.passoutDate, issuedAt: certificate.issuedAt };
+        await syncEnrollmentStatusesForCertificates([certForSync]);
 
         res.status(201).json({ success: true, certificate });
     } catch (error) {
@@ -402,6 +384,16 @@ router.put('/:id', protect, requireScreenAccess('certificate_management'), async
         if (certificateLink !== undefined) certificate.certificateLink = certificateLink;
 
         await certificate.save();
+
+        // PassoutDate change hone par enrollment status bhi sync karo
+        if (certificate.course) {
+            await syncEnrollmentStatusesForCertificates([{
+                user: certificate.user,
+                course: certificate.course,
+                passoutDate: certificate.passoutDate,
+                issuedAt: certificate.issuedAt
+            }]);
+        }
 
         res.json({ success: true, certificate });
     } catch (error) {

@@ -384,14 +384,17 @@ router.get('/role/:role', protect, async (req, res) => {
             },
 
             // 2b. If teacher, also lookup certificates
-            ...(isTeacher ? [{
+            // (non-teacher users ke liye bhi certificates lookup karenge — sirf
+            // passoutDate nikalne ke liye taake passoutDate tak user 'active' dikhe)
+            {
                 $lookup: {
                     from: 'certificates',
                     localField: '_id',
                     foreignField: 'user',
                     as: 'certificateData'
                 }
-            }, {
+            },
+            ...(isTeacher ? [{
                 $lookup: {
                     from: 'paidtasks',
                     localField: '_id',
@@ -469,7 +472,27 @@ router.get('/role/:role', protect, async (req, res) => {
                                 cond: { $in: ['$$task.status', ['open', 'assigned', 'submitted']] }
                             }
                         }
-                    } : 0
+                    } : 0,
+                    // Certificate passoutDate info: admin UI passoutDate tak user ko
+                    // 'active/under certification' dikhati hai (certificate release ke baad completed)
+                    certificatesWithFuturePassout: {
+                        $size: {
+                            $filter: {
+                                input: '$certificateData',
+                                as: 'cert',
+                                cond: {
+                                    $and: [
+                                        { $ne: ['$$cert.course', null] },
+                                        { $ne: ['$$cert.passoutDate', null] },
+                                        { $gt: [
+                                            { $dateFromString: { dateString: { $substrCP: ['$$cert.passoutDate', 0, 10] }, format: '%Y-%m-%d', onError: null, onNull: null } },
+                                            { $dateTrunc: { date: '$$NOW', unit: 'day' } }
+                                        ] }
+                                    ]
+                                }
+                            }
+                        }
+                    }
                 }
             },
 

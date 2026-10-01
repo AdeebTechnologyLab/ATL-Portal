@@ -56,6 +56,20 @@ const getList = (id) => AdminWorkTask.findById(id)
     .populate('createdBy', 'name email rollNo role photo')
     .populate('items.createdBy', 'name rollNo photo');
 
+// Sidebar counters realtime update karne ke liye: list ke sab members
+// (owner + shared users) ko socket event bhejo
+const emitWorkTaskUpdate = (req, list) => {
+    try {
+        const io = req.app.get('io');
+        if (!io || !list) return;
+        const userIds = new Set([String(list.createdBy?._id || list.createdBy)]);
+        (list.sharedWith || []).forEach(member => userIds.add(String(member._id || member)));
+        userIds.delete('undefined');
+        userIds.delete('null');
+        userIds.forEach(id => io.to(id).emit('work_task_updated', { listId: String(list._id) }));
+    } catch { /* socket optional */ }
+};
+
 router.get('/', async (req, res) => {
     try {
         let query;
@@ -106,6 +120,31 @@ router.post('/', async (req, res) => {
     }
 });
 
+// @route   GET /api/admin-work-tasks/counts
+// @desc    Sidebar counter: user ke lists mein kitne tasks hain (total + pending)
+router.get('/counts', async (req, res) => {
+    try {
+        let query;
+        if (isAdmin(req.user)) {
+            query = {};
+        } else {
+            const sameRollUsers = await User.find({ rollNo: req.user.rollNo }).select('_id');
+            const userIds = sameRollUsers.map(u => u._id);
+            query = { $or: [{ sharedWith: { $in: userIds } }, { createdBy: req.user._id }] };
+        }
+        const lists = await AdminWorkTask.find(query).select('items.status');
+        let total = 0;
+        let pending = 0;
+        lists.forEach(list => (list.items || []).forEach(item => {
+            total += 1;
+            if (item.status !== 'completed') pending += 1;
+        }));
+        res.json({ success: true, data: { total, pending, lists: lists.length } });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+});
+
 router.post('/:id/share', async (req, res) => {
     try {
         const list = await getList(req.params.id);
@@ -149,6 +188,7 @@ router.post('/:id/items', async (req, res) => {
         list.updatedBy = req.user.id;
         list.markModified('items');
         await list.save();
+        emitWorkTaskUpdate(req, list);
         res.status(201).json({ success: true, data: presentList(list, req.user) });
     } catch (error) {
         res.status(400).json({ success: false, message: error.message });
@@ -176,6 +216,7 @@ router.put('/:id/items/:itemId', async (req, res) => {
         list.updatedBy = req.user.id;
         list.markModified('items');
         await list.save();
+        emitWorkTaskUpdate(req, list);
         res.json({ success: true, data: presentList(list, req.user) });
     } catch (error) {
         res.status(400).json({ success: false, message: error.message });
@@ -194,6 +235,7 @@ router.delete('/:id/items/:itemId', async (req, res) => {
         list.updatedBy = req.user.id;
         list.markModified('items');
         await list.save();
+        emitWorkTaskUpdate(req, list);
         res.json({ success: true, data: presentList(list, req.user) });
     } catch (error) {
         res.status(400).json({ success: false, message: error.message });

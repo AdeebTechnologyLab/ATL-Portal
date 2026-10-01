@@ -484,11 +484,18 @@ const StudentsManagement = () => {
     };
     // ----------------------------------------------------------
 
+    // User ke paas kitni certificates ka passoutDate abhi door hai
+    // (course-linked) — passoutDate tak user 'active' hi dikhega
+    const hasPendingCertificateRelease = (s) => (s.certificatesWithFuturePassout || 0) > 0;
+
     const getStudentStatus = (s) => {
         const total = s.totalEnrollments || 0;
         const completed = s.completedEnrollments || 0;
         const paused = s.pausedEnrollments || 0;
 
+        // Saari enrollments complete hain LEKIN certificate ka passoutDate
+        // abhi door hai -> certification phase, abhi bhi 'Active'
+        if (total > 0 && total === completed && hasPendingCertificateRelease(s)) return 'Active';
         if (total > 0 && total === completed) return 'Completed';
         if (total > 0 && completed < total && (total - completed) === paused) return 'Inactive';
         if (total > 0 && completed < total && (total - completed - paused) > 0) return 'Active';
@@ -874,10 +881,12 @@ const StudentsManagement = () => {
         if (filterStatus === 'registeredOld') return (s.totalEnrollments || 0) === 0 && s.registeredOld;
 
         // "Enrolled" (Active) = Has enrollments, not all completed, AND at least one is NOT paused AND has paid fee
+        // YA: saari enrollments complete hain lekin certificate ka passoutDate abhi door hai (certification phase)
         if (filterStatus === 'enrolled') {
             const total = s.totalEnrollments || 0;
             const completed = s.completedEnrollments || 0;
             const paused = s.pausedEnrollments || 0;
+            if (total > 0 && total === completed) return hasPendingCertificateRelease(s);
             return total > 0 && completed < total && (total - completed - paused) > 0 && hasPaidFee(s._id);
         }
 
@@ -897,8 +906,9 @@ const StudentsManagement = () => {
             return total > 0 && completed < total && (total - completed) === paused;
         }
 
-        // "Completed" = All enrollments are completed
+        // "Completed" = All enrollments completed AND certificate released (passoutDate aa gaya)
         if (filterStatus === 'completed') {
+            if (hasPendingCertificateRelease(s)) return false;
             const total = s.totalEnrollments || 0;
             const completed = s.completedEnrollments || 0;
             return total > 0 && total === completed;
@@ -980,6 +990,7 @@ const StudentsManagement = () => {
                                 const total = s.totalEnrollments || 0;
                                 const completed = s.completedEnrollments || 0;
                                 const paused = s.pausedEnrollments || 0;
+                                if (total > 0 && total === completed) return hasPendingCertificateRelease(s);
                                 return total > 0 && completed < total && (total - completed - paused) > 0 && hasPaidFee(s._id);
                             }).length
                         },
@@ -1007,6 +1018,7 @@ const StudentsManagement = () => {
                             id: 'completed',
                             label: 'Completed',
                             count: students.filter(s => {
+                                if (hasPendingCertificateRelease(s)) return false;
                                 const total = s.totalEnrollments || 0;
                                 const completed = s.completedEnrollments || 0;
                                 return total > 0 && total === completed;

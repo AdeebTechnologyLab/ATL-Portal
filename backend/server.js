@@ -74,6 +74,7 @@ const { lockTodayAttendance } = require('./controllers/attendanceController');
 
 // Import installment generation functions
 const { runInstallmentJob } = require('./scripts/generateInstallments');
+const { syncAllCertificateEnrollments } = require('./utils/enrollmentStatusSync');
 
 const app = express();
 const server = http.createServer(app);
@@ -538,6 +539,19 @@ cron.schedule('0 1 * * *', async () => {
         console.log('🔄 Running daily installment job...');
         await runInstallmentJob(io);
         console.log('✅ Daily installment job completed');
+    });
+}, {
+    timezone: "Asia/Karachi"
+});
+
+// Certificate passoutDate -> enrollment status sync - Daily 1:05 AM PKT
+// (passoutDate aane par enrollment 'completed', us se pehle 'enrolled')
+cron.schedule('5 1 * * *', async () => {
+    await runDatabaseTask('Daily certificate-enrollment sync', async () => {
+        const changes = await syncAllCertificateEnrollments();
+        const completed = changes.filter(c => c.action === 'completed').length;
+        const reopened = changes.filter(c => c.action === 'reopened').length;
+        console.log(`✅ Certificate-enrollment sync: ${completed} completed, ${reopened} reopened`);
     });
 }, {
     timezone: "Asia/Karachi"

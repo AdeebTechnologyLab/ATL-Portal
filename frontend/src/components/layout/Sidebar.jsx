@@ -3,7 +3,7 @@ import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
 import { io } from 'socket.io-client';
 import { getSocketURL } from '../../config/apiBaseUrl';
-import { assignmentAPI, courseAPI, dailyTaskAPI, chatAPI, enrollmentAPI, feeAPI, certificateAPI, testAPI, taskAPI, teacherFinanceAPI, financeAPI, teacherScreenAssignmentAPI } from '../../services/api';
+import { assignmentAPI, courseAPI, dailyTaskAPI, chatAPI, enrollmentAPI, feeAPI, certificateAPI, testAPI, taskAPI, teacherFinanceAPI, financeAPI, teacherScreenAssignmentAPI, adminWorkTaskAPI } from '../../services/api';
 import { isDueDateOverdue } from '../../utils/dueDate';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -100,11 +100,28 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
     const [discussionUnread, setDiscussionUnread] = useState(0);
     const [teacherProjectCount, setTeacherProjectCount] = useState(0);
     const [adminProjectCount, setAdminProjectCount] = useState(0);
+    // Work Lists (work tracker) sidebar counter: total tasks in user's shared lists
+    const [workTaskCount, setWorkTaskCount] = useState(0);
     const [assignedScreens, setAssignedScreens] = useState([]);
     const [availableRoles, setAvailableRoles] = useState([]);
     const [isSwitchingRole, setIsSwitchingRole] = useState(false);
     const [showRoleMenu, setShowRoleMenu] = useState(false);
     const dropdownRef = useRef(null);
+
+    // Work Lists counter: fetch + realtime socket update (admin & teacher)
+    useEffect(() => {
+        if (!['admin', 'teacher'].includes(role)) return;
+        const loadWorkTaskCount = async () => {
+            try {
+                const res = await adminWorkTaskAPI.getCounts();
+                setWorkTaskCount(res.data.data?.total || 0);
+            } catch (_) { setWorkTaskCount(0); }
+        };
+        loadWorkTaskCount();
+        const socket = io(getSocketURL(), { withCredentials: true });
+        socket.on('work_task_updated', loadWorkTaskCount);
+        return () => socket.disconnect();
+    }, [role, dataRefreshTick]);
 
     useEffect(() => {
         if (!['admin', 'teacher', 'job'].includes(role)) return;
@@ -535,7 +552,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         const baseItems = {
             admin: [
                 { id: 'dashboard', labelKey: 'nav.dashboard', icon: LayoutDashboard, path: '/admin/dashboard' },
-                { id: 'work-tasks', labelKey: 'Work Tracker', icon: ListTodo, path: '/admin/work-tasks' },
+                { id: 'work-tasks', labelKey: 'Work Tracker', icon: ListTodo, path: '/admin/work-tasks', badge: workTaskCount },
                 { id: 'directory', labelKey: 'nav.directory', icon: FolderOpen, path: '/admin/directory' },
                 { id: 'courses', labelKey: 'nav.courses', icon: BookOpen, path: '/admin/courses' },
                 { id: 'certificates', labelKey: 'nav.certificates', icon: Award, path: '/admin/certificates' },
@@ -563,7 +580,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                 { id: 'attendance', labelKey: 'nav.attendance', icon: Calendar, path: '/teacher/quick-attendance' },
                 { id: 'certificates', labelKey: 'nav.certificates', icon: Award, path: '/teacher/certificates' },
                 { id: 'discussion-room', labelKey: 'Discussion Room', icon: MessageSquare, path: '/teacher/discussion-room', badge: discussionUnread },
-                { id: 'work-tasks', labelKey: 'Work Lists', icon: ListTodo, path: '/teacher/work-tasks' },
+                { id: 'work-tasks', labelKey: 'Work Lists', icon: ListTodo, path: '/teacher/work-tasks', badge: workTaskCount },
                 { id: 'projects-section-label', type: 'section', label: 'Projects & Jobs' },
                 { id: 'jobs', labelKey: 'Job Posting', icon: Briefcase, path: '/teacher/jobs', badge: (jobPostingCounts.totalAssigned || 0) + (jobPostingCounts.totalSubmitted || 0) },
                 ...(teacherProjectCount > 0 ? [{ id: 'my-projects', labelKey: 'My Projects', icon: BriefcaseBusiness, path: '/teacher/projects', badge: teacherProjectCount }] : []),
