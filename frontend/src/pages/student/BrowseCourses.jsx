@@ -603,17 +603,20 @@ const BrowseCourses = () => {
                                     {status === 'completed' && (
                                         <div className="flex w-full sm:w-auto gap-2">
                                             {certificate?.certificateLink ? (
-                                                    <a
-                                                        href={getDownloadLink(certificate.certificateLink)}
-                                                        download
-                                                        className="w-full sm:w-auto text-center px-3 py-2.5 sm:py-2 bg-primary text-white rounded-lg font-medium text-sm hover:bg-purple-700 transition-all"
-                                                    >
-                                                        Download
-                                                    </a>
+                                                <a
+                                                    href={getDownloadLink(certificate.certificateLink)}
+                                                    download
+                                                    className="w-full sm:w-auto text-center px-3 py-2.5 sm:py-2 bg-primary text-white rounded-lg font-medium text-sm hover:bg-purple-700 transition-all"
+                                                >
+                                                    Download
+                                                </a>
                                             ) : (
-                                                <span className="w-full sm:w-auto text-center px-3 py-2.5 sm:py-2 bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 rounded-lg font-medium text-sm">
-                                                    Certificate Pending
-                                                </span>
+                                                <button
+                                                    onClick={() => handleViewCourse(course)}
+                                                    className="w-full sm:w-auto text-center px-3 py-2.5 sm:py-2 bg-white dark:bg-gray-900 border border-gray-900 dark:border-gray-600 text-gray-900 dark:text-white hover:bg-gray-900 hover:text-white rounded-lg font-medium text-sm transition-all"
+                                                >
+                                                    View Course
+                                                </button>
                                             )}
                                         </div>
                                     )}

@@ -44,12 +44,9 @@ router.get('/my', protect, async (req, res) => {
             .populate('course', 'title description location')
             .sort('-issuedAt');
 
-        // Hide certificates until the admin-selected passout date arrives
-        const visibleCertificates = certificates.filter(cert => isPassoutDateReached(cert.passoutDate));
-
-        // Auto-sync: if certificate exists but enrollment is missing or not completed, fix it
-        // Only for certificates the user can currently see (passout date reached)
-        for (const cert of visibleCertificates) {
+        // Course completion / enrollment behaves exactly as after normal verification,
+        // even while the certificate itself is still hidden until passoutDate.
+        for (const cert of certificates) {
             if (cert.course) {
                 const existing = await Enrollment.findOne({ user: req.user.id, course: cert.course._id });
                 if (!existing) {
@@ -67,6 +64,9 @@ router.get('/my', protect, async (req, res) => {
                 }
             }
         }
+
+        // Only the certificate document is delayed — hide until passoutDate arrives
+        const visibleCertificates = certificates.filter(cert => isPassoutDateReached(cert.passoutDate));
 
         res.json({ success: true, certificates: visibleCertificates });
     } catch (error) {
