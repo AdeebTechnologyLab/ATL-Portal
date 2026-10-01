@@ -129,11 +129,16 @@ const BrowseCourses = () => {
         return enrollment.status; // 'pending', 'enrolled', 'completed', 'suspended'
     };
 
-    // Separate courses by enrollment status
-    // Use myEnrollments directly to ensure all user's courses are shown regardless of audience filters
+    // Courses the student is enrolled in (any non-completed status)
+    // Always shown even if course API filters them out (inactive / wrong city / audience)
     const enrolledCourses = myEnrollments
-        .filter(e => (e.status === 'enrolled' || e.status === 'pending') && e.course)
-        .map(e => ({ ...e.course, enrolledStatus: e.status }));
+        .filter(e => e.course && e.status !== 'completed')
+        .map(e => ({
+            ...e.course,
+            enrolledStatus: e.status,
+            isEnrollmentPaused: !!e.isPaused,
+            isEnrollmentActive: !!e.isActive
+        }));
 
     const completedCourses = [
         ...myEnrollments
@@ -151,11 +156,21 @@ const BrowseCourses = () => {
         return true;
     });
 
+    // All Courses tab = catalog + user's enrollments (so enrolled courses never disappear)
+    const enrolledById = new Map();
+    [...enrolledCourses, ...uniqueCompletedCourses].forEach(c => {
+        if (c?._id) enrolledById.set(String(c._id), c);
+    });
+    const allCoursesForTab = [
+        ...courses,
+        ...[...enrolledById.values()].filter(c => !courses.some(ac => String(ac?._id) === String(c._id)))
+    ];
+
     const getCurrentCourses = () => {
         switch (activeTab) {
             case 'enrolled': return enrolledCourses;
             case 'completed': return uniqueCompletedCourses;
-            default: return courses; // Show all courses
+            default: return allCoursesForTab; // Catalog + my enrollments
         }
     };
 
@@ -598,6 +613,14 @@ const BrowseCourses = () => {
                                             className="flex-1 sm:flex-none min-w-[120px] px-4 py-2.5 sm:py-2 bg-white dark:bg-gray-900 border border-gray-900 dark:border-gray-600 text-gray-900 dark:text-white hover:bg-gray-900 hover:text-white rounded-lg sm:rounded-xl font-bold text-sm transition-all duration-300 shadow-sm"
                                         >
                                             View Course
+                                        </button>
+                                    )}
+                                    {status === 'suspended' && (
+                                        <button
+                                            onClick={() => navigate(`/${role === 'intern' ? 'intern' : 'student'}/fees`)}
+                                            className="flex-1 sm:flex-none min-w-[120px] px-4 py-2.5 sm:py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg font-bold text-sm transition-all"
+                                        >
+                                            Contact Admin / Fees
                                         </button>
                                     )}
                                     {status === 'completed' && (

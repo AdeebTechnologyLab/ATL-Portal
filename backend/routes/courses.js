@@ -172,6 +172,7 @@ router.get('/', async (req, res) => {
         const { targetAudience, location, city, isActive, search } = req.query;
 
         let query = {};
+        let enrolledCourseIds = [];
 
         // [USER REQUEST]: Filter by city/location and role for logged-in students/interns
         // Check for token manually to avoid mandatory 'protect' behavior
@@ -192,6 +193,11 @@ router.get('/', async (req, res) => {
                     query.targetAudience = user.role === 'student' ? 'students' : 'interns';
                     // Students/interns only see active courses
                     query.isActive = true;
+
+                    // Always include courses this user is already enrolled in,
+                    // even if location / isActive / audience filters would hide them.
+                    const enrollments = await Enrollment.find({ user: user._id }).select('course');
+                    enrolledCourseIds = enrollments.map(e => e.course).filter(Boolean);
                 }
             } catch (err) {
                 // Ignore auth error for public route
@@ -216,7 +222,21 @@ router.get('/', async (req, res) => {
             .populate('jober', 'name email')
             .sort('-createdAt');
 
-        res.json({ success: true, count: courses.length, data: courses });
+        // Merge in enrolled courses missing from filtered list
+        let data = courses;
+        if (enrolledCourseIds.length > 0) {
+            const existingIds = new Set(courses.map(c => String(c._id)));
+            const missingIds = enrolledCourseIds.filter(id => !existingIds.has(String(id)));
+            if (missingIds.length > 0) {
+                const extraCourses = await Course.find({ _id: { $in: missingIds } })
+                    .populate('teachers', 'name email specialization photo')
+                    .populate('jober', 'name email')
+                    .sort('-createdAt');
+                data = [...courses, ...extraCourses];
+            }
+        }
+
+        res.json({ success: true, count: data.length, data });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
