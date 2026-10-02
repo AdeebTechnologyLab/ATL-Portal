@@ -782,7 +782,7 @@ const TeacherRegister = () => {
                                         className={`w-full px-4 py-3 pl-11 border ${errors.attendType ? 'border-red-400' : 'border-gray-200'} rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-gray-50/50 appearance-none cursor-pointer`}
                                     >
                                         <option value="">Select Type</option>
-                                        <option value="Physical">Physical</option>
+                                        <option value="On-Site">On-Site</option>
                                         <option value="Online">Online</option>
                                     </select>
                                     <BookOpen className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />

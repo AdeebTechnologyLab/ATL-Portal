@@ -220,6 +220,16 @@ const InternsManagement = () => {
             alert("Guardian WhatsApp number not found for this user.");
             return;
         }
+        // Duplicate/missing guardian number warning
+        const studentDigits = (intern.phone || '').replace(/[^0-9]/g, '');
+        const guardianDigits = (intern.guardianPhone || '').replace(/[^0-9]/g, '');
+        if (!intern.guardianPhone && intern.parentPhone) {
+            if (!window.confirm('Guardian number parentPhone field se liya ja raha hai. Continue?')) return;
+        } else if (!intern.guardianPhone) {
+            if (!window.confirm('Is intern ka guardian number save nahi hai — reminder student ke number par jayega. Continue?')) return;
+        } else if (studentDigits && guardianDigits && studentDigits === guardianDigits) {
+            if (!window.confirm('Guardian number student ke number jaisa hi saved hai. Phir bhi yehi number par bhejna hai?')) return;
+        }
         if (intern.registeredOld && (intern.totalEnrollments || 0) === 0) {
             let cleanPhone = phoneNumber.replace(/[^0-9+]/g, '');
             if (cleanPhone.startsWith('0')) cleanPhone = '92' + cleanPhone.slice(1);
@@ -357,9 +367,9 @@ const InternsManagement = () => {
         setSelectedFile(null);
         setPhotoPreview(intern.photo || null);
         let normalizedAttendType = intern.attendType || '';
-        if (normalizedAttendType === 'Physical') normalizedAttendType = 'OnSite';
-        if (normalizedAttendType === 'Online') normalizedAttendType = 'Remote';
-        if (normalizedAttendType === 'On-Site') normalizedAttendType = 'OnSite';
+        if (normalizedAttendType === 'Physical') normalizedAttendType = 'On-Site';
+        if (normalizedAttendType === 'OnSite') normalizedAttendType = 'On-Site';
+        if (normalizedAttendType === 'Remote') normalizedAttendType = 'Online';
 
         setEditForm({
             name: intern.name || '',
@@ -1829,8 +1839,8 @@ const InternsManagement = () => {
                                 className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none"
                             >
                                 <option value="">Select Type</option>
-                                <option value="OnSite">Onsite</option>
-                                <option value="Remote">Remote</option>
+                                <option value="On-Site">On-Site</option>
+                                <option value="Online">Online</option>
                             </select>
                         </div>
                         <div className="space-y-2">

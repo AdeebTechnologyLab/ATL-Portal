@@ -211,7 +211,7 @@ const QuickAttendance = () => {
                                 courseName: course.title || course.name,
                                 audience: course.targetAudience,
                                 location: course.city || course.location || 'N/A',
-                                attendType: e.user?.attendType || 'Physical',
+                                attendType: e.user?.attendType || 'On-Site',
                                 classTime: e.user?.classTime || null,
                                 guardianPhone: e.user?.guardianPhone || '',
                                 lastSeen: e.user?.lastSeen
@@ -590,7 +590,12 @@ const QuickAttendance = () => {
         const matchesCourse = filterCourse === 'all' || s.courseId === filterCourse;
         const matchesLocation = filterLocation === 'all' || s.location?.toLowerCase() === filterLocation.toLowerCase();
         const matchesCategory = filterCategory === 'all' || s.audience?.toLowerCase() === filterCategory.toLowerCase();
-        const matchesAttendType = filterAttendType === 'all' || s.attendType?.toLowerCase() === filterAttendType.toLowerCase();
+        // attendType variants: 'On-Site' (naya), 'Physical'/'OnSite' (purana) — sab Onsite mein aate hain
+        const normalizedType = (s.attendType || '').toLowerCase().replace(/[^a-z]/g, '');
+        const matchesAttendType = filterAttendType === 'all' ||
+            (filterAttendType === 'onsite'
+                ? (normalizedType === 'onsite' || normalizedType === 'physical')
+                : normalizedType === filterAttendType);
         const matchesClassTime = filterClassTime === 'all' || s.classTime === filterClassTime;
 
         const markKey = `${s.courseId}-${s.id}`;
@@ -816,7 +821,7 @@ const QuickAttendance = () => {
                         <div className="grid grid-cols-3 sm:flex items-center gap-1 bg-gray-50/50 dark:bg-slate-800 p-1 sm:p-0.5 rounded-lg border border-gray-100 dark:border-slate-600">
                             {[
                                 { id: 'all', label: 'All Modes' },
-                                { id: 'physical', label: 'Onsite' },
+                                { id: 'onsite', label: 'On-Site' },
                                 { id: 'online', label: 'Online' }
                             ].map(type => (
                                 <button

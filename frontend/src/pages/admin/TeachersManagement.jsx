@@ -1213,7 +1213,7 @@ const TeachersManagement = () => {
                                 className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none"
                             >
                                 <option value="">Select Type</option>
-                                <option value="Physical">Physical</option>
+                                <option value="On-Site">On-Site</option>
                                 <option value="Online">Online</option>
                             </select>
                         </div>

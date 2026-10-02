@@ -422,7 +422,7 @@ const StudentRegister = () => {
                         </h2>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
                              <SelectField label="Campus City *" name="cityToAttend" options={ATTEND_CITIES} placeholder="Select Campus City" value={formData.cityToAttend} onChange={handleChange} error={errors.cityToAttend} />
-                            <SelectField label="Attend Classes *" name="attendClasses" options={['Online', 'Physical']} placeholder="Select Type" value={formData.attendClasses} onChange={handleChange} error={errors.attendClasses} />
+                            <SelectField label="Attend Classes *" name="attendClasses" options={['Online', 'On-Site']} placeholder="Select Type" value={formData.attendClasses} onChange={handleChange} error={errors.attendClasses} />
                         </div>
 
                         {/* Educational Details */}

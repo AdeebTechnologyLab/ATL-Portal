@@ -110,7 +110,7 @@ const StudentProfile = () => {
         city: user?.city || user?.location || '',
         country: user?.country || 'Pakistan',
         course: '',
-        attendType: user?.attendType || 'Physical',
+        attendType: user?.attendType || 'On-Site',
         cityToAttend: user?.location || '',
         rollNumber: user?.rollNumber || '', // University Roll No
         heardAbout: user?.heardAbout || '',
@@ -158,7 +158,7 @@ const StudentProfile = () => {
                 address: user.address || '',
                 city: user.city || user.location || '',
                 country: user.country || 'Pakistan',
-                attendType: user.attendType || 'Physical',
+                attendType: user.attendType || 'On-Site',
                 cityToAttend: user.location || '',
                 rollNumber: user.rollNumber || '',
                 heardAbout: user.heardAbout || '',
@@ -470,8 +470,8 @@ const StudentProfile = () => {
                                     value={profileData.attendType} 
                                     name="attendType" 
                                     options={[
-                                        { value: 'Physical', label: 'Physical (OnSite)' },
-                                        { value: 'Online', label: 'Online (Remote)' }
+                                        { value: 'On-Site', label: 'On-Site' },
+                                        { value: 'Online', label: 'Online' }
                                     ]} 
                                     editable={canEditBio} 
                                 />

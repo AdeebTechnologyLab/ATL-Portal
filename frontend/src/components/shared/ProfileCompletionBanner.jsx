@@ -25,7 +25,7 @@ const FIELD_LABELS = {
     skills: 'Skills',
     experience: 'Experience',
     photo: 'Profile Photo',
-    attendType: 'Attendance Type (Physical/Online)',
+    attendType: 'Attendance Type (On-Site/Online)',
 };
 
 const ROLE_FIELDS = {

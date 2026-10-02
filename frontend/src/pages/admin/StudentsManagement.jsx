@@ -228,6 +228,16 @@ const StudentsManagement = () => {
             alert("Guardian WhatsApp number not found for this user.");
             return;
         }
+        // Duplicate/missing guardian number warning: 24% records mein guardian number student ke number jaisa hi hai
+        const studentDigits = (student.phone || '').replace(/[^0-9]/g, '');
+        const guardianDigits = (student.guardianPhone || '').replace(/[^0-9]/g, '');
+        if (!student.guardianPhone && student.parentPhone) {
+            if (!window.confirm('Guardian number parentPhone field se liya ja raha hai. Continue?')) return;
+        } else if (!student.guardianPhone) {
+            if (!window.confirm('Is student ka guardian number save nahi hai — reminder student ke number par jayega. Continue?')) return;
+        } else if (studentDigits && guardianDigits && studentDigits === guardianDigits) {
+            if (!window.confirm('Guardian number student ke number jaisa hi saved hai. Phir bhi yehi number par bhejna hai?')) return;
+        }
         if (student.registeredOld && (student.totalEnrollments || 0) === 0) {
             let cleanPhone = phoneNumber.replace(/[^0-9+]/g, '');
             if (cleanPhone.startsWith('0')) cleanPhone = '92' + cleanPhone.slice(1);
@@ -336,9 +346,9 @@ const StudentsManagement = () => {
         setPhotoPreview(student.photo || null);
 
         let normalizedAttendType = student.attendType || '';
-        if (normalizedAttendType === 'Physical') normalizedAttendType = 'OnSite';
-        if (normalizedAttendType === 'Online') normalizedAttendType = 'Remote';
-        if (normalizedAttendType === 'On-Site') normalizedAttendType = 'OnSite';
+        if (normalizedAttendType === 'Physical') normalizedAttendType = 'On-Site';
+        if (normalizedAttendType === 'OnSite') normalizedAttendType = 'On-Site';
+        if (normalizedAttendType === 'Remote') normalizedAttendType = 'Online';
 
         setEditForm({
             name: student.name || '',
@@ -1626,8 +1636,8 @@ const StudentsManagement = () => {
                                 className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none"
                             >
                                 <option value="">Select Type</option>
-                                <option value="OnSite">Onsite</option>
-                                <option value="Remote">Remote</option>
+                                <option value="On-Site">On-Site</option>
+                                <option value="Online">Online</option>
                             </select>
                         </div>
                         <div className="space-y-2">

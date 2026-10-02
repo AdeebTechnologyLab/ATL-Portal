@@ -12811,3 +12811,2560 @@ Google Drive assignment uploads are configured.
 📅 User registration date: Sat Jan 31 2026 20:46:37 GMT+0500 (Pakistan Standard Time)
 ✅ Found 0 assignments matching criteria
 📤 Returning 0 sanitized assignments
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/chat/discussion/unread
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/assignments/my
+📚 Fetching assignments for user: 697e23ddcd6c4f52bd24320c (role: intern)
+📋 User has 2 enrollments
+📚 Enrolled course IDs: 697f5da299f8d4e879bf7544, 697f5d4d99f8d4e879bf7537
+📅 User registration date: Sat Jan 31 2026 20:46:37 GMT+0500 (Pakistan Standard Time)
+✅ Found 0 assignments matching criteria
+📤 Returning 0 sanitized assignments
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 1
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔌 New client connected
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/chat/discussion/unread
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/user-notifications
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/fees/access-status
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/assignments/my
+📚 Fetching assignments for user: 697e23ddcd6c4f52bd24320c (role: intern)
+📋 User has 2 enrollments
+📚 Enrolled course IDs: 697f5da299f8d4e879bf7544, 697f5d4d99f8d4e879bf7537
+📅 User registration date: Sat Jan 31 2026 20:46:37 GMT+0500 (Pakistan Standard Time)
+✅ Found 0 assignments matching criteria
+📤 Returning 0 sanitized assignments
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔌 Client disconnected | Active: 1
+🔌 New client connected
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/me
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 1
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/available-roles
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/chat/discussion/unread
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/assignments/my
+📚 Fetching assignments for user: 697e23ddcd6c4f52bd24320c (role: intern)
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+📋 User has 2 enrollments
+📚 Enrolled course IDs: 697f5da299f8d4e879bf7544, 697f5d4d99f8d4e879bf7537
+📅 User registration date: Sat Jan 31 2026 20:46:37 GMT+0500 (Pakistan Standard Time)
+✅ Found 0 assignments matching criteria
+📤 Returning 0 sanitized assignments
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/chat/discussion/unread
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/user-notifications
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/fees/access-status
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/assignments/my
+📚 Fetching assignments for user: 697e23ddcd6c4f52bd24320c (role: intern)
+📋 User has 2 enrollments
+📚 Enrolled course IDs: 697f5da299f8d4e879bf7544, 697f5d4d99f8d4e879bf7537
+📅 User registration date: Sat Jan 31 2026 20:46:37 GMT+0500 (Pakistan Standard Time)
+✅ Found 0 assignments matching criteria
+📤 Returning 0 sanitized assignments
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+🔌 New client connected
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/fees/pending
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/me
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/enrollments/all
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 1
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/available-roles
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+GET /pending: Returning 161 total fees for frontend filtering
+🔐 Auth OK: Super Admin (admin) - GET /api/enrollments/all
+🔐 Auth OK: Super Admin (admin) - GET /api/fees/pending
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+GET /pending: Returning 161 total fees for frontend filtering
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/me
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 1
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/available-roles
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔌 New client connected
+🔌 New client connected
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/assignments/my
+📚 Fetching assignments for user: 697e23ddcd6c4f52bd24320c (role: intern)
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+📋 User has 2 enrollments
+📚 Enrolled course IDs: 697f5da299f8d4e879bf7544, 697f5d4d99f8d4e879bf7537
+📅 User registration date: Sat Jan 31 2026 20:46:37 GMT+0500 (Pakistan Standard Time)
+✅ Found 0 assignments matching criteria
+📤 Returning 0 sanitized assignments
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+🔌 New client connected
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/fees/pending
+🔐 Auth OK: Super Admin (admin) - GET /api/enrollments/all
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/me
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 1
+🔌 New client connected
+🔌 New client connected
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/available-roles
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+GET /pending: Returning 161 total fees for frontend filtering
+🔐 Auth OK: Super Admin (admin) - GET /api/enrollments/all
+🔐 Auth OK: Super Admin (admin) - GET /api/fees/pending
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+GET /pending: Returning 161 total fees for frontend filtering
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/chat/discussion/unread
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/user-notifications
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/fees/access-status
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/assignments/my
+📚 Fetching assignments for user: 697e23ddcd6c4f52bd24320c (role: intern)
+📋 User has 2 enrollments
+📚 Enrolled course IDs: 697f5da299f8d4e879bf7544, 697f5d4d99f8d4e879bf7537
+📅 User registration date: Sat Jan 31 2026 20:46:37 GMT+0500 (Pakistan Standard Time)
+✅ Found 0 assignments matching criteria
+📤 Returning 0 sanitized assignments
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/chat/discussion/unread
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/assignments/my
+📚 Fetching assignments for user: 697e23ddcd6c4f52bd24320c (role: intern)
+📋 User has 2 enrollments
+📚 Enrolled course IDs: 697f5da299f8d4e879bf7544, 697f5d4d99f8d4e879bf7537
+📅 User registration date: Sat Jan 31 2026 20:46:37 GMT+0500 (Pakistan Standard Time)
+✅ Found 0 assignments matching criteria
+📤 Returning 0 sanitized assignments
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 1
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔌 New client connected
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔌 New client connected
+🔌 Client disconnected | Active: 1
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔌 Client disconnected | Active: 2
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/available-roles
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/finance?startDate=2026-10-01&endDate=2026-10-31
+🔐 Auth OK: Super Admin (admin) - GET /api/users/role/teacher/verified
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/conversations
+🔐 Auth OK: Super Admin (admin) - GET /api/attendance/student-holidays
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/me
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/available-roles
+🔐 Auth OK: Super Admin (admin) - GET /api/attendance/student-holidays
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/users/role/teacher/verified
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/me
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/finance?startDate=2026-10-01&endDate=2026-10-31
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/available-roles
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/conversations
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/chat/discussion/unread
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/fees/access-status
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/user-notifications
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/assignments/my
+📚 Fetching assignments for user: 697e23ddcd6c4f52bd24320c (role: intern)
+📋 User has 2 enrollments
+📚 Enrolled course IDs: 697f5da299f8d4e879bf7544, 697f5d4d99f8d4e879bf7537
+📅 User registration date: Sat Jan 31 2026 20:46:37 GMT+0500 (Pakistan Standard Time)
+✅ Found 0 assignments matching criteria
+📤 Returning 0 sanitized assignments
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/fees/pending
+🔐 Auth OK: Super Admin (admin) - GET /api/enrollments/all
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/me
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+GET /pending: Returning 161 total fees for frontend filtering
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/available-roles
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/fees/pending
+🔐 Auth OK: Super Admin (admin) - GET /api/enrollments/all
+GET /pending: Returning 161 total fees for frontend filtering
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/chat/discussion/unread
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 1
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔌 New client connected
+🔌 New client connected
+🔌 New client connected
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 1
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/available-roles
+🔐 Auth OK: Super Admin (admin) - GET /api/finance?startDate=2026-10-01&endDate=2026-10-31
+🔐 Auth OK: Super Admin (admin) - GET /api/users/role/teacher/verified
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/conversations
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/me
+🔐 Auth OK: Super Admin (admin) - GET /api/attendance/student-holidays
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/available-roles
+🔐 Auth OK: Super Admin (admin) - GET /api/users/role/teacher/verified
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/me
+🔐 Auth OK: Super Admin (admin) - GET /api/attendance/student-holidays
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/finance?startDate=2026-10-01&endDate=2026-10-31
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔌 New client connected
+🔌 New client connected
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/available-roles
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/conversations
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/unread
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/assignments/my
+📚 Fetching assignments for user: 697e23ddcd6c4f52bd24320c (role: intern)
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+📋 User has 2 enrollments
+📚 Enrolled course IDs: 697f5da299f8d4e879bf7544, 697f5d4d99f8d4e879bf7537
+📅 User registration date: Sat Jan 31 2026 20:46:37 GMT+0500 (Pakistan Standard Time)
+✅ Found 0 assignments matching criteria
+📤 Returning 0 sanitized assignments
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/attendance/intern-holidays
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/chat/discussion/unread
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/user-notifications
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/fees/access-status
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/assignments/my
+📚 Fetching assignments for user: 697e23ddcd6c4f52bd24320c (role: intern)
+📋 User has 2 enrollments
+📚 Enrolled course IDs: 697f5da299f8d4e879bf7544, 697f5d4d99f8d4e879bf7537
+📅 User registration date: Sat Jan 31 2026 20:46:37 GMT+0500 (Pakistan Standard Time)
+✅ Found 0 assignments matching criteria
+📤 Returning 0 sanitized assignments
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/chat/discussion/unread
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/assignments/my
+📚 Fetching assignments for user: 697e23ddcd6c4f52bd24320c (role: intern)
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+📋 User has 2 enrollments
+📚 Enrolled course IDs: 697f5da299f8d4e879bf7544, 697f5d4d99f8d4e879bf7537
+📅 User registration date: Sat Jan 31 2026 20:46:37 GMT+0500 (Pakistan Standard Time)
+✅ Found 0 assignments matching criteria
+📤 Returning 0 sanitized assignments
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/chat/discussion/unread
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/user-notifications
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/fees/access-status
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/assignments/my
+📚 Fetching assignments for user: 697e23ddcd6c4f52bd24320c (role: intern)
+📋 User has 2 enrollments
+📚 Enrolled course IDs: 697f5da299f8d4e879bf7544, 697f5d4d99f8d4e879bf7537
+📅 User registration date: Sat Jan 31 2026 20:46:37 GMT+0500 (Pakistan Standard Time)
+✅ Found 0 assignments matching criteria
+📤 Returning 0 sanitized assignments
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/me
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/available-roles
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/chat/discussion/unread
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Super Admin (admin) - PUT /api/admin-work-tasks/6ab3a6dcf28ea9c0cee8abfe/items/6abf96cdba08d8cfa1a1a773
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/assignments/my
+📚 Fetching assignments for user: 697e23ddcd6c4f52bd24320c (role: intern)
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+📋 User has 2 enrollments
+📚 Enrolled course IDs: 697f5da299f8d4e879bf7544, 697f5d4d99f8d4e879bf7537
+📅 User registration date: Sat Jan 31 2026 20:46:37 GMT+0500 (Pakistan Standard Time)
+✅ Found 0 assignments matching criteria
+📤 Returning 0 sanitized assignments
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/me
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/completed-showcase
+🔐 Auth OK: Super Admin (admin) - GET /api/users/role/teacher/verified
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔌 New client connected
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/completed-showcase
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/available-roles
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/users/role/teacher/verified
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/chat/discussion/unread
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/user-notifications
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/fees/access-status
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/assignments/my
+📚 Fetching assignments for user: 697e23ddcd6c4f52bd24320c (role: intern)
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+📋 User has 2 enrollments
+📚 Enrolled course IDs: 697f5da299f8d4e879bf7544, 697f5d4d99f8d4e879bf7537
+📅 User registration date: Sat Jan 31 2026 20:46:37 GMT+0500 (Pakistan Standard Time)
+✅ Found 0 assignments matching criteria
+📤 Returning 0 sanitized assignments
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔐 Auth OK: Super Admin (admin) - PUT /api/tasks/6a467f98c84056dfbbfb509c/unassign
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/completed-showcase
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+🔌 New client connected
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/stats/admin-dashboard?startDate=2026-10-01&endDate=2026-10-03
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/me
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/stats/admin-dashboard?startDate=2026-10-01&endDate=2026-10-31
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/available-roles
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/stats/admin-dashboard?startDate=2026-10-01&endDate=2026-10-03
+🔐 Auth OK: Super Admin (admin) - GET /api/users/birthdays
+🔐 Auth OK: Super Admin (admin) - GET /api/users/birthdays
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+🔌 New client connected
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/fees/pending
+🔐 Auth OK: Super Admin (admin) - GET /api/enrollments/all
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/me
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+GET /pending: Returning 161 total fees for frontend filtering
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔌 New client connected
+🔌 New client connected
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/available-roles
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/fees/pending
+🔐 Auth OK: Super Admin (admin) - GET /api/stats/admin-dashboard?startDate=2026-10-01&endDate=2026-10-03
+🔐 Auth OK: Super Admin (admin) - GET /api/enrollments/all
+GET /pending: Returning 161 total fees for frontend filtering
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/stats/admin-dashboard?startDate=2026-10-01&endDate=2026-10-03
+🔐 Auth OK: Super Admin (admin) - GET /api/stats/admin-dashboard?startDate=2026-10-01&endDate=2026-10-03
+🔐 Auth OK: Super Admin (admin) - GET /api/stats/admin-dashboard?startDate=2026-10-01&endDate=2026-10-03
+🔐 Auth OK: Super Admin (admin) - GET /api/stats/admin-dashboard?startDate=2026-10-01&endDate=2026-10-03
+🔐 Auth OK: Super Admin (admin) - GET /api/stats/admin-dashboard?startDate=2026-10-01&endDate=2026-10-03
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Super Admin (admin) - GET /api/stats/admin-dashboard?startDate=2026-10-01&endDate=2026-10-03
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/chat/discussion/unread
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/assignments/my
+📚 Fetching assignments for user: 697e23ddcd6c4f52bd24320c (role: intern)
+📋 User has 2 enrollments
+📚 Enrolled course IDs: 697f5da299f8d4e879bf7544, 697f5d4d99f8d4e879bf7537
+📅 User registration date: Sat Jan 31 2026 20:46:37 GMT+0500 (Pakistan Standard Time)
+✅ Found 0 assignments matching criteria
+📤 Returning 0 sanitized assignments
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/fees/all
+🔐 Auth OK: Super Admin (admin) - GET /api/enrollments/all
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/payment-methods
+🔐 Auth OK: Super Admin (admin) - GET /api/fees/all
+🔐 Auth OK: Super Admin (admin) - GET /api/enrollments/all
+🔐 Auth OK: Super Admin (admin) - GET /api/payment-methods
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔌 Client disconnected | Active: 2
+🔐 Auth OK: Super Admin (admin) - GET /api/fees/pending
+🔐 Auth OK: Super Admin (admin) - GET /api/enrollments/all
+🔌 New client connected
+GET /pending: Returning 161 total fees for frontend filtering
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/chat/discussion/unread
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/user-notifications
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/fees/access-status
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/assignments/my
+📚 Fetching assignments for user: 697e23ddcd6c4f52bd24320c (role: intern)
+📋 User has 2 enrollments
+📚 Enrolled course IDs: 697f5da299f8d4e879bf7544, 697f5d4d99f8d4e879bf7537
+📅 User registration date: Sat Jan 31 2026 20:46:37 GMT+0500 (Pakistan Standard Time)
+✅ Found 0 assignments matching criteria
+📤 Returning 0 sanitized assignments
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/chat/discussion/unread
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Super Admin (admin) - PUT /api/user-notifications/6ab4df2caf15615d5f484891/read
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/completed-showcase
+🔐 Auth OK: Super Admin (admin) - GET /api/users/role/teacher/verified
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/me
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/completed-showcase
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/users/role/teacher/verified
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/available-roles
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/assignments/my
+📚 Fetching assignments for user: 697e23ddcd6c4f52bd24320c (role: intern)
+📋 User has 2 enrollments
+📚 Enrolled course IDs: 697f5da299f8d4e879bf7544, 697f5d4d99f8d4e879bf7537
+📅 User registration date: Sat Jan 31 2026 20:46:37 GMT+0500 (Pakistan Standard Time)
+✅ Found 0 assignments matching criteria
+📤 Returning 0 sanitized assignments
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/fees/access-status
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/user-notifications
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/chat/discussion/unread
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/assignments/my
+📚 Fetching assignments for user: 697e23ddcd6c4f52bd24320c (role: intern)
+📋 User has 2 enrollments
+📚 Enrolled course IDs: 697f5da299f8d4e879bf7544, 697f5d4d99f8d4e879bf7537
+📅 User registration date: Sat Jan 31 2026 20:46:37 GMT+0500 (Pakistan Standard Time)
+✅ Found 0 assignments matching criteria
+📤 Returning 0 sanitized assignments
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+🔌 New client connected
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/fees/pending
+🔐 Auth OK: Super Admin (admin) - GET /api/enrollments/all
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/me
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 New client connected
+🔌 New client connected
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 2
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/available-roles
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+GET /pending: Returning 161 total fees for frontend filtering
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/fees/pending
+🔐 Auth OK: Super Admin (admin) - GET /api/enrollments/all
+GET /pending: Returning 161 total fees for frontend filtering
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/chat/discussion/unread
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Super Admin (admin) - GET /api/attendance/student-holidays
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/assignments/my
+📚 Fetching assignments for user: 697e23ddcd6c4f52bd24320c (role: intern)
+📋 User has 2 enrollments
+📚 Enrolled course IDs: 697f5da299f8d4e879bf7544, 697f5d4d99f8d4e879bf7537
+📅 User registration date: Sat Jan 31 2026 20:46:37 GMT+0500 (Pakistan Standard Time)
+✅ Found 0 assignments matching criteria
+📤 Returning 0 sanitized assignments
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/attendance/intern-holidays
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/chat/discussion/unread
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/fees/access-status
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/user-notifications
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/assignments/my
+📚 Fetching assignments for user: 697e23ddcd6c4f52bd24320c (role: intern)
+📋 User has 2 enrollments
+📚 Enrolled course IDs: 697f5da299f8d4e879bf7544, 697f5d4d99f8d4e879bf7537
+📅 User registration date: Sat Jan 31 2026 20:46:37 GMT+0500 (Pakistan Standard Time)
+✅ Found 0 assignments matching criteria
+📤 Returning 0 sanitized assignments
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/chat/discussion/unread
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/assignments/my
+📚 Fetching assignments for user: 697e23ddcd6c4f52bd24320c (role: intern)
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+📋 User has 2 enrollments
+📚 Enrolled course IDs: 697f5da299f8d4e879bf7544, 697f5d4d99f8d4e879bf7537
+📅 User registration date: Sat Jan 31 2026 20:46:37 GMT+0500 (Pakistan Standard Time)
+✅ Found 0 assignments matching criteria
+📤 Returning 0 sanitized assignments
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/chat/discussion/unread
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/user-notifications
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/fees/access-status
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/assignments/my
+📚 Fetching assignments for user: 697e23ddcd6c4f52bd24320c (role: intern)
+📋 User has 2 enrollments
+📚 Enrolled course IDs: 697f5da299f8d4e879bf7544, 697f5d4d99f8d4e879bf7537
+📅 User registration date: Sat Jan 31 2026 20:46:37 GMT+0500 (Pakistan Standard Time)
+✅ Found 0 assignments matching criteria
+📤 Returning 0 sanitized assignments
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/chat/discussion/unread
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/assignments/my
+📚 Fetching assignments for user: 697e23ddcd6c4f52bd24320c (role: intern)
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+📋 User has 2 enrollments
+📚 Enrolled course IDs: 697f5da299f8d4e879bf7544, 697f5d4d99f8d4e879bf7537
+📅 User registration date: Sat Jan 31 2026 20:46:37 GMT+0500 (Pakistan Standard Time)
+✅ Found 0 assignments matching criteria
+📤 Returning 0 sanitized assignments
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/chat/discussion/unread
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/user-notifications
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/fees/access-status
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/assignments/my
+📚 Fetching assignments for user: 697e23ddcd6c4f52bd24320c (role: intern)
+📋 User has 2 enrollments
+📚 Enrolled course IDs: 697f5da299f8d4e879bf7544, 697f5d4d99f8d4e879bf7537
+📅 User registration date: Sat Jan 31 2026 20:46:37 GMT+0500 (Pakistan Standard Time)
+✅ Found 0 assignments matching criteria
+📤 Returning 0 sanitized assignments
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/chat/discussion/unread
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/assignments/my
+📚 Fetching assignments for user: 697e23ddcd6c4f52bd24320c (role: intern)
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+📋 User has 2 enrollments
+📚 Enrolled course IDs: 697f5da299f8d4e879bf7544, 697f5d4d99f8d4e879bf7537
+📅 User registration date: Sat Jan 31 2026 20:46:37 GMT+0500 (Pakistan Standard Time)
+✅ Found 0 assignments matching criteria
+📤 Returning 0 sanitized assignments
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/user-notifications
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/chat/discussion/unread
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/fees/access-status
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/assignments/my
+📚 Fetching assignments for user: 697e23ddcd6c4f52bd24320c (role: intern)
+📋 User has 2 enrollments
+📚 Enrolled course IDs: 697f5da299f8d4e879bf7544, 697f5d4d99f8d4e879bf7537
+📅 User registration date: Sat Jan 31 2026 20:46:37 GMT+0500 (Pakistan Standard Time)
+✅ Found 0 assignments matching criteria
+📤 Returning 0 sanitized assignments
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/chat/discussion/unread
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/quiz-game/open
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/stats/games
+🔐 Auth OK: Tooba Adrees (intern) - GET /api/assignments/my
+📚 Fetching assignments for user: 697e23ddcd6c4f52bd24320c (role: intern)
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 2
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 1
+📋 User has 2 enrollments
+📚 Enrolled course IDs: 697f5da299f8d4e879bf7544, 697f5d4d99f8d4e879bf7537
+📅 User registration date: Sat Jan 31 2026 20:46:37 GMT+0500 (Pakistan Standard Time)
+✅ Found 0 assignments matching criteria
+📤 Returning 0 sanitized assignments
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 0
+🔌 New client connected
+🔌 New client connected
+🔌 New client connected
+🔌 New client connected
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔌 Client disconnected | Active: 0
+🔌 Client disconnected | Active: 0
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 1
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 1
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 1
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/available-roles
+🔐 Auth OK: Super Admin (admin) - GET /api/fees/pending
+🔐 Auth OK: Super Admin (admin) - GET /api/enrollments/all
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/conversations
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/me
+🔐 Auth OK: Super Admin (admin) - GET /api/attendance/student-holidays
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+GET /pending: Returning 161 total fees for frontend filtering
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/available-roles
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/me
+🔐 Auth OK: Super Admin (admin) - GET /api/attendance/student-holidays
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/fees/pending
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/enrollments/all
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 1
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/conversations
+🔌 New client connected
+🔌 New client connected
+GET /pending: Returning 161 total fees for frontend filtering
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 1
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/unread
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 1
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/available-roles
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/fees/all
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 1
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔌 Client disconnected | Active: 1
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/enrollments/all
+🔐 Auth OK: Super Admin (admin) - GET /api/fees/all
+🔌 Client disconnected | Active: 1
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/payment-methods
+🔐 Auth OK: Super Admin (admin) - GET /api/enrollments/all
+🔐 Auth OK: Super Admin (admin) - GET /api/fees/all
+🔐 Auth OK: Super Admin (admin) - GET /api/payment-methods
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔌 Client disconnected | Active: 1
+🔐 Auth OK: Super Admin (admin) - GET /api/fees/pending
+🔐 Auth OK: Super Admin (admin) - GET /api/enrollments/all
+🔌 New client connected
+GET /pending: Returning 161 total fees for frontend filtering
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 1
+🔌 New client connected
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 1
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 1
+🔐 Auth OK: Super Admin (admin) - GET /api/users/role/student
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/me
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/fees/all
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/settings
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 1
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔌 New client connected
+🔌 New client connected
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 1
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 1
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/settings
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/users/role/student
+🔐 Auth OK: Super Admin (admin) - GET /api/fees/all
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/available-roles
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔌 Client disconnected | Active: 1
+🔌 New client connected
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 1
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 1
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/users/role/teacher
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/me
+🔐 Auth OK: Super Admin (admin) - GET /api/settings
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/settings
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 1
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/available-roles
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 1
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 1
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/users/role/teacher
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔌 Client disconnected | Active: 1
+🔌 New client connected
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 1
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 1
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/me
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/notifications
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/notifications
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 1
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/available-roles
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔌 New client connected
+🔌 New client connected
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 1
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 1
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔌 Client disconnected | Active: 1
+🔌 New client connected
+🔌 New client connected
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 1
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 1
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/fees/pending
+🔐 Auth OK: Super Admin (admin) - GET /api/enrollments/all
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/me
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 1
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/available-roles
+🔌 New client connected
+🔌 New client connected
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 1
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 1
+GET /pending: Returning 161 total fees for frontend filtering
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/fees/pending
+🔐 Auth OK: Super Admin (admin) - GET /api/enrollments/all
+GET /pending: Returning 161 total fees for frontend filtering
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 1
+🔌 New client connected
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 1
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 1
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/finance?startDate=2026-10-01&endDate=2026-10-31
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/users/role/teacher/verified
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/me
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 1
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/users/role/teacher/verified
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔌 New client connected
+🔌 New client connected
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 1
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 1
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/available-roles
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/finance?startDate=2026-10-01&endDate=2026-10-31
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔌 Client disconnected | Active: 1
+🔌 New client connected
+🔌 New client connected
+🔌 Client disconnected | Active: 1
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 1
+🔌 Client disconnected | Active: 1
+🔐 Auth OK: Super Admin (admin) - GET /api/fees/pending
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/me
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/enrollments/all
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 1
+🔌 New client connected
+🔌 New client connected
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 1
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 1
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/available-roles
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+GET /pending: Returning 161 total fees for frontend filtering
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/fees/pending
+🔐 Auth OK: Super Admin (admin) - GET /api/enrollments/all
+GET /pending: Returning 161 total fees for frontend filtering
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 1
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/attendance/student-holidays
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+⚠️ Replace placeholder EMAIL_USER / EMAIL_PASS in backend/.env with a real Gmail App Password.
+Google Drive assignment uploads are configured.
+
+========================================
+🔧 LMS BACKEND - Starting...
+========================================
+
+🚀 Server running on port 5000
+🔌 New client connected
+🔌 New client connected
+🔌 New client connected
+🔌 New client connected
+🔌 New client connected
+✅ MongoDB connected
+🔌 New client connected
+🔄 Running startup installment check...
+🔄 Starting installment generation check...
+✅ User Muhammad Amir has released certificate for Office Work (IT) - skipping
+✅ User Amna Nargis has released certificate for Graphic Designer - skipping
+✅ User Saiqa Yaseen has released certificate for Graphic Designer - skipping
+✅ User Ahsaan-Ullah has released certificate for Video Editing - skipping
+✅ User Muhammad Ali has released certificate for Office Work (IT) - skipping
+✅ User Ahmad Hassan has released certificate for Office Work (IT) - skipping
+✅ User Bisma Noor has released certificate for Office Work (IT) - skipping
+✅ User Sami-Ullah has released certificate for Office Work (IT) - skipping
+✅ User Syed Fyzan Gull has released certificate for Office Work (IT) - skipping
+✅ User Muhammad Mudasir has released certificate for Office Work (IT) - skipping
+✅ User Ali Ch has released certificate for Office Work (IT) - skipping
+✅ User Ameer Hamza has released certificate for Office Work (IT) - skipping
+✅ User Zia UR Rehman has released certificate for Office Work (IT) - skipping
+✅ User Muhammad Shahbaz Habib has released certificate for Video Editing - skipping
+✅ User Taimoor Saif has released certificate for Office Work (IT) - skipping
+✅ User Aimen Irfan has released certificate for Web Development - skipping
+✅ User Muhammad Amin has released certificate for Web Development - skipping
+✅ User Umar Sajid has released certificate for Office Work (IT) - skipping
+✅ User Sameer Qasim has released certificate for Office Work (IT) - skipping
+✅ User Farhan Talib has released certificate for Office Work (IT) - skipping
+✅ User Ayyaz Hussain has released certificate for Office Work (IT) - skipping
+✅ User Zaighum Siddique has released certificate for Graphic Designer - skipping
+✅ User Laiba Saleem has released certificate for Office Work (IT) - skipping
+✅ User Aqsa Bibi has released certificate for Office Work (IT) - skipping
+✅ User Farha Batool has released certificate for Graphic Designer - skipping
+✅ User Arbab Ghafoor has released certificate for Graphic Designer - skipping
+✅ User Aqsa Naseer has released certificate for Office Work (IT) - skipping
+✅ User Talha Siyal has released certificate for Web Development - skipping
+✅ User Armeeza Siyal has released certificate for Graphic Designer - skipping
+✅ User Ashna Zahid has released certificate for Office Work (IT) - skipping
+✅ User Kainat Mehmood has released certificate for Web Development - skipping
+✅ User Ayesha Ishtiaq has released certificate for Web Development - skipping
+✅ User M. Zubair Younis has released certificate for Graphic Designer - skipping
+✅ User Anza Aleem has released certificate for Web Development - skipping
+✅ User Muhammad Hashir has released certificate for Graphic Designer - skipping
+✅ User Ahsan Abbas has released certificate for Home Architecture AutoCAD - skipping
+✅ User Abdullah Shahid has released certificate for Graphic Designer - skipping
+✅ User Hammad Sadiq has released certificate for Office Work (IT) - skipping
+✅ User Hafiz Muhammad Ahmad Raza Khan has released certificate for Video Editing - skipping
+[32m[nodemon] restarting due to changes...[39m
+⏸️ Enrollment for Abdul Hanan Hashmi Qureshi in Office Work (IT) (Online Class) is paused - skipping installment generation
+[32m[nodemon] starting `node server.js`[39m
+⚠️ Replace placeholder EMAIL_USER / EMAIL_PASS in backend/.env with a real Gmail App Password.
+Google Drive assignment uploads are configured.
+
+========================================
+🔧 LMS BACKEND - Starting...
+========================================
+
+🚀 Server running on port 5000
+🔌 New client connected
+🔌 New client connected
+🔌 New client connected
+🔌 New client connected
+🔌 New client connected
+✅ MongoDB connected
+🔌 New client connected
+🔄 Running startup installment check...
+🔄 Starting installment generation check...
+✅ User Muhammad Amir has released certificate for Office Work (IT) - skipping
+✅ User Amna Nargis has released certificate for Graphic Designer - skipping
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+✅ User Saiqa Yaseen has released certificate for Graphic Designer - skipping
+✅ User Ahsaan-Ullah has released certificate for Video Editing - skipping
+✅ User Muhammad Ali has released certificate for Office Work (IT) - skipping
+✅ User Ahmad Hassan has released certificate for Office Work (IT) - skipping
+✅ User Bisma Noor has released certificate for Office Work (IT) - skipping
+✅ User Sami-Ullah has released certificate for Office Work (IT) - skipping
+✅ User Syed Fyzan Gull has released certificate for Office Work (IT) - skipping
+✅ User Muhammad Mudasir has released certificate for Office Work (IT) - skipping
+✅ User Ali Ch has released certificate for Office Work (IT) - skipping
+✅ User Ameer Hamza has released certificate for Office Work (IT) - skipping
+✅ User Zia UR Rehman has released certificate for Office Work (IT) - skipping
+✅ User Muhammad Shahbaz Habib has released certificate for Video Editing - skipping
+✅ User Taimoor Saif has released certificate for Office Work (IT) - skipping
+✅ User Aimen Irfan has released certificate for Web Development - skipping
+✅ User Muhammad Amin has released certificate for Web Development - skipping
+✅ User Umar Sajid has released certificate for Office Work (IT) - skipping
+✅ User Sameer Qasim has released certificate for Office Work (IT) - skipping
+✅ User Farhan Talib has released certificate for Office Work (IT) - skipping
+✅ User Ayyaz Hussain has released certificate for Office Work (IT) - skipping
+✅ User Zaighum Siddique has released certificate for Graphic Designer - skipping
+✅ User Laiba Saleem has released certificate for Office Work (IT) - skipping
+✅ User Aqsa Bibi has released certificate for Office Work (IT) - skipping
+✅ User Farha Batool has released certificate for Graphic Designer - skipping
+✅ User Arbab Ghafoor has released certificate for Graphic Designer - skipping
+✅ User Aqsa Naseer has released certificate for Office Work (IT) - skipping
+✅ User Talha Siyal has released certificate for Web Development - skipping
+✅ User Armeeza Siyal has released certificate for Graphic Designer - skipping
+✅ User Ashna Zahid has released certificate for Office Work (IT) - skipping
+✅ User Kainat Mehmood has released certificate for Web Development - skipping
+✅ User Ayesha Ishtiaq has released certificate for Web Development - skipping
+✅ User M. Zubair Younis has released certificate for Graphic Designer - skipping
+✅ User Anza Aleem has released certificate for Web Development - skipping
+✅ User Muhammad Hashir has released certificate for Graphic Designer - skipping
+✅ User Ahsan Abbas has released certificate for Home Architecture AutoCAD - skipping
+✅ User Abdullah Shahid has released certificate for Graphic Designer - skipping
+✅ User Hammad Sadiq has released certificate for Office Work (IT) - skipping
+✅ User Hafiz Muhammad Ahmad Raza Khan has released certificate for Video Editing - skipping
+⏸️ Enrollment for Abdul Hanan Hashmi Qureshi in Office Work (IT) (Online Class) is paused - skipping installment generation
+✅ User Raqeeb Ullah has released certificate for Graphic Designer - skipping
+✅ User Abdul Wahab has released certificate for Office Work (IT) - skipping
+✅ User Salman Tariq has released certificate for Office Work (IT) - skipping
+✅ User Ghulam Mustafa has released certificate for Web Development - skipping
+✅ User Muhammad Mohsin has released certificate for Office Work (IT) - skipping
+✅ User Muhammad Hymn Abdullah Bukhari has released certificate for Office Work (IT) - skipping
+✅ User Muhammad Aneeb Bukhari has released certificate for Office Work (IT) - skipping
+✅ User Kashif Khalid has released certificate for Graphic Designer (Online Class) - skipping
+✅ User Zahra Baloch has released certificate for Web Development - skipping
+✅ User Tooba Adrees has released certificate for Web Development (HTML+CSS+Java) - skipping
+✅ User Muhammad Arham Khalid has released certificate for Office Work (IT) Documentation Management - skipping
+✅ User Muhammad Mohsin has released certificate for Web Development (HTML+CSS+Java) - skipping
+✅ User Hadia Sarwar has released certificate for Web Development (HTML+CSS+Java) - skipping
+✅ User Adil Asif has released certificate for Web Development (HTML+CSS+Java) - skipping
+⚠️ Skipping fee 6983148804a102554fc15bb7 - no course data
+✅ User Moazzam Ali Zahid has released certificate for Web Development (HTML+CSS+Java) - skipping
+✅ User Adil Asif has released certificate for App Development - skipping
+✅ User Muntaha Fatima has released certificate for Social Media Manager - skipping
+✅ User M.Ahsan has released certificate for Graphic Designer - skipping
+✅ User Ali Raza has released certificate for Graphic Designer - skipping
+✅ User Imran Patras has released certificate for Video Editing - skipping
+✅ User Adnan Ahmad has released certificate for Video Editing (Online Class) - skipping
+✅ User Umar Saleem has released certificate for Video Editing - skipping
+✅ User Tooba Adrees has released certificate for Social Media Manager - skipping
+✅ User Amna Bibi has released certificate for YouTube Manager + Video Editor - skipping
+✅ User Amna Bibi has released certificate for HR Manager - skipping
+✅ User Amna Bibi has released certificate for Graphic Designer - skipping
+✅ User Hadia has released certificate for HR Manager - skipping
+✅ User Hadia has released certificate for Graphic Designer - skipping
+✅ User Muhammad Hamza Zakriya has released certificate for Web Development (HTML+CSS+Java) - skipping
+✅ User Taimoor Saif has released certificate for Web Development - skipping
+✅ User Abdullah Shahid has released certificate for Video Editing - skipping
+✅ User Mustafa Faraz has released certificate for Video Editing - skipping
+✅ User Muhammad Shahbaz has released certificate for Video Editing - skipping
+✅ User Waqas Anwar Khan has released certificate for Office Work (IT) (Online Class) - skipping
+⏸️ Enrollment for M Aman Khan in Office Work (IT) (Online Class) is paused - skipping installment generation
+⏸️ Enrollment for Anees Khan in Digital Marketing, Ads (Online Class) is paused - skipping installment generation
+✅ User Anees Khan has released certificate for Video Editing (Online Class) - skipping
+✅ User Muqadas Zahrah has released certificate for HR Manager - skipping
+✅ User Ghulam Muhammad Taqi Shah has released certificate for Internet of Things (IoT) - skipping
+⏸️ Enrollment for Muhammad  Farhad in Office Work (IT) (Online Class) is paused - skipping installment generation
+✅ User Homam sajjad has released certificate for Digital Marketing, Ads (Online Class) - skipping
+⏸️ Enrollment for Gul Imtiaz Qureshi in E-Commerce (Online Class) is paused - skipping installment generation
+⏸️ Enrollment for Abu Bakar in Basic Computer (IT) (Online Class) is paused - skipping installment generation
+✅ User Hafiz Arif has released certificate for Basic Computer (IT) (Online Class) - skipping
+⏸️ Enrollment for Abdul Hadi in Basic Computer (IT) (Online Class) is paused - skipping installment generation
+⏸️ Enrollment for Muhammad Rizwan in Basic Computer (IT) (Online Class) is paused - skipping installment generation
+✅ User Muhammad Furqan has released certificate for Basic Computer (IT) (Online Class) - skipping
+✅ User Hashim Ali has released certificate for Web Development (Online Class) - skipping
+✅ User Aftab Ahmad has released certificate for Web Development (HTML+CSS+Java) - skipping
+⏸️ Enrollment for Sharyar in Graphic Designer (Online Class) is paused - skipping installment generation
+✅ User Syed Ahmer Bukhari has released certificate for App Development - skipping
+✅ User Muhammad Zulqarnain has released certificate for Internet of Things (IoT) - skipping
+✅ User Furqan Ali has released certificate for Internet of Things (IoT) - skipping
+✅ User Kashan Abid Magasi has released certificate for Artificial Intelligence and Machine Learning (AI & ML) - skipping
+⏸️ Enrollment for AHTESHAM KHAN in Basic Computer (IT) (Online Class) is paused - skipping installment generation
+✅ User Shayan israr has released certificate for Basic Computer (IT) (Online Class) - skipping
+✅ User Muhammad Asjad has released certificate for Web Development (Online Class) - skipping
+✅ User Muhammad Arslan has released certificate for Basic Computer (IT) (Online Class) - skipping
+✅ User Hassan Ali has released certificate for E-Commerce (Online Class) - skipping
+⏸️ Enrollment for M Abdullah in Basic Computer (IT) (Online Class) is paused - skipping installment generation
+✅ User Rao Mehtab Ahmed has released certificate for App Development - skipping
+⚠️ Skipping fee 6a348f67af9a0db166c5f694 - no course data
+⚠️ Skipping fee 6a38e103664e534307a1c4bc - no course data
+⚠️ Skipping fee 6a3e6d1a58f55b3ab4342a0a - no course data
+✅ User Sharyar has released certificate for Graphic Designer - skipping
+✅ User Noor Nawaz has released certificate for Basic Computer (IT) (Online Class) - skipping
+✅ User Faizan Musa has released certificate for App Development - skipping
+✅ User Manhal chuahdary has released certificate for YouTube Manager + Video Editor - skipping
+✅ User Asma Iqbal has released certificate for WordPress + Elementor - skipping
+✅ User Mehnaz Bibi has released certificate for Basic Computer (IT) (Online Class) - skipping
+✅ User Mehwish BiBi has released certificate for Basic Computer (IT) (Online Class) - skipping
+🎓 User Muhammad Talha Hussain certificate passoutDate abhi door hai - fee generation jaari rahegi (Web Development (HTML+CSS+Java))
+⏸️ Enrollment for M Saeed khan in Video Editing (Online Class) is paused - skipping installment generation
+✅ User Muqadas Zahrah has released certificate for Social media manager - skipping
+⏸️ Enrollment for M Abdullah in Video Editing (Online Class) is paused - skipping installment generation
+⏸️ Enrollment for Syed Adnan Adi in Video Editing is paused - skipping installment generation
+⏸️ Enrollment for Sharyar in Web Development (Online Class) is paused - skipping installment generation
+🎓 User Nosheen yousaf certificate passoutDate abhi door hai - fee generation jaari rahegi (UI / UX Designing)
+🎓 User Yalmaz Khan certificate passoutDate abhi door hai - fee generation jaari rahegi (Office Work (IT) Documentation Management)
+⏸️ Enrollment for Muneeza Abbas in Office Work (IT) Documentation Management is paused - skipping installment generation
+⏸️ Enrollment for Muhammad Bilal in Graphic Designer is paused - skipping installment generation
+✅ User Muhammad Amir has released certificate for Web Development (HTML+CSS+Java) - skipping
+✅ Installment generation complete. Generated 0 new installments.
+🔄 Updating enrollment active status...
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+📝 Updated 697fa635f525fb948dcac542 for course Tester for App software Website - isActive: false
+📝 Updated 6a4379cd9345ccb27fbf094f for course Social Media Manager - isActive: false
+📝 Updated 6a819949e7a31d7810490706 for course Graphic Designer - isActive: false
+✅ Enrollment status update complete. Updated 3 enrollments.
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/attendance/student-holidays
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔌 Client disconnected | Active: 0
+🔌 Client disconnected | Active: 0
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔌 Client disconnected | Active: 0
+🔌 Client disconnected | Active: 0
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔌 Client disconnected | Active: 0
+🔌 Client disconnected | Active: 0
+🔌 Client disconnected | Active: 0
+🔌 Client disconnected | Active: 0
+🔌 Client disconnected | Active: 0
+🔌 Client disconnected | Active: 0
+🔌 New client connected
+🔌 New client connected
+🔌 New client connected
+🔌 New client connected
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔌 Client disconnected | Active: 0
+🔌 Client disconnected | Active: 0
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 1
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 1
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 1
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/available-roles
+🔐 Auth OK: Super Admin (admin) - GET /api/fees/pending
+🔐 Auth OK: Super Admin (admin) - GET /api/enrollments/all
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/conversations
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+GET /pending: Returning 161 total fees for frontend filtering
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/me
+🔐 Auth OK: Super Admin (admin) - GET /api/attendance/student-holidays
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/available-roles
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/fees/pending
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/me
+🔐 Auth OK: Super Admin (admin) - GET /api/attendance/student-holidays
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/enrollments/all
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/conversations
+GET /pending: Returning 161 total fees for frontend filtering
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/unread
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 1
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔌 New client connected
+🔌 New client connected
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 1
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 1
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/available-roles
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 1
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 1
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/teacher-screen-assignments/screen/fee_verification
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/fees/all
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 1
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/attendance/student-holidays
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 0
+🔌 Client disconnected | Active: 0
+🔌 New client connected
+🔌 New client connected
+🔌 New client connected
+🔌 New client connected
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔌 Client disconnected | Active: 0
+🔌 Client disconnected | Active: 0
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 1
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 1
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 1
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/available-roles
+🔐 Auth OK: Super Admin (admin) - GET /api/fees/pending
+🔐 Auth OK: Super Admin (admin) - GET /api/enrollments/all
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/conversations
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/me
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+GET /pending: Returning 161 total fees for frontend filtering
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/attendance/student-holidays
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/available-roles
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/me
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/fees/pending
+🔐 Auth OK: Super Admin (admin) - GET /api/enrollments/all
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 1
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/attendance/student-holidays
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/conversations
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 1
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 1
+GET /pending: Returning 161 total fees for frontend filtering
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/available-roles
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/attendance/student-holidays
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 1
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 0
+🔌 Client disconnected | Active: 0
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔌 New client connected
+🔌 New client connected
+🔌 New client connected
+🔌 New client connected
+🔌 New client connected
+🔌 Client disconnected | Active: 0
+🔌 Client disconnected | Active: 0
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 1
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 1
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 1
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/available-roles
+🔐 Auth OK: Super Admin (admin) - GET /api/fees/pending
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/enrollments/all
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/conversations
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/me
+GET /pending: Returning 161 total fees for frontend filtering
+🔐 Auth OK: Super Admin (admin) - GET /api/attendance/student-holidays
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/available-roles
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/unread
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 1
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/me
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/fees/pending
+🔐 Auth OK: Super Admin (admin) - GET /api/enrollments/all
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/attendance/student-holidays
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 1
+GET /pending: Returning 161 total fees for frontend filtering
+🔌 New client connected
+🔌 New client connected
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 1
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/available-roles
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/conversations
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 1
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 1
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 1
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 1
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/attendance/student-holidays
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 1
+🔐 Auth OK: Super Admin (admin) - GET /api/attendance/student-holidays
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 1
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/attendance/student-holidays
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/attendance/student-holidays
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/attendance/student-holidays
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 0
+🔌 Client disconnected | Active: 0
+🔌 New client connected
+🔌 New client connected
+🔌 New client connected
+🔌 New client connected
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔌 Client disconnected | Active: 0
+🔌 Client disconnected | Active: 0
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 1
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 1
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 1
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/available-roles
+🔐 Auth OK: Super Admin (admin) - GET /api/stats/admin-dashboard?startDate=2026-10-01&endDate=2026-10-03
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/conversations
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/me
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/attendance/student-holidays
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/stats/admin-dashboard?startDate=2026-10-01&endDate=2026-10-31
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/available-roles
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/me
+🔐 Auth OK: Super Admin (admin) - GET /api/attendance/student-holidays
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 1
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔌 New client connected
+🔌 New client connected
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 1
+👤 User joined personal chat room: 6979f4a7fe559715b806b751 | Active: 1
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/conversations
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/auth/available-roles
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/stats/admin-dashboard?startDate=2026-10-01&endDate=2026-10-03
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/users/birthdays
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/users/birthdays
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/users/birthdays
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/stats/admin-dashboard?startDate=2026-10-01&endDate=2026-10-03
+🔐 Auth OK: Super Admin (admin) - GET /api/stats/admin-dashboard?startDate=2026-10-01&endDate=2026-10-03
+🔐 Auth OK: Super Admin (admin) - GET /api/stats/admin-dashboard?startDate=2026-10-01&endDate=2026-10-03
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 1
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 1
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/stats/admin-dashboard?startDate=2026-10-01&endDate=2026-10-03
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/stats/admin-dashboard?startDate=2026-10-01&endDate=2026-10-03
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 1
+🔌 New client connected
+🔌 New client connected
+🔐 Auth OK: Super Admin (admin) - GET /api/admin-work-tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/stats/admin-dashboard?startDate=2026-10-01&endDate=2026-10-03
+🔐 Auth OK: Super Admin (admin) - GET /api/stats/admin-dashboard?startDate=2026-10-01&endDate=2026-10-03
+🔐 Auth OK: Super Admin (admin) - GET /api/stats/admin-dashboard?startDate=2026-10-01&endDate=2026-10-03
+🔐 Auth OK: Super Admin (admin) - GET /api/stats/admin-dashboard?startDate=2026-10-01&endDate=2026-10-03
+🔐 Auth OK: Super Admin (admin) - GET /api/stats/admin-dashboard?startDate=2026-10-01&endDate=2026-10-03
+🔐 Auth OK: Super Admin (admin) - GET /api/stats/admin-dashboard?startDate=2026-10-01&endDate=2026-10-03
+🔐 Auth OK: Super Admin (admin) - GET /api/stats/admin-dashboard?startDate=2026-10-01&endDate=2026-10-03
+🔐 Auth OK: Super Admin (admin) - GET /api/stats/admin-dashboard?startDate=2026-10-01&endDate=2026-10-03
+🔐 Auth OK: Super Admin (admin) - GET /api/stats/admin-dashboard?startDate=2026-10-01&endDate=2026-10-03
+🔐 Auth OK: Super Admin (admin) - GET /api/stats/admin-dashboard?startDate=2026-10-01&endDate=2026-10-03
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/discussion/unread
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications
+🔐 Auth OK: Super Admin (admin) - GET /api/user-notifications/unread-count
+🔐 Auth OK: Super Admin (admin) - GET /api/users/pending-counts
+🔐 Auth OK: Super Admin (admin) - GET /api/chat/job/tasks
+🔐 Auth OK: Super Admin (admin) - GET /api/finance/projects
+🔐 Auth OK: Super Admin (admin) - GET /api/tasks/counts
+❌ Auth failed: No token provided for GET /api/chat/discussion/unread
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 1
+🔌 Client disconnected | Active: 0
+🔌 Client disconnected | Active: 0

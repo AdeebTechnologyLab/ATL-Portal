@@ -584,7 +584,7 @@ const InternshipRegister = () => {
                         </h2>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
                             <SelectField label="City for Internship *" name="internCity" options={INTERN_CITIES} placeholder="Select City" value={formData.internCity} onChange={handleChange} error={errors.internCity} />
-                            <SelectField label="Internship Type *" name="internType" options={['Physical', 'Online']} placeholder="Select Type" value={formData.internType} onChange={handleChange} error={errors.internType} />
+                            <SelectField label="Internship Type *" name="internType" options={['Online', 'On-Site']} placeholder="Select Type" value={formData.internType} onChange={handleChange} error={errors.internType} />
                         </div>
 
                         {/* Attachments */}
