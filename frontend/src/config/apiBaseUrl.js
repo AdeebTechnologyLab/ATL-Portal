@@ -43,6 +43,13 @@ export const getBackendOrigin = () => {
 
 /** Socket URL for io() connections */
 export const getSocketURL = () => {
+    // Localhost dev: REST Vite-proxy se local backend (localhost:5000) par jata hai —
+    // socket bhi USI local backend se connect hona chahiye, warna realtime events
+    // (quiz_challenge, quiz_game_next, chat) production server par chale jate hain
+    // aur local games/notifications sync nahi hote.
+    if (typeof window !== 'undefined' && import.meta.env.DEV && isLocalHost(window.location.hostname)) {
+        return 'http://localhost:5000';
+    }
     const rawUrl = import.meta.env.VITE_API_URL || (typeof window !== 'undefined' && !isLocalHost(window.location.hostname) ? PRODUCTION_API : 'https://localhost:5000/api');
     return rawUrl === '/api' ? PRODUCTION_SOCKET : rawUrl.replace(/\/api\/?$/, '');
 };

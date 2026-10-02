@@ -3,10 +3,657 @@
 > vite
 
 
-  [32m[1mVITE[22m v7.3.1[39m  [2mready in [0m[1m487[22m[2m[0m ms[22m
+  [32m[1mVITE[22m v7.3.1[39m  [2mready in [0m[1m2723[22m[2m[0m ms[22m
 
   [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m5173[22m/[39m
 [2m  [32m➜[39m  [1mNetwork[22m[2m: use [22m[1m--host[22m[2m to expose[22m
 Browserslist: browsers data (caniuse-lite) is 10 months old. Please run:
   npx update-browserslist-db@latest
   Why you should do it regularly: https://github.com/browserslist/update-db#readme
+[2m12:05:41 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f6f8699f8d4e879bf77e5[39m
+Error: read ECONNRESET
+    at TCP.onStreamRead (node:internal/stream_base_commons:216:20)
+[2m12:05:41 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f6f0d99f8d4e879bf77d5[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:05:41 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f6c6099f8d4e879bf778f[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:05:41 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f681c99f8d4e879bf771d[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:05:41 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f67dd99f8d4e879bf770b[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:05:41 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f679e99f8d4e879bf7701[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:05:41 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f675099f8d4e879bf76f1[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:05:41 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f670799f8d4e879bf76ea[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:05:41 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f66a999f8d4e879bf76b2[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:05:41 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f666999f8d4e879bf769e[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:05:41 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f662099f8d4e879bf7697[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:05:41 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f65c599f8d4e879bf7683[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:05:41 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f657699f8d4e879bf7665[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:05:41 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f653899f8d4e879bf7649[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:05:41 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f64de99f8d4e879bf7637[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:05:41 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f649199f8d4e879bf7628[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:05:41 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f5e6599f8d4e879bf7558[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:05:41 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f5df899f8d4e879bf754b[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:05:41 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f5da299f8d4e879bf7544[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:05:41 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f5d4d99f8d4e879bf7537[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:05:41 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f5ce699f8d4e879bf752a[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:05:41 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f5ca299f8d4e879bf751f[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:05:41 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f5c2599f8d4e879bf7504[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:05:46 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/stats/games[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:06:01 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/stats/games[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:06:01 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/quiz-game/open[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:06:51 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/stats/games[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:06:51 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/quiz-game/open[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:07:26 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/stats/games[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:17:23 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/quiz-game/6ac001a4d0c23b106142bba5[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:17:23 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/stats/games[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:17:26 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/stats/games[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:17:26 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/quiz-game/6ac001a4d0c23b106142bba5[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:17:27 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/chat/discussion/unread[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:17:28 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/my[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:17:28 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/my[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:17:28 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/quiz-game/6ac001a4d0c23b106142bba5[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:17:28 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/stats/games[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:17:28 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/quiz-game/open[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:20:48 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/quiz-game/6ac001a4d0c23b106142bba5[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:20:48 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/stats/games[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:20:48 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/quiz-game/open[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:20:51 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/stats/games[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:20:51 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/quiz-game/open[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:20:51 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/quiz-game/6ac001a4d0c23b106142bba5[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:20:53 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/quiz-game/6ac001a4d0c23b106142bba5[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:20:53 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/stats/games[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:20:56 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/stats/games[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:20:56 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/quiz-game/6ac001a4d0c23b106142bba5[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:20:57 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/chat/discussion/unread[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:20:57 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/user-notifications[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:20:57 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/user-notifications/unread-count[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:20:57 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/fees/access-status[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:20:58 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/quiz-game/6ac001a4d0c23b106142bba5[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:20:58 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/stats/games[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:20:58 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/quiz-game/open[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:01 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/stats/games[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:01 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/quiz-game/open[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:01 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/quiz-game/6ac001a4d0c23b106142bba5[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:02 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/chat/job/tasks[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:02 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/tasks/counts[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:02 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/teacher/finance/projects[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:02 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/chat/discussion/unread[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:03 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/quiz-game/6ac001a4d0c23b106142bba5[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:03 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/stats/games[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:06 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/stats/games[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:06 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/quiz-game/6ac001a4d0c23b106142bba5[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:08 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/quiz-game/6ac001a4d0c23b106142bba5[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:08 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/stats/games[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:08 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/quiz-game/open[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:11 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/quiz-game/open[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:11 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/stats/games[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:11 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/quiz-game/6ac001a4d0c23b106142bba5[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:13 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/quiz-game/6ac001a4d0c23b106142bba5[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:13 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/stats/games[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:16 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/stats/games[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:16 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/quiz-game/6ac001a4d0c23b106142bba5[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:17 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/chat/discussion/unread[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:18 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/quiz-game/6ac001a4d0c23b106142bba5[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:18 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/stats/games[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:18 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/quiz-game/open[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:21 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/stats/games[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:21 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/quiz-game/open[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:21 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/quiz-game/6ac001a4d0c23b106142bba5[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:23 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/quiz-game/6ac001a4d0c23b106142bba5[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:23 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/stats/games[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:26 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/stats/games[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:26 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/quiz-game/6ac001a4d0c23b106142bba5[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:27 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/chat/discussion/unread[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:28 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/my[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:28 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/quiz-game/6ac001a4d0c23b106142bba5[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:28 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/stats/games[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:28 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/quiz-game/open[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:31 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/my[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:31 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/stats/games[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:31 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/quiz-game/open[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:31 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/quiz-game/6ac001a4d0c23b106142bba5[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:32 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/chat/job/tasks[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:32 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/tasks/counts[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:32 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/teacher/finance/projects[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:32 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/chat/discussion/unread[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:32 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/courses[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:32 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/user-notifications[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:32 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/user-notifications/unread-count[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:32 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/courses/teacher/dashboard[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:33 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/quiz-game/6ac001a4d0c23b106142bba5[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:33 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/stats/games[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:36 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/stats/games[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:36 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/quiz-game/6ac001a4d0c23b106142bba5[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:38 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/quiz-game/6ac001a4d0c23b106142bba5[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:38 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/stats/games[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:38 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/quiz-game/open[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:41 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/stats/games[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:41 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/quiz-game/open[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:41 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/quiz-game/6ac001a4d0c23b106142bba5[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:41 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/my[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:41 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/quiz-game/summary[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:41 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/quiz-game/open[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:41 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/quiz-game/my/history[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:43 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/stats/games[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:46 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/stats/games[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:47 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/chat/discussion/unread[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:47 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/user-notifications[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:47 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/user-notifications/unread-count[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:47 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/fees/access-status[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:48 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/stats/games[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:21:48 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/quiz-game/open[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:24:54 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/index.css, /src/components/dashboard/GamesCard.jsx[22m
+[2m12:25:06 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/shared/QuizGame.jsx, /src/index.css[22m
+[2m12:25:36 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f657699f8d4e879bf7665[39m
+Error: read ECONNRESET
+    at TCP.onStreamRead (node:internal/stream_base_commons:216:20)
+[2m12:25:36 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f653899f8d4e879bf7649[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:25:37 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f5da299f8d4e879bf7544[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:25:37 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/course/697f5d4d99f8d4e879bf7537[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:25:37 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/quiz-game/6ac004614c0d37c20056e9b4[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:25:38 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/quiz-game/open[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:25:39 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/stats/games[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:25:39 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/stats/games[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:25:40 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/quiz-game/6ac004614c0d37c20056e9b4[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:25:41 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/quiz-game/open[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:25:41 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/my[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:25:42 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/quiz-game/6ac004614c0d37c20056e9b4[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:25:45 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/stats/games[39m
+Error: read ECONNRESET
+    at TCP.onStreamRead (node:internal/stream_base_commons:216:20)
+[2m12:25:45 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/stats/games[39m
+Error: read ECONNRESET
+    at TCP.onStreamRead (node:internal/stream_base_commons:216:20)
+[2m12:25:45 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/quiz-game/6ac004614c0d37c20056e9b4[39m
+Error: read ECONNRESET
+    at TCP.onStreamRead (node:internal/stream_base_commons:216:20)
+[2m12:25:47 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/quiz-game/6ac004614c0d37c20056e9b4[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:25:47 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/chat/discussion/unread[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:25:47 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/user-notifications[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:25:47 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/fees/access-status[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:25:47 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/user-notifications/unread-count[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:25:48 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/quiz-game/open[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:25:49 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/stats/games[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:25:49 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/stats/games[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m12:28:41 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/index.css, /src/components/layout/DashboardLayout.jsx, /src/App.jsx, /src/components/layout/Sidebar.jsx, /src/components/shared/NotificationPopup.jsx, /src/components/shared/ChatWidget.jsx, /src/components/shared/ChatMediaButton.jsx, /src/components/shared/VoiceRecorder.jsx, /src/pages/auth/Login.jsx, /src/pages/teacher/TeacherCourses.jsx, /src/components/dashboard/BirthdayWish.jsx, /src/components/dashboard/GamesCard.jsx, /src/pages/student/StudentDashboard.jsx, /src/pages/shared/QuizGame.jsx[22m
+[2m12:36:35 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/shared/QuizGame.jsx, /src/index.css[22m
+[2m1:11:03 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/chat/discussion/unread[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m1:11:03 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/stats/games[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m1:11:08 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/stats/games[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m1:11:08 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/quiz-game/open[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m1:11:28 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/stats/games[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m1:11:28 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/quiz-game/open[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m1:11:33 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/chat/discussion/unread[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m1:11:33 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/user-notifications[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m1:11:33 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/user-notifications/unread-count[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m1:11:33 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/assignments/my[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m1:11:33 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/stats/games[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m1:16:49 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/admin/ExpenseManagement.jsx, /src/index.css[22m
+[2m1:17:25 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/admin/ExpenseManagement.jsx, /src/index.css[22m
+[2m1:18:11 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/admin/ExpenseManagement.jsx, /src/index.css[22m
+[2m1:18:17 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/admin/ExpenseManagement.jsx, /src/index.css[22m

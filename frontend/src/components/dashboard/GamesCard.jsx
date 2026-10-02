@@ -316,8 +316,13 @@ const GamesCard = () => {
     useEffect(() => {
         const socket = io(getSocketURL(), { withCredentials: true });
         // Personal room join karo taake quiz_challenge events pohanchen
-        const userId = user?.id || user?._id;
-        if (userId) socket.emit('join_chat', String(userId));
+        // (connect + reconnect dono par — warna server restart ke baad events miss honge)
+        const joinPersonalRoom = () => {
+            const userId = user?.id || user?._id;
+            if (userId) socket.emit('join_chat', String(userId));
+        };
+        joinPersonalRoom();
+        socket.on('connect', joinPersonalRoom);
 
         socket.on('quiz_challenge', ({ gameId, hostName }) => {
             toast((t) => (

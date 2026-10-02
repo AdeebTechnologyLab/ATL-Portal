@@ -334,18 +334,6 @@ const finishGame = async (req, res) => {
 // @route   POST /api/quiz-game/:id/finish
 router.post('/:id/finish', finishGame);
 
-// @route   GET /api/quiz-game/:id
-// @desc    Poll game state (fallback if socket misses)
-router.get('/:id', async (req, res) => {
-    try {
-        const game = await QuizGame.findById(req.params.id);
-        if (!game) return res.status(404).json({ success: false, message: 'Game not found' });
-        res.json({ success: true, data: presentGame(game, req.user.id) });
-    } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
-    }
-});
-
 // @route   GET /api/quiz-game/open
 // @desc    Open waiting rooms (for notifications/browse)
 router.get('/open', async (req, res) => {
@@ -373,6 +361,18 @@ router.get('/open', async (req, res) => {
                 } : null
             })).filter(g => g.host && String(g.host._id) !== String(req.user.id))
         });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+});
+
+// @route   GET /api/quiz-game/:id
+// @desc    Poll game state (fallback if socket misses)
+router.get('/:id', async (req, res) => {
+    try {
+        const game = await QuizGame.findById(req.params.id);
+        if (!game) return res.status(404).json({ success: false, message: 'Game not found' });
+        res.json({ success: true, data: presentGame(game, req.user.id) });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }

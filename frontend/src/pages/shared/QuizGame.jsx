@@ -94,8 +94,22 @@ const QuizGame = () => {
     useEffect(() => {
         socketRef.current = io(getSocketURL(), { withCredentials: true });
         const socket = socketRef.current;
-        if (myId) socket.emit('join_chat', myId);
-        return () => socket.disconnect();
+        // connect + reconnect dono par rooms dobara join karo
+        // (server restart / network drop ke baad events miss na hon)
+        const joinRooms = () => {
+            if (myId) socket.emit('join_chat', myId);
+            const gid = gameIdRef.current || stateRef.current.game?._id;
+            const f = stateRef.current.flow;
+            if (gid && (f === 'playing' || f === 'lobby')) {
+                socket.emit('join_quiz_game', `quiz-game:${gid}`);
+            }
+        };
+        joinRooms();
+        socket.on('connect', joinRooms);
+        return () => {
+            socket.off('connect', joinRooms);
+            socket.disconnect();
+        };
     }, []);
 
     useEffect(() => {
@@ -167,6 +181,24 @@ const QuizGame = () => {
                 Object.keys(mine.answers || {}).length >= (fresh.questions?.length || 999)) {
                 finishGame(fresh._id);
                 return;
+            }
+            // Duel safety net: dono players ne current question answer kar diya
+            // (quiz_game_next socket event miss hua) to polling se hi aage barho —
+            // warna ek player ka UI question par atak jata hai jab tak doosra race karta rahe
+            if (fresh.status === 'active' && fresh.mode !== 'solo' && stateRef.current.flow === 'playing') {
+                const idx = stateRef.current.currentQuestionIndex;
+                const players = fresh.players || [];
+                const allAnswered = players.length > 0 && players.every(p =>
+                    p.answers && p.answers[String(idx)] !== undefined);
+                if (allAnswered) {
+                    const total = fresh.questions?.length || GAME_QUESTIONS;
+                    if (idx + 1 >= total) {
+                        finishGame(fresh._id);
+                    } else {
+                        setOpponentAnswered(false);
+                        setCurrentQuestionIndex(idx + 1);
+                    }
+                }
             }
             if (fresh.status === 'ended') {
                 setFlow('result');
