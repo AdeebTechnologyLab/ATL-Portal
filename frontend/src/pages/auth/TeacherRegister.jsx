@@ -784,6 +784,7 @@ const TeacherRegister = () => {
                                         <option value="">Select Type</option>
                                         <option value="On-Site">On-Site</option>
                                         <option value="Online">Online</option>
+                                        {/* On-Site is a valid option — backend accepts attendType */}
                                     </select>
                                     <BookOpen className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                                     <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />

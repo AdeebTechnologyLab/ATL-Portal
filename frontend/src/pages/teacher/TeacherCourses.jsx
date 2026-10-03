@@ -277,6 +277,7 @@ const TeacherCourses = ({ isDashboard = false, initialSearchMode = 'courses' }) 
 
             const totalPending = coursesWithData.reduce((acc, c) => acc + (c.pendingAssignments || 0), 0);
             const totalUnreadMessages = coursesWithData.reduce((acc, c) => acc + (c.unreadMessages || 0), 0);
+            const pendingReviews = coursesWithData.reduce((acc, c) => acc + (c.pendingAssignments || 0), 0);
             const todayPresent = coursesWithData.reduce((acc, c) => acc + (c.presentCount || 0), 0);
             const todayAbsent = coursesWithData.reduce((acc, c) => acc + (c.absentCount || 0), 0);
 
@@ -285,6 +286,7 @@ const TeacherCourses = ({ isDashboard = false, initialSearchMode = 'courses' }) 
                 activeStudents: totalActiveStudents,
                 activeInterns: totalActiveInterns,
                 pendingAssignments: totalPending + totalUnreadMessages,
+                pendingReviews,
                 todayPresent,
                 todayAbsent,
             });
@@ -463,11 +465,12 @@ const TeacherCourses = ({ isDashboard = false, initialSearchMode = 'courses' }) 
                             onClick={() => navigate('/teacher/quick-attendance', { state: { initialCategory: 'interns' } })}
                         />
                         <StatCard
-                            title={t('teacherDashboard.pendingGradings')}
-                            value={summaryStats.pendingAssignments}
+                            title={t('teacherDashboard.pendingReviews')}
+                            value={summaryStats.pendingReviews}
                             icon={FileText}
                             iconBg="bg-amber-50"
                             iconColor="text-amber-600"
+                            onClick={() => navigate('/teacher/attendance')}
                         />
                         <StatCard
                             title={t('teacherDashboard.todaysPresent')}
