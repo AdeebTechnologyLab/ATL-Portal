@@ -1,10 +1,7 @@
 const nodemailer = require('nodemailer');
-const axios = require('axios');
 
 let transporter = null;
 let transporterConfigKey = null;
-
-const BREVO_API_URL = 'https://api.brevo.com/v3/smtp/email';
 
 const buildTransportOptions = (useAltPort = false) => {
     const user = process.env.EMAIL_USER;
@@ -49,9 +46,6 @@ const getTransporter = (useAltPort = false) => {
 };
 
 const isEmailConfigured = () => {
-    if (process.env.BREVO_API_KEY) {
-        return Boolean(process.env.EMAIL_FROM || process.env.EMAIL_USER);
-    }
     return Boolean(process.env.EMAIL_USER && process.env.EMAIL_PASS);
 };
 
@@ -66,43 +60,7 @@ const isRetryableSmtpError = (error) => {
     );
 };
 
-const sendEmailViaBrevo = async ({ to, subject, html, text }) => {
-    const apiKey = process.env.BREVO_API_KEY;
-    if (!apiKey) {
-        throw new Error('BREVO_API_KEY not set');
-    }
-
-    const senderEmail = process.env.EMAIL_FROM || process.env.EMAIL_USER;
-    if (!senderEmail) {
-        throw new Error('EMAIL_FROM or EMAIL_USER must be set when using Brevo. Also verify this email in Brevo Settings > Senders.');
-    }
-
-    const payload = {
-        sender: { name: 'Adeeb Technology Lab', email: senderEmail },
-        to: [{ email: to }],
-        subject,
-        htmlContent: html,
-        textContent: text || '',
-    };
-
-    const response = await axios.post(BREVO_API_URL, payload, {
-        headers: {
-            'api-key': apiKey,
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
-        },
-        timeout: 15000,
-    });
-
-    console.log(`✅ Brevo email sent to ${to} (messageId: ${response.data.messageId})`);
-    return response.data;
-};
-
 const sendEmail = async ({ to, subject, html, text }) => {
-    if (process.env.BREVO_API_KEY) {
-        return sendEmailViaBrevo({ to, subject, html, text });
-    }
-
     const from = process.env.EMAIL_FROM || process.env.EMAIL_USER;
     let lastError;
 

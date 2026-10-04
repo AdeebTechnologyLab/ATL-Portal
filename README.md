@@ -40,16 +40,7 @@ Open http://localhost:5173 — the frontend proxies `/api` to the backend (port 
 
 ## Forgot password / reset email
 
-### Option A — Brevo (Sendinblue) API (recommended for Render)
-
-1. Create a free account at https://www.brevo.com
-2. Go to **Settings → API Keys** and copy the **API key** (starts with `xkeysib-...`).
-3. In `backend/.env` set:
-   - `BREVO_API_KEY=xkeysib-...`
-4. On **Render** (production API), add `BREVO_API_KEY` in Environment.
-5. Restart backend.
-
-### Option B — Gmail App Password
+### Gmail App Password
 
 1. Enable 2-Step Verification on the Gmail account.
 2. Create an App Password: https://myaccount.google.com/apppasswords
@@ -59,14 +50,12 @@ Open http://localhost:5173 — the frontend proxies `/api` to the backend (port 
 4. On **Render** (production API), add the same `EMAIL_USER` and `EMAIL_PASS` in Environment.
 5. Restart backend after changing `.env`.
 
-**Note:** Gmail SMTP is often blocked on Render free tier. If emails fail, switch to Brevo (Option A).
+**Note:** Gmail SMTP is often blocked on Render free tier. If emails fail, check your Gmail App Password.
 
 If you see *"Cannot reach the server"*, run `npm run dev` in the `backend` folder.
 
 ### Common gotchas
 
-- **Wrong key type**: `xsmtpsib-...` is the SMTP key (wrong). Use `xkeysib-...` from **Brevo → Settings → API Keys**.
-- **Sender not verified**: Verify your sender email in Brevo dashboard under **Senders** tab.
 - **Deploy**: Push code to GitHub — Render (backend) and Vercel (frontend) redeploy automatically.
 - **Frontend**: Set `VITE_API_URL=https://lms-adeeb-technology-lab.onrender.com/api` in Vercel env.
 

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
     Search, Eye, CheckCircle, XCircle, Clock, AlertCircle,
-    Plus, Trash2, Calendar, DollarSign, FileText, ArrowLeft, MapPin, Users, CheckCircle2, Mail, Download
+    Plus, Trash2, Calendar, DollarSign, FileText, ArrowLeft, MapPin, Users, CheckCircle2, Mail, Download, Table
 } from 'lucide-react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -29,6 +29,9 @@ const FeeVerification = () => {
     const [selectedCourse, setSelectedCourse] = useState(null); // For Course Grouping
     const [studentStatusFilter, setStudentStatusFilter] = useState('all'); // 'all', 'active', 'completed'
     const [allEnrollments, setAllEnrollments] = useState([]);
+
+    // Table mode toggle
+    const [tableMode, setTableMode] = useState(false);
 
     // Filters State
     const [selectedRoles, setSelectedRoles] = useState([]); // 'students', 'interns'
@@ -450,9 +453,22 @@ const FeeVerification = () => {
                     <button
                         onClick={() => setActiveTab('payment-methods')}
                         className={`px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-bold transition-all ${activeTab === 'payment-methods' ? 'bg-white shadow text-primary' : 'text-gray-500 hover:text-gray-700'
-                            }`}
-                    >
+                            }`}                        >
                         Payment Methods
+                    </button>
+                </div>
+                <div className="flex items-center gap-2">
+                    <button
+                        onClick={() => setTableMode(!tableMode)}
+                        className={`px-3 py-2 rounded-lg text-[11px] sm:text-xs font-bold transition-all border ${tableMode ? 'bg-primary/10 text-primary border-primary/30' : 'bg-gray-100 text-gray-500 border-gray-200 hover:bg-gray-200/60'}
+                            `}
+                        title={tableMode ? 'Switch to card view' : 'Switch to table view'}
+                    >
+                        <span className="flex items-center gap-2">
+                            <Table className="w-4 h-4" />
+                            <span className="hidden sm:inline">{tableMode ? 'Card View' : 'Table View'}</span>
+                            <span className="sm:hidden">{tableMode ? 'Card' : 'Table'}</span>
+                        </span>
                     </button>
                 </div>
                 <AssignScreenButton screenId="fee_verification" />
@@ -561,8 +577,99 @@ const FeeVerification = () => {
                                 No receipts to verify matching your filters
                             </div>
                         ) : (
-                            <div className="grid gap-4">
-                                {getFilteredFees(fees).map(fee => (
+                            <>
+                              {/* Table Mode */}
+                              {tableMode && (
+                                <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900">
+                                  <table className="w-full min-w-[1000px]">
+                                    <thead className="bg-gray-50 dark:bg-slate-800/50 sticky top-0 z-10">
+                                      <tr className="text-left text-xs font-black uppercase tracking-wider text-gray-500 dark:text-slate-400">
+                                        <th className="px-4 py-3">Student</th>
+                                        <th className="px-4 py-3 hidden md:table-cell">Course</th>
+                                        <th className="px-4 py-3 hidden lg:table-cell">Audience</th>
+                                        <th className="px-4 py-3">Slip ID</th>
+                                        <th className="px-4 py-3">Submitted</th>
+                                        <th className="px-4 py-3 text-right">Amount</th>
+                                        <th className="px-4 py-3">Status</th>
+                                        <th className="px-4 py-3 text-right">Actions</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
+                                      {getFilteredFees(fees).map(fee =>
+                                        (fee.installments || []).filter(i => i.status === 'submitted').map(inst => (
+                                          <tr key={`${fee._id}-${inst._id}`} className="hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors">
+                                            <td className="px-4 py-3">
+                                              <div className="flex items-center gap-3">
+                                                {fee.user?.photo ? (
+                                                  <img src={fee.user.photo} alt={fee.user.name} className="w-8 h-8 rounded-full object-cover border" />
+                                                ) : (
+                                                  <div className="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center text-amber-600 font-bold text-sm">
+                                                    {fee.user?.name?.charAt(0)}
+                                                  </div>
+                                                )}
+                                                <div className="min-w-0">
+                                                  <p className="font-medium text-gray-900 dark:text-white truncate max-w-[200px]">{fee.user?.name || 'Unknown'}</p>
+                                                  <p className="text-xs text-gray-500 flex items-center gap-2">
+                                                    {fee.user?.rollNo && <span className="bg-primary/10 text-primary px-1.5 py-0.5 rounded text-[9px] font-black">Roll# {fee.user.rollNo}</span>}
+                                                    {fee.user?.phone && <span className="hidden sm:inline">📞 {fee.user.phone}</span>}
+                                                  </p>
+                                                </div>
+                                              </div>
+                                            </td>
+                                            <td className="px-4 py-3 hidden md:table-cell">
+                                              <p className="font-medium text-gray-900 dark:text-white truncate max-w-[180px]">{fee.course?.title || 'N/A'}</p>
+                                              <p className="text-xs text-gray-500 flex items-center gap-1.5">
+                                                <MapPin className="w-3 h-3" /> {fee.course?.city || 'N/A'}
+                                              </p>
+                                            </td>
+                                            <td className="px-4 py-3 hidden lg:table-cell">
+                                              <span className={`px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-widest ${fee.course?.targetAudience === 'students' ? 'bg-primary/10 text-primary border border-primary/20' : 'bg-indigo-100 text-indigo-700 border border-indigo-200'}`}>
+                                                {fee.course?.targetAudience}
+                                              </span>
+                                            </td>
+                                            <td className="px-4 py-3 font-mono text-sm text-gray-700 dark:text-gray-300">{inst.slipId || 'N/A'}</td>
+                                            <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">{formatDate(inst.paidAt)}</td>
+                                            <td className="px-4 py-3 text-right font-bold text-gray-900 dark:text-white">Rs {(inst.amount || 0).toLocaleString()}</td>
+                                            <td className="px-4 py-3">
+                                              <span className="inline-flex items-center px-2 py-1 rounded-full text-[10px] font-bold bg-amber-100 text-amber-700 border border-amber-200">
+                                                Submitted
+                                              </span>
+                                            </td>
+                                            <td className="px-4 py-3 text-right">
+                                              <div className="flex items-center justify-end gap-2">
+                                                <button
+                                                  onClick={() => handleViewScreenshot({ ...inst, feeId: fee._id, student: fee.user?.name, course: fee.course?.title })}
+                                                  className="p-2 text-primary hover:bg-primary/10 rounded-lg transition-colors"
+                                                  title="View Receipt"
+                                                >
+                                                  <Eye className="w-4 h-4" />
+                                                </button>
+                                                <button
+                                                  onClick={() => handleVerify(fee._id, inst._id)}
+                                                  className="px-3 py-1.5 bg-primary hover:bg-primary text-white rounded-lg text-xs font-bold flex items-center gap-1.5"
+                                                >
+                                                  <CheckCircle className="w-3.5 h-3.5" /> Verify
+                                                </button>
+                                                <button
+                                                  onClick={() => handleReject(fee._id, inst._id)}
+                                                  className="px-3 py-1.5 bg-rose-100 hover:bg-rose-200 text-rose-700 rounded-lg text-xs font-bold flex items-center gap-1.5"
+                                                >
+                                                  <XCircle className="w-3.5 h-3.5" /> Reject
+                                                </button>
+                                              </div>
+                                            </td>
+                                          </tr>
+                                        ))
+                                      )}
+                                    </tbody>
+                                  </table>
+                                </div>
+                              )}
+
+                              {/* Card Mode (Default) */}
+                              {!tableMode && (
+                                <div className="grid gap-4">
+                                  {getFilteredFees(fees).map(fee => (
                                     (fee.installments || []).filter(i => i.status === 'submitted').map(inst => (
                                         <motion.div key={`${fee._id}-${inst._id}`} layout className="w-full max-w-full min-w-0 bg-white dark:bg-slate-900 p-3 sm:p-6 rounded-xl sm:rounded-2xl border border-amber-200 dark:border-amber-900/40 shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-3 sm:gap-6">
                                             <div className="flex min-w-0 items-start sm:items-center gap-3 sm:gap-4">
@@ -605,99 +712,101 @@ const FeeVerification = () => {
                                                 </div>
                                             </div>
 
-                                            <div className="flex flex-row lg:flex-col items-center lg:items-end justify-between gap-2 border-t border-dashed border-gray-100 dark:border-slate-700 pt-3 lg:pt-0 lg:border-none">
-                                                <div className="text-left lg:text-right">
-                                                    <p className="text-lg sm:text-xl font-black text-gray-900">Rs {(inst.amount || 0).toLocaleString()}</p>
-                                                    <p className="text-[10px] font-black text-amber-600 uppercase tracking-widest">{inst.status}</p>
-                                                </div>
-                                                <div className="flex flex-nowrap items-center gap-1.5 sm:gap-2">
-                                                    <button onClick={() => handleViewScreenshot({ ...inst, feeId: fee._id, student: fee.user?.name, course: fee.course?.title })} className="w-10 h-10 sm:w-auto sm:px-4 sm:py-2.5 bg-primary hover:bg-primary text-white rounded-xl font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-primary/20" title="View Receipt">
-                                                        <Eye className="w-4 h-4" />
-                                                        <span className="hidden sm:inline">View Receipt</span>
-                                                    </button>
-
-                                                    {/* Reminder Buttons */}
-                                                    <div className="hidden" aria-hidden="true">
-                                                        <button
-                                                            onClick={() => {
-                                                                const phone = (fee.user?.phone || '').replace(/[^0-9]/g, '');
-                                                                const formattedPhone = phone.startsWith('0') ? '92' + phone.substring(1) : phone;
-                                                                const portalLink = "https://adeebtechhub.online/";
-                                                                const userLoc = fee.course?.city || fee.user?.location;
-                                                                const locString = userLoc ? ` ${userLoc.charAt(0).toUpperCase() + userLoc.slice(1)}` : '';
-                                                                const msg = `Assalam-o-Alaikum ${fee.user.name},\n\nThis is a reminder from *LMS Adeeb Technology Lab${locString}* regarding your course fee for *${fee.course?.title}*.\n\n*Status:* ${inst.status}\n*Amount:* Rs ${inst.amount?.toLocaleString()}\n*Due Date:* ${formatDate(inst.dueDate)}\n\nPlease submit your fee and upload the receipt on the portal: ${portalLink}\n\nThank you!`;
-                                                                window.open(`https://wa.me/${formattedPhone}?text=${encodeURIComponent(msg)}`, '_blank');
-                                                            }}
-                                                            className="h-9 w-9 p-0 sm:h-auto sm:w-auto sm:px-3 sm:py-1.5 bg-[#25D366] hover:bg-[#128C7E] text-white rounded-lg text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-1.5 transition-all shadow-sm shadow-green-200"
-                                                            title="Send WhatsApp Reminder"
-                                                        >
-                                                            <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
-                                                                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
-                                                            </svg>
-                                                            <span className="hidden sm:inline">Student Reminder</span>
-                                                        </button>
-
-                                                        <button
-                                                            onClick={() => {
-                                                                const rawPhone = fee.user.guardianPhone || fee.user.phone;
-                                                                if (!rawPhone) {
-                                                                    alert('No contact number found for this user.');
-                                                                    return;
-                                                                }
-                                                                const phone = rawPhone.replace(/[^0-9]/g, '');
-                                                                const formattedPhone = phone.startsWith('0') ? '92' + phone.substring(1) : phone;
-                                                                const portalLink = "https://adeebtechhub.online/";
-                                                                const userLoc = fee.course?.city || fee.user?.location;
-                                                                const locString = userLoc ? ` ${userLoc.charAt(0).toUpperCase() + userLoc.slice(1)}` : '';
-                                                                const msg = `Assalam-o-Alaikum ${fee.user.name},\n\nThis is a reminder from *LMS Adeeb Technology Lab${locString}* regarding your course fee for *${fee.course?.title}*.\n\n*Status:* ${inst.status}\n*Amount:* Rs ${inst.amount?.toLocaleString()}\n*Due Date:* ${formatDate(inst.dueDate)}\n\nPlease submit your fee and upload the receipt on the portal: ${portalLink}\n\nThank you!`;
-                                                                window.open(`https://wa.me/${formattedPhone}?text=${encodeURIComponent(msg)}`, '_blank');
-                                                            }}
-                                                            className="h-9 w-9 p-0 sm:h-auto sm:w-auto sm:px-3 sm:py-1.5 bg-rose-500 hover:bg-rose-600 text-white rounded-lg text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-1.5 transition-all shadow-sm shadow-rose-200"
-                                                            title="Send WhatsApp to Guardian"
-                                                        >
-                                                            <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
-                                                                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
-                                                        </svg>
-                                                        <span className="hidden sm:inline">Guardian Reminder</span>
-                                                    </button>
-
-                                                        {fee.user?.email ? (
-                                                            <a
-                                                                href={`https://mail.google.com/mail/?view=cm&fs=1&to=${fee.user.email}&su=${encodeURIComponent(`Fee Payment Reminder - ${fee.course?.title || 'LMS Adeeb Technology Lab'}`)}&body=${encodeURIComponent(`Assalam-o-Alaikum ${fee.user.name},\n\nThis is a reminder from LMS Adeeb Technology Lab${fee.course?.city || fee.user?.location ? ` ${fee.course?.city || fee.user?.location}` : ''} regarding your course fee for ${fee.course?.title}.\n\nStatus: ${inst.status}\nAmount: Rs ${inst.amount?.toLocaleString()}\nDue Date: ${formatDate(inst.dueDate)}\n\nPlease submit your fee and upload the receipt on the portal: https://adeebtechhub.online/\n\nThank you!`)}`}
-                                                                target="_blank"
-                                                                rel="noopener noreferrer"
-                                                                className="h-9 w-9 p-0 sm:h-auto sm:w-auto sm:px-3 sm:py-1.5 bg-sky-500 hover:bg-sky-600 text-white rounded-lg text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-1.5 transition-all shadow-sm shadow-sky-100"
-                                                                title="Send Gmail Reminder"
-                                                            >
-                                                                <Mail className="w-3.5 h-3.5" />
-                                                                <span className="hidden sm:inline">Email</span>
-                                                            </a>
-                                                        ) : (
-                                                            <button
-                                                                onClick={() => alert('Student email address not found.')}
-                                                                className="px-3 py-1.5 bg-gray-400 text-white rounded-lg text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5 cursor-not-allowed transition-all shadow-sm"
-                                                                title="Email Missing"
-                                                            >
-                                                                <Mail className="w-3.5 h-3.5" />
-                                                                Email
-                                                            </button>
-                                                        )}
+                                            {/* Phone: amount left + buttons right with divider | Desktop: amount top, divider, buttons below */}
+                                            <div className="w-full lg:w-auto border-t border-dashed border-gray-200 dark:border-slate-700 pt-3 lg:border-t-0 lg:pt-0">
+                                                <div className="flex items-center justify-between gap-2 lg:flex-col lg:items-end lg:gap-2">
+                                                    <div className="text-left lg:text-right">
+                                                        <p className="text-lg sm:text-xl font-black text-gray-900">Rs {(inst.amount || 0).toLocaleString()}</p>
+                                                        <p className="text-[10px] font-black text-amber-600 uppercase tracking-widest">{inst.status}</p>
                                                     </div>
+                                                    <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 lg:justify-end">
+                                                        <button onClick={() => handleViewScreenshot({ ...inst, feeId: fee._id, student: fee.user?.name, course: fee.course?.title })} className="h-9 px-2.5 sm:px-3.5 bg-primary hover:bg-primary text-white rounded-lg text-[10px] sm:text-xs font-bold uppercase tracking-wide flex items-center justify-center gap-1.5 transition-all shadow-sm hover:shadow-md" title="View Receipt">
+                                                            <Eye className="w-3.5 h-3.5 shrink-0" />
+                                                            <span className="truncate hidden sm:inline">View Receipt</span>
+                                                            <span className="truncate sm:hidden">View</span>
+                                                        </button>
+                                                        <button
+                                                        onClick={() => {
+                                                            const phone = (fee.user?.phone || '').replace(/[^0-9]/g, '');
+                                                            const formattedPhone = phone.startsWith('0') ? '92' + phone.substring(1) : phone;
+                                                            const portalLink = "https://adeebtechhub.online/";
+                                                            const userLoc = fee.course?.city || fee.user?.location;
+                                                            const locString = userLoc ? ` ${userLoc.charAt(0).toUpperCase() + userLoc.slice(1)}` : '';
+                                                            const msg = `Assalam-o-Alaikum ${fee.user.name},\n\nThis is a reminder from *LMS Adeeb Technology Lab${locString}* regarding your course fee for *${fee.course?.title}*.\n\n*Status:* ${inst.status}\n*Amount:* Rs ${inst.amount?.toLocaleString()}\n*Due Date:* ${formatDate(inst.dueDate)}\n\nPlease submit your fee and upload the receipt on the portal: ${portalLink}\n\nThank you!`;
+                                                            window.open(`https://wa.me/${formattedPhone}?text=${encodeURIComponent(msg)}`, '_blank');
+                                                        }}
+                                                        className="flex-1 sm:flex-none min-w-0 h-9 px-2.5 sm:px-3.5 bg-[#25D366] hover:bg-[#128C7E] text-white rounded-lg text-[10px] sm:text-xs font-bold uppercase tracking-wide flex items-center justify-center gap-1.5 transition-all shadow-sm hover:shadow-md"
+                                                        title="Send WhatsApp Reminder"
+                                                    >
+                                                        <svg className="w-3.5 h-3.5 shrink-0 fill-current" viewBox="0 0 24 24">
+                                                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
+                                                        </svg>
+                                                        <span className="truncate">Student</span>
+                                                    </button>
+
+                                                    <button
+                                                        onClick={() => {
+                                                            const rawPhone = fee.user.guardianPhone || fee.user.phone;
+                                                            if (!rawPhone) {
+                                                                alert('No contact number found for this user.');
+                                                                return;
+                                                            }
+                                                            const phone = rawPhone.replace(/[^0-9]/g, '');
+                                                            const formattedPhone = phone.startsWith('0') ? '92' + phone.substring(1) : phone;
+                                                            const portalLink = "https://adeebtechhub.online/";
+                                                            const userLoc = fee.course?.city || fee.user?.location;
+                                                            const locString = userLoc ? ` ${userLoc.charAt(0).toUpperCase() + userLoc.slice(1)}` : '';
+                                                            const msg = `Assalam-o-Alaikum ${fee.user.name},\n\nThis is a reminder from *LMS Adeeb Technology Lab${locString}* regarding your course fee for *${fee.course?.title}*.\n\n*Status:* ${inst.status}\n*Amount:* Rs ${inst.amount?.toLocaleString()}\n*Due Date:* ${formatDate(inst.dueDate)}\n\nPlease submit your fee and upload the receipt on the portal: ${portalLink}\n\nThank you!`;
+                                                            window.open(`https://wa.me/${formattedPhone}?text=${encodeURIComponent(msg)}`, '_blank');
+                                                        }}
+                                                        className="flex-1 sm:flex-none min-w-0 h-9 px-2.5 sm:px-3.5 bg-rose-500 hover:bg-rose-600 text-white rounded-lg text-[10px] sm:text-xs font-bold uppercase tracking-wide flex items-center justify-center gap-1.5 transition-all shadow-sm hover:shadow-md"
+                                                        title="Send WhatsApp to Guardian"
+                                                    >
+                                                        <svg className="w-3.5 h-3.5 shrink-0 fill-current" viewBox="0 0 24 24">
+                                                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
+                                                        </svg>
+                                                        <span className="truncate">Guardian</span>
+                                                    </button>
+
+                                                    {fee.user?.email ? (
+                                                        <a
+                                                            href={`https://mail.google.com/mail/?view=cm&fs=1&to=${fee.user.email}&su=${encodeURIComponent(`Fee Payment Reminder - ${fee.course?.title || 'LMS Adeeb Technology Lab'}`)}&body=${encodeURIComponent(`Assalam-o-Alaikum ${fee.user.name},\n\nThis is a reminder from LMS Adeeb Technology Lab${fee.course?.city || fee.user?.location ? ` ${fee.course?.city || fee.user?.location}` : ''} regarding your course fee for ${fee.course?.title}.\n\nStatus: ${inst.status}\nAmount: Rs ${inst.amount?.toLocaleString()}\nDue Date: ${formatDate(inst.dueDate)}\n\nPlease submit your fee and upload the receipt on the portal: https://adeebtechhub.online/\n\nThank you!`)}`}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="flex-1 sm:flex-none min-w-0 h-9 px-2.5 sm:px-3.5 bg-sky-500 hover:bg-sky-600 text-white rounded-lg text-[10px] sm:text-xs font-bold uppercase tracking-wide flex items-center justify-center gap-1.5 transition-all shadow-sm hover:shadow-md"
+                                                            title="Send Gmail Reminder"
+                                                        >
+                                                            <Mail className="w-3.5 h-3.5 shrink-0" />
+                                                            <span className="truncate">Email</span>
+                                                        </a>
+                                                    ) : (
+                                                        <button
+                                                            onClick={() => alert('Student email address not found.')}
+                                                            className="flex-1 sm:flex-none min-w-0 h-9 px-2.5 sm:px-3.5 bg-gray-300 dark:bg-gray-600 text-gray-600 dark:text-gray-300 rounded-lg text-[10px] sm:text-xs font-bold uppercase tracking-wide flex items-center justify-center gap-1.5 cursor-not-allowed opacity-70"
+                                                            title="Email Missing"
+                                                        >
+                                                            <Mail className="w-3.5 h-3.5 shrink-0" />
+                                                            <span className="truncate">Email</span>
+                                                        </button>
+                                                    )}
                                                     <button
                                                         onClick={() => handleDeleteInstallment(fee._id, inst._id)}
-                                                        className="w-10 h-10 flex items-center justify-center bg-gray-100 hover:bg-red-50 text-gray-500 hover:text-red-600 rounded-xl transition-all border border-transparent hover:border-red-100"
+                                                        className="shrink-0 h-9 w-9 flex items-center justify-center text-red-400 hover:text-red-600 hover:bg-red-100 rounded-lg transition-all"
                                                         title="Delete Month"
                                                     >
                                                         <Trash2 className="w-4 h-4" />
                                                     </button>
                                                 </div>
                                             </div>
+                                        </div>
                                         </motion.div>
                                     ))
                                 ))}
                             </div>
+                          )}
+                        </>
                         )}
-                    </div>
+                      </div>
 
                     {/* Section 2: Awaiting Payment (Info) */}
                     <div>
@@ -711,9 +820,103 @@ const FeeVerification = () => {
                                 No pending payments matching your filters
                             </div>
                         ) : (
-                            <div className="grid gap-3">
-                                {getFilteredFees(fees).map(fee => (
-                                    (fee.installments || []).filter(i => i.status === 'pending' || i.status === 'rejected' || i.status === 'overdue').map(inst => (
+                            <>
+                              {/* Table Mode */}
+                              {tableMode && (
+                                <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900">
+                                  <table className="w-full min-w-[1000px]">
+                                    <thead className="bg-gray-50 dark:bg-slate-800/50 sticky top-0 z-10">
+                                      <tr className="text-left text-xs font-black uppercase tracking-wider text-gray-500 dark:text-slate-400">
+                                        <th className="px-4 py-3">Student</th>
+                                        <th className="px-4 py-3 hidden md:table-cell">Course</th>
+                                        <th className="px-4 py-3 hidden lg:table-cell">Audience</th>
+                                        <th className="px-4 py-3">Due Date</th>
+                                        <th className="px-4 py-3 text-right">Amount</th>
+                                        <th className="px-4 py-3">Status</th>
+                                        <th className="px-4 py-3 text-right">Actions</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
+                                      {getFilteredFees(fees).map(fee =>
+                                        (fee.installments || []).filter(i => i.status === 'pending' || i.status === 'rejected' || i.status === 'overdue').map(inst => (
+                                          <tr key={`${fee._id}-${inst._id}`} className="hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors">
+                                            <td className="px-4 py-3">
+                                              <div className="flex items-center gap-3">
+                                                {fee.user?.photo ? (
+                                                  <img src={fee.user.photo} alt={fee.user.name} className="w-8 h-8 rounded-full object-cover border" />
+                                                ) : (
+                                                  <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center text-red-600 font-bold text-sm">
+                                                    {fee.user?.name?.charAt(0)}
+                                                  </div>
+                                                )}
+                                                <div className="min-w-0">
+                                                  <p className="font-medium text-gray-900 dark:text-white truncate max-w-[200px]">{fee.user?.name || 'Unknown'}</p>
+                                                  <p className="text-xs text-gray-500 flex items-center gap-2">
+                                                    {fee.user?.rollNo && <span className="bg-primary/10 text-primary px-1.5 py-0.5 rounded text-[9px] font-black">Roll# {fee.user.rollNo}</span>}
+                                                    {fee.user?.phone && <span className="hidden sm:inline">📞 {fee.user.phone}</span>}
+                                                  </p>
+                                                </div>
+                                              </div>
+                                            </td>
+                                            <td className="px-4 py-3 hidden md:table-cell">
+                                              <p className="font-medium text-gray-900 dark:text-white truncate max-w-[180px]">{fee.course?.title || 'N/A'}</p>
+                                              <p className="text-xs text-gray-500 flex items-center gap-1.5">
+                                                <MapPin className="w-3 h-3" /> {fee.course?.city || 'N/A'}
+                                              </p>
+                                            </td>
+                                            <td className="px-4 py-3 hidden lg:table-cell">
+                                              <span className={`px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-widest ${fee.course?.targetAudience === 'students' ? 'bg-primary/10 text-primary border border-primary/20' : 'bg-indigo-100 text-indigo-700 border border-indigo-200'}`}>
+                                                {fee.course?.targetAudience}
+                                              </span>
+                                            </td>
+                                            <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">{formatDate(inst.dueDate)}</td>
+                                            <td className="px-4 py-3 text-right font-bold text-gray-900 dark:text-white">Rs {(inst.amount || 0).toLocaleString()}</td>
+                                            <td className="px-4 py-3">
+                                              <span className="inline-flex items-center px-2 py-1 rounded-full text-[10px] font-bold bg-red-100 text-red-700 border border-red-200 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800">
+                                                {inst.status === 'rejected' ? 'Rejected' : inst.status === 'overdue' ? 'Overdue' : 'Pending'}
+                                              </span>
+                                            </td>
+                                            <td className="px-4 py-3 text-right">
+                                              <div className="flex items-center justify-end gap-2">
+                                                <button
+                                                  onClick={() => {
+                                                    const phone = (fee.user?.phone || '').replace(/[^0-9]/g, '');
+                                                    const formattedPhone = phone.startsWith('0') ? '92' + phone.substring(1) : phone;
+                                                    const portalLink = "https://adeebtechhub.online/";
+                                                    const userLoc = fee.course?.city || fee.user?.location;
+                                                    const locString = userLoc ? ` ${userLoc.charAt(0).toUpperCase() + userLoc.slice(1)}` : '';
+                                                    const msg = `Assalam-o-Alaikum ${fee.user.name},\n\nThis is a reminder from *LMS Adeeb Technology Lab${locString}* regarding your course fee for *${fee.course?.title}*.\n\n*Status:* ${inst.status}\n*Amount:* Rs ${inst.amount?.toLocaleString()}\n*Due Date:* ${formatDate(inst.dueDate)}\n\nPlease submit your fee and upload the receipt on the portal: ${portalLink}\n\nThank you!`;
+                                                    window.open(`https://wa.me/${formattedPhone}?text=${encodeURIComponent(msg)}`, '_blank');
+                                                  }}
+                                                  className="p-2 text-green-600 hover:bg-green-100 rounded-lg transition-colors"
+                                                  title="Send WhatsApp Reminder"
+                                                >
+                                                  <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                                                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
+                                                  </svg>
+                                                </button>
+                                                <button
+                                                  onClick={() => handleDeleteInstallment(fee._id, inst._id)}
+                                                  className="p-2 text-red-400 hover:text-red-600 hover:bg-red-100 rounded-lg transition-all"
+                                                  title="Delete this fee challan only"
+                                                >
+                                                  <Trash2 className="w-4 h-4" />
+                                                </button>
+                                              </div>
+                                            </td>
+                                          </tr>
+                                        ))
+                                      )}
+                                    </tbody>
+                                  </table>
+                                </div>
+                              )}
+
+                              {/* Card Mode (Default) */}
+                              {!tableMode && (
+                                <div className="grid gap-3">
+                                    {getFilteredFees(fees).map(fee => (
+                                        (fee.installments || []).filter(i => i.status === 'pending' || i.status === 'rejected' || i.status === 'overdue').map(inst => (
                                         <div key={`${fee._id}-${inst._id}`} className="w-full max-w-full min-w-0 bg-red-50/50 dark:bg-red-900/5 p-3 sm:p-4 rounded-xl border border-red-100 dark:border-red-900/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 transition-all group hover:bg-red-50 dark:hover:bg-red-900/10">
                                             <div className="flex min-w-0 items-center gap-3">
                                                 {fee.user?.photo ? (
@@ -752,12 +955,14 @@ const FeeVerification = () => {
                                                     </p>
                                                 </div>
                                             </div>
-                                            <div className="flex items-center justify-between sm:justify-end gap-2 sm:gap-3 border-t border-dashed border-red-200/50 pt-3 sm:pt-0 sm:border-none">
-                                                <div className="min-w-0 text-left sm:mr-2 sm:text-right">
-                                                    <span className="block whitespace-nowrap text-sm font-black text-red-600 dark:text-red-400 sm:inline">Rs {(inst.amount || 0).toLocaleString()}</span>
-                                                    <span className="mt-1 inline-block text-[8px] sm:ml-2 sm:mt-0 sm:text-[10px] font-black uppercase tracking-wider sm:tracking-widest bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded">Pending</span>
-                                                </div>
-                                                <div className="grid grid-cols-4 items-center gap-1.5 sm:flex sm:flex-wrap sm:gap-2">
+                                            {/* Phone: amount left + buttons right with divider | Desktop: amount top, divider, buttons below */}
+                                            <div className="w-full lg:w-auto border-t border-dashed border-red-200/50 dark:border-red-900/30 pt-3 lg:border-t-0 lg:pt-0">
+                                                <div className="flex items-center justify-between gap-2 lg:flex-col lg:items-end lg:gap-2">
+                                                    <div className="text-left lg:text-right">
+                                                        <span className="block whitespace-nowrap text-sm font-black text-red-600 dark:text-red-400">Rs {(inst.amount || 0).toLocaleString()}</span>
+                                                        <span className="mt-1 inline-block text-[8px] sm:text-[10px] font-black uppercase tracking-wider sm:tracking-widest bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded">Pending</span>
+                                                    </div>
+                                                    <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 lg:justify-end">
                                                     <button
                                                         onClick={() => {
                                                             const phone = fee.user.phone.replace(/[^0-9]/g, '');
@@ -768,13 +973,13 @@ const FeeVerification = () => {
                                                             const msg = `Assalam-o-Alaikum ${fee.user.name},\n\nThis is a reminder from *LMS Adeeb Technology Lab${locString}* regarding your course fee for *${fee.course?.title}*.\n\n*Status:* Pending\n*Amount:* Rs ${inst.amount?.toLocaleString()}\n*Due Date:* ${formatDate(inst.dueDate)}\n\nPlease submit your fee and upload the receipt on the portal: ${portalLink}\n\nThank you!`;
                                                             window.open(`https://wa.me/${formattedPhone}?text=${encodeURIComponent(msg)}`, '_blank');
                                                         }}
-                                                        className="h-9 w-9 p-0 sm:h-auto sm:w-auto sm:px-3 sm:py-1.5 bg-[#25D366] hover:bg-[#128C7E] text-white rounded-lg text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-1.5 transition-all shadow-sm shadow-green-200"
+                                                        className="flex-1 sm:flex-none min-w-0 h-9 px-2.5 sm:px-3.5 bg-[#25D366] hover:bg-[#128C7E] text-white rounded-lg text-[10px] sm:text-xs font-bold uppercase tracking-wide flex items-center justify-center gap-1.5 transition-all shadow-sm hover:shadow-md"
                                                         title="Send WhatsApp Reminder"
                                                     >
-                                                        <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                                                        <svg className="w-3.5 h-3.5 shrink-0 fill-current" viewBox="0 0 24 24">
                                                             <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
                                                         </svg>
-                                                        <span className="hidden sm:inline">Student Reminder</span>
+                                                        <span className="truncate">Student</span>
                                                     </button>
                                                     <button
                                                         onClick={() => {
@@ -798,38 +1003,38 @@ const FeeVerification = () => {
                                                             const msg = `Assalam-o-Alaikum ${fee.user.name},\n\nThis is a reminder from *LMS Adeeb Technology Lab${locString}* regarding your course fee for *${fee.course?.title}*.\n\n*Status:* ${inst.status}\n*Amount:* Rs ${inst.amount?.toLocaleString()}\n*Due Date:* ${formatDate(inst.dueDate)}\n\nPlease submit your fee and upload the receipt on the portal: ${portalLink}\n\nThank you!`;
                                                             window.open(`https://wa.me/${formattedPhone}?text=${encodeURIComponent(msg)}`, '_blank');
                                                         }}
-                                                        className="h-9 w-9 p-0 sm:h-auto sm:w-auto sm:px-3 sm:py-1.5 bg-rose-500 hover:bg-rose-600 text-white rounded-lg text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-1.5 transition-all shadow-sm shadow-rose-200"
+                                                        className="flex-1 sm:flex-none min-w-0 h-9 px-2.5 sm:px-3.5 bg-rose-500 hover:bg-rose-600 text-white rounded-lg text-[10px] sm:text-xs font-bold uppercase tracking-wide flex items-center justify-center gap-1.5 transition-all shadow-sm hover:shadow-md"
                                                         title={`Guardian number: ${fee.user.guardianPhone || fee.user.phone || 'N/A'}${!fee.user.guardianPhone ? ' (guardian nahi — student ka number)' : ''}`}
                                                     >
-                                                        <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                                                        <svg className="w-3.5 h-3.5 shrink-0 fill-current" viewBox="0 0 24 24">
                                                             <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
                                                         </svg>
-                                                        <span className="hidden sm:inline">Guardian Reminder</span>
+                                                        <span className="truncate">Guardian</span>
                                                     </button>
                                                     {fee.user?.email ? (
                                                         <a
                                                             href={`https://mail.google.com/mail/?view=cm&fs=1&to=${fee.user.email}&su=${encodeURIComponent(`Fee Payment Reminder - ${fee.course?.title || 'LMS Adeeb Technology Lab'}`)}&body=${encodeURIComponent(`Assalam-o-Alaikum ${fee.user.name},\n\nThis is a reminder from LMS Adeeb Technology Lab${fee.course?.city || fee.user?.location ? ` ${fee.course?.city || fee.user?.location}` : ''} regarding your course fee for ${fee.course?.title}.\n\nStatus: Pending\nAmount: Rs ${inst.amount?.toLocaleString()}\nDue Date: ${formatDate(inst.dueDate)}\n\nPlease submit your fee and upload the receipt on the portal: https://adeebtechhub.online/\n\nThank you!`)}`}
                                                             target="_blank"
                                                             rel="noopener noreferrer"
-                                                            className="h-9 w-9 p-0 sm:h-auto sm:w-auto sm:px-3 sm:py-1.5 bg-sky-500 hover:bg-sky-600 text-white rounded-lg text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-1.5 transition-all shadow-sm shadow-sky-100"
+                                                            className="flex-1 sm:flex-none min-w-0 h-9 px-2.5 sm:px-3.5 bg-sky-500 hover:bg-sky-600 text-white rounded-lg text-[10px] sm:text-xs font-bold uppercase tracking-wide flex items-center justify-center gap-1.5 transition-all shadow-sm hover:shadow-md"
                                                             title="Send Gmail Reminder"
                                                         >
-                                                            <Mail className="w-3.5 h-3.5" />
-                                                            <span className="hidden sm:inline">Email</span>
+                                                            <Mail className="w-3.5 h-3.5 shrink-0" />
+                                                            <span className="truncate">Email</span>
                                                         </a>
                                                     ) : (
                                                         <button
                                                             onClick={() => alert('Student email address not found.')}
-                                                            className="px-3 py-1.5 bg-gray-400 text-white rounded-lg text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5 cursor-not-allowed"
+                                                            className="flex-1 sm:flex-none min-w-0 h-9 px-2.5 sm:px-3.5 bg-gray-300 dark:bg-gray-600 text-gray-600 dark:text-gray-300 rounded-lg text-[10px] sm:text-xs font-bold uppercase tracking-wide flex items-center justify-center gap-1.5 cursor-not-allowed opacity-70"
                                                             title="Email Missing"
                                                         >
-                                                            <Mail className="w-3.5 h-3.5" />
-                                                            Email
+                                                            <Mail className="w-3.5 h-3.5 shrink-0" />
+                                                            <span className="truncate">Email</span>
                                                         </button>
                                                     )}
                                                     <button
                                                         onClick={() => handleDeleteInstallment(fee._id, inst._id)}
-                                                        className="p-2 text-red-400 hover:text-red-600 hover:bg-red-100 rounded-lg transition-all"
+                                                        className="shrink-0 h-9 w-9 flex items-center justify-center text-red-400 hover:text-red-600 hover:bg-red-100 rounded-lg transition-all"
                                                         title="Delete this fee challan only"
                                                     >
                                                         <Trash2 className="w-4 h-4" />
@@ -837,12 +1042,15 @@ const FeeVerification = () => {
                                                 </div>
                                             </div>
                                         </div>
+                                    </div>
                                     ))
                                 ))}
                             </div>
-                        )}
-                    </div>
+                          )}
+                        </>
+                    )}
                 </div>
+            </div>
             )}
 
             {activeTab === 'all' && (
@@ -854,8 +1062,67 @@ const FeeVerification = () => {
                             <div className="flex items-center justify-between mb-4">
                                 <h2 className="text-lg font-bold text-gray-900">All Courses</h2>
                             </div>
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                {/* Group fees by course */}
+
+                            {/* Table Mode - Level 1: Courses */}
+                            {tableMode && (
+                              <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900">
+                                <table className="w-full min-w-[900px]">
+                                  <thead className="bg-gray-50 dark:bg-slate-800/50 sticky top-0 z-10">
+                                    <tr className="text-left text-xs font-black uppercase tracking-wider text-gray-500 dark:text-slate-400">
+                                      <th className="px-4 py-3">Course</th>
+                                      <th className="px-4 py-3">Location</th>
+                                      <th className="px-4 py-3">Audience</th>
+                                      <th className="px-4 py-3">Course Fee</th>
+                                      <th className="px-4 py-3">Students</th>
+                                      <th className="px-4 py-3">Active</th>
+                                      <th className="px-4 py-3">Completed</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
+                                    {Object.values(getFilteredFees(allFees).reduce((acc, fee) => {
+                                        if (fee.course) {
+                                            if (!acc[fee.course._id]) {
+                                                acc[fee.course._id] = {
+                                                    id: fee.course._id,
+                                                    title: fee.course.title,
+                                                    fee: fee.course.fee,
+                                                    location: fee.course.city || fee.course.location,
+                                                    targetAudience: fee.course.targetAudience,
+                                                    students: 0
+                                                };
+                                            }
+                                            acc[fee.course._id].students++;
+                                        }
+                                        return acc;
+                                    }, {})).map(course => {
+                                      const activeCount = allEnrollments.filter(e => String(e.course?._id || e.course) === String(course.id) && (e.status === 'enrolled' || e.status === 'pending')).length;
+                                      const completedCount = allEnrollments.filter(e => String(e.course?._id || e.course) === String(course.id) && e.status === 'completed').length;
+                                      return (
+                                        <tr key={course.id} className="hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer" onClick={() => setSelectedCourse(course.id)}>
+                                          <td className="px-4 py-3 font-medium text-gray-900 dark:text-white truncate max-w-[250px]">{course.title}</td>
+                                          <td className="px-4 py-3 flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-400">
+                                            <MapPin className="w-3.5 h-3.5" /> {course.location}
+                                          </td>
+                                          <td className="px-4 py-3">
+                                            <span className={`px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-widest ${course.targetAudience === 'students' ? 'bg-primary/10 text-primary border border-primary/20' : 'bg-indigo-100 text-indigo-700 border border-indigo-200'}`}>
+                                              {course.targetAudience}
+                                            </span>
+                                          </td>
+                                          <td className="px-4 py-3 font-bold text-gray-900 dark:text-white">Rs {course.fee?.toLocaleString()}</td>
+                                          <td className="px-4 py-3 text-center font-medium">{course.students}</td>
+                                          <td className="px-4 py-3 text-center text-primary font-medium">{activeCount}</td>
+                                          <td className="px-4 py-3 text-center text-green-600 font-medium">{completedCount}</td>
+                                        </tr>
+                                      );
+                                    })}
+                                  </tbody>
+                                </table>
+                              </div>
+                            )}
+
+                            {/* Card Mode (Default) - Level 1 */}
+                            {!tableMode && (
+                              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {Object.values(getFilteredFees(allFees).reduce((acc, fee) => {
                                     if (fee.course) {
                                         if (!acc[fee.course._id]) {
@@ -923,6 +1190,7 @@ const FeeVerification = () => {
                                     </div>
                                 )}
                             </div>
+                          )}
                         </>
                     ) : (
                         /* Level 2: Student List for Selected Course */
@@ -997,7 +1265,93 @@ const FeeVerification = () => {
                                 </div>
                             </div>
 
-                            <div className="grid gap-4">
+                            {/* Table Mode - Level 2: Student List */}
+                            {tableMode && (
+                              <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900">
+                                <table className="w-full min-w-[1000px]">
+                                  <thead className="bg-gray-50 dark:bg-slate-800/50 sticky top-0 z-10">
+                                    <tr className="text-left text-xs font-black uppercase tracking-wider text-gray-500 dark:text-slate-400">
+                                      <th className="px-4 py-3">Student</th>
+                                      <th className="px-4 py-3">Roll No</th>
+                                      <th className="px-4 py-3">Phone</th>
+                                      <th className="px-4 py-3">Course</th>
+                                      <th className="px-4 py-3">Audience</th>
+                                      <th className="px-4 py-3">Total Fee</th>
+                                      <th className="px-4 py-3">Paid</th>
+                                      <th className="px-4 py-3">Balance</th>
+                                      <th className="px-4 py-3">Status</th>
+                                      <th className="px-4 py-3 text-right">Actions</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
+                                    {getFilteredFees(allFees)
+                                      .filter(fee => String(fee.course?._id) === String(selectedCourse))
+                                      .filter(fee => {
+                                          if (studentStatusFilter === 'all') return true;
+                                          const enrollment = allEnrollments.find(e =>
+                                              String(e.user?._id || e.user) === String(fee.user?._id) &&
+                                              String(e.course?._id || e.course) === String(selectedCourse)
+                                          );
+                                          if (!enrollment) return studentStatusFilter === 'active';
+                                          if (studentStatusFilter === 'completed') return enrollment.status === 'completed';
+                                          if (studentStatusFilter === 'active') return enrollment.status !== 'completed';
+                                          return true;
+                                      })
+                                      .map(fee => (
+                                        <tr key={fee._id} className="hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors">
+                                          <td className="px-4 py-3">
+                                            <div className="flex items-center gap-3">
+                                              {fee.user?.photo ? (
+                                                <img src={fee.user.photo} alt={fee.user.name} className="w-8 h-8 rounded-full object-cover border" />
+                                              ) : (
+                                                <div className="w-8 h-8 bg-indigo-50 rounded-full flex items-center justify-center text-indigo-600 font-bold text-sm">
+                                                  {fee.user?.name?.charAt(0)}
+                                                </div>
+                                              )}
+                                              <span className="font-medium text-gray-900 dark:text-white truncate max-w-[180px]">{fee.user?.name || 'Unknown'}</span>
+                                            </div>
+                                          </td>
+                                          <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">{fee.user?.rollNo || 'N/A'}</td>
+                                          <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">{fee.user?.phone || 'N/A'}</td>
+                                          <td className="px-4 py-3 font-medium text-gray-900 dark:text-white truncate max-w-[150px]">{fee.course?.title || 'N/A'}</td>
+                                          <td className="px-4 py-3">
+                                            <span className={`px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-widest ${fee.course?.targetAudience === 'students' ? 'bg-primary/10 text-primary border border-primary/20' : 'bg-indigo-100 text-indigo-700 border border-indigo-200'}`}>
+                                              {fee.course?.targetAudience}
+                                            </span>
+                                          </td>
+                                          <td className="px-4 py-3 font-medium text-gray-900 dark:text-white">Rs {(fee.totalFee || 0).toLocaleString()}</td>
+                                          <td className="px-4 py-3 font-medium text-green-600">Rs {(fee.paidAmount || 0).toLocaleString()}</td>
+                                          <td className="px-4 py-3 font-bold text-red-600">Rs {((fee.totalFee || 0) - (fee.paidAmount || 0)).toLocaleString()}</td>
+                                          <td className="px-4 py-3">
+                                            <Badge variant={fee.status === 'verified' ? 'success' : 'warning'} className="text-[10px]">{fee.status}</Badge>
+                                          </td>
+                                          <td className="px-4 py-3 text-right">
+                                            <div className="flex items-center justify-end gap-2">
+                                              <button
+                                                onClick={() => handleManageInstallments(fee)}
+                                                className="px-3 py-1.5 bg-primary hover:bg-primary text-white rounded-lg text-xs font-bold flex items-center gap-1.5"
+                                              >
+                                                <FileText className="w-3.5 h-3.5" /> Manage
+                                              </button>
+                                              <button
+                                                onClick={() => handleDeleteClick(fee._id)}
+                                                className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors border border-gray-200"
+                                                title="Permanently remove fee & enrollment"
+                                              >
+                                                <Trash2 className="w-4 h-4" />
+                                              </button>
+                                            </div>
+                                          </td>
+                                        </tr>
+                                      ))}
+                                  </tbody>
+                                </table>
+                              </div>
+                            )}
+
+                            {/* Card Mode (Default) - Level 2 */}
+                            {!tableMode && (
+                              <div className="grid gap-4">
                                 {getFilteredFees(allFees)
                                     .filter(fee => String(fee.course?._id) === String(selectedCourse))
                                     .filter(fee => {
@@ -1075,6 +1429,7 @@ const FeeVerification = () => {
                                         </div>
                                     ))}
                             </div>
+                          )}
                         </div>
                     )}
                 </div>

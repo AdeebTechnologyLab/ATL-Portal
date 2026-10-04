@@ -52,7 +52,7 @@ const RegistrationLeftPanel = ({ formType, mobileOpen = false, onMobileClose }) 
 
     if (loading) {
         return (
-            <div className={`${mobileOpen ? 'flex' : 'hidden'} fixed inset-0 z-[100] items-center justify-center bg-black/60 p-4 backdrop-blur-sm lg:static lg:z-auto lg:flex lg:w-1/2 lg:h-screen lg:p-0 lg:bg-gray-50 lg:backdrop-blur-none`}>
+            <div className={`${mobileOpen ? 'flex' : 'hidden'} fixed inset-0 z-[100] items-center justify-center bg-black/60 p-4 backdrop-blur-sm lg:static lg:z-auto lg:flex lg:w-1/2 lg:h-screen lg:p-0 lg:bg-[#0f1117] lg:backdrop-blur-none`}>
                 <div className="bg-white rounded-2xl p-6 shadow-xl">
                     <Loader2 className="w-8 h-8 text-primary animate-spin" />
                 </div>
@@ -64,21 +64,75 @@ const RegistrationLeftPanel = ({ formType, mobileOpen = false, onMobileClose }) 
 
     const gradient = gradientMap[formType] || gradientMap.student;
     const FallbackIcon = iconFallbackMap[formType] || GraduationCap;
-    const statusColor = statusColorMap[pageData.statusInfo?.valueColor] || statusColorMap.green;
+
+    const parseDate = (dateStr) => {
+        if (!dateStr) return null;
+        const parsed = new Date(dateStr);
+        if (!isNaN(parsed)) return parsed;
+        const parts = dateStr.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})$/);
+        if (parts) {
+            const year = parts[3].length === 2 ? 2000 + Number(parts[3]) : Number(parts[3]);
+            return new Date(year, Number(parts[2]) - 1, Number(parts[1]));
+        }
+        const d = new Date(dateStr.replace(/(\d{1,2})\s+(\w+)\s+(\d{4})/i, '$2 $1, $3'));
+        return isNaN(d) ? null : d;
+    };
+
+    const lastDate = parseDate(pageData.statusInfo?.dateValue);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const isExpired = lastDate && lastDate < today;
+    const effectiveStatus = isExpired ? 'Closed' : (pageData.statusInfo?.value || 'Open');
+    const effectiveColor = isExpired ? 'red' : (pageData.statusInfo?.valueColor || 'green');
+    const statusColor = statusColorMap[effectiveColor] || statusColorMap.green;
 
     return (
         <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
-            className={`${mobileOpen ? 'flex' : 'hidden'} fixed inset-0 z-[100] items-center justify-center overflow-y-auto bg-black/60 p-4 backdrop-blur-sm lg:sticky lg:top-0 lg:z-auto lg:flex lg:w-1/2 lg:h-screen lg:overflow-hidden lg:bg-gray-50 lg:p-0 lg:backdrop-blur-none`}
+            className={`${mobileOpen ? 'block' : 'hidden'} fixed inset-0 z-[100] bg-black/60 p-4 backdrop-blur-sm lg:sticky lg:top-0 lg:z-auto lg:block lg:w-1/2 lg:h-screen lg:overflow-hidden lg:bg-gray-50 lg:p-0 lg:backdrop-blur-none`}
         >
-            {/* Gradient accent strip */}
-            <div className={`hidden lg:block absolute top-0 left-0 w-full h-2 bg-gradient-to-r ${gradient}`} />
+            {/* Dark gradient background - same as RoleSelection brand panel */}
+            <div className="absolute inset-0 z-0 hidden lg:block">
+                <div className="absolute inset-0 bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f0f23]">
+                    <div className="absolute top-20 left-20 w-72 h-72 bg-primary/20 rounded-full blur-3xl animate-pulse-slow" />
+                    <div className="absolute bottom-20 right-20 w-96 h-96 bg-primary/20 rounded-full blur-3xl animate-pulse-slow delay-300" />
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-pink-500/10 rounded-full blur-3xl animate-float" />
 
-            {/* Content */}
-            <div className="relative z-10 flex w-full max-w-lg flex-col items-center justify-start my-auto lg:my-0 lg:justify-center lg:w-full lg:h-full lg:max-w-none lg:p-12 lg:overflow-y-auto no-scrollbar">
-                <div className="relative w-full max-w-lg rounded-3xl border border-gray-200 bg-white p-6 shadow-2xl sm:p-8 lg:rounded-[2rem] lg:p-10 lg:shadow-xl">
+                    {/* Circuit Lines Background */}
+                    <svg className="absolute inset-0 w-full h-full opacity-[0.07]" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <pattern id="circuit" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+                                <path d="M10 10 L40 10 L40 40 L70 40 L70 70 L100 70" fill="none" stroke="currentColor" strokeWidth="0.5" className="text-primary" />
+                                <path d="M0 60 L30 60 L30 30 L60 30 L60 0" fill="none" stroke="currentColor" strokeWidth="0.5" className="text-primary" />
+                                <circle cx="10" cy="10" r="2" fill="currentColor" className="text-primary" />
+                                <circle cx="40" cy="40" r="2" fill="currentColor" className="text-primary" />
+                                <circle cx="70" cy="70" r="2" fill="currentColor" className="text-primary" />
+                                <circle cx="30" cy="60" r="2" fill="currentColor" className="text-primary" />
+                                <circle cx="60" cy="30" r="2" fill="currentColor" className="text-primary" />
+                                <circle cx="60" cy="0" r="2" fill="currentColor" className="text-primary" />
+                            </pattern>
+                        </defs>
+                        <rect width="100%" height="100%" fill="url(#circuit)" />
+                    </svg>
+
+                    {/* Animated circuit pulse */}
+                    <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+                        <div className="absolute top-[10%] left-[10%] w-px h-[60%] bg-gradient-to-b from-transparent via-primary/30 to-transparent animate-circuit-pulse" />
+                        <div className="absolute top-[30%] left-[30%] w-px h-[40%] bg-gradient-to-b from-transparent via-primary/20 to-transparent animate-circuit-pulse delay-200" />
+                        <div className="absolute top-[15%] right-[25%] w-px h-[50%] bg-gradient-to-b from-transparent via-primary/25 to-transparent animate-circuit-pulse delay-400" />
+                    </div>
+                </div>
+            </div>
+
+            {/* Gradient accent strip */}
+            <div className={`hidden lg:block absolute top-0 left-0 w-full h-2 bg-gradient-to-r ${gradient} z-20`} />
+
+            {/* Scrollable content container */}
+            <div className="relative z-10 h-full overflow-y-auto overflow-x-hidden custom-scrollbar">
+                <div className="flex min-h-full w-full flex-col items-center justify-center py-6 sm:py-8 lg:py-12 lg:px-12">
+                    <div className="relative w-full max-w-lg rounded-3xl border border-gray-200 bg-white p-6 shadow-2xl sm:p-8 lg:rounded-[2rem] lg:p-10 lg:shadow-xl">
                     {/* Logo */}
                     <div className="mb-8 flex items-center justify-between gap-3">
                         <div className="flex min-w-0 items-center gap-3">
@@ -105,12 +159,17 @@ const RegistrationLeftPanel = ({ formType, mobileOpen = false, onMobileClose }) 
 
                     {/* Announcement */}
                     {pageData.announcement && (
-                        <div className="mb-6 border border-gray-200 rounded-xl p-4">
+                        <div className="mb-6 border border-red-200/70 dark:border-red-500/30 bg-red-50/70 dark:bg-red-500/10 rounded-xl p-4">
                             <div className="flex items-center gap-2 mb-2">
-                                <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                                <h3 className="text-gray-900 font-semibold text-sm">{pageData.announcement.heading}</h3>
+                                <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                                <h3 className="text-gray-900 dark:text-white font-semibold text-sm">
+                                    {pageData.announcement.heading}
+                                </h3>
                             </div>
-                            <p className="text-gray-600 text-sm">{pageData.announcement.text}</p>
+                            <div
+                                className="registration-announcement-text text-sm leading-relaxed break-words"
+                                dangerouslySetInnerHTML={{ __html: pageData.announcement.text || '' }}
+                            />
                         </div>
                     )}
 
@@ -123,7 +182,7 @@ const RegistrationLeftPanel = ({ formType, mobileOpen = false, onMobileClose }) 
                                 </span>
                                 <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold ${statusColor.badge}`}>
                                     <span className={`w-1.5 h-1.5 rounded-full ${statusColor.bg}`} />
-                                    {pageData.statusInfo.value}
+                                    {effectiveStatus}
                                 </span>
                             </div>
                             <div className="bg-gray-50 border border-gray-100 rounded-xl p-3">
@@ -191,6 +250,7 @@ const RegistrationLeftPanel = ({ formType, mobileOpen = false, onMobileClose }) 
                             </div>
                         ))}
                     </div>
+                </div>
                 </div>
             </div>
         </motion.div>

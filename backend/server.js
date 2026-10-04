@@ -14,14 +14,7 @@ const mongoUri = process.env.MONGODB_URI || process.env.MONGO_URI;
 
 const { isEmailConfigured } = require('./utils/email');
 if (!isEmailConfigured()) {
-    const brevoMissing = process.env.BREVO_API_KEY && !process.env.EMAIL_FROM && !process.env.EMAIL_USER;
-    if (brevoMissing) {
-        console.warn('⚠️ BREVO_API_KEY set but EMAIL_FROM missing — also set EMAIL_FROM (verified Brevo sender) in env.');
-    } else {
-        console.warn('⚠️ Neither BREVO_API_KEY nor EMAIL_USER+EMAIL_PASS set — forgot-password emails will not send.');
-    }
-} else if (process.env.BREVO_API_KEY) {
-    console.log('✅ Brevo API key detected — password reset emails will use Brevo (sender: ' + (process.env.EMAIL_FROM || process.env.EMAIL_USER) + ').');
+    console.warn('⚠️ EMAIL_USER+EMAIL_PASS is not set — forgot-password emails will not send.');
 } else if (/your_gmail|your_16_char|app_password/i.test(process.env.EMAIL_USER + process.env.EMAIL_PASS)) {
     console.warn('⚠️ Replace placeholder EMAIL_USER / EMAIL_PASS in backend/.env with a real Gmail App Password.');
 }

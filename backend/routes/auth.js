@@ -726,7 +726,7 @@ router.get('/test-email', async (req, res) => {
         if (!isEmailConfigured()) {
             return res.status(500).json({
                 success: false,
-                message: 'No email method configured. Set BREVO_API_KEY or EMAIL_USER+EMAIL_PASS in env.',
+                message: 'No email method configured. Set EMAIL_USER+EMAIL_PASS in env.',
             });
         }
 
@@ -743,13 +743,11 @@ router.get('/test-email', async (req, res) => {
 
         const errMsg = error.message || '';
         const errBody = error.response?.data ? JSON.stringify(error.response.data) : '';
-        const isBrevoAuthError = error.response?.status === 401 || /key not found|unauthorized/i.test(errMsg);
         const isSenderError = /sender|from|verified|valid|not found/i.test(errMsg + errBody);
         const isGmailAuthError = error.code === 'EAUTH' || error.responseCode === 535 || /invalid login|authentication failed/i.test(errMsg);
 
         let hint = '';
-        if (isBrevoAuthError) hint = 'Use xkeysib- API key (not xsmtpsib).';
-        else if (isSenderError) hint = 'Verify sender email in Brevo and set EMAIL_FROM in Render env.';
+        if (isSenderError) hint = 'Verify sender email configuration in env.';
         else if (isGmailAuthError) hint = 'Update EMAIL_PASS with a valid Gmail App Password.';
 
         res.status(500).json({
@@ -780,7 +778,7 @@ router.post('/forgot-password', async (req, res) => {
         const normalizedEmail = email.toLowerCase().trim();
 
         if (!isEmailConfigured()) {
-            console.error('❌ No email method configured (set BREVO_API_KEY or EMAIL_USER+EMAIL_PASS)');
+            console.error('❌ No email method configured (set EMAIL_USER+EMAIL_PASS)');
             return res.status(503).json({
                 success: false,
                 message: 'Email service is not configured on the server. Please contact admin.',
@@ -831,12 +829,10 @@ router.post('/forgot-password', async (req, res) => {
         sendEmail(emailPayload)
             .then(() => console.log(`🔑 Password reset email sent to ${user.email} (${user.role})`))
             .catch((err) => {
-                const brevoBody = err.response?.data ? JSON.stringify(err.response.data) : '';
-                console.error(`❌ Password reset email failed for ${user.email}:`, err.message, brevoBody);
-                if (err.response?.status === 401 || /key not found|unauthorized/i.test(err.message)) {
-                    console.error('🔴 Brevo fix: use xkeysib- API key in BREVO_API_KEY, not xsmtpsib SMTP key.');
-                } else if (/sender|from|verified|valid|not found/i.test(err.message + brevoBody)) {
-                    console.error('🔴 Brevo fix: verify sender email at Brevo > Settings > Senders, then set EMAIL_FROM in Render env.');
+                const errBody = err.response?.data ? JSON.stringify(err.response.data) : '';
+                console.error(`❌ Password reset email failed for ${user.email}:`, err.message, errBody);
+                if (/sender|from|verified|valid|not found/i.test(err.message + errBody)) {
+                    console.error('🔴 SMTP fix: verify EMAIL_USER/EMAIL_FROM and Gmail App Password settings.');
                 } else if (err.code === 'EAUTH' || /invalid login|authentication failed/i.test(err.message)) {
                     console.error('🔴 Gmail SMTP fix: update EMAIL_PASS with a valid Gmail App Password.');
                 }
@@ -902,8 +898,7 @@ router.post('/reset-password/:token', async (req, res) => {
 // @access  Public (shows config status only, no secrets)
 router.get('/email-status', async (req, res) => {
     const configured = isEmailConfigured();
-    const method = process.env.BREVO_API_KEY ? 'brevo' : (process.env.EMAIL_USER ? 'gmail-smtp' : 'none');
-    const hasBrevoKey = !!process.env.BREVO_API_KEY;
+    const method = configured ? 'gmail-smtp' : 'none';
     const hasEmailUser = !!process.env.EMAIL_USER;
     const hasEmailPass = !!process.env.EMAIL_PASS;
     const hasEmailFrom = !!process.env.EMAIL_FROM;
@@ -917,14 +912,13 @@ router.get('/email-status', async (req, res) => {
         emailConfigured: configured,
         method,
         details: {
-            BREVO_API_KEY: hasBrevoKey ? 'SET' : 'NOT SET',
             EMAIL_USER: hasEmailUser ? (isPlaceholder ? 'PLACEHOLDER (not real)' : 'SET') : 'NOT SET',
             EMAIL_PASS: hasEmailPass ? (isPlaceholder ? 'PLACEHOLDER (not real)' : 'SET') : 'NOT SET',
             EMAIL_FROM: hasEmailFrom ? 'SET' : 'NOT SET',
         },
         resetLinkDomain: clientUrl,
         issue: !configured
-            ? '❌ No email method configured. Set BREVO_API_KEY or EMAIL_USER+EMAIL_PASS in your .env'
+            ? '❌ No email method configured. Set EMAIL_USER+EMAIL_PASS in your .env'
             : isPlaceholder
                 ? '⚠️ EMAIL_USER/EMAIL_PASS contain placeholder values. Replace with real credentials.'
                 : '✅ Email appears configured. If emails still fail, check server logs for errors.'
@@ -949,12 +943,12 @@ router.post('/test-email', async (req, res) => {
         });
         res.json({ success: true, message: 'Test email sent successfully', info });
     } catch (error) {
-        const brevoBody = error.response?.data ? error.response.data : null;
+        const errBody = error.response?.data ? error.response.data : null;
         res.status(500).json({ 
             success: false, 
             message: 'Failed to send test email', 
             error: error.message,
-            brevoBody 
+            details: errBody 
         });
     }
 });
