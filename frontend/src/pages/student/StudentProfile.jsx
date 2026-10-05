@@ -485,8 +485,8 @@ const StudentProfile = () => {
                                     name="cityToAttend" 
                                     options={[
                                         { value: '', label: 'Select Campus' },
+                                        { value: 'bahawalpur', label: 'Bahawalpur' },
                                         { value: 'islamabad', label: 'Islamabad' },
-                                        { value: 'bahawalpur', label: 'Bahawalpur' }
                                     ]} 
                                     editable={canEditBio} 
                                 />

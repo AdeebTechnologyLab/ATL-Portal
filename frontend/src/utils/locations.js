@@ -1,3 +1,8 @@
+export const formatLocation = (loc) => {
+    if (!loc) return '';
+    return loc.trim().split(/\s+/).map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
+};
+
 export const PAKISTAN_CITIES = [
     "Islamabad",
     "Rawalpindi",

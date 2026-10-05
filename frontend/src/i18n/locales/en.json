@@ -1,4 +1,4 @@
-{
+﻿{
   "app": {
     "name": "Adeeb Technology Lab",
     "tagline": "Digital tech expert software house LMS",
@@ -197,8 +197,10 @@
     "activeStudents": "Active Students",
     "activeInterns": "Active Interns",
     "pendingGradings": "Pending Gradings",
+    "pendingReviews": "Pending Reviews",
     "todaysPresent": "Today's Present",
     "todaysAbsent": "Today's Absent",
     "searchCourse": "Search Course or Teacher..."
   }
 }
+

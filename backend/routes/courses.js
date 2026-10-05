@@ -47,7 +47,7 @@ router.get('/teacher/dashboard', protect, authorize('teacher', 'admin'), async (
 
         // 3. Get all assignments for these courses in ONE query
         const assignments = await Assignment.find({ course: { $in: courseIds } })
-            .select('course submissions.marks')
+            .select('course submissions.marks submissions.status')
             .lean();
 
         // 4. Get today's attendance for all courses in ONE query
@@ -82,12 +82,13 @@ router.get('/teacher/dashboard', protect, authorize('teacher', 'admin'), async (
         assignments.forEach(a => {
             const courseId = (a.course?._id || a.course).toString();
             if (assignmentMap[courseId]) {
-                (a.submissions || []).forEach(s => {
+                const hasUngraded = (a.submissions || []).some(s => {
                     const isUngraded = s.marks === undefined || s.marks === null || (typeof s.marks !== 'number');
-                    if (isUngraded) {
-                        assignmentMap[courseId].pending++;
-                    }
+                    return isUngraded && s.status !== 'graded' && s.status !== 'rejected';
                 });
+                if (hasUngraded) {
+                    assignmentMap[courseId].pending++;
+                }
             }
         });
 

@@ -5,6 +5,7 @@ import { Search, Award, Calendar, CheckCircle, AlertCircle, ArrowRight, External
 import { certificateAPI } from '../../services/api';
 import { ButtonLoader } from '../../components/ui/Loader';
 import { formatDate } from '../../utils/dateFormatter';
+import { formatLocation } from '../../utils/locations';
 
 const CertificateVerification = () => {
     const [rollNo, setRollNo] = useState('');
@@ -150,7 +151,7 @@ const CertificateVerification = () => {
                                         transition={{ delay: index * 0.1 }}
                                         className="bg-white dark:bg-gray-900 rounded-3xl shadow-lg border border-gray-100 dark:border-gray-800 overflow-hidden relative group hover:shadow-xl transition-all duration-300"
                                     >
-                                        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-primary to-primary/60"></div>
+                                        <div className={`absolute top-0 left-0 w-full h-1 bg-gradient-to-r ${cert.statusLevel === 1 ? 'from-red-500 via-red-500 to-red-500/60' : cert.statusLevel === 2 ? 'from-emerald-500 via-emerald-500 to-emerald-500/60' : 'from-primary via-primary to-primary/60'}`}></div>
 
                                         <div className="p-8">
                                             <div className="relative z-10 flex flex-col md:flex-row gap-8 items-start">
@@ -163,7 +164,16 @@ const CertificateVerification = () => {
                                                             className="w-full h-full object-cover"
                                                         />
                                                     </div>
-                                                    <span className="font-mono text-xs font-bold text-gray-500 dark:text-gray-400 mt-2 bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-lg">{cert.rollNo}</span>
+                                                    <div className="flex items-center gap-1.5 mt-2">
+    {cert.statusLevel === 3 ? (
+        <Award className="w-3.5 h-3.5 text-primary" />
+    ) : (
+        <CheckCircle className={`w-3.5 h-3.5 ${cert.statusLevel === 1 ? 'text-red-500' : 'text-emerald-500'}`} />
+    )}
+    <span className={`text-xs font-bold uppercase tracking-wide ${cert.statusLevel === 1 ? 'text-red-500' : cert.statusLevel === 2 ? 'text-emerald-500' : 'text-primary'}`}>
+        {cert.statusLevel === 1 ? 'Rejected' : cert.statusLevel === 2 ? 'Joining' : 'Completed'}
+    </span>
+</div>
                                                 </div>
 
                                                 {/* Details */}
@@ -173,10 +183,7 @@ const CertificateVerification = () => {
                                                             <h2 className="text-2xl font-black text-gray-900 dark:text-white">{cert.name}</h2>
                                                             <p className="text-xs font-bold text-primary uppercase tracking-widest mt-1">{cert.position || 'Student'}</p>
                                                         </div>
-                                                        <div className="flex items-center gap-2 px-4 py-2 bg-emerald-50 rounded-xl border border-emerald-100">
-                                                            <CheckCircle className="w-4 h-4 text-emerald-500" />
-                                                            <span className="text-xs font-bold text-emerald-600 uppercase tracking-wide">Verified</span>
-                                                        </div>
+<span className="font-mono text-xs font-bold text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-lg">Registration No. {cert.rollNo}</span>
                                                     </div>
 
                                                 {/* For teacher certs with multiple courses: show as a list */}
@@ -205,8 +212,8 @@ const CertificateVerification = () => {
                                                                 <div>
                                                                     <p className="text-sm text-gray-400 dark:text-gray-500 mb-1 uppercase tracking-wider font-semibold">Campus</p>
                                                                     <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300 font-medium">
-                                                                        <MapPin className="w-4 h-4 text-primary" />
-                                                                        {cert.location}
+                                                                    <MapPin className="w-4 h-4 text-primary" />
+                                                                    <span>{formatLocation(cert.location)}</span>
                                                                     </div>
                                                                 </div>
                                                             )}
@@ -216,12 +223,6 @@ const CertificateVerification = () => {
                                                                     <Calendar className="w-4 h-4 text-primary" />
                                                                     {cert.duration || '—'}
                                                                 </div>
-                                                            </div>
-                                                            <div>
-                                                                <p className="text-sm text-gray-400 dark:text-gray-500 mb-1 uppercase tracking-wider font-semibold">Issued On</p>
-                                                                <p className="font-medium text-gray-700 dark:text-gray-300">
-                                                                    {cert.issuedAt ? formatDate(cert.issuedAt) : '—'}
-                                                                </p>
                                                             </div>
                                                         </div>
 
@@ -253,7 +254,7 @@ const CertificateVerification = () => {
                                                                     <div className="w-6 h-6 rounded-lg bg-primary/10 flex items-center justify-center">
                                                                         <MapPin className="w-3.5 h-3.5 text-primary" />
                                                                     </div>
-                                                                    <span className="font-bold text-gray-900 dark:text-white">{cert.location}</span>
+                                                                    <span className="font-bold text-gray-900 dark:text-white">{formatLocation(cert.location)}</span>
                                                                 </div>
                                                             </div>
                                                         )}
@@ -275,14 +276,7 @@ const CertificateVerification = () => {
                                                                  </p>
                                                              </div>
                                                          )}
-                                                         {cert.issuedAt && (
-                                                             <div className="space-y-1">
-                                                                 <p className="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest font-bold">Issued On</p>
-                                                                 <p className="font-bold text-gray-900 dark:text-white">
-                                                                     {formatDate(cert.issuedAt)}
-                                                                 </p>
-                                                             </div>
-                                                         )}
+
 
 
                                                     </div>

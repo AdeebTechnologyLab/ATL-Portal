@@ -186,8 +186,8 @@ const CertificateManagement = () => {
             if (confirmModal.request) {
                 await certificateAPI.approveRequest(confirmModal.request._id, {
                     rollNo: editData.rollNo,
-                    skills: confirmModal.course?.name || confirmModal.request.course?.title,
-                    duration: confirmModal.course?.duration || '',
+                            skills: editData.skills || confirmModal.course?.name || confirmModal.request.course?.title,
+                            duration: editData.duration || confirmModal.course?.duration || '',
                     passoutDate: editData.passoutDate,
                     certificateLink: editData.certificateLink
                 });
@@ -196,7 +196,8 @@ const CertificateManagement = () => {
                     userId: confirmModal.student._id || confirmModal.student.id,
                     courseId: confirmModal.course._id || confirmModal.course.id,
                     rollNo: editData.rollNo,
-                    skills: confirmModal.course.title || confirmModal.course.name,
+                    skills: editData.skills || confirmModal.course.title || confirmModal.course.name,
+                    duration: editData.duration || confirmModal.course?.duration || '',
                     passoutDate: editData.passoutDate,
                     certificateLink: editData.certificateLink
                 });
@@ -758,7 +759,6 @@ const CertificateManagement = () => {
                                                         <th className="px-6 py-3 text-left text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Challans</th>
                                                         <th className="px-6 py-3 text-left text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Status</th>
                                                         <th className="px-6 py-3 text-left text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Passout Date</th>
-                                                        <th className="px-6 py-3 text-left text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Issued Date</th>
                                                         <th className="px-6 py-3 text-left text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Action</th>
                                                     </tr>
                                                 </thead>
@@ -804,9 +804,6 @@ const CertificateManagement = () => {
                                                             </td>
                                                             <td className="px-6 py-4 text-xs text-gray-600 dark:text-gray-400">
                                                                 {student.certificate?.passoutDate ? formatDate(student.certificate.passoutDate) : '-'}
-                                                            </td>
-                                                            <td className="px-6 py-4 text-xs text-gray-600 dark:text-gray-400">
-                                                                {student.certificate?.issuedAt ? formatDate(student.certificate.issuedAt) : '-'}
                                                             </td>
                                                             <td className="px-6 py-4">
                                                                 <div className="flex items-center gap-2">
@@ -945,7 +942,6 @@ const CertificateManagement = () => {
                                             <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Specialization</th>
                                             <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Status</th>
                                             <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Passout Date</th>
-                                            <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Issued Date</th>
                                             <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Action</th>
                                         </tr>
                                     </thead>
@@ -983,9 +979,6 @@ const CertificateManagement = () => {
                                                     </td>
                                                     <td className="px-6 py-4 text-xs text-gray-600">
                                                         {teacher.certificate?.passoutDate ? formatDate(teacher.certificate.passoutDate) : '—'}
-                                                    </td>
-                                                    <td className="px-6 py-4 text-xs text-gray-600">
-                                                        {teacher.certificate?.issuedAt ? formatDate(teacher.certificate.issuedAt) : '-'}
                                                     </td>
                                                     <td className="px-6 py-4">
                                                         <div className="flex items-center gap-2">
@@ -1044,60 +1037,83 @@ const CertificateManagement = () => {
                 size="md"
             >
                 {confirmModal.student && (
-                    <div className="space-y-6">
-                        <div className="p-5 bg-primary/5 rounded-3xl border border-primary/10 shadow-sm">
+                        <div className="space-y-6">
+                        <div className="relative overflow-hidden p-5 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent rounded-3xl border border-primary/20">
                             <div className="flex flex-col sm:flex-row items-center gap-4 mb-4 text-center sm:text-left">
-                                <div className="w-16 h-16 rounded-2xl bg-white border-2 border-primary/10 flex items-center justify-center overflow-hidden shadow-inner">
+                                <div className="w-16 h-16 rounded-2xl bg-white dark:bg-gray-800 border-2 border-primary/20 flex items-center justify-center overflow-hidden shadow-inner">
                                     {confirmModal.student.photo ? (
                                         <img src={confirmModal.student.photo} alt="" className="w-full h-full object-cover" />
                                     ) : (
                                         <User className="w-10 h-10 text-primary" />
                                     )}
                                 </div>
-                                <div className="min-w-0">
+                                <div className="min-w-0 flex-1">
                                     <p className="text-xl font-black text-primary uppercase tracking-tighter leading-none mb-1">{confirmModal.student.name}</p>
-                                    <p className="text-[10px] font-black text-primary uppercase tracking-widest">{confirmModal.course?.name || confirmModal.request?.course?.title}</p>
+                                    <p className="text-[10px] font-black text-primary uppercase tracking-widest bg-primary/10 rounded-full px-3 py-1 inline-block">{confirmModal.course?.name || confirmModal.request?.course?.title}</p>
                                 </div>
                             </div>
                             {confirmModal.request?.notes && (
-                                <div className="text-[11px] text-primary italic bg-white/60 p-3 rounded-2xl border border-primary/10/50 leading-relaxed">
+                                <div className="text-[11px] text-primary italic bg-white/60 dark:bg-gray-900/60 p-3 rounded-2xl border border-primary/10/50 leading-relaxed">
                                     <span className="font-black uppercase tracking-widest text-[9px] block mb-1 opacity-50">Teacher Note:</span>
                                     "{confirmModal.request.notes}"
                                 </div>
                             )}
                         </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div className="space-y-1.5">
+                        <div className="grid grid-cols-1 gap-4">
+                            <div className="space-y-1.5 hidden">
                                 <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Roll Number / ID</label>
                                 <input
                                     type="text"
                                     value={editData.rollNo}
-                                    onChange={(e) => setEditData({ ...editData, rollNo: e.target.value })}
-                                    className="w-full px-4 py-3 bg-gray-50 border border-transparent focus:border-primary focus:bg-white rounded-2xl transition-all outline-none font-bold text-sm"
+                                    readOnly
+                                    className="w-full px-4 py-3 bg-gray-50 border border-transparent focus:border-primary focus:bg-white rounded-2xl transition-all outline-none font-bold text-sm cursor-not-allowed"
                                     placeholder="Enter Roll Number"
                                 />
                             </div>
                             <div className="space-y-1.5">
-                                <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Passout Date</label>
+                                <label className="flex items-center gap-1.5 text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1"><Calendar className="w-3 h-3 text-primary" /> Passout Date</label>
                                 <input
                                     type="date"
                                     value={editData.passoutDate}
                                     onChange={(e) => setEditData({ ...editData, passoutDate: e.target.value })}
-                                    className="w-full px-4 py-3 bg-gray-50 border border-transparent focus:border-primary focus:bg-white rounded-2xl transition-all outline-none font-bold text-sm"
+                                    className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 focus:border-primary focus:bg-white dark:focus:bg-gray-800 rounded-2xl transition-all outline-none font-bold text-sm dark:text-white"
                                 />
                                 <p className="text-[10px] text-gray-400 font-medium ml-1 leading-snug">
                                     Certificate will only appear to the student after this date.
                                 </p>
                             </div>
-                            <div className="sm:col-span-2 space-y-1.5">
-                                <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Certificate Link (Optional)</label>
+                            <div className="space-y-1.5">
+                                <label className="flex items-center gap-1.5 text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1"><BookOpen className="w-3 h-3 text-primary" /> Skills/Course Title</label>
+                                <input
+                                    type="text"
+                                    value={editData.skills}
+                                    onChange={(e) => setEditData({ ...editData, skills: e.target.value })}
+                                    className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 focus:border-primary focus:bg-white dark:focus:bg-gray-800 rounded-2xl transition-all outline-none font-bold text-sm dark:text-white"
+                                    placeholder="Enter Skill/Course Title"
+                                />
+                            </div>
+                            <div className="space-y-1.5">
+                                <label className="flex items-center gap-1.5 text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1"><ClipboardList className="w-3 h-3 text-primary" /> Duration</label>
+                                <select
+                                    value={editData.duration}
+                                    onChange={(e) => setEditData({ ...editData, duration: e.target.value })}
+                                    className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 focus:border-primary focus:bg-white dark:focus:bg-gray-800 rounded-2xl transition-all outline-none font-bold text-sm dark:text-white"
+                                >
+                                    <option value="">Select Duration</option>
+                                    {[...Array(12)].map((_, i) => (
+                                        <option key={i + 1} value={`${i + 1} Month${i + 1 > 1 ? 's' : ''}`}>{i + 1} Month{i + 1 > 1 ? 's' : ''}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className="space-y-1.5">
+                                <label className="flex items-center gap-1.5 text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1"><FileText className="w-3 h-3 text-primary" /> Certificate Link <span className="normal-case font-medium opacity-60">(Optional)</span></label>
                                 <input
                                     type="text"
                                     placeholder="https://cloudinary.com/..."
                                     value={editData.certificateLink}
                                     onChange={(e) => setEditData({ ...editData, certificateLink: e.target.value })}
-                                    className="w-full px-4 py-3 bg-gray-50 border border-transparent focus:border-primary focus:bg-white rounded-2xl transition-all outline-none text-sm font-medium"
+                                    className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 focus:border-primary focus:bg-white dark:focus:bg-gray-800 rounded-2xl transition-all outline-none text-sm font-medium dark:text-white"
                                 />
                             </div>
                         </div>
@@ -1105,14 +1121,14 @@ const CertificateManagement = () => {
                         <div className="flex gap-3 pt-2">
                             <button
                                 onClick={() => setConfirmModal({ open: false, student: null, course: null, request: null })}
-                                className="flex-1 py-3 text-gray-500 font-black uppercase tracking-widest text-[10px] hover:bg-gray-100 rounded-2xl transition-all"
+                                className="flex-1 py-3.5 text-gray-500 dark:text-gray-400 font-black uppercase tracking-widest text-[10px] hover:bg-gray-100 dark:hover:bg-gray-800 rounded-2xl transition-all"
                             >
                                 Cancel
                             </button>
                             <button
                                 onClick={handleIssueCertificate}
                                 disabled={isIssuing || !editData.rollNo}
-                                className="flex-1 py-3 bg-primary hover:bg-primary text-white font-black uppercase tracking-widest text-[10px] rounded-2xl transition-all shadow-lg shadow-primary/10 flex items-center justify-center gap-2 disabled:opacity-50 active:scale-95"
+                                className="flex-1 py-3.5 bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-[10px] rounded-2xl transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2 disabled:opacity-50 active:scale-[0.98]"
                             >
                                 <ButtonLoader isLoading={isIssuing} icon={<Award className="w-4 h-4" />}>
                                     Issue Certificate
@@ -1149,7 +1165,7 @@ const CertificateManagement = () => {
                         </div>
 
                         <div className="grid grid-cols-1 gap-4">
-                            <div>
+                            <div className="hidden">
                                 <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5 ml-1">Roll Number</label>
                                 <input
                                     type="text"

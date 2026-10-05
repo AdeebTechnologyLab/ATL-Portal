@@ -223,7 +223,7 @@ const Login = () => {
                                     name="email"
                                     value={formData.email}
                                     onChange={handleChange}
-                                    placeholder="john@example.com"
+                                    placeholder="Adeeb@gmail.com"
                                     className={`w-full px-4 py-3.5 pl-12 border ${errors.email ? 'border-red-400' : 'border-gray-200'
                                         } rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-gray-50/50`}
                                 />

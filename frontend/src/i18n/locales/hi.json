@@ -1,4 +1,4 @@
-{
+﻿{
   "app": {
     "name": "अदीब टेक्नोलॉजी लैब",
     "tagline": "डिजिटल टेक विशेषज्ञ सॉफ्टवेयर हाउस LMS",
@@ -194,6 +194,7 @@
     "activeStudents": "सक्रिय छात्र",
     "activeInterns": "सक्रिय इंटर्न",
     "pendingGradings": "लंबित ग्रेडिंग",
+    "pendingReviews": "लंबित समीक्षाएं",
     "todaysPresent": "आज के उपस्थित",
     "todaysAbsent": "आज के अनुपस्थित",
     "searchCourse": "कोर्स या शिक्षक खोजें..."

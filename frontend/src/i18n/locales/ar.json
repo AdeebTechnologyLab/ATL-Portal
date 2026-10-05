@@ -1,4 +1,4 @@
-{
+﻿{
   "app": {
     "name": "مختبر أديب للتكنولوجيا",
     "tagline": "نظام إدارة التعلم لشركة البرمجيات الرقمية",
@@ -194,6 +194,7 @@
     "activeStudents": "الطلاب النشطون",
     "activeInterns": "المتدربون النشطون",
     "pendingGradings": "الدرجات المعلقة",
+    "pendingReviews": "المراجعات المعلقة",
     "todaysPresent": "حضور اليوم",
     "todaysAbsent": "غياب اليوم",
     "searchCourse": "البحث عن دورة أو معلم..."

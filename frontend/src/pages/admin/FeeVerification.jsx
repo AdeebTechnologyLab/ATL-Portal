@@ -532,15 +532,6 @@ const FeeVerification = () => {
                         <span className="text-[9px] sm:text-[10px] font-black text-gray-400 uppercase tracking-[0.14em] sm:tracking-[0.2em] ml-1">Location:</span>
                         <div className="grid grid-cols-2 bg-gray-100 dark:bg-slate-800 p-1 rounded-lg sm:rounded-xl">
                             <button
-                                onClick={() => toggleFilter('city', 'Islamabad')}
-                                className={`px-1 py-2 rounded-lg text-[7px] sm:text-[10px] font-black uppercase tracking-normal sm:tracking-widest transition-all ${selectedCities.includes('Islamabad')
-                                    ? 'bg-white text-primary shadow-sm'
-                                    : 'text-gray-500 hover:text-gray-700'
-                                    }`}
-                            >
-                                Islamabad
-                            </button>
-                            <button
                                 onClick={() => toggleFilter('city', 'Bahawalpur')}
                                 className={`px-1 py-2 rounded-lg text-[7px] sm:text-[10px] font-black uppercase tracking-normal sm:tracking-widest transition-all ${selectedCities.includes('Bahawalpur')
                                     ? 'bg-white text-primary shadow-sm'
@@ -548,6 +539,15 @@ const FeeVerification = () => {
                                     }`}
                             >
                                 Bahawalpur
+                            </button>
+                            <button
+                                onClick={() => toggleFilter('city', 'Islamabad')}
+                                className={`px-1 py-2 rounded-lg text-[7px] sm:text-[10px] font-black uppercase tracking-normal sm:tracking-widest transition-all ${selectedCities.includes('Islamabad')
+                                    ? 'bg-white text-primary shadow-sm'
+                                    : 'text-gray-500 hover:text-gray-700'
+                                    }`}
+                            >
+                                Islamabad
                             </button>
                         </div>
                     </div>

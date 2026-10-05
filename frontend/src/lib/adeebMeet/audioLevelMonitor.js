@@ -1,6 +1,6 @@
 /** Lightweight audio level monitor (single AudioContext, throttled updates) */
 export class AudioLevelMonitor {
-    constructor(onLevels, intervalMs = 120) {
+    constructor(onLevels, intervalMs = 200) {
         this.onLevels = onLevels;
         this.intervalMs = intervalMs;
         this.sources = new Map();
@@ -89,12 +89,15 @@ export class AudioLevelMonitor {
         let loudestId = null;
         let loudest = 0.05;
 
+        const firstAnalyser = this.sources.values().next().value?.analyser;
+        if (firstAnalyser && (!this.dataArray || this.dataArray.length !== firstAnalyser.frequencyBinCount)) {
+            this.dataArray = new Uint8Array(firstAnalyser.frequencyBinCount);
+        }
         for (const [id, { analyser }] of this.sources) {
-            const buf = new Uint8Array(analyser.frequencyBinCount);
-            analyser.getByteFrequencyData(buf);
+            analyser.getByteFrequencyData(this.dataArray);
             let sum = 0;
-            for (let i = 0; i < buf.length; i++) sum += buf[i];
-            const level = sum / (buf.length * 255);
+            for (let i = 0; i < this.dataArray.length; i++) sum += this.dataArray[i];
+            const level = sum / (this.dataArray.length * 255);
             levels[id] = level;
             if (level > loudest) {
                 loudest = level;

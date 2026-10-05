@@ -1201,8 +1201,8 @@ const TeachersManagement = () => {
                                 className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none"
                             >
                                 <option value="">Select Location</option>
-                                <option value="Islamabad">Islamabad</option>
                                 <option value="Bahawalpur">Bahawalpur</option>
+                                <option value="Islamabad">Islamabad</option>
                             </select>
                         </div>
                         <div className="space-y-2">

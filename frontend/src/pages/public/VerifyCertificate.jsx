@@ -4,6 +4,7 @@ import { Search, User, XCircle, Award, CheckCircle, ShieldCheck, Download, FileT
 import { ButtonLoader } from '../../components/ui/Loader';
 import { certificateAPI } from '../../services/api';
 import { getBackendOrigin } from '../../config/apiBaseUrl';
+import { formatLocation } from '../../utils/locations';
 
 const VerifyCertificate = () => {
     const [searchQuery, setSearchQuery] = useState('');
@@ -289,7 +290,7 @@ const VerifyCertificate = () => {
                                                                             <p className="text-xs font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
                                                                                 <MapPin className="w-3.5 h-3.5 text-primary" /> Certified At
                                                                             </p>
-                                                                            <p className="text-lg font-bold text-slate-700">{courseData.location || group.location || 'Adeeb Technology Lab'}</p>
+                                                                            <p className="text-lg font-bold text-slate-700">{formatLocation(courseData.location || group.location || 'Adeeb Technology Lab')}</p>
                                                                         </div>
                                                                         <div className="md:col-span-2 space-y-4">
                                                                             <p className="text-xs font-black text-slate-400 uppercase tracking-widest">Mastery &amp; Specialization</p>

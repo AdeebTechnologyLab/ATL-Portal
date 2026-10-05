@@ -25,9 +25,9 @@ export const AUDIO_CONSTRAINTS = {
 /** Lightweight camera capture — mesh mein har peer video dobara encode karta hai,
  *  is liye heavy constraints poora computer hang karwa deti hain. 480p@15 kaafi hai. */
 export const VIDEO_CONSTRAINTS = {
-    width: { ideal: 640, max: 1280 },
-    height: { ideal: 480, max: 720 },
-    frameRate: { ideal: 15, max: 20 },
+    width: { ideal: 640, max: 960 },
+    height: { ideal: 360, max: 540 },
+    frameRate: { ideal: 15, max: 15 },
 };
 
 export const isMobileDevice = () =>
@@ -145,6 +145,7 @@ export const createDummyVideoTrack = () => {
         const stream = canvas.captureStream?.(5) ?? canvas.webkitCaptureStream?.(5);
         const track = stream?.getVideoTracks()[0];
         if (track) track.enabled = false;
+        if (track) track._isDummy = true;
         return track ?? null;
     } catch {
         return null;

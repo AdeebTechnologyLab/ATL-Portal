@@ -1,4 +1,4 @@
-{
+﻿{
   "app": {
     "name": "ادیب ٹیکنالوجی لیب",
     "tagline": "ڈیجیٹل ٹیک ماہر سافٹ ویئر ہاؤس LMS",
@@ -194,6 +194,7 @@
     "activeStudents": "فعال طلباء",
     "activeInterns": "فعال انٹرنز",
     "pendingGradings": "زیر التواء گریڈنگ",
+    "pendingReviews": "زیر التوا جائزے",
     "todaysPresent": "آج کے حاضر",
     "todaysAbsent": "آج کے غیر حاضر",
     "searchCourse": "کورس یا استاد تلاش کریں..."

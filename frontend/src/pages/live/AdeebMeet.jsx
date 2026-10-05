@@ -134,12 +134,14 @@ const AdeebMeet = () => {
                 const { stream, hasAudio, hasVideo } = await buildLocalMediaStream();
                 if (cancelled) return;
 
+                let videoTrack = stream.getVideoTracks()[0];
+                if (videoTrack) videoTrack.enabled = false;
                 userStreamRef.current = stream;
                 if (userVideoRef.current) {
                     userVideoRef.current.srcObject = stream;
                 }
                 setIsMuted(!hasAudio);
-                setIsVideoOff(!hasVideo);
+                setIsVideoOff(true);
                 if (!hasAudio && !hasVideo) {
                     toast('Camera/mic unavailable — you can still listen and chat', { icon: 'ℹ️' });
                 }
@@ -150,16 +152,24 @@ const AdeebMeet = () => {
                     setVideoDevices(videoInputs);
                     const audioTrack = stream.getAudioTracks()[0];
                     const videoTrack = stream.getVideoTracks()[0];
-                    if (audioTrack?.getSettings?.().deviceId) {
-                        setSelectedAudioDevice(audioTrack.getSettings().deviceId);
-                    } else if (audioInputs[0]) {
-                        setSelectedAudioDevice(audioInputs[0].deviceId);
-                    }
-                    if (videoTrack?.getSettings?.().deviceId) {
-                        setSelectedVideoDevice(videoTrack.getSettings().deviceId);
-                    } else if (videoInputs[0]) {
-                        setSelectedVideoDevice(videoInputs[0].deviceId);
-                    }
+
+                    const matchDevice = (track, list) => {
+                        if (!track || !list.length) return null;
+                        const byId = track.getSettings?.().deviceId;
+                        if (byId && list.some((d) => d.deviceId === byId)) return byId;
+                        const lbl = (track.label || '').toLowerCase();
+                        if (lbl) {
+                            const byLabel = list.find((d) => lbl.includes(d.label?.toLowerCase()) || d.label?.toLowerCase().includes(lbl));
+                            if (byLabel) return byLabel.deviceId;
+                        }
+                        return list[0]?.deviceId ?? null;
+                    };
+
+                    const activeAudioId = matchDevice(audioTrack, audioInputs);
+                    if (activeAudioId) setSelectedAudioDevice(activeAudioId);
+
+                    const activeVideoId = matchDevice(videoTrack, videoInputs);
+                    if (activeVideoId) setSelectedVideoDevice(activeVideoId);
                 }
 
                 let courseNames = '';
@@ -184,7 +194,7 @@ const AdeebMeet = () => {
                     rollNo: user?.rollNo || user?.rollNumber || null,
                     course: courseNames || null,
                     isMuted: !hasAudio,
-                    isVideoOff: !hasVideo
+                    isVideoOff: true
                 };
 
                 const onClassEnded = () => {
@@ -316,11 +326,13 @@ const AdeebMeet = () => {
                 el.play?.().catch(() => {});
             });
         };
-        document.addEventListener('click', unlockPlayback, { once: true });
-        document.addEventListener('keydown', unlockPlayback, { once: true });
+        document.addEventListener('click', unlockPlayback);
+        document.addEventListener('keydown', unlockPlayback);
+        document.addEventListener('touchstart', unlockPlayback);
         return () => {
             document.removeEventListener('click', unlockPlayback);
             document.removeEventListener('keydown', unlockPlayback);
+            document.removeEventListener('touchstart', unlockPlayback);
         };
     }, []);
 
@@ -364,6 +376,23 @@ const AdeebMeet = () => {
             setAudioDevices(audioInputs);
             setVideoDevices(videoInputs);
             setSpeakerDevices(audioOutputs);
+            const localStream = userStreamRef.current;
+            const audioTrack = localStream?.getAudioTracks()[0];
+            const videoTrack = localStream?.getVideoTracks()[0];
+            if (audioTrack) {
+                setSelectedAudioDevice((prev) =>
+                    audioInputs.some((d) => d.deviceId === prev)
+                        ? prev
+                        : audioTrack.getSettings?.().deviceId || audioInputs[0]?.deviceId || ''
+                );
+            }
+            if (videoTrack) {
+                setSelectedVideoDevice((prev) =>
+                    videoInputs.some((d) => d.deviceId === prev)
+                        ? prev
+                        : videoTrack.getSettings?.().deviceId || videoInputs[0]?.deviceId || ''
+                );
+            }
         };
         refreshDevices();
         navigator.mediaDevices?.addEventListener?.('devicechange', refreshDevices);
@@ -434,15 +463,19 @@ const AdeebMeet = () => {
         }
     };
 
-    const toggleVideo = () => {
+    const toggleVideo = async () => {
         const next = !isVideoOff;
-        managerRef.current?.setVideoEnabled(!next);
-        setIsVideoOff(next);
-        socketRef.current?.emit('classroom_media_state', {
-            roomId: roomName,
-            isMuted,
-            isVideoOff: next
-        });
+        try {
+            await managerRef.current?.setVideoEnabled(!next);
+            setIsVideoOff(next);
+            socketRef.current?.emit('classroom_media_state', {
+                roomId: roomName,
+                isMuted,
+                isVideoOff: next
+            });
+        } catch (err) {
+            toast.error(err?.message || 'Could not access camera');
+        }
     };
 
     const switchMicrophone = async (deviceId) => {
@@ -1417,16 +1450,16 @@ const RemoteVideoTile = ({
                 lastAudioId = audioId;
                 lastVideoId = videoId;
                 attachStreamToVideo(videoRef.current, stream);
-                setIsMuted(!audio || !audio.enabled);
-                setIsVideoOff(!video || !video.enabled || video.readyState !== 'live');
             }
+            setIsMuted(!audio || !audio.enabled || audio.muted);
+            setIsVideoOff(!video || !video.enabled || video.readyState !== 'live' || video.muted);
         };
 
         updateTracks();
         stream.addEventListener('addtrack', updateTracks);
         stream.addEventListener('removetrack', updateTracks);
 
-        const interval = setInterval(updateTracks, 1000);
+        const interval = setInterval(updateTracks, 1500);
         return () => {
             stream.removeEventListener('addtrack', updateTracks);
             stream.removeEventListener('removetrack', updateTracks);

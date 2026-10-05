@@ -248,7 +248,7 @@ const TeacherDashboard = () => {
                 },
                 {
                     title: 'Pending Reviews',
-                    value: totalPendingReviews.toString(),
+                    value: totalPendingAssignments.toString(),
                     icon: ClipboardList,
                     iconBg: 'bg-amber-100',
                     iconColor: 'text-amber-600',

@@ -8,7 +8,7 @@ import {
     isDisplayMediaSupported,
 } from './webrtcConfig';
 
-const VIDEO_SEND_BITRATE = 600_000;
+const VIDEO_SEND_BITRATE = 400_000;
 
 async function applyVideoSenderBitrate(pc) {
     for (const sender of pc.getSenders()) {
@@ -396,9 +396,26 @@ export class WebRTCMeetingManager {
         }
     }
 
-    setVideoEnabled(enabled) {
-        const track = this.screenTrack || this.localStream?.getVideoTracks()[0];
-        if (track && track.readyState === 'live' && track !== this.screenTrack) track.enabled = enabled;
+    async setVideoEnabled(enabled) {
+        if (this.screenTrack) return;
+        let track = this.localStream?.getVideoTracks()[0];
+        if (enabled) {
+            if (!track || track.readyState === 'ended' || track._isDummy) {
+                try {
+                    const cam = await acquireCameraTrack();
+                    if (cam) {
+                        cam.enabled = true;
+                        await this._replaceLocalVideoTrack(cam);
+                        return;
+                    }
+                } catch {
+                    /* no camera available */
+                }
+            }
+            if (track && track.readyState === 'live') track.enabled = true;
+        } else if (track) {
+            track.enabled = false;
+        }
     }
 
     async switchAudioDevice(deviceId) {
@@ -406,7 +423,7 @@ export class WebRTCMeetingManager {
         if (!fresh) throw new Error('Could not access selected microphone');
         const wasMuted = !this.localStream?.getAudioTracks()[0]?.enabled;
         await this._replaceLocalAudioTrack(fresh);
-        if (!wasMuted) fresh.enabled = true;
+        fresh.enabled = !wasMuted;
         return fresh;
     }
 
@@ -416,7 +433,7 @@ export class WebRTCMeetingManager {
         if (!fresh) throw new Error('Could not access selected camera');
         const wasOff = !this.localStream?.getVideoTracks()[0]?.enabled;
         await this._replaceLocalVideoTrack(fresh);
-        if (!wasOff) fresh.enabled = true;
+        fresh.enabled = !wasOff;
         return fresh;
     }
 
