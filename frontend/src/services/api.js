@@ -3,7 +3,7 @@ import { getApiBaseUrl } from '../config/apiBaseUrl';
 
 // Create axios instance
 const api = axios.create({
-    timeout: 15000,
+    timeout: 20000,
     headers: {
         'Content-Type': 'application/json'
     }
@@ -47,6 +47,16 @@ api.interceptors.response.use(
             sessionStorage.removeItem('user');
             window.location.href = '/login';
         }
+
+        // Slow network: retry GET once on timeout/network failure
+        const cfg = error.config;
+        const isGet = cfg?.method === 'get';
+        const isNetwork = !error.response && (error.code === 'ECONNABORTED' || error.code === 'ERR_NETWORK' || !error.response);
+        if (isGet && isNetwork && !cfg.__retried) {
+            cfg.__retried = true;
+            return api.request(cfg);
+        }
+
         return Promise.reject(error);
     }
 );
