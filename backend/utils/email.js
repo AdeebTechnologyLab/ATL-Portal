@@ -34,6 +34,28 @@ const buildTransportOptions = (useAltPort = false) => {
     };
 };
 
+const PLACEHOLDER_RE = /your_gmail|your_16_char|app_password|change_me|example\.com|xxxx/i;
+
+const getEmailConfigIssue = () => {
+    const user = (process.env.EMAIL_USER || '').toString().trim();
+    const pass = (process.env.EMAIL_PASS || '').toString().trim();
+
+    if (!user || !pass) {
+        return 'No email method configured. Set EMAIL_USER + EMAIL_PASS (Gmail App Password) in backend/.env.';
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(user)) {
+        return `EMAIL_USER ("${user}") does not look like a valid email address. Set a real Gmail address in backend/.env.`;
+    }
+    if (PLACEHOLDER_RE.test(`${user} ${pass}`)) {
+        return 'EMAIL_USER / EMAIL_PASS still contain placeholder values. Replace them with a real Gmail address and App Password (https://myaccount.google.com/apppasswords).';
+    }
+    return null;
+};
+
+// isEmailConfigured() returns true only for REAL credentials so the app does not
+// pretend reset emails were sent when SMTP would fail anyway (placeholder creds).
+const isEmailConfigured = () => !getEmailConfigIssue();
+
 const getTransporter = (useAltPort = false) => {
     const configKey = useAltPort ? '587' : '465';
     if (transporter && transporterConfigKey === configKey) {
@@ -43,10 +65,6 @@ const getTransporter = (useAltPort = false) => {
     transporter = nodemailer.createTransport(buildTransportOptions(useAltPort));
     transporterConfigKey = configKey;
     return transporter;
-};
-
-const isEmailConfigured = () => {
-    return Boolean(process.env.EMAIL_USER && process.env.EMAIL_PASS);
 };
 
 const isRetryableSmtpError = (error) => {
@@ -91,4 +109,24 @@ const sendEmail = async ({ to, subject, html, text }) => {
     throw lastError;
 };
 
-module.exports = { sendEmail, isEmailConfigured, getTransporter };
+// Like sendEmail but bounded by an overall timeout so the requester never faces
+// an unbounded SMTP wait (previously caused 30s+ timeouts / 502 on Render/Vercel).
+// If it times out, the underlying send keeps running in the background.
+const sendEmailWithTimeout = async (payload, timeoutMs = 10000) => {
+    let timer;
+    const timeout = new Promise((_, reject) => {
+        timer = setTimeout(() => {
+            const err = new Error(`Email send is taking longer than ${Math.round(timeoutMs / 1000)}s`);
+            err.code = 'ETIMEOUT_MAIL';
+            reject(err);
+        }, timeoutMs);
+    });
+
+    try {
+        return await Promise.race([sendEmail(payload), timeout]);
+    } finally {
+        clearTimeout(timer);
+    }
+};
+
+module.exports = { sendEmail, sendEmailWithTimeout, isEmailConfigured, getEmailConfigIssue, getTransporter };

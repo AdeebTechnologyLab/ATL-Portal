@@ -63,7 +63,7 @@ import {
     Clock
 } from 'lucide-react';
 import { useDispatch } from 'react-redux';
-import { logout, updateUser } from '../../features/auth/authSlice';
+import { logout, updateUser, refreshToken } from '../../features/auth/authSlice';
 import Sidebar from './Sidebar';
 import NotificationPopup from '../shared/NotificationPopup';
 import ChatWidget from '../shared/ChatWidget';
@@ -87,7 +87,8 @@ const DashboardLayout = () => {
     const [showNotifications, setShowNotifications] = useState(false);
     const [showUserMenu, setShowUserMenu] = useState(false);
     const [showResetPasswordModal, setShowResetPasswordModal] = useState(false);
-    const [resetPasswordForm, setResetPasswordForm] = useState({ newPassword: '', confirmPassword: '' });
+    const [resetPasswordForm, setResetPasswordForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
+    const [showCurrentPassword, setShowCurrentPassword] = useState(false);
     const [showNewPassword, setShowNewPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [isResettingPassword, setIsResettingPassword] = useState(false);
@@ -372,6 +373,10 @@ const DashboardLayout = () => {
     const handleResetPasswordSubmit = async (e) => {
         e.preventDefault();
         setResetPasswordError('');
+        if (!resetPasswordForm.currentPassword) {
+            setResetPasswordError('Please enter your current password.');
+            return;
+        }
         if (resetPasswordForm.newPassword.length < 4) {
             setResetPasswordError('Password must be at least 4 characters.');
             return;
@@ -382,9 +387,17 @@ const DashboardLayout = () => {
         }
         try {
             setIsResettingPassword(true);
-            await authAPI.changePassword({ newPassword: resetPasswordForm.newPassword });
+            const response = await authAPI.changePassword({
+                currentPassword: resetPasswordForm.currentPassword,
+                newPassword: resetPasswordForm.newPassword,
+            });
+            // Old JWT is invalidated by the password change — keep this session alive.
+            if (response.data.token) {
+                dispatch(refreshToken(response.data.token));
+            }
             setShowResetPasswordModal(false);
-            setResetPasswordForm({ newPassword: '', confirmPassword: '' });
+            setResetPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
+            setShowCurrentPassword(false);
             setShowNewPassword(false);
             setShowConfirmPassword(false);
             alert('Password successfully updated!');
@@ -1063,6 +1076,35 @@ const DashboardLayout = () => {
                                         {resetPasswordError}
                                     </div>
                                 )}
+                                <div>
+                                    <label className={`block text-sm font-medium mb-1.5 ${isDark ? 'text-white/70' : 'text-gray-700'}`}>
+                                        Current Password
+                                    </label>
+                                    <div className="relative">
+                                        <input
+                                            type={showCurrentPassword ? 'text' : 'password'}
+                                            value={resetPasswordForm.currentPassword}
+                                            onChange={(e) => setResetPasswordForm({ ...resetPasswordForm, currentPassword: e.target.value })}
+                                            className={`w-full pl-4 pr-12 py-2.5 rounded-xl border focus:ring-2 focus:ring-primary/20 outline-none transition-all ${
+                                                isDark 
+                                                ? 'bg-black/20 border-white/10 text-white focus:border-primary/50' 
+                                                : 'bg-white border-gray-200 text-gray-900 focus:border-primary'
+                                            }`}
+                                            placeholder="Enter current password"
+                                            required
+                                            autoComplete="current-password"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowCurrentPassword((visible) => !visible)}
+                                            aria-label={showCurrentPassword ? 'Hide current password' : 'Show current password'}
+                                            title={showCurrentPassword ? 'Hide password' : 'Show password'}
+                                            className={`absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-lg transition-colors ${isDark ? 'text-white/50 hover:text-white hover:bg-white/10' : 'text-gray-400 hover:text-primary hover:bg-gray-100'}`}
+                                        >
+                                            {showCurrentPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                                        </button>
+                                    </div>
+                                </div>
                                 <div>
                                     <label className={`block text-sm font-medium mb-1.5 ${isDark ? 'text-white/70' : 'text-gray-700'}`}>
                                         New Password

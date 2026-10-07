@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const crypto = require('crypto');
-const { sendEmail, isEmailConfigured } = require('../utils/email');
+const { sendEmail, sendEmailWithTimeout, isEmailConfigured, getEmailConfigIssue } = require('../utils/email');
 const { getClientUrl } = require('../config/client');
-const { protect } = require('../middleware/auth');
+const { protect, authorize } = require('../middleware/auth');
 const { uploadPhoto, uploadRegistration, deleteCloudinaryImage } = require('../config/cloudinary');
 const User = require('../models/User');
 
@@ -11,6 +11,36 @@ const getLinkedAccountQuery = (user) => {
     const rollNo = user.rollNo?.toString().trim();
     if (rollNo) return { rollNo };
     return { email: user.email?.toString().trim().toLowerCase() };
+};
+
+// ---------- in-memory rate limiting (per-process; enough for a single instance) ----------
+const rateBuckets = new Map();
+const getClientIp = (req) => {
+    const fwd = (req.headers['x-forwarded-for'] || '').split(',')[0].trim();
+    return fwd || req.ip || req.socket?.remoteAddress || 'unknown';
+};
+const rateLimit = (key, limit, windowMs) => {
+    const now = Date.now();
+    let bucket = rateBuckets.get(key);
+    if (!bucket || now >= bucket.resetAt) {
+        bucket = { count: 0, resetAt: now + windowMs };
+        rateBuckets.set(key, bucket);
+        if (rateBuckets.size > 10000) {
+            for (const [k, v] of rateBuckets) {
+                if (now >= v.resetAt) rateBuckets.delete(k);
+            }
+        }
+    }
+    bucket.count += 1;
+    return { allowed: bucket.count <= limit, resetAt: bucket.resetAt };
+};
+const sendRateLimitResponse = (res, resetAt) => {
+    const retryAfter = Math.max(1, Math.ceil((resetAt - Date.now()) / 1000));
+    res.set('Retry-After', String(retryAfter));
+    return res.status(429).json({
+        success: false,
+        message: `Too many attempts. Please wait ${retryAfter} seconds and try again.`,
+    });
 };
 
 // @route   POST /api/auth/register
@@ -681,18 +711,31 @@ router.put('/profile', protect, uploadPhoto.single('photo'), async (req, res) =>
 });
 
 // @route   PUT /api/auth/change-password
-// @desc    Change user password
+// @desc    Change user password (requires the current password)
 // @access  Private
 router.put('/change-password', protect, async (req, res) => {
     try {
-        const { newPassword } = req.body;
-        if (!newPassword || newPassword.length < 4) {
-            return res.status(400).json({ success: false, message: 'Password must be at least 4 characters' });
+        const { currentPassword, newPassword } = req.body;
+
+        if (!currentPassword) {
+            return res.status(400).json({ success: false, message: 'Please enter your current password.' });
         }
 
-        const user = await User.findById(req.user.id);
+        if (typeof newPassword !== 'string' || newPassword.length < 4) {
+            return res.status(400).json({ success: false, message: 'New password must be at least 4 characters' });
+        }
+        if (newPassword.length > 128) {
+            return res.status(400).json({ success: false, message: 'Password is too long (max 128 characters)' });
+        }
+
+        const user = await User.findById(req.user.id).select('+password');
         if (!user) {
             return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        const isMatch = await user.matchPassword(currentPassword);
+        if (!isMatch) {
+            return res.status(401).json({ success: false, message: 'Current password is incorrect.' });
         }
 
         user.password = newPassword;
@@ -704,9 +747,15 @@ router.put('/change-password', protect, async (req, res) => {
             { $set: { password: newPassword } }
         );
 
+        // The JWT fingerprint is derived from the password, so changing it invalidates
+        // all old tokens (including this session). Return a fresh token so the current
+        // session continues seamlessly while other sessions are forced to re-login.
+        const freshToken = user.getSignedJwtToken('2h', Boolean(req.auth?.rememberMe));
+
         res.json({
             success: true,
-            message: `Password updated for ${syncResult.modifiedCount + 1} linked portal account(s)`
+            message: `Password updated for ${syncResult.modifiedCount + 1} linked portal account(s)`,
+            token: freshToken,
         });
     } catch (error) {
         console.error('Change password error:', error);
@@ -718,8 +767,8 @@ router.put('/change-password', protect, async (req, res) => {
 
 // @route   GET /api/auth/test-email
 // @desc    Debug route to test email sending
-// @access  Public (should optionally be protected in final prod)
-router.get('/test-email', async (req, res) => {
+// @access  Admin only
+router.get('/test-email', protect, authorize('admin'), async (req, res) => {
     try {
         console.log('Testing Email Configuration...');
 
@@ -764,24 +813,34 @@ router.get('/test-email', async (req, res) => {
 // @access  Public
 router.post('/forgot-password', async (req, res) => {
     try {
-        const { email } = req.body;
+        const { email } = req.body || {};
 
         const genericSuccess = {
             success: true,
             message: 'If an account exists with this email, you will receive a password reset link shortly.',
         };
 
-        if (!email?.trim()) {
+        if (typeof email !== 'string' || !email.trim()) {
             return res.status(400).json({ success: false, message: 'Please provide your email address' });
         }
 
-        const normalizedEmail = email.toLowerCase().trim();
+        // Rate limiting (per IP + per email) to prevent email bombing.
+        const ipKey = `fp:ip:${getClientIp(req)}`;
+        const ipHit = rateLimit(ipKey, 10, 15 * 60 * 1000);
+        if (!ipHit.allowed) return sendRateLimitResponse(res, ipHit.resetAt);
 
-        if (!isEmailConfigured()) {
-            console.error('❌ No email method configured (set EMAIL_USER+EMAIL_PASS)');
+        const normalizedEmail = email.toLowerCase().trim();
+        const emailHit = rateLimit(`fp:mail:${normalizedEmail}`, 5, 15 * 60 * 1000);
+        if (!emailHit.allowed) return sendRateLimitResponse(res, emailHit.resetAt);
+
+        // Fail loudly when email creds are placeholders/missing instead of showing
+        // a fake "check your inbox" success that never delivers.
+        const configIssue = getEmailConfigIssue();
+        if (configIssue) {
+            console.error(`❌ Forgot-password blocked: ${configIssue}`);
             return res.status(503).json({
                 success: false,
-                message: 'Email service is not configured on the server. Please contact admin.',
+                message: `Password reset email is temporarily unavailable. ${configIssue}`,
             });
         }
 
@@ -823,20 +882,31 @@ router.post('/forgot-password', async (req, res) => {
             `,
         };
 
-        // Reply immediately — waiting on email sending caused 30s+ timeouts (502) on Render/Vercel
-        res.json(genericSuccess);
+        // Bound the SMTP wait (was causing 30s+ timeouts / 502) and report the real
+        // outcome to the user instead of always claiming success.
+        try {
+            await sendEmailWithTimeout(emailPayload, 10000);
+            console.log(`🔑 Password reset email sent to ${user.email} (${user.role})`);
+            return res.json(genericSuccess);
+        } catch (err) {
+            if (err.code === 'ETIMEOUT_MAIL') {
+                console.warn(`⏳ Reset send still in progress for ${user.email}; returned "check your inbox".`);
+                return res.json(genericSuccess);
+            }
 
-        sendEmail(emailPayload)
-            .then(() => console.log(`🔑 Password reset email sent to ${user.email} (${user.role})`))
-            .catch((err) => {
-                const errBody = err.response?.data ? JSON.stringify(err.response.data) : '';
-                console.error(`❌ Password reset email failed for ${user.email}:`, err.message, errBody);
-                if (/sender|from|verified|valid|not found/i.test(err.message + errBody)) {
-                    console.error('🔴 SMTP fix: verify EMAIL_USER/EMAIL_FROM and Gmail App Password settings.');
-                } else if (err.code === 'EAUTH' || /invalid login|authentication failed/i.test(err.message)) {
-                    console.error('🔴 Gmail SMTP fix: update EMAIL_PASS with a valid Gmail App Password.');
-                }
+            const errBody = err.response?.data ? JSON.stringify(err.response.data) : '';
+            console.error(`❌ Password reset email failed for ${user.email}:`, err.message, errBody);
+            if (/sender|from|verified|valid|not found/i.test(err.message + errBody)) {
+                console.error('🔴 SMTP fix: verify EMAIL_USER/EMAIL_FROM and Gmail App Password settings.');
+            } else if (err.code === 'EAUTH' || /invalid login|authentication failed/i.test(err.message)) {
+                console.error('🔴 Gmail SMTP fix: update EMAIL_PASS with a valid Gmail App Password.');
+            }
+
+            return res.status(502).json({
+                success: false,
+                message: 'The reset email could not be sent. Please try again in a minute or contact the administrator.',
             });
+        }
     } catch (error) {
         console.error('Forgot password error:', error);
 
@@ -847,15 +917,46 @@ router.post('/forgot-password', async (req, res) => {
     }
 });
 
+// @route   GET /api/auth/reset-password/:token
+// @desc    Check whether a reset token is still valid (used by the frontend page)
+// @access  Public
+router.get('/reset-password/:token', async (req, res) => {
+    const ipHit = rateLimit(`rp:check:ip:${getClientIp(req)}`, 30, 15 * 60 * 1000);
+    if (!ipHit.allowed) return sendRateLimitResponse(res, ipHit.resetAt);
+
+    const hashedToken = crypto.createHash('sha256').update(req.params.token).digest('hex');
+    const user = await User.findOne({
+        passwordResetToken: hashedToken,
+        passwordResetExpires: { $gt: Date.now() }
+    }).select('_id');
+
+    res.json({
+        success: true,
+        valid: Boolean(user),
+        message: user
+            ? 'Reset link is valid.'
+            : 'This reset link is invalid or has expired. Please request a new one.',
+    });
+});
+
 // @route   POST /api/auth/reset-password/:token
 // @desc    Reset password using token
 // @access  Public
 router.post('/reset-password/:token', async (req, res) => {
     try {
-        const { password } = req.body;
+        const ipHit = rateLimit(`rp:post:ip:${getClientIp(req)}`, 20, 15 * 60 * 1000);
+        if (!ipHit.allowed) return sendRateLimitResponse(res, ipHit.resetAt);
 
-        if (!password || password.length < 4) {
+        const { password } = req.body || {};
+
+        if (typeof password !== 'string' || !password.trim()) {
+            return res.status(400).json({ success: false, message: 'Please enter a new password' });
+        }
+        if (password.length < 4) {
             return res.status(400).json({ success: false, message: 'Password must be at least 4 characters' });
+        }
+        if (password.length > 128) {
+            return res.status(400).json({ success: false, message: 'Password is too long (max 128 characters)' });
         }
 
         // Hash the token from URL
@@ -868,7 +969,7 @@ router.post('/reset-password/:token', async (req, res) => {
         });
 
         if (!user) {
-            return res.status(400).json({ success: false, message: 'Invalid or expired reset token' });
+            return res.status(400).json({ success: false, message: 'Invalid or expired reset link. Please request a new one.' });
         }
 
         // Update password for the current user instance
@@ -877,10 +978,17 @@ router.post('/reset-password/:token', async (req, res) => {
         user.passwordResetExpires = undefined;
         await user.save();
 
-        // Synchronize through the person's global roll number (email is legacy fallback).
+        // Synchronize through the person's global roll number (email is legacy fallback)
+        // and clear the reset token on sibling accounts too (stale tokens would
+        // otherwise grant a second, unwanted password change).
         const syncResult = await User.updateMany(
-            { $and: [getLinkedAccountQuery(user), { _id: { $ne: user._id } }] },
-            { $set: { password: password } }
+            {
+                $and: [getLinkedAccountQuery(user), { _id: { $ne: user._id } }]
+            },
+            {
+                $set: { password },
+                $unset: { passwordResetToken: '', passwordResetExpires: '' }
+            }
         );
 
         res.json({
@@ -902,10 +1010,11 @@ router.get('/email-status', async (req, res) => {
     const hasEmailUser = !!process.env.EMAIL_USER;
     const hasEmailPass = !!process.env.EMAIL_PASS;
     const hasEmailFrom = !!process.env.EMAIL_FROM;
-    const isPlaceholder = /your_gmail|your_16_char|app_password/i.test(
+    const isPlaceholder = /your_gmail|your_16_char|app_password|example\.com|xxxx/i.test(
         (process.env.EMAIL_USER || '') + (process.env.EMAIL_PASS || '')
     );
     const clientUrl = getClientUrl(req);
+    const configIssue = getEmailConfigIssue();
 
     res.json({
         success: true,
@@ -917,18 +1026,16 @@ router.get('/email-status', async (req, res) => {
             EMAIL_FROM: hasEmailFrom ? 'SET' : 'NOT SET',
         },
         resetLinkDomain: clientUrl,
-        issue: !configured
-            ? '❌ No email method configured. Set EMAIL_USER+EMAIL_PASS in your .env'
-            : isPlaceholder
-                ? '⚠️ EMAIL_USER/EMAIL_PASS contain placeholder values. Replace with real credentials.'
-                : '✅ Email appears configured. If emails still fail, check server logs for errors.'
+        issue: configIssue
+            ? `❌ ${configIssue}`
+            : '✅ Email appears configured. If emails still fail, check server logs for errors.'
     });
 });
 
 // @route   POST /api/auth/test-email
 // @desc    Test email configuration by sending a test email (Admin diagnostic)
-// @access  Public (for debugging)
-router.post('/test-email', async (req, res) => {
+// @access  Admin only (otherwise it is an open SMTP spam relay)
+router.post('/test-email', protect, authorize('admin'), async (req, res) => {
     const { to } = req.body;
     if (!to) {
         return res.status(400).json({ success: false, message: 'Please provide a "to" email address' });

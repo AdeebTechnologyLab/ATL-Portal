@@ -170,6 +170,7 @@ const userSchema = new mongoose.Schema({
 userSchema.index({ email: 1, role: 1 }, { unique: true });
 userSchema.index({ role: 1, isVerified: 1 });
 userSchema.index({ lastSeen: -1 });
+userSchema.index({ passwordResetToken: 1 });
 
 // Hash password before saving - DISABLED AS PER USER REQUEST
 // userSchema.pre('save', async function (next) {

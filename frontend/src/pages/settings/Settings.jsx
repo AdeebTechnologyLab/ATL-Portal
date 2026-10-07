@@ -8,7 +8,7 @@ import { useTheme } from '../../context/ThemeContext';
 import { APP_THEMES } from '../../constants/themes';
 import LanguagePicker from '../../components/settings/LanguagePicker';
 import { googleDriveAPI, authAPI } from '../../services/api';
-import { updateUser } from '../../features/auth/authSlice';
+import { updateUser, refreshToken } from '../../features/auth/authSlice';
 import { ButtonLoader } from '../../components/ui/Loader';
 
 
@@ -235,10 +235,15 @@ const Settings = () => {
         }
         setIsSavingPassword(true);
         try {
-            await authAPI.updateProfile({
+            const response = await authAPI.changePassword({
                 currentPassword: passwordForm.currentPassword,
-                password: passwordForm.newPassword,
+                newPassword: passwordForm.newPassword,
             });
+            // Password changed = old JWT invalidated. Store the fresh token so the
+            // current session keeps working instead of being kicked to /login.
+            if (response.data.token) {
+                dispatch(refreshToken(response.data.token));
+            }
             setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
             setIsChangingPassword(false);
             showSuccessMessage('Password changed successfully!');

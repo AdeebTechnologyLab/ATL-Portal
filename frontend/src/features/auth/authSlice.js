@@ -81,6 +81,12 @@ const authSlice = createSlice({
             const storage = rememberMe ? localStorage : sessionStorage;
             storage.setItem('user', JSON.stringify(state.user));
         },
+        refreshToken: (state, action) => {
+            state.token = action.payload;
+            const rememberMe = localStorage.getItem('rememberMe') === 'true';
+            const storage = rememberMe ? localStorage : sessionStorage;
+            storage.setItem('token', action.payload);
+        },
     },
 });
 
@@ -92,6 +98,7 @@ export const {
     clearError,
     setUser,
     updateUser,
+    refreshToken,
 } = authSlice.actions;
 
 export default authSlice.reducer;
