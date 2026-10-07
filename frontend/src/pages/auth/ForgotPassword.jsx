@@ -1,39 +1,15 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Mail, ArrowLeft, CheckCircle, AlertCircle, RefreshCcw, Pencil } from 'lucide-react';
+import { Mail, ArrowLeft, CheckCircle, AlertCircle } from 'lucide-react';
 import { authAPI } from '../../services/api';
 import WhatsAppWidget from '../../components/shared/WhatsAppWidget';
 import { ButtonLoader } from '../../components/ui/Loader';
-
-const RESEND_COOLDOWN = 60;
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState('');
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState('');
-    const [cooldown, setCooldown] = useState(0);
-    const intervalRef = useRef(null);
-
-    useEffect(() => {
-        return () => {
-            if (intervalRef.current) clearInterval(intervalRef.current);
-        };
-    }, []);
-
-    const startCooldown = () => {
-        setCooldown(RESEND_COOLDOWN);
-        if (intervalRef.current) clearInterval(intervalRef.current);
-        intervalRef.current = setInterval(() => {
-            setCooldown((c) => {
-                if (c <= 1) {
-                    clearInterval(intervalRef.current);
-                    return 0;
-                }
-                return c - 1;
-            });
-        }, 1000);
-    };
 
     const sendResetLink = async (emailToSend) => {
         setLoading(true);
@@ -45,7 +21,6 @@ const ForgotPassword = () => {
                 email: emailToSend.toLowerCase().trim(),
             });
             setSuccess(true);
-            startCooldown();
         } catch (err) {
             const serverMessage = err.response?.data?.message;
             const isNetworkFailure =
@@ -69,11 +44,6 @@ const ForgotPassword = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        sendResetLink(email);
-    };
-
-    const handleResend = () => {
-        if (cooldown > 0 || loading) return;
         sendResetLink(email);
     };
 
@@ -119,28 +89,6 @@ const ForgotPassword = () => {
                                         within a few minutes. Also check Spam / Promotions.
                                     </p>
                                 </div>
-                            </div>
-                            <div className="mt-4 flex flex-col sm:flex-row gap-2">
-                                <button
-                                    type="button"
-                                    disabled={cooldown > 0 || loading}
-                                    onClick={handleResend}
-                                    className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-[#FF8E01] text-white text-sm font-semibold rounded-lg hover:bg-[#e67e00] transition disabled:opacity-50 disabled:cursor-not-allowed"
-                                >
-                                    <RefreshCcw className="w-4 h-4" />
-                                    {cooldown > 0 ? `Resend in ${cooldown}s` : 'Resend link'}
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => {
-                                        setSuccess(false);
-                                        setEmail('');
-                                    }}
-                                    className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-white/10 border border-white/20 text-white text-sm font-semibold rounded-lg hover:bg-white/20 transition"
-                                >
-                                    <Pencil className="w-4 h-4" />
-                                    Use a different email
-                                </button>
                             </div>
                         </div>
                     ) : (
