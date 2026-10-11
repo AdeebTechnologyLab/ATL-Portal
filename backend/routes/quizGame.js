@@ -363,8 +363,8 @@ router.get('/leaderboard', async (req, res) => {
         });
 
         const leadersRaw = Array.from(stats.values())
-            .filter(s => s.games > 0)
-            .sort((a, b) => (b.totalScore - a.totalScore) || (b.wins - a.wins))
+            .filter(s => s.games > 0 && s.wins > 0)
+            .sort((a, b) => (b.wins - a.wins) || (b.totalScore - a.totalScore))
             .slice(0, 10);
 
         // Live DP/name: User collection se current photo+name lein
