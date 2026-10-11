@@ -1,11 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import toast from 'react-hot-toast';
-import { io } from 'socket.io-client';
-import { Trophy, Crown, Medal, Zap, ChevronDown, Brain, Swords } from 'lucide-react';
-import { statsAPI, quizGameAPI } from '../../services/api';
-import { getBackendOrigin, getSocketURL } from '../../config/apiBaseUrl';
+import { Trophy, Crown, Medal, Zap, ChevronDown } from 'lucide-react';
+import { statsAPI } from '../../services/api';
+import { getBackendOrigin } from '../../config/apiBaseUrl';
 
 const MEDAL_COLORS = ['#FFD700', '#C0C0C0', '#CD7F32'];
 const MEDAL_ICONS = [Crown, Medal, Medal];
@@ -291,9 +287,6 @@ const GamesCard = () => {
     const [leaders, setLeaders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [open, setOpen] = useState(false);
-    const [openRooms, setOpenRooms] = useState([]);
-    const navigate = useNavigate();
-    const { role, user } = useSelector((state) => state.auth);
 
     const fetchLeaders = useCallback(async () => {
         try {
@@ -310,53 +303,6 @@ const GamesCard = () => {
         const interval = setInterval(fetchLeaders, 5000);
         return () => clearInterval(interval);
     }, [fetchLeaders]);
-
-    // Real-time challenge notifications: jab koi game create kare
-    // to sab users ko toast dikhe — Play dabao to game join + start
-    useEffect(() => {
-        const socket = io(getSocketURL(), { withCredentials: true });
-        // Personal room join karo taake quiz_challenge events pohanchen
-        // (connect + reconnect dono par — warna server restart ke baad events miss honge)
-        const joinPersonalRoom = () => {
-            const userId = user?.id || user?._id;
-            if (userId) socket.emit('join_chat', String(userId));
-        };
-        joinPersonalRoom();
-        socket.on('connect', joinPersonalRoom);
-
-        socket.on('quiz_challenge', ({ gameId, hostName }) => {
-            toast((t) => (
-                <div className="flex items-center gap-3">
-                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600">
-                        <Brain className="h-4 w-4 text-white" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                        <p className="text-sm font-black text-gray-900 dark:text-white">Quiz Battle Challenge!</p>
-                        <p className="truncate text-[11px] text-gray-500 dark:text-gray-400">{hostName} ne challenge khara kiya — foran join karo!</p>
-                    </div>
-                    <button
-                        onClick={() => {
-                            toast.dismiss(t.id);
-                            navigate(`/${role}/quiz-game`, { state: { gameId } });
-                        }}
-                        className="shrink-0 rounded-xl bg-gradient-to-r from-violet-500 to-indigo-600 px-3 py-1.5 text-xs font-black text-white shadow"
-                    >
-                        Play
-                    </button>
-                </div>
-            ), { duration: 15000 });
-        });
-        return () => socket.disconnect();
-    }, [navigate, role, user]);
-
-    // Open quiz challenges (dusre students ke waiting rooms)
-    useEffect(() => {
-        quizGameAPI.getOpen().then(res => setOpenRooms(res.data.data || [])).catch(() => {});
-        const interval = setInterval(() => {
-            quizGameAPI.getOpen().then(res => setOpenRooms(res.data.data || [])).catch(() => {});
-        }, 10000);
-        return () => clearInterval(interval);
-    }, []);
 
     const handleGameScore = useCallback(async (score) => {
         try {
@@ -380,7 +326,7 @@ const GamesCard = () => {
                 <div className="p-1.5 rounded-lg bg-gradient-to-br from-yellow-400 to-orange-500 flex-shrink-0">
                     <Trophy className="w-4 h-4 text-white" />
                 </div>
-                <span className="text-sm font-black text-gray-900 dark:text-white tracking-tight flex-1 text-left">Games</span>
+                <span className="text-sm font-black text-gray-900 dark:text-white tracking-tight flex-1 text-left">Tip to Play</span>
                 <div className="flex items-center gap-1.5">
                     {leaders.length > 0 && (
                         <span className="text-[10px] font-bold text-gray-400">{leaders.length} players</span>
@@ -394,30 +340,6 @@ const GamesCard = () => {
             {/* Collapsible content */}
             {open && (
                 <div className="px-4 pb-4">
-                    {/* Quiz Battle — 1v1 multiplayer MCQ race */}
-                    <button
-                        onClick={() => navigate(`/${role}/quiz-game`)}
-                        className="mb-3 flex w-full items-center gap-3 rounded-xl border border-violet-200 bg-gradient-to-r from-violet-500/10 to-indigo-500/10 p-3 text-left transition-all hover:border-violet-400/60 hover:shadow-md dark:border-violet-500/25 dark:from-violet-500/15 dark:to-indigo-500/15"
-                    >
-                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600 shadow-lg shadow-violet-500/25">
-                            <Brain className="h-5 w-5 text-white" />
-                        </div>
-                        <div className="min-w-0 flex-1">
-                            <p className="flex items-center gap-1.5 text-sm font-black text-gray-900 dark:text-white">
-                                Quiz Battle
-                                {openRooms.length > 0 && (
-                                    <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[9px] font-black text-white">{openRooms.length}</span>
-                                )}
-                            </p>
-                            <p className="truncate text-[11px] text-gray-500 dark:text-gray-400">
-                                {openRooms.length > 0
-                                    ? `${openRooms[0].host?.name} ne challenge khara kiya — join karo!`
-                                    : '1v1 MCQ race — subject chuno aur challenge bhejo'}
-                            </p>
-                        </div>
-                        <Swords className="h-4 w-4 shrink-0 text-violet-500" />
-                    </button>
-
                     <SpaceGame onScore={handleGameScore} />
 
                     <div className="mt-4">

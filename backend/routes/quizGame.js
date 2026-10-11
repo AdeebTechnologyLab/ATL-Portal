@@ -176,7 +176,7 @@ router.post('/create', async (req, res) => {
                 });
                 sendPushNotification(opponent._id.toString(), {
                     title: '🧠 Quiz Battle Challenge!',
-                    body: `${req.user.name} ne "${test.title}" ke liye challenge khara kiya hai — pehle join karo!`,
+                    body: `${req.user.name} ne aapko challenge kiya hai — kya aap challenge accept karte hain? (${test.title})`,
                     icon: '/logo.png',
                     url: `/${pathForRole(opponent.role)}/quiz-game`,
                     data: { gameId: String(game._id), type: 'quiz_challenge' }
@@ -224,6 +224,10 @@ router.post('/:id/join', async (req, res) => {
 
         const room = `quiz-game:${game._id}`;
         emitToRoom(req, room, 'quiz_game_started', { gameId: String(game._id) });
+
+        // Challenge notification foran sab ke paas se hide ho jaye (game shuru)
+        const io = req.app.get('io');
+        if (io) io.emit('quiz_challenge_closed', { gameId: String(game._id) });
 
         // Dono players ko socket room mein bhejo
         game.players.forEach(p => emitTo(req, p.user, 'quiz_game_joined', {
@@ -333,6 +337,50 @@ const finishGame = async (req, res) => {
 
 // @route   POST /api/quiz-game/:id/finish
 router.post('/:id/finish', finishGame);
+
+// @route   GET /api/quiz-game/leaderboard
+// @desc    Top 10 quiz players (wins + total score) — ended games se compute
+router.get('/leaderboard', async (req, res) => {
+    try {
+        const games = await QuizGame.find({ status: 'ended' })
+            .select('mode winner isTie players')
+            .lean();
+
+        const stats = new Map();
+        games.forEach(g => {
+            (g.players || []).forEach(p => {
+                const uid = p.user?._id || p.user;
+                if (!uid) return;
+                const key = String(uid);
+                const s = stats.get(key) || { _id: uid, name: p.name, photo: p.photo || '', wins: 0, totalScore: 0, games: 0 };
+                s.totalScore += p.score || 0;
+                s.games += 1;
+                if (g.mode !== 'solo' && !g.isTie && g.winner && String(g.winner) === key) {
+                    s.wins += 1;
+                }
+                stats.set(key, s);
+            });
+        });
+
+        const leaders = Array.from(stats.values())
+            .filter(s => s.games > 0)
+            .sort((a, b) => (b.wins - a.wins) || (b.totalScore - a.totalScore))
+            .slice(0, 10)
+            .map(s => ({
+                _id: s._id,
+                name: s.name,
+                photo: s.photo,
+                wins: s.wins,
+                totalScore: s.totalScore,
+                games: s.games,
+                avgScore: s.games ? Math.round((s.totalScore / s.games) * 10) / 10 : 0
+            }));
+
+        res.json({ success: true, data: leaders });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+});
 
 // @route   GET /api/quiz-game/open
 // @desc    Open waiting rooms (for notifications/browse)

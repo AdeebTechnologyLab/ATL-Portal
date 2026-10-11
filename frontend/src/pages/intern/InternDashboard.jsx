@@ -9,6 +9,7 @@ import {
 import StatCard from '../../components/ui/StatCard';
 import Badge from '../../components/ui/Badge';
 import GamesCard from '../../components/dashboard/GamesCard';
+import QuizBattleCard from '../../components/dashboard/QuizBattleCard';
 import { enrollmentAPI, assignmentAPI, feeAPI, liveClassAPI, chatAPI, settingsAPI, attendanceAPI } from '../../services/api';
 import { getCourseIcon } from '../../utils/courseIcons';
 import { calculateOutstandingFees } from '../../utils/feeHelpers';
@@ -277,6 +278,8 @@ const InternDashboard = () => {
     return (
         <div className="space-y-6">
             {/* Quiz Battle + Games */}
+            <QuizBattleCard />
+
             <GamesCard />
 
             {/* Live Class Banner - Big and Prominent */}

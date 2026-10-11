@@ -16,6 +16,7 @@ import StatCard from '../../components/ui/StatCard';
 import { getCourseIcon, getCourseStyle } from '../../utils/courseIcons';
 import BirthdayWish from '../../components/dashboard/BirthdayWish';
 import GamesCard from '../../components/dashboard/GamesCard';
+import QuizBattleCard from '../../components/dashboard/QuizBattleCard';
 import Loader, { ButtonLoader } from '../../components/ui/Loader';
 import { useTranslation } from 'react-i18next';
 
@@ -333,6 +334,7 @@ const TeacherCourses = ({ isDashboard = false, initialSearchMode = 'courses' }) 
         <>
             <div className="space-y-6">
                 {isDashboard && <BirthdayWish />}
+                {isDashboard && <QuizBattleCard />}
                 {isDashboard && <GamesCard />}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>

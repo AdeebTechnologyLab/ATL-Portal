@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import BirthdayWish from '../../components/dashboard/BirthdayWish';
 import GamesCard from '../../components/dashboard/GamesCard';
+import QuizBattleCard from '../../components/dashboard/QuizBattleCard';
 import WorkspaceRestrictedBanner from '../../components/dashboard/WorkspaceRestrictedBanner';
 import StatCard from '../../components/ui/StatCard';
 import Badge from '../../components/ui/Badge';
@@ -448,6 +449,8 @@ const StudentDashboard = () => {
                 </motion.div>
 
                 <BirthdayWish />
+
+                <QuizBattleCard />
 
                 <GamesCard />
 

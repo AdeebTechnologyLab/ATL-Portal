@@ -34,6 +34,7 @@ import { getCourseIcon, getCourseStyle } from '../../utils/courseIcons';
 import { formatDate } from '../../utils/dateFormatter';
 import BirthdayWish from '../../components/dashboard/BirthdayWish';
 import GamesCard from '../../components/dashboard/GamesCard';
+import QuizBattleCard from '../../components/dashboard/QuizBattleCard';
 import { useTranslation } from 'react-i18next';
 import { requestNotificationPermission, showGradingNotification } from '../../utils/desktopNotifications';
 
@@ -340,6 +341,8 @@ const TeacherDashboard = () => {
                 </motion.div>
 
                 <BirthdayWish />
+
+                <QuizBattleCard />
 
                 <GamesCard />
 

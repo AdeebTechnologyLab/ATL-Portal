@@ -270,7 +270,8 @@ export const quizGameAPI = {
     finish: (gameId) => api.post(`/quiz-game/${gameId}/finish`),
     get: (gameId) => api.get(`/quiz-game/${gameId}`),
     getOpen: () => api.get('/quiz-game/open'),
-    getMyHistory: () => api.get('/quiz-game/my/history')
+    getMyHistory: () => api.get('/quiz-game/my/history'),
+    getLeaderboard: () => api.get('/quiz-game/leaderboard')
 };
 
 export const testAPI = {

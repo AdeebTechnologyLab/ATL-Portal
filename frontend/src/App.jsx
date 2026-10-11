@@ -287,11 +287,13 @@ const AppRoutes = () => {
 };
 
 import { Toaster } from 'react-hot-toast';
+import QuizChallengeNotification from './components/shared/QuizChallengeNotification';
 
 function App() {
   return (
     <Router>
       <Toaster position="top-right" reverseOrder={false} />
+      <QuizChallengeNotification />
       <Suspense fallback={<PageLoader />}>
         <AppRoutes />
       </Suspense>

@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { io } from 'socket.io-client';
 import { motion } from 'framer-motion';
 import {
-    ArrowLeft, BookOpen, Brain, CheckCircle2, Crown, Hourglass, Loader2,
+    BookOpen, Brain, CheckCircle2, Crown, Hourglass, Loader2,
     Play, Swords, Target, Timer, Trophy, Users, XCircle, Zap
 } from 'lucide-react';
 import { quizGameAPI } from '../../services/api';
@@ -63,7 +63,7 @@ const ScoreBadge = ({ player, isMe, isWinner, tie }) => (
     </div>
 );
 
-const QuizGame = () => {
+const QuizGame = ({ inline = false, onExit = null }) => {
     const location = useLocation();
     const { user } = useSelector((state) => state.auth);
 
@@ -72,6 +72,7 @@ const QuizGame = () => {
     const [subjects, setSubjects] = useState([]);
     const [tests, setTests] = useState([]);
     const [selectedSubject, setSelectedSubject] = useState(null);
+    const [selectedTest, setSelectedTest] = useState(null);
     const [, setSelectedTestId] = useState(null);
     const [game, setGame] = useState(null);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -81,6 +82,7 @@ const QuizGame = () => {
     const [waitElapsed, setWaitElapsed] = useState(0);
     const [openRooms, setOpenRooms] = useState([]);
     const [history, setHistory] = useState([]);
+    const [leaders, setLeaders] = useState([]);
     const [error, setError] = useState('');
     const [isBusy, setIsBusy] = useState(false);
 
@@ -250,6 +252,7 @@ const QuizGame = () => {
         quizGameAPI.getSummary().then(res => setSubjects(res.data.data || [])).catch(() => {});
         quizGameAPI.getOpen().then(res => setOpenRooms(res.data.data || [])).catch(() => {});
         quizGameAPI.getMyHistory().then(res => setHistory(res.data.data || [])).catch(() => {});
+        quizGameAPI.getLeaderboard().then(res => setLeaders(res.data.data || [])).catch(() => {});
     }, [flow]);
 
     // Lobby waiting timer
@@ -261,13 +264,14 @@ const QuizGame = () => {
 
     const loadTests = async (subject) => {
         setSelectedSubject(subject);
+        setSelectedTest(null);
         setError('');
         try {
             const res = await quizGameAPI.getTests(subject._id);
             setTests(res.data.data || []);
-            setFlow('test');
         } catch {
             setError('Tests load nahi hue — dobara try karo');
+            setTests([]);
         }
     };
 
@@ -363,14 +367,18 @@ const QuizGame = () => {
     /* ------------------------------ SUBJECT SELECT ------------------------------ */
     if (flow === 'subject') {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-950 px-4 py-8 text-white">
-                <div className="mx-auto max-w-3xl">
-                    <div className="mb-8 text-center">
-                        <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-br from-violet-500 to-indigo-600 shadow-2xl shadow-violet-500/30">
-                            <Brain className="h-10 w-10" />
-                        </div>
-                        <h1 className="text-3xl font-black tracking-tight sm:text-4xl">Quiz Battle</h1>
-                        <p className="mt-2 text-sm text-white/60">Subject chuno, test select karo, aur kisi bhi student/intern/teacher ke sath 1v1 MCQ race khelo</p>
+            <div className={inline ? 'rounded-2xl border border-white/10 bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-950 px-4 py-5 text-white' : 'min-h-screen bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-950 px-4 py-8 text-white'}>
+                <div className={inline ? '' : 'mx-auto max-w-3xl'}>
+                    <div className={inline ? 'mb-4 text-center' : 'mb-8 text-center'}>
+                        {!inline && (
+                            <>
+                                <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-br from-violet-500 to-indigo-600 shadow-2xl shadow-violet-500/30">
+                                    <Brain className="h-10 w-10" />
+                                </div>
+                                <h1 className="text-3xl font-black tracking-tight sm:text-4xl">Quiz Battle</h1>
+                            </>
+                        )}
+                        <p className="mt-2 text-sm text-white/60">Subject chuno aur kisi bhi student / intern / teacher ke saath 1v1 MCQ race khelo</p>
                     </div>
 
                     {error && <div className="mb-4 rounded-xl border border-red-400/30 bg-red-500/10 px-4 py-3 text-sm font-semibold text-red-300">{error}</div>}
@@ -383,20 +391,80 @@ const QuizGame = () => {
                             Abhi koi subject/tests available nahi — jab teacher test banayenge to yahan dikhega
                         </div>
                     ) : (
-                        <div className="grid gap-3 sm:grid-cols-2">
-                            {subjects.map(subject => (
-                                <button
-                                    key={subject._id}
-                                    onClick={() => loadTests(subject)}
-                                    className="group flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.05] p-5 text-left transition-all hover:border-violet-400/50 hover:bg-violet-500/10"
-                                >
-                                    <div>
-                                        <p className="font-black">{subject.title}</p>
-                                        <p className="text-xs text-white/50">{subject.testCount} test{subject.testCount !== 1 ? 's' : ''} available</p>
-                                    </div>
-                                    <Play className="h-5 w-5 text-violet-400 transition-transform group-hover:scale-125" />
-                                </button>
-                            ))}
+                        <div className="rounded-2xl border border-white/10 bg-white/[0.05] p-4">
+                            <select
+                                value={selectedSubject?._id || ''}
+                                onChange={(e) => {
+                                    const sub = subjects.find(s => s._id === e.target.value);
+                                    setSelectedSubject(sub || null);
+                                    setSelectedTest(null);
+                                    setError('');
+                                    if (sub) loadTests(sub);
+                                    else setTests([]);
+                                }}
+                                className="w-full cursor-pointer rounded-xl border border-white/15 bg-slate-900 px-4 py-3.5 text-sm font-bold text-white outline-none transition-colors focus:border-violet-400/60"
+                            >
+                                <option value="">Select a subject…</option>
+                                {subjects.map(subject => (
+                                    <option key={subject._id} value={subject._id}>
+                                        {subject.title} ({subject.testCount} test{subject.testCount !== 1 ? 's' : ''})
+                                    </option>
+                                ))}
+                            </select>
+
+                            {selectedSubject && (
+                                <div className="mt-4 border-t border-white/10 pt-4">
+                                    <label className="mb-2 block text-xs font-black uppercase tracking-widest text-violet-300">
+                                        Test select karo — us mein se 10 random MCQs aayenge
+                                    </label>
+                                    {tests.length === 0 ? (
+                                        <div className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white/50">
+                                            Is subject ke koi tests nahi — teacher test banayega to yahan dikhega
+                                        </div>
+                                    ) : (
+                                        <select
+                                            value={selectedTest?._id || ''}
+                                            onChange={(e) => {
+                                                const t = tests.find(t => t._id === e.target.value);
+                                                setSelectedTest(t || null);
+                                                setError('');
+                                            }}
+                                            className="w-full cursor-pointer rounded-xl border border-white/15 bg-slate-900 px-4 py-3.5 text-sm font-bold text-white outline-none transition-colors focus:border-violet-400/60"
+                                        >
+                                            <option value="">Select a test…</option>
+                                            {tests.map(test => (
+                                                <option key={test._id} value={test._id}>
+                                                    {test.title} ({test.questionCount} questions · {test.totalMarks} marks)
+                                                </option>
+                                            ))}
+                                        </select>
+                                    )}
+
+                                    {selectedTest && (
+                                        <>
+                                            <div className="mt-3 grid grid-cols-2 gap-3">
+                                                <button
+                                                    onClick={() => createGame(selectedTest._id, 'solo')}
+                                                    disabled={isBusy}
+                                                    className="flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 px-4 py-3 text-xs font-black uppercase tracking-wider shadow-lg shadow-emerald-500/25 disabled:opacity-50"
+                                                >
+                                                    <Play className="h-3.5 w-3.5" /> Solo
+                                                </button>
+                                                <button
+                                                    onClick={() => createGame(selectedTest._id, 'duel')}
+                                                    disabled={isBusy}
+                                                    className="flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-violet-500 to-indigo-600 px-4 py-3 text-xs font-black uppercase tracking-wider shadow-lg shadow-violet-500/25 disabled:opacity-50"
+                                                >
+                                                    <Swords className="h-3.5 w-3.5" /> 1v1
+                                                </button>
+                                            </div>
+                                            <p className="mt-3 text-center text-[11px] text-white/40">
+                                                <span className="font-bold text-emerald-300">Solo</span> = akele practice (foran start) · <span className="font-bold text-violet-300">1v1</span> = challenge bhejo, doosra join kare to race shuru
+                                            </p>
+                                        </>
+                                    )}
+                                </div>
+                            )}
                         </div>
                     )}
 
@@ -418,7 +486,7 @@ const QuizGame = () => {
                                                 {room.host?.name?.[0]?.toUpperCase() || '?'}
                                             </div>
                                             <div>
-                                                <p className="text-sm font-black">{room.host?.name} ne challenge khara kiya hai!</p>
+                                                <p className="text-sm font-black">{room.host?.name} ne aapko challenge kiya hai — accept karo!</p>
                                                 <p className="text-xs text-white/60">{room.testTitle}</p>
                                             </div>
                                         </div>
@@ -427,6 +495,100 @@ const QuizGame = () => {
                                         </span>
                                     </button>
                                 ))}
+                            </div>
+                        </>
+                    )}
+
+                    {leaders.length > 0 && (
+                        <>
+                            <h2 className="mb-3 mt-8 flex items-center gap-2 text-sm font-black uppercase tracking-widest text-white/50">
+                                <Trophy className="h-4 w-4" /> Top Quiz Winners
+                            </h2>
+                            <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+                                {/* Top 3 Podium */}
+                                <div className="mb-4 flex items-end justify-center gap-3">
+                                    {/* 2nd place */}
+                                    {leaders[1] && (
+                                        <div className="flex flex-1 max-w-[90px] flex-col items-center">
+                                            <div className="relative mb-1.5">
+                                                <div className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border-2 border-gray-300 bg-gray-200">
+                                                    {leaders[1].photo ? (
+                                                        <img src={getPhotoUrl(leaders[1].photo)} alt="" className="h-full w-full object-cover" />
+                                                    ) : (
+                                                        <span className="text-sm font-bold text-gray-400">{leaders[1].name?.[0]}</span>
+                                                    )}
+                                                </div>
+                                                <span className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-gray-400 text-[9px] font-black text-white">2</span>
+                                            </div>
+                                            <p className="w-full truncate text-center text-[10px] font-bold text-white/80">{leaders[1].name}</p>
+                                            <div className="mt-1 flex h-10 w-full items-center justify-center rounded-t-lg bg-gradient-to-t from-gray-400/60 to-gray-300/60">
+                                                <span className="text-[11px] font-black text-gray-900">{leaders[1].wins}</span>
+                                            </div>
+                                        </div>
+                                    )}
+                                    {/* 1st place */}
+                                    {leaders[0] && (
+                                        <div className="flex flex-1 max-w-[100px] flex-col items-center">
+                                            <div className="relative mb-1.5">
+                                                <Crown className="absolute -top-3 left-1/2 z-10 h-5 w-5 -translate-x-1/2 text-yellow-400" />
+                                                <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-full border-2 border-yellow-400 bg-yellow-300 shadow-lg shadow-yellow-400/30">
+                                                    {leaders[0].photo ? (
+                                                        <img src={getPhotoUrl(leaders[0].photo)} alt="" className="h-full w-full object-cover" />
+                                                    ) : (
+                                                        <span className="text-base font-bold text-yellow-700">{leaders[0].name?.[0]}</span>
+                                                    )}
+                                                </div>
+                                                <span className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-yellow-400 text-[9px] font-black text-white">1</span>
+                                            </div>
+                                            <p className="w-full truncate text-center text-[11px] font-black text-white">{leaders[0].name}</p>
+                                            <div className="mt-1 flex h-14 w-full items-center justify-center rounded-t-lg bg-gradient-to-t from-yellow-400 to-yellow-300 shadow-lg shadow-yellow-400/20">
+                                                <span className="text-sm font-black text-white drop-shadow">{leaders[0].wins}</span>
+                                            </div>
+                                        </div>
+                                    )}
+                                    {/* 3rd place */}
+                                    {leaders[2] && (
+                                        <div className="flex flex-1 max-w-[90px] flex-col items-center">
+                                            <div className="relative mb-1.5">
+                                                <div className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border-2 border-amber-600 bg-amber-200">
+                                                    {leaders[2].photo ? (
+                                                        <img src={getPhotoUrl(leaders[2].photo)} alt="" className="h-full w-full object-cover" />
+                                                    ) : (
+                                                        <span className="text-sm font-bold text-amber-700">{leaders[2].name?.[0]}</span>
+                                                    )}
+                                                </div>
+                                                <span className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-amber-600 text-[9px] font-black text-white">3</span>
+                                            </div>
+                                            <p className="w-full truncate text-center text-[10px] font-bold text-white/80">{leaders[2].name}</p>
+                                            <div className="mt-1 flex h-8 w-full items-center justify-center rounded-t-lg bg-gradient-to-t from-amber-600/70 to-amber-500/70">
+                                                <span className="text-[10px] font-black text-white">{leaders[2].wins}</span>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Rest of the list */}
+                                {leaders.slice(3).length > 0 && (
+                                    <div className="space-y-1.5">
+                                        {leaders.slice(3, 10).map((u, i) => (
+                                            <div key={u._id} className="flex items-center gap-2.5 rounded-xl bg-white/[0.03] px-3 py-2 transition-colors hover:bg-white/[0.06]">
+                                                <span className="w-5 text-center text-[11px] font-black text-white/40">{i + 4}</span>
+                                                <div className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white/10">
+                                                    {u.photo ? (
+                                                        <img src={getPhotoUrl(u.photo)} alt="" className="h-full w-full object-cover" />
+                                                    ) : (
+                                                        <span className="text-[10px] font-bold text-white/60">{u.name?.[0]}</span>
+                                                    )}
+                                                </div>
+                                                <p className="min-w-0 flex-1 truncate text-[11px] font-bold text-white/90">{u.name}</p>
+                                                <span className="flex items-center gap-1 text-[10px] font-black text-yellow-300">
+                                                    <Trophy className="h-3 w-3" /> {u.wins}
+                                                </span>
+                                                <span className="w-10 text-right text-[10px] font-bold text-violet-300">{u.totalScore} pts</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
                         </>
                     )}
@@ -461,58 +623,12 @@ const QuizGame = () => {
         );
     }
 
-    /* ------------------------------ TEST SELECT ------------------------------ */
-    if (flow === 'test') {
-        return (
-            <div className="min-h-screen bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-950 px-4 py-8 text-white">
-                <div className="mx-auto max-w-3xl">
-                    <button onClick={() => setFlow('subject')} className="mb-6 flex items-center gap-2 text-sm font-bold text-white/60 hover:text-white">
-                        <ArrowLeft className="h-4 w-4" /> Subjects
-                    </button>
-                    <h1 className="mb-1 text-2xl font-black">{selectedSubject?.title}</h1>
-                    <p className="mb-6 text-sm text-white/50">Test select karo — us mein se 10 random MCQs aayenge</p>
-                    {error && <div className="mb-4 rounded-xl border border-red-400/30 bg-red-500/10 px-4 py-3 text-sm font-semibold text-red-300">{error}</div>}
-                    <div className="space-y-3">
-                        {tests.map(test => (
-                            <div
-                                key={test._id}
-                                className="flex w-full items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.05] p-5 transition-all hover:border-violet-400/50 hover:bg-violet-500/10"
-                            >
-                                <div className="min-w-0 flex-1">
-                                    <p className="font-black">{test.title}</p>
-                                    <p className="text-xs text-white/50">{test.questionCount} questions · {test.totalMarks} marks</p>
-                                </div>
-                                <button
-                                    onClick={() => createGame(test._id, 'solo')}
-                                    disabled={isBusy}
-                                    className="flex shrink-0 items-center gap-1.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 px-4 py-2.5 text-xs font-black uppercase tracking-wider shadow-lg shadow-emerald-500/25 disabled:opacity-50"
-                                >
-                                    <Play className="h-3.5 w-3.5" /> Solo
-                                </button>
-                                <button
-                                    onClick={() => createGame(test._id, 'duel')}
-                                    disabled={isBusy}
-                                    className="flex shrink-0 items-center gap-1.5 rounded-xl bg-gradient-to-r from-violet-500 to-indigo-600 px-4 py-2.5 text-xs font-black uppercase tracking-wider shadow-lg shadow-violet-500/25 disabled:opacity-50"
-                                >
-                                    <Swords className="h-3.5 w-3.5" /> 1v1
-                                </button>
-                            </div>
-                        ))}
-                    </div>
-                    <p className="mt-4 text-center text-xs text-white/40">
-                        <span className="font-bold text-emerald-300">Solo</span> = akele practice karo (foran start) · <span className="font-bold text-violet-300">1v1</span> = challenge bhejo, doosra join kare to race shuru
-                    </p>
-                </div>
-            </div>
-        );
-    }
-
     /* ------------------------------ LOBBY (WAITING) ------------------------------ */
     if (flow === 'lobby' || flow === 'reconnecting') {
         const host = game?.players?.[0];
         return (
-            <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-950 px-4 text-white">
-                <div className="w-full max-w-md text-center">
+            <div className={inline ? 'bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-950 px-4 py-6 text-white' : 'flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-950 px-4 text-white'}>
+                <div className={`w-full max-w-md text-center${inline ? ' mx-auto' : ''}`}>
                     <motion.div
                         animate={{ scale: [1, 1.08, 1] }}
                         transition={{ repeat: Infinity, duration: 1.6 }}
@@ -572,8 +688,8 @@ const QuizGame = () => {
         const soloMode = game.mode === 'solo';
         const iWon = game.isTie ? false : String(game.winner) === myId;
         return (
-            <div className="min-h-screen bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-950 px-4 py-8 text-white">
-                <div className="mx-auto max-w-lg">
+            <div className={inline ? 'bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-950 px-4 py-6 text-white' : 'min-h-screen bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-950 px-4 py-8 text-white'}>
+                <div className={inline ? '' : 'mx-auto max-w-lg'}>
                     <motion.div
                         initial={{ scale: 0.8, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
@@ -634,7 +750,7 @@ const QuizGame = () => {
                             Play Again
                         </button>
                         <button
-                            onClick={() => { setFlow('subject'); setGame(null); gameIdRef.current = null; setMyAnswers({}); setCurrentQuestionIndex(0); }}
+                            onClick={() => { if (onExit) { onExit(); return; } setFlow('subject'); setGame(null); gameIdRef.current = null; setMyAnswers({}); setCurrentQuestionIndex(0); }}
                             className="rounded-2xl border border-white/15 px-6 py-3.5 font-bold text-white/70 hover:bg-white/5"
                         >
                             Exit
@@ -649,7 +765,7 @@ const QuizGame = () => {
     if (flow === 'playing' && game && currentQuestion) {
         const answeredCount = Object.keys(myAnswers).length;
         return (
-            <div className="flex min-h-screen flex-col bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-950 text-white">
+            <div className={`${inline ? 'flex flex-col rounded-2xl border border-white/10 bg-gradient-to-br' : 'flex min-h-screen flex-col bg-gradient-to-br'} from-slate-950 via-indigo-950 to-slate-950 text-white`}>
                 {/* Top bar */}
                 <div className="flex items-center justify-between border-b border-white/10 px-4 py-3 sm:px-6">
                     <div className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-white/50">
@@ -689,7 +805,7 @@ const QuizGame = () => {
                 </div>
 
                 {/* Question */}
-                <div className="flex flex-1 flex-col items-center justify-center px-4 pb-8 sm:px-6">
+                <div className={inline ? 'flex flex-col items-center gap-6 px-4 py-5 sm:px-6' : 'flex flex-1 flex-col items-center justify-center px-4 pb-8 sm:px-6'}>
                     <motion.div
                         key={currentQuestionIndex}
                         initial={{ opacity: 0, y: 24 }}
@@ -753,7 +869,7 @@ const QuizGame = () => {
 
     /* ------------------------------ LOADING / FALLBACK ------------------------------ */
     return (
-        <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-950 text-white">
+        <div className={inline ? 'flex items-center justify-center rounded-2xl border border-white/10 bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-950 py-8 text-white' : 'flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-950 text-white'}>
             <div className="text-center">
                 <Loader2 className="mx-auto mb-3 h-8 w-8 animate-spin text-violet-400" />
                 <p className="text-sm font-bold text-white/60">Loading Quiz Battle…</p>
