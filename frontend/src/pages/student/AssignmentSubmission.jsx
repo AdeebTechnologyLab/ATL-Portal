@@ -869,14 +869,13 @@ const AssignmentSubmission = () => {
                                                                             : role === 'intern'
                                                                                 ? 'Upload Project'
                                                                                 : 'Upload Assignment'}
-                                                                        <input
-                                                                            type="file"
-                                                                            multiple
-                                                                            className="hidden"
-                                                                            accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.zip"
-                                                                            onChange={handleDriveUpload}
-                                                                            disabled={isDriveUploading}
-                                                                        />
+<input
+                                            type="file"
+                                            multiple
+                                            className="hidden"
+                                            onChange={handleDriveUpload}
+                                            disabled={isDriveUploading}
+                                        />
                                                                     </label>
                                                                 ) : (
                                                                     <button

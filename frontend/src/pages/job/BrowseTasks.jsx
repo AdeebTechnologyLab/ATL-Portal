@@ -819,7 +819,6 @@ const BrowseTasks = () => {
                                             type="file"
                                             multiple
                                             className="hidden"
-                                            accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.zip"
                                             onChange={handleDriveUpload}
                                             disabled={isDriveUploading}
                                         />

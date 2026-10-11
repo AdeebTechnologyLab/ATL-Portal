@@ -847,7 +847,7 @@ const TestsTab = ({ course, students }) => {
                                             </div>
                                             <span className="text-[10px] font-black uppercase text-white/70 tracking-widest">Upload PDF / DOC / TXT</span>
                                             <p className="text-[8px] text-white/30 uppercase mt-1">AI will auto-detect all questions</p>
-                                            <input type="file" className="hidden" onChange={handleFileUpload} accept=".pdf,.doc,.docx,.txt" />
+                                            <input type="file" className="hidden" onChange={handleFileUpload} />
                                         </label>
                                     </div>
                                 )}
@@ -1157,7 +1157,7 @@ const TestsTab = ({ course, students }) => {
                                                 </div>
                                                 <span className="text-[10px] font-black uppercase text-white/70 tracking-widest">Upload PDF / DOC / TXT</span>
                                                 <p className="text-[8px] text-white/30 uppercase mt-1">AI will auto-detect all questions</p>
-                                                <input type="file" className="hidden" onChange={handleFileUpload} accept=".pdf,.doc,.docx,.txt" />
+                                                <input type="file" className="hidden" onChange={handleFileUpload} />
                                             </label>
                                         </div>
                                     )}

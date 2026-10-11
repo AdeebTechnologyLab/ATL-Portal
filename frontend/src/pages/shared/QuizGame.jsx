@@ -522,7 +522,7 @@ const QuizGame = ({ inline = false, onExit = null }) => {
                                             </div>
                                             <p className="w-full truncate text-center text-[10px] font-bold text-white/80">{leaders[1].name}</p>
                                             <div className="mt-1 flex h-10 w-full items-center justify-center rounded-t-lg bg-gradient-to-t from-gray-400/60 to-gray-300/60">
-                                                <span className="text-[11px] font-black text-gray-900">{leaders[1].wins}</span>
+                                                <span className="text-[11px] font-black text-gray-900">{leaders[1].totalScore}</span>
                                             </div>
                                         </div>
                                     )}
@@ -542,7 +542,7 @@ const QuizGame = ({ inline = false, onExit = null }) => {
                                             </div>
                                             <p className="w-full truncate text-center text-[11px] font-black text-white">{leaders[0].name}</p>
                                             <div className="mt-1 flex h-14 w-full items-center justify-center rounded-t-lg bg-gradient-to-t from-yellow-400 to-yellow-300 shadow-lg shadow-yellow-400/20">
-                                                <span className="text-sm font-black text-white drop-shadow">{leaders[0].wins}</span>
+                                                <span className="text-sm font-black text-white drop-shadow">{leaders[0].totalScore}</span>
                                             </div>
                                         </div>
                                     )}
@@ -561,7 +561,7 @@ const QuizGame = ({ inline = false, onExit = null }) => {
                                             </div>
                                             <p className="w-full truncate text-center text-[10px] font-bold text-white/80">{leaders[2].name}</p>
                                             <div className="mt-1 flex h-8 w-full items-center justify-center rounded-t-lg bg-gradient-to-t from-amber-600/70 to-amber-500/70">
-                                                <span className="text-[10px] font-black text-white">{leaders[2].wins}</span>
+                                                <span className="text-[10px] font-black text-white">{leaders[2].totalScore}</span>
                                             </div>
                                         </div>
                                     )}
@@ -581,10 +581,7 @@ const QuizGame = ({ inline = false, onExit = null }) => {
                                                     )}
                                                 </div>
                                                 <p className="min-w-0 flex-1 truncate text-[11px] font-bold text-white/90">{u.name}</p>
-                                                <span className="flex items-center gap-1 text-[10px] font-black text-yellow-300">
-                                                    <Trophy className="h-3 w-3" /> {u.wins}
-                                                </span>
-                                                <span className="w-10 text-right text-[10px] font-bold text-violet-300">{u.totalScore} pts</span>
+                                                <span className="w-16 text-right text-[11px] font-black text-violet-300">{u.totalScore} pts</span>
                                             </div>
                                         ))}
                                     </div>
