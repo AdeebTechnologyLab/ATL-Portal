@@ -362,19 +362,26 @@ router.get('/leaderboard', async (req, res) => {
             });
         });
 
-        const leaders = Array.from(stats.values())
+        const leadersRaw = Array.from(stats.values())
             .filter(s => s.games > 0)
-            .sort((a, b) => (b.wins - a.wins) || (b.totalScore - a.totalScore))
-            .slice(0, 10)
-            .map(s => ({
-                _id: s._id,
-                name: s.name,
-                photo: s.photo,
-                wins: s.wins,
-                totalScore: s.totalScore,
-                games: s.games,
-                avgScore: s.games ? Math.round((s.totalScore / s.games) * 10) / 10 : 0
-            }));
+            .sort((a, b) => (b.totalScore - a.totalScore) || (b.wins - a.wins))
+            .slice(0, 10);
+
+        // Live DP/name: User collection se current photo+name lein
+        // (players[].photo stored time par hoti hai, update ke baad stale ho sakti hai)
+        const userIds = leadersRaw.map(s => s._id);
+        const users = await User.find({ _id: { $in: userIds } }).select('_id name photo').lean();
+        const userMap = new Map(users.map(u => [String(u._id), u]));
+
+        const leaders = leadersRaw.map(s => ({
+            _id: s._id,
+            name: userMap.get(String(s._id))?.name || s.name,
+            photo: userMap.get(String(s._id))?.photo || s.photo,
+            wins: s.wins,
+            totalScore: s.totalScore,
+            games: s.games,
+            avgScore: s.games ? Math.round((s.totalScore / s.games) * 10) / 10 : 0
+        }));
 
         res.json({ success: true, data: leaders });
     } catch (error) {
