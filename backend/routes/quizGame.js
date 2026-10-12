@@ -324,12 +324,42 @@ const finishGame = async (req, res) => {
         game.winner = game.isTie ? null : best.userId;
         game.status = 'ended';
         game.endedAt = new Date();
-        await game.save();
+
+        // Atomic claim — double finish par sirf ek caller stats count kare
+        const claimed = await QuizGame.findOneAndUpdate(
+            { _id: game._id, status: { $ne: 'ended' } },
+            {
+                $set: {
+                    players: scores,
+                    isTie: game.isTie,
+                    winner: game.winner,
+                    status: 'ended',
+                    endedAt: game.endedAt
+                }
+            },
+            { new: true }
+        );
+
+        if (claimed) {
+            // Lifetime stats User par persist karo (Tip to Play ki tarah).
+            // QuizGame docs TTL se delete bhi ho jayein to bhi leaderboard chalti rahe.
+            await Promise.all(scores.map(p => {
+                const uid = p.user?._id || p.user;
+                if (!uid) return null;
+                const isWinner = !claimed.isTie && String(claimed.winner) === String(uid);
+                return User.updateOne(
+                    { _id: uid },
+                    { $inc: { quizScore: p.score || 0, quizGames: 1, quizWins: isWinner ? 1 : 0 } }
+                );
+            }));
+        }
+
+        const finalGame = claimed || await QuizGame.findById(game._id);
 
         const room = `quiz-game:${game._id}`;
         emitToRoom(req, room, 'quiz_game_ended', { gameId: String(game._id) });
 
-        res.json({ success: true, data: presentGame(game, req.user.id) });
+        res.json({ success: true, data: presentGame(finalGame, req.user.id) });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
@@ -339,50 +369,34 @@ const finishGame = async (req, res) => {
 router.post('/:id/finish', finishGame);
 
 // @route   GET /api/quiz-game/leaderboard
-// @desc    Top 10 quiz players (wins + total score) — ended games se compute
+// @desc    Top 10 quiz players (wins + total score) — User par persist kiye stats se
 router.get('/leaderboard', async (req, res) => {
     try {
-        const games = await QuizGame.find({ status: 'ended' })
-            .select('mode winner isTie players')
+        const users = await User.find({ quizGames: { $gt: 0 } })
+            .select('name email photo quizScore quizWins quizGames')
+            .sort({ quizWins: -1, quizScore: -1 })
+            .limit(50)
             .lean();
 
-        const stats = new Map();
-        games.forEach(g => {
-            (g.players || []).forEach(p => {
-                const uid = p.user?._id || p.user;
-                if (!uid) return;
-                const key = String(uid);
-                const s = stats.get(key) || { _id: uid, name: p.name, photo: p.photo || '', wins: 0, totalScore: 0, games: 0 };
-                s.totalScore += p.score || 0;
-                s.games += 1;
-                if (g.mode !== 'solo' && !g.isTie && g.winner && String(g.winner) === key) {
-                    s.wins += 1;
-                }
-                stats.set(key, s);
+        // Same email ke duplicate accounts dedupe karo (jaisa Tip to Play karta hai)
+        const seen = new Map();
+        for (const u of users) {
+            const key = (u.email || String(u._id)).toLowerCase();
+            if (seen.has(key)) continue;
+            const games = u.quizGames || 0;
+            const totalScore = u.quizScore || 0;
+            seen.set(key, {
+                _id: u._id,
+                name: u.name,
+                photo: u.photo || '',
+                wins: u.quizWins || 0,
+                totalScore,
+                games,
+                avgScore: games ? Math.round((totalScore / games) * 10) / 10 : 0
             });
-        });
+        }
 
-        const leadersRaw = Array.from(stats.values())
-            .filter(s => s.games > 0 && s.wins > 0)
-            .sort((a, b) => (b.wins - a.wins) || (b.totalScore - a.totalScore))
-            .slice(0, 10);
-
-        // Live DP/name: User collection se current photo+name lein
-        // (players[].photo stored time par hoti hai, update ke baad stale ho sakti hai)
-        const userIds = leadersRaw.map(s => s._id);
-        const users = await User.find({ _id: { $in: userIds } }).select('_id name photo').lean();
-        const userMap = new Map(users.map(u => [String(u._id), u]));
-
-        const leaders = leadersRaw.map(s => ({
-            _id: s._id,
-            name: userMap.get(String(s._id))?.name || s.name,
-            photo: userMap.get(String(s._id))?.photo || s.photo,
-            wins: s.wins,
-            totalScore: s.totalScore,
-            games: s.games,
-            avgScore: s.games ? Math.round((s.totalScore / s.games) * 10) / 10 : 0
-        }));
-
+        const leaders = Array.from(seen.values()).slice(0, 10);
         res.json({ success: true, data: leaders });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });

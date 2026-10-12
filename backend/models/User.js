@@ -61,6 +61,10 @@ const userSchema = new mongoose.Schema({
     rating: { type: Number, default: 0 },
     totalEarnings: { type: Number, default: 0 },
     gameScore: { type: Number, default: 0 },
+    // Quiz Battle lifetime stats (Tip to Play ki tarah persist rehti hain)
+    quizScore: { type: Number, default: 0 },
+    quizWins: { type: Number, default: 0 },
+    quizGames: { type: Number, default: 0 },
     resumeUrl: String,
     requirements: String,
     reason: String,
