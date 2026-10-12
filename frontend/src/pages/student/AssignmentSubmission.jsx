@@ -601,7 +601,7 @@ const AssignmentSubmission = () => {
                     {/* Navigation Tabs - Separate Row like Teacher Portal */}
                     <div className="grid grid-cols-5 gap-1 sm:gap-2 bg-white dark:bg-slate-900/40 rounded-xl sm:rounded-2xl p-1 sm:p-1.5 border border-gray-100 dark:border-slate-800 shadow-sm">
                         {[
-                            { id: 'daily_tasks', label: isInternCourse ? 'Meeting logs' : 'Class Log', icon: ClipboardList },
+                            { id: 'daily_tasks', label: 'Notebook', icon: ClipboardList },
                             { id: 'assignments', label: isInternCourse ? 'Projects' : 'Assignments', icon: FileText },
                             { id: 'tests', label: 'Tests', icon: Zap },
                             { id: 'attendance', label: 'Attendance', icon: Calendar },

@@ -820,7 +820,7 @@ const AttendanceSheet = () => {
                 {/* Tab Navigation - Separate Row like Student Portal */}
                 <div className="flex items-center gap-2 bg-white dark:bg-slate-900/40 rounded-2xl p-1.5 border border-gray-100 dark:border-slate-800 shadow-sm overflow-x-auto no-scrollbar">
                     {[
-                        { id: 'daily_tasks', label: selectedCourse.targetAudience === 'interns' ? 'Meeting Logs' : 'Class Logs', icon: ClipboardList },
+                        { id: 'daily_tasks', label: 'Notebook', icon: ClipboardList },
                         { id: 'assignments', label: (['intern', 'interns'].includes(String(selectedCourse.targetAudience || '').toLowerCase()) || courseStudents.some(student => student.role === 'intern')) ? 'Projects' : 'Assignments', icon: FileText },
                         { id: 'tests', label: 'Tests', icon: Zap },
                         { id: 'attendance', label: 'Attendance', icon: Clock },

@@ -149,7 +149,7 @@ const DailyTasksTab = ({ course, students = [] }) => {
         <div className="space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <h3 className="text-base sm:text-lg font-bold text-gray-900 uppercase italic">
-                    {course.targetAudience === 'interns' ? 'Meeting Log Submissions' : 'Class Log Submissions'}
+                    Notebook Submissions
                 </h3>
                 <button
                     onClick={fetchTasks}

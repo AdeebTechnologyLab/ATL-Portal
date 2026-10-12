@@ -181,7 +181,7 @@ const StudentWorkView = ({ student, onBack }) => {
                         }`}
                 >
                     <ClipboardList className="w-4 h-4" />
-                    {isInternCourse ? 'Meeting Logs' : 'Class Logs'}
+                    Notebook
                     <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-black ${activeTab === TAB_DAILY_TASKS ? 'bg-primary/10 text-primary' : 'bg-gray-200 text-gray-500'}`}>
                         {dailyTasks.length}
                     </span>
@@ -352,7 +352,7 @@ const StudentWorkView = ({ student, onBack }) => {
                                 className="space-y-6"
                             >
                                 <div className="flex items-center justify-between">
-                                    <h3 className="font-bold text-gray-900 text-lg">{isInternCourse ? 'Meeting Logs' : 'Class Logs'}</h3>
+                                    <h3 className="font-bold text-gray-900 text-lg">Notebook</h3>
                                     <div className="flex gap-3">
                                         <span className="text-xs font-bold text-primary bg-primary/5 px-3 py-1 rounded-full border border-primary/10">
                                             {dailyTasks.filter(t => t.status === 'verified' || t.status === 'graded').length} verified
