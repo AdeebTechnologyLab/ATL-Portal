@@ -242,7 +242,6 @@ const MarksSheet = () => {
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 sm:gap-4">
                 <div>
                     <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Academic Marks Sheet</h1>
-                    <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Select a course to view detailed grading and feedback</p>
                 </div>
             </div>
 

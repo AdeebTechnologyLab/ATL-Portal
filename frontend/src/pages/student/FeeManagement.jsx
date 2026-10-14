@@ -274,7 +274,6 @@ const FeeManagement = () => {
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Fee Management</h1>
-                    <p className="text-xs sm:text-base text-gray-500 dark:text-gray-400 mt-0.5">View and manage your monthly course fees</p>
                 </div>
             </div>
 

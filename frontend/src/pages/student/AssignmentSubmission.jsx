@@ -51,6 +51,14 @@ const PATH_TAB_MAP = [
     ['/assignments', 'assignments'],
 ];
 
+const PAGE_TITLES = {
+    daily_tasks: 'Notebook',
+    assignments: 'Assignments',
+    attendance: 'Attendance',
+    tests: 'Tests',
+    chat: 'Chat',
+};
+
 const tabFromPath = (pathname = '') => {
     const match = PATH_TAB_MAP.find(([suffix]) => pathname.endsWith(suffix));
     return match ? match[1] : null;
@@ -63,7 +71,7 @@ const AssignmentSubmission = () => {
 
     const [myCourses, setMyCourses] = useState([]);
     const [selectedCourseId, setSelectedCourseId] = useState(location.state?.courseId || null);
-    const [activeTab, setActiveTab] = useState(location.state?.tab || tabFromPath(location.pathname) || 'daily_tasks');
+    const [activeTab, setActiveTab] = useState(tabFromPath(location.pathname) || location.state?.tab || 'daily_tasks');
     const [assignments, setAssignments] = useState([]);
     const [dailyTasks, setDailyTasks] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -120,7 +128,7 @@ const AssignmentSubmission = () => {
     }, [selectedCourseId]);
 
     useEffect(() => {
-        setActiveTab(location.state?.tab || tabFromPath(location.pathname) || 'daily_tasks');
+        setActiveTab(tabFromPath(location.pathname) || location.state?.tab || 'daily_tasks');
         if (location.state?.courseId) {
             setSelectedCourseId(location.state.courseId);
         } else if (myCourses.length === 1 && !selectedCourseId) {
@@ -493,11 +501,13 @@ const AssignmentSubmission = () => {
 
     return (
         <div className="space-y-4 sm:space-y-6">
+            <h1 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white uppercase tracking-tight">
+                {activeTab === 'assignments' && isInternCourse ? 'Projects' : PAGE_TITLES[activeTab] || 'Course Portal'}
+            </h1>
             {!selectedCourseId ? (
                 /* COURSE SELECTION VIEW */
                 <div className="space-y-5 sm:space-y-8">
                     <div>
-                        <h1 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white uppercase tracking-tighter italic">Course Portal</h1>
                         <p className="text-gray-500 font-bold text-xs uppercase tracking-widest mt-1">Select a workspace to manage your tasks and progress</p>
                     </div>
 
@@ -566,10 +576,11 @@ const AssignmentSubmission = () => {
                                     BACK TO {isInternCourse ? 'MY SKILLS' : 'MY COURSES'}
                                 </button>
                             )}
-                            <h1 className="text-xl sm:text-3xl font-black text-gray-900 dark:text-white uppercase tracking-tight leading-tight sm:leading-none mb-2 sm:mb-3 break-words">
-                                {myCourses.find(c => c._id === selectedCourseId)?.title}
-                            </h1>
                             <div className="flex items-center gap-2 flex-wrap">
+                                <p className="flex items-center gap-2 text-sm font-semibold text-gray-600 dark:text-slate-300 break-words">
+                                    <BookOpen className="w-4 h-4 text-primary shrink-0" />
+                                    {myCourses.find(c => c._id === selectedCourseId)?.title}
+                                </p>
                                 <span className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest border shadow-sm ${isInternCourse
                                     ? 'bg-purple-100 text-purple-700 border-purple-200'
                                     : 'bg-blue-100 text-blue-700 border-blue-200'
@@ -577,14 +588,11 @@ const AssignmentSubmission = () => {
                                     {isInternCourse ? 'Internship' : 'Student'}
                                 </span>
                                 {(myCourses.find(c => c._id === selectedCourseId)?.city || myCourses.find(c => c._id === selectedCourseId)?.location) && (
-                                    <span className="flex items-center gap-1 px-2.5 py-1 bg-gray-100 text-gray-600 rounded-lg text-[10px] font-black uppercase tracking-widest border border-gray-200 shadow-sm">
+                                    <span className="flex items-center gap-1 px-2.5 py-1 bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-slate-300 rounded-lg text-[10px] font-semibold border border-gray-200 dark:border-slate-700">
                                         <MapPin className="w-2.5 h-2.5 text-primary" />
                                         {myCourses.find(c => c._id === selectedCourseId)?.city || myCourses.find(c => c._id === selectedCourseId)?.location}
                                     </span>
                                 )}
-                                <span className="hidden sm:inline-flex">
-                                    <Badge variant="primary" size="sm">Workspace ACTIVE</Badge>
-                                </span>
                                 {isRestricted && <Badge variant="error" size="sm">PORTAL LOCKED</Badge>}
                             </div>
                         </div>
@@ -632,16 +640,6 @@ const AssignmentSubmission = () => {
                         ) : activeTab === 'assignments' ? (
                             /* ASSIGNMENTS VIEW */
                             <div className="space-y-4 sm:space-y-8">
-                                <div>
-                                    <h2 className="text-lg sm:text-2xl font-black text-gray-900 dark:text-white uppercase italic tracking-tight">
-                                        {isInternCourse ? 'Projects Overview' : 'Assignments Overview'}
-                                    </h2>
-                                    <p className="text-gray-500 dark:text-slate-400 text-xs sm:text-sm mt-1">
-                                        {isInternCourse
-                                            ? 'Apne assigned projects, submission status aur deadlines ek jagah track karein.'
-                                            : 'Apne assigned tasks, submission status aur deadlines ek jagah track karein.'}
-                                    </p>
-                                </div>
                                 <div className="grid grid-cols-2 sm:grid-cols-5 overflow-hidden rounded-2xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900/50 shadow-sm">
                                     {[
                                         { id: 'all', label: 'Total', icon: FileText, count: assignments.length, accent: 'text-blue-600', iconBg: 'bg-blue-50 dark:bg-blue-500/10' },
@@ -1236,7 +1234,7 @@ const AssignmentSubmission = () => {
                             </div>
                         ) : activeTab === 'tests' ? (
                             /* TESTS VIEW */
-                            <div className="bg-white dark:bg-slate-900/40 rounded-2xl p-3 sm:p-8 border border-gray-100 dark:border-slate-800 shadow-sm min-h-[360px] sm:min-h-[400px]">
+                            <div className="min-h-[360px] sm:min-h-[400px]">
                                 <StudentTestsTab courseId={selectedCourseId} isRestricted={isRestricted} />
                             </div>
                         ) : (

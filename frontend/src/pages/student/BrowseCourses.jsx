@@ -330,9 +330,11 @@ const BrowseCourses = () => {
             <div className="flex items-center justify-between px-0.5">
                 <div>
                     <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">{role === 'intern' ? 'Browse Skills' : 'Courses'}</h1>
-                    <p className="text-xs sm:text-base text-gray-500 dark:text-gray-400 mt-0.5">
-                        {role === 'intern' ? 'Browse internship skills' : 'Discover and enroll in courses'}
-                    </p>
+                    {role === 'intern' && (
+                        <p className="text-xs sm:text-base text-gray-500 dark:text-gray-400 mt-0.5">
+                            Browse internship skills
+                        </p>
+                    )}
                 </div>
             </div>
 

@@ -24,6 +24,7 @@ const getAutomaticFeedback = (percentage) => {
 
 const StudentTestsTab = ({ courseId, isRestricted }) => {
     const [tests, setTests] = useState([]);
+    const [testFilter, setTestFilter] = useState('Total Tests');
     const [isLoading, setIsLoading] = useState(true);
     const [selectedTest, setSelectedTest] = useState(null);
     const [isTakingTest, setIsTakingTest] = useState(false);
@@ -634,13 +635,6 @@ const StudentTestsTab = ({ courseId, isRestricted }) => {
 
     return (
         <div className="space-y-4 sm:space-y-6">
-            <div className="flex items-center justify-between">
-                <div>
-                    <h3 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white uppercase">My Tests</h3>
-                    <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">View and take tests for your course</p>
-                </div>
-            </div>
-
             {/* Stats Row */}
             {tests.length > 0 && (
                 <div className="grid grid-cols-2 sm:grid-cols-4 overflow-hidden rounded-2xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900/50 shadow-sm">
@@ -650,12 +644,16 @@ const StudentTestsTab = ({ courseId, isRestricted }) => {
                         { label: 'Pending', icon: Clock, count: tests.filter(t => !t.submissions?.[0]).length, accent: 'text-amber-600', iconBg: 'bg-amber-50 dark:bg-amber-500/10' },
                         { label: 'Passed', icon: Award, count: tests.filter(t => { const s = t.submissions?.[0]; if (!s) return false; const total = s.totalPossibleScore || t.totalMarks || t.questions?.length || 1; return (s.score / total) >= 0.5; }).length, accent: 'text-purple-600', iconBg: 'bg-purple-50 dark:bg-purple-500/10' },
                     ].map((stat, i) => (
-                        <div
+                        <button
+                            type="button"
                             key={stat.label}
-                            className={`min-w-0 p-3 sm:p-4 flex items-center gap-3
+                            onClick={() => setTestFilter(testFilter === stat.label ? 'Total Tests' : stat.label)}
+                            className={`relative min-w-0 p-3 sm:p-4 flex items-center gap-3 text-left transition-colors hover:bg-gray-50 dark:hover:bg-slate-800/70
+                                ${testFilter === stat.label ? 'bg-primary/5 dark:bg-primary/10' : ''}
                                 ${i < 2 ? 'border-b' : ''} ${i % 2 === 0 ? 'border-r' : ''} border-gray-200 dark:border-slate-700
                                 sm:border-b-0 ${i < 3 ? 'sm:border-r' : 'sm:border-r-0'}`}
                         >
+                            {testFilter === stat.label && <span className="absolute inset-x-3 bottom-0 h-0.5 rounded-full bg-primary" />}
                             <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl ${stat.iconBg} ${stat.accent} flex items-center justify-center shrink-0`}>
                                 <stat.icon className="w-4 h-4 sm:w-5 sm:h-5" />
                             </div>
@@ -665,7 +663,7 @@ const StudentTestsTab = ({ courseId, isRestricted }) => {
                                     {stat.label}
                                 </span>
                             </div>
-                        </div>
+                        </button>
                     ))}
                 </div>
             )}
@@ -677,7 +675,16 @@ const StudentTestsTab = ({ courseId, isRestricted }) => {
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {tests.map((test) => {
+                    {tests.filter(test => {
+                        const submission = test.submissions?.[0];
+                        if (testFilter === 'Completed') return !!submission;
+                        if (testFilter === 'Pending') return !submission;
+                        if (testFilter === 'Passed') {
+                            const total = submission?.totalPossibleScore || test.totalMarks || test.questions?.length || 1;
+                            return !!submission && submission.score / total >= 0.5;
+                        }
+                        return true;
+                    }).map((test) => {
                         const submission = test.submissions?.[0];
                         const isCompleted = !!submission;
 
