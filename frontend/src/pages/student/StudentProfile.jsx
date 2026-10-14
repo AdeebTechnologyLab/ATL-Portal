@@ -5,7 +5,7 @@ import {
     User, Mail, Phone, MapPin, Calendar, CreditCard,
     Edit2, Save, X, Camera, BookOpen, GraduationCap, Users, Clock,
     FileText, Briefcase, Globe, Award, Link as LinkIcon, ExternalLink,
-    ListChecks, Sparkles
+    ListChecks, Sparkles, Paperclip, Plus
 } from 'lucide-react';
 import { authAPI, enrollmentAPI, settingsAPI } from '../../services/api';
 import { updateUser } from '../../features/auth/authSlice';
@@ -13,10 +13,18 @@ import Loader, { ButtonLoader } from '../../components/ui/Loader';
 import ImageCropper from '../../components/ui/ImageCropper';
 import { formatDate } from '../../utils/dateFormatter';
 import { COUNTRIES } from '../../utils/locations';
+import { REQUIREMENT_OPTIONS, PROGRAM_OPTIONS } from '../../utils/internOptions';
+
+const parseList = (value) => {
+    if (Array.isArray(value)) return value.filter(Boolean);
+    if (!value) return [];
+    return String(value).split(',').map(item => item.trim()).filter(Boolean);
+};
 
 const HEARD_ABOUT_OPTIONS = [
-    'Poster & Panaflex', 'Facebook', 'Instagram', 'WhatsApp Group', 'Website',
-    'YouTube', 'Friends & Family', 'Twitter', 'LinkedIn', 'Other'
+    'Facebook', 'Instagram', 'WhatsApp Group', 'LinkedIn', 'YouTube', 'TikTok', 'Twitter',
+    'Snapchat', 'Pinterest', 'Telegram', 'Website', 'Google', 'Google Maps',
+    'Poster & Panaflex', 'Event / Seminar', 'University', 'Teacher', 'Friends & Family', 'Other'
 ];
 
 const asSelectOptions = (values, placeholder) => [
@@ -86,29 +94,6 @@ const ResumeLinkField = ({ icon: Icon, label, value, name, editable = true, isEd
                 </a>
             ) : (
                 <p className="text-sm sm:text-base font-medium text-gray-900 dark:text-white break-words">Not provided</p>
-            )}
-        </div>
-    </div>
-);
-
-const TextAreaField = ({ icon: Icon, label, value, name, placeholder, rows = 2, editable = true, isEditing, editForm, onChange }) => (
-    <div className="flex items-start gap-3 sm:gap-4 p-3 sm:p-4 bg-gray-50 dark:bg-gray-800 rounded-xl border border-transparent dark:border-gray-700">
-        <div className="w-9 h-9 sm:w-10 sm:h-10 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
-            <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
-        </div>
-        <div className="flex-1 min-w-0">
-            <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-1">{label}</p>
-            {isEditing && editable ? (
-                <textarea
-                    name={name}
-                    value={editForm[name] || ''}
-                    onChange={onChange}
-                    rows={rows}
-                    placeholder={placeholder}
-                    className="w-full min-w-0 px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white dark:bg-gray-900 dark:text-white"
-                />
-            ) : (
-                <p className="text-sm sm:text-base font-medium text-gray-900 dark:text-white break-words">{value || 'Not provided'}</p>
             )}
         </div>
     </div>
@@ -291,7 +276,12 @@ const StudentProfile = () => {
     };
 
     const handleEdit = () => {
-        setEditForm({ ...profileData });
+        setEditForm({
+            ...profileData,
+            requirementsList: parseList(profileData.requirements),
+            skillsList: parseList(profileData.skills),
+            otherSkillInput: ''
+        });
         setIsEditing(true);
     };
 
@@ -300,6 +290,26 @@ const StudentProfile = () => {
         setPhotoFile(null);
         setPhotoPreview(null);
         setIsEditing(false);
+    };
+
+    const toggleEditList = (field, item) => {
+        setEditForm(prev => {
+            const list = prev[field] || [];
+            return {
+                ...prev,
+                [field]: list.includes(item) ? list.filter(entry => entry !== item) : [...list, item]
+            };
+        });
+    };
+
+    const addCustomSkill = () => {
+        const value = (editForm.otherSkillInput || '').trim();
+        if (!value) return;
+        setEditForm(prev => {
+            const list = prev.skillsList || [];
+            if (list.includes(value)) return { ...prev, otherSkillInput: '' };
+            return { ...prev, skillsList: [...list, value], otherSkillInput: '' };
+        });
     };
 
     const handleCrop = (croppedFile) => {
@@ -337,8 +347,8 @@ const StudentProfile = () => {
             formData.append('cgpa', editForm.cgpa || '');
             formData.append('majorSubjects', editForm.majorSubjects || '');
             formData.append('resumeUrl', editForm.resumeUrl || '');
-            formData.append('requirements', editForm.requirements || '');
-            formData.append('skills', editForm.skills || '');
+            formData.append('requirements', (editForm.requirementsList || parseList(editForm.requirements)).join(', '));
+            formData.append('skills', (editForm.skillsList || parseList(editForm.skills)).join(', '));
 
             if (photoFile) {
                 formData.append('photo', photoFile);
@@ -554,12 +564,6 @@ const StudentProfile = () => {
                                     editable={canEditBio} 
                                 />
                             </div>
-                            {user?.role === 'intern' && (
-                                <>
-                                    <InfoField isEditing={isEditing} editForm={editForm} onChange={handleChange} icon={ListChecks} label="Requirements" value={profileData.requirements} name="requirements" editable={canEditBio} />
-                                    <TextAreaField isEditing={isEditing} editForm={editForm} onChange={handleChange} icon={Sparkles} label="My Skills" value={profileData.skills} name="skills" placeholder="e.g., Web Development, Graphic Designer, SEO" editable={canEditBio} />
-                                </>
-                            )}
                         </div>
                     </motion.div>
 
@@ -585,7 +589,6 @@ const StudentProfile = () => {
                                 </div>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                                     <InfoField isEditing={isEditing} editForm={editForm} onChange={handleChange} icon={Award} label="CGPA / Grade" value={profileData.cgpa} name="cgpa" editable={canEditBio} />
-                                    <ResumeLinkField isEditing={isEditing} editForm={editForm} onChange={handleChange} icon={LinkIcon} label="Resume Link" value={profileData.resumeUrl} name="resumeUrl" editable={canEditBio} />
                                 </div>
                                 {user?.role === 'intern' && (
                                     <InfoField
@@ -600,6 +603,135 @@ const StudentProfile = () => {
                                     />
                                 )}
                                 <InfoField isEditing={isEditing} editForm={editForm} onChange={handleChange} icon={FileText} label="Major Subjects" value={profileData.majorSubjects} name="majorSubjects" editable={canEditBio} />
+                            </div>
+                        </motion.div>
+                    )}
+
+                    {/* Attachments (For Interns) */}
+                    {user?.role === 'intern' && (
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.19 }}
+                            className="bg-white dark:bg-gray-900 rounded-2xl p-3.5 sm:p-6 border border-primary/20 dark:border-gray-800 shadow-sm"
+                        >
+                            <h2 className="text-base sm:text-xl font-semibold text-gray-900 dark:text-white mb-3 sm:mb-6 flex items-center gap-2">
+                                <Paperclip className="w-5 h-5 text-primary" />
+                                Attachments
+                            </h2>
+                            <div className="space-y-4">
+                                <ResumeLinkField isEditing={isEditing} editForm={editForm} onChange={handleChange} icon={FileText} label="Resume / CV Link" value={profileData.resumeUrl} name="resumeUrl" editable={canEditBio} />
+
+                                {/* Requirements */}
+                                <div className="p-3 sm:p-4 bg-gray-50 dark:bg-gray-800 rounded-xl border border-transparent dark:border-gray-700">
+                                    <div className="flex items-start gap-3 sm:gap-4">
+                                        <div className="w-9 h-9 sm:w-10 sm:h-10 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                                            <ListChecks className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-2">Requirements</p>
+                                            {isEditing && canEditBio ? (
+                                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                                    {[...new Set([...(editForm.requirementsList || []), ...REQUIREMENT_OPTIONS])].map((req) => {
+                                                        const checked = (editForm.requirementsList || []).includes(req);
+                                                        return (
+                                                            <label
+                                                                key={req}
+                                                                className={`flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer text-sm transition-colors ${
+                                                                    checked
+                                                                        ? 'bg-primary/10 border-primary text-primary font-semibold'
+                                                                        : 'bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300'
+                                                                }`}
+                                                            >
+                                                                <input
+                                                                    type="checkbox"
+                                                                    checked={checked}
+                                                                    onChange={() => toggleEditList('requirementsList', req)}
+                                                                    className="w-4 h-4 shrink-0 rounded border-gray-300 text-primary focus:ring-primary"
+                                                                />
+                                                                {req}
+                                                            </label>
+                                                        );
+                                                    })}
+                                                </div>
+                                            ) : parseList(profileData.requirements).length > 0 ? (
+                                                <div className="flex flex-wrap gap-1.5">
+                                                    {parseList(profileData.requirements).map((req) => (
+                                                        <span key={req} className="px-2.5 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold">
+                                                            {req}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                            ) : (
+                                                <p className="text-sm font-medium text-gray-900 dark:text-white">Not provided</p>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* My Skills */}
+                                <div className="p-3 sm:p-4 bg-gray-50 dark:bg-gray-800 rounded-xl border border-transparent dark:border-gray-700">
+                                    <div className="flex items-start gap-3 sm:gap-4">
+                                        <div className="w-9 h-9 sm:w-10 sm:h-10 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                                            <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-2">My Skills</p>
+                                            {isEditing && canEditBio ? (
+                                                <>
+                                                    <div className="flex flex-wrap gap-2">
+                                                        {[...new Set([...(editForm.skillsList || []), ...PROGRAM_OPTIONS])].map((skill) => {
+                                                            const selected = (editForm.skillsList || []).includes(skill);
+                                                            return (
+                                                                <button
+                                                                    type="button"
+                                                                    key={skill}
+                                                                    onClick={() => toggleEditList('skillsList', skill)}
+                                                                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-semibold transition-colors ${
+                                                                        selected
+                                                                            ? 'bg-primary border-primary text-white'
+                                                                            : 'bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-primary'
+                                                                    }`}
+                                                                >
+                                                                    {skill}
+                                                                    {selected && <X className="w-3 h-3" />}
+                                                                </button>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                    <div className="flex items-center gap-2 mt-3">
+                                                        <input
+                                                            type="text"
+                                                            value={editForm.otherSkillInput || ''}
+                                                            onChange={(e) => setEditForm(prev => ({ ...prev, otherSkillInput: e.target.value }))}
+                                                            onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addCustomSkill(); } }}
+                                                            placeholder="Add another skill"
+                                                            className="flex-1 min-w-0 px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white dark:bg-gray-900 dark:text-white text-sm"
+                                                        />
+                                                        <button
+                                                            type="button"
+                                                            onClick={addCustomSkill}
+                                                            className="inline-flex items-center gap-1 px-3 py-2 rounded-lg bg-primary hover:bg-primary-dark text-white text-sm font-semibold transition-colors"
+                                                        >
+                                                            <Plus className="w-4 h-4" />
+                                                            Add
+                                                        </button>
+                                                    </div>
+                                                </>
+                                            ) : parseList(profileData.skills).length > 0 ? (
+                                                <div className="flex flex-wrap gap-1.5">
+                                                    {parseList(profileData.skills).map((skill) => (
+                                                        <span key={skill} className="px-2.5 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold">
+                                                            {skill}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                            ) : (
+                                                <p className="text-sm font-medium text-gray-900 dark:text-white">Not provided</p>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </motion.div>
                     )}

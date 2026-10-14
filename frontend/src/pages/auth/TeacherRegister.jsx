@@ -22,8 +22,9 @@ const QUALIFICATIONS = [
     'Other'
 ];
 const HEARD_OPTIONS = [
-    'Poster & Panaflex', 'Facebook', 'Instagram', 'WhatsApp Group', 'Website',
-    'YouTube', 'Friends & Family', 'Twitter', 'LinkedIn', 'Other'
+    'Facebook', 'Instagram', 'WhatsApp Group', 'LinkedIn', 'YouTube', 'TikTok', 'Twitter',
+    'Snapchat', 'Pinterest', 'Telegram', 'Website', 'Google', 'Google Maps',
+    'Poster & Panaflex', 'Event / Seminar', 'University', 'Teacher', 'Friends & Family', 'Other'
 ];
 
 const SKILLS = [
@@ -259,7 +260,29 @@ const TeacherRegister = () => {
         }
 
         setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
+        return newErrors;
+    };
+
+    const scrollToFirstError = (newErrors) => {
+        const fieldOrder = [
+            'photo', 'name', 'email', 'phone', 'cnic', 'fatherName', 'dob', 'gender',
+            'qualification', 'experience', 'specialization', 'otherSkills', 'password',
+            'confirmPassword', 'heardAbout', 'location', 'attendType', 'country', 'city',
+            'address', 'termsAccepted'
+        ];
+        const ordered = [
+            ...fieldOrder.filter(field => newErrors[field]),
+            ...Object.keys(newErrors).filter(field => !fieldOrder.includes(field))
+        ];
+        for (const field of ordered) {
+            const el = document.getElementById(`field-${field}`) || document.querySelector(`[name="${field}"]`);
+            if (!el) continue;
+            const wrapper = el.closest('[id^="field-"]') || el;
+            wrapper.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            const input = wrapper.matches('input, select, textarea') ? wrapper : wrapper.querySelector('input, select, textarea');
+            if (input) setTimeout(() => input.focus({ preventScroll: true }), 400);
+            break;
+        }
     };
 
     const handleChange = (e) => {
@@ -318,7 +341,11 @@ const TeacherRegister = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!validateForm()) return;
+        const errs = validateForm();
+        if (Object.keys(errs).length > 0) {
+            scrollToFirstError(errs);
+            return;
+        }
 
         setIsLoading(true);
         setApiError('');
@@ -440,7 +467,7 @@ const TeacherRegister = () => {
                     {/* Registration Form */}
                     <form onSubmit={handleSubmit} className="space-y-4">
                         {/* Photo Upload */}
-                            <div className="flex flex-col items-center mb-6">
+                            <div id="field-photo" className="flex flex-col items-center mb-6">
                             <div className="relative group">
                                 <div className="w-24 h-24 rounded-2xl bg-gray-100 border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden transition-all group-hover:border-primary">
                                     {photoPreview ? (
@@ -617,7 +644,7 @@ const TeacherRegister = () => {
                                 {errors.experience && <p className="mt-1 text-sm text-red-500">{errors.experience}</p>}
                             </div>
 
-                            <div>
+                            <div id="field-specialization">
                                 <label className="block text-sm font-medium text-gray-700 mb-3">Specialization / Skills * (select multiple)</label>
                                 <div className="flex flex-wrap gap-2.5 min-w-0">
                                 {SKILLS.map(skill => {

@@ -17,6 +17,8 @@ import { getCourseIcon, getCourseStyle } from '../../utils/courseIcons';
 import BirthdayWish from '../../components/dashboard/BirthdayWish';
 import GamesCard from '../../components/dashboard/GamesCard';
 import QuizBattleCard from '../../components/dashboard/QuizBattleCard';
+import ProfileCompletionBanner from '../../components/shared/ProfileCompletionBanner';
+import DiscussionRoom from '../shared/DiscussionRoom';
 import Loader, { ButtonLoader } from '../../components/ui/Loader';
 import { useTranslation } from 'react-i18next';
 
@@ -333,9 +335,22 @@ const TeacherCourses = ({ isDashboard = false, initialSearchMode = 'courses' }) 
     return (
         <>
             <div className="space-y-6">
-                {isDashboard && <BirthdayWish />}
-                {isDashboard && <QuizBattleCard />}
-                {isDashboard && <GamesCard />}
+                {isDashboard && (
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 items-start">
+                        {/* Left: Profile + Birthday + Games stacked */}
+                        <div className="flex flex-col gap-4 sm:gap-5 min-w-0">
+                            <ProfileCompletionBanner />
+                            <BirthdayWish />
+                            <QuizBattleCard />
+                            <GamesCard />
+                        </div>
+
+                        {/* Right: Discussion Room live screen with chat */}
+                        <div className="relative min-w-0 h-[30vh] rounded-2xl border border-primary/20 bg-gray-50 dark:bg-gray-950 overflow-hidden">
+                            <DiscussionRoom compact />
+                        </div>
+                    </div>
+                )}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
                         <h1 className="text-xl sm:text-2xl font-bold text-gray-900">

@@ -1,7 +1,8 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { io } from 'socket.io-client';
-import { MessageSquare, Send, Trash2, Users, Loader2, Circle, BarChart3, Plus, X, Smile } from 'lucide-react';
+import { MessageSquare, Send, Trash2, Users, Loader2, Circle, BarChart3, Plus, X, Smile, Maximize2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { chatAPI, googleDriveAPI } from '../../services/api';
 import { getSocketURL } from '../../config/apiBaseUrl';
 import ChatMediaButton from '../../components/shared/ChatMediaButton';
@@ -79,8 +80,9 @@ const getPollStats = (poll = {}, myId) => {
     return { totalVotes, myVoteIndex };
 };
 
-const DiscussionRoom = () => {
+const DiscussionRoom = ({ compact = false }) => {
     const { user, role } = useSelector((state) => state.auth);
+    const navigate = useNavigate();
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState('');
     const [loading, setLoading] = useState(true);
@@ -291,9 +293,29 @@ const DiscussionRoom = () => {
     return (
         <div
             onContextMenu={(e) => e.preventDefault()}
-            className="h-full min-h-0 overflow-hidden p-3 sm:p-4 md:p-5 flex flex-col gap-3 sm:gap-4 bg-gray-50 dark:bg-gray-950"
+            className={`h-full min-h-0 overflow-hidden flex flex-col ${
+                compact
+                    ? 'gap-0 bg-white dark:bg-gray-950'
+                    : 'p-3 sm:p-4 md:p-5 gap-3 sm:gap-4 bg-gray-50 dark:bg-gray-950'
+            }`}
         >
 
+                {compact ? (
+                    <div className="shrink-0 flex items-center justify-between gap-3 px-3 py-1.5 border-b border-gray-100 dark:border-white/10 bg-gradient-to-r from-[var(--bg-sidebar)] to-[var(--bg-sidebar-light)]">
+                        <div className="flex items-center gap-2 text-white">
+                            <MessageSquare className="w-4 h-4" />
+                            <span className="text-sm font-black tracking-tight">Discussion Room</span>
+                        </div>
+                        <button
+                            type="button"
+                            onClick={() => navigate(`/${role}/discussion-room`)}
+                            title="Open full screen"
+                            className="w-6 h-6 rounded-md bg-white/15 hover:bg-white/25 border border-white/20 text-white flex items-center justify-center transition-colors active:scale-95"
+                        >
+                            <Maximize2 className="w-3.5 h-3.5" />
+                        </button>
+                    </div>
+                ) : (
             <div className="relative shrink-0 overflow-hidden bg-gradient-to-r from-[var(--bg-sidebar)] to-[var(--bg-sidebar-light)] rounded-xl sm:rounded-2xl p-3 sm:p-5 text-white shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
                 <div className="absolute -right-12 -top-12 w-40 h-40 rounded-full bg-white/10 blur-2xl" />
                 <div className="absolute -bottom-16 left-1/3 w-44 h-44 rounded-full bg-white/10 blur-3xl" />
@@ -326,20 +348,23 @@ const DiscussionRoom = () => {
                     )}
                 </div>
             </div>
+            )}
 
-            <div className="flex-1 min-h-0 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl sm:rounded-2xl shadow-sm overflow-hidden flex flex-col">
+            <div className={`flex-1 min-h-0 bg-white dark:bg-gray-900 border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden flex flex-col ${
+                compact ? 'border-0 rounded-none' : 'border rounded-xl sm:rounded-2xl'
+            }`}>
                 {loading ? (
                     <div className="flex-1 flex items-center justify-center text-gray-500 dark:text-gray-400 gap-3">
                         <Loader2 className="w-5 h-5 animate-spin" />
                         Loading discussion...
                     </div>
                 ) : (
-                    <div ref={messagesContainerRef} className="flex-1 overflow-y-auto p-4 md:p-6 space-y-5 bg-white dark:bg-gray-950">
+                    <div ref={messagesContainerRef} className={`flex-1 min-h-0 overflow-y-auto bg-white dark:bg-gray-950 ${compact ? 'p-2 space-y-2' : 'p-4 md:p-6 space-y-5'}`}>
                         {messages.length === 0 ? (
                             <div className="h-full flex flex-col items-center justify-center text-center text-gray-500 dark:text-gray-400">
-                                <MessageSquare className="w-16 h-16 mb-3 opacity-30" />
-                                <p className="font-black uppercase tracking-widest">No discussion yet</p>
-                                <p className="text-sm">Pehla message send karein.</p>
+                                    <MessageSquare className={`opacity-30 ${compact ? 'w-10 h-10 mb-2' : 'w-16 h-16 mb-3'}`} />
+                                    <p className={`font-black uppercase tracking-widest ${compact ? 'text-xs' : ''}`}>No discussion yet</p>
+                                    <p className={compact ? 'text-xs' : 'text-sm'}>Pehla message send karein.</p>
                             </div>
                         ) : messages.map((msg) => {
                             const sender = msg.sender || {};
@@ -351,35 +376,37 @@ const DiscussionRoom = () => {
                             const hasPoll = !!msg.poll?.question;
                             const { totalVotes, myVoteIndex } = getPollStats(msg.poll, myId);
                             return (
-                                <div key={msg._id} className={`flex items-start gap-4 ${mine ? 'justify-end flex-row-reverse' : 'justify-start'}`}>
+                                <div key={msg._id} className={`flex items-start ${compact ? 'gap-2' : 'gap-4'} ${mine ? 'justify-end flex-row-reverse' : 'justify-start'}`}>
                                     <div className="relative shrink-0">
                                         <img
                                             src={getSenderPhoto(sender, user)}
                                             alt={sender.name || 'User'}
                                             onContextMenu={(e) => e.preventDefault()}
                                             draggable={false}
-                                            className="w-11 h-11 rounded-full object-cover border border-primary/50 shadow-sm select-none"
+                                            className={`rounded-full object-cover border border-primary/50 shadow-sm select-none ${compact ? 'w-7 h-7' : 'w-11 h-11'}`}
                                         />
                                         {online && (
-                                            <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-green-500 border-2 border-white dark:border-gray-950 shadow-[0_0_10px_rgba(34,197,94,0.9)]" />
+                                            <span className={`absolute -bottom-0.5 -right-0.5 rounded-full bg-green-500 border-2 border-white dark:border-gray-950 shadow-[0_0_10px_rgba(34,197,94,0.9)] ${compact ? 'w-2.5 h-2.5' : 'w-3.5 h-3.5'}`} />
                                         )}
                                     </div>
-                                    <div className={`min-w-0 max-w-[calc(100%-64px)] sm:max-w-[72%] ${mine ? 'ml-auto' : 'mr-auto'}`}>
+                                    <div className={`min-w-0 sm:max-w-[72%] ${compact ? 'max-w-[calc(100%-40px)]' : 'max-w-[calc(100%-64px)]'} ${mine ? 'ml-auto' : 'mr-auto'}`}>
                                         <div className={`group relative rounded-xl ${
                                             mine
                                                 ? 'bg-primary/5 border-primary/15'
                                                 : 'bg-gray-50 dark:bg-[#1e1f21] border-gray-100 dark:border-white/[0.06]'
-                                        } border px-5 py-4 shadow-sm overflow-visible ${
+                                        } border shadow-sm overflow-visible ${
+                                            compact ? 'px-3 py-2' : 'px-5 py-4'
+                                        } ${
                                             mine ? 'rounded-tr-sm' : 'rounded-tl-sm'
                                         }`}>
-                                            <span className={`absolute top-3 bottom-3 w-[3px] rounded-full bg-primary/60 ${mine ? 'right-0' : 'left-0'}`} />
-                                            <div className="flex items-center justify-between gap-3 mb-2">
+                                            <span className={`absolute rounded-full bg-primary/60 ${compact ? 'top-2 bottom-2 w-[2px]' : 'top-3 bottom-3 w-[3px]'} ${mine ? 'right-0' : 'left-0'}`} />
+                                            <div className={`flex items-center justify-between gap-3 ${compact ? 'mb-0.5' : 'mb-2'}`}>
                                                 <div className="flex items-center gap-2 min-w-0">
-                                                    <span className="text-sm font-black text-gray-900 dark:text-white truncate">
+                                                    <span className={`font-black text-gray-900 dark:text-white truncate ${compact ? 'text-xs' : 'text-sm'}`}>
                                                         {sender.name || 'User'}
                                                     </span>
                                                     {sender.rollNo && (
-                                                        <span className="shrink-0 text-[11px] font-bold text-gray-500 dark:text-[#8E9297]">
+                                                        <span className={`shrink-0 font-bold text-gray-500 dark:text-[#8E9297] ${compact ? 'text-[9px]' : 'text-[11px]'}`}>
                                                             #{sender.rollNo}
                                                         </span>
                                                     )}
@@ -431,12 +458,12 @@ const DiscussionRoom = () => {
                                                     </div>
                                                 </div>
                                             ) : (
-                                                <p className="text-sm whitespace-pre-wrap break-words leading-relaxed font-normal text-gray-800 dark:text-white">
+                                                <p className={`whitespace-pre-wrap break-words font-normal text-gray-800 dark:text-white ${compact ? 'text-[13px] leading-snug' : 'text-sm leading-relaxed'}`}>
                                                     {renderMessageText(msg.text)}
                                                 </p>
                                             )}
                                             <ChatMediaDisplay media={msg.media} isMine={mine} />
-                                            <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
+                                            <div className={`flex flex-wrap items-center justify-between gap-2 ${compact ? 'mt-1.5' : 'mt-3'}`}>
                                                 <div className="flex flex-wrap items-center gap-2">
                                                 {Object.entries(reactionGroups).map(([emoji, users]) => {
                                                     const reactedByMe = users.includes(String(myId));
@@ -445,7 +472,7 @@ const DiscussionRoom = () => {
                                                             key={emoji}
                                                             type="button"
                                                             onClick={() => handleReaction(msg._id, emoji)}
-                                                            className={`px-2.5 py-1 rounded-full text-xs font-black border transition-all ${
+                                                            className={`rounded-full font-black border transition-all ${compact ? 'px-2 py-0.5 text-[10px]' : 'px-2.5 py-1 text-xs'} ${
                                                                 reactedByMe
                                                                     ? 'bg-primary text-white border-primary shadow-sm'
                                                                     : 'bg-white dark:bg-white/5 text-gray-700 dark:text-white border-gray-200 dark:border-white/10 hover:border-primary/40'
@@ -458,8 +485,8 @@ const DiscussionRoom = () => {
                                                     );
                                                 })}
                                                 </div>
-                                                <div className="relative ml-auto flex items-center gap-2">
-                                                    <span className="text-[10px] font-semibold text-gray-500 dark:text-[#8E9297]">
+                                                        <div className="relative ml-auto flex items-center gap-2">
+                                                            <span className={`${compact ? 'text-[9px]' : 'text-[10px]'} font-semibold text-gray-500 dark:text-[#8E9297]`}>
                                                         {new Date(msg.createdAt).toLocaleString('en-US', {
                                                             day: '2-digit',
                                                             month: 'short',
@@ -496,10 +523,10 @@ const DiscussionRoom = () => {
                                             <button
                                                 type="button"
                                                 onClick={() => setReactionPickerFor(reactionPickerFor === msg._id ? null : msg._id)}
-                                                className={`absolute ${mine ? '-left-4' : '-right-4'} -bottom-4 z-40 w-8 h-8 rounded-full bg-white/80 dark:bg-gray-800/80 backdrop-blur border border-gray-200/80 dark:border-white/10 shadow-sm hover:shadow-md hover:border-primary/40 transition-all flex items-center justify-center text-transparent`}
+                                                className={`absolute z-40 rounded-full bg-white/80 dark:bg-gray-800/80 backdrop-blur border border-gray-200/80 dark:border-white/10 shadow-sm hover:shadow-md hover:border-primary/40 transition-all flex items-center justify-center text-transparent ${compact ? '-bottom-3 w-7 h-7' : '-bottom-4 w-8 h-8'} ${compact ? (mine ? '-left-3' : '-right-3') : (mine ? '-left-4' : '-right-4')}`}
                                                 title="Add reaction"
                                             >
-                                                <Smile className="absolute w-4 h-4 text-black/50" />
+                                                <Smile className={`absolute text-black/50 ${compact ? 'w-3.5 h-3.5' : 'w-4 h-4'}`} />
                                                 😊
                                             </button>
                                             {isAdmin && (
@@ -565,8 +592,8 @@ const DiscussionRoom = () => {
                     </form>
                 )}
 
-                <form onSubmit={sendMessage} className="p-3 md:p-4 border-t border-gray-100 dark:border-white/10 bg-white dark:bg-[#171819] flex gap-3">
-                    {canCreatePoll && (
+                <form onSubmit={sendMessage} className={`border-t border-gray-100 dark:border-white/10 bg-white dark:bg-[#171819] flex shrink-0 ${compact ? 'p-1.5 gap-1.5' : 'p-3 md:p-4 gap-3'}`}>
+                    {canCreatePoll && !compact && (
                         <div className="relative shrink-0">
                             <button
                                 type="button"
@@ -607,11 +634,11 @@ const DiscussionRoom = () => {
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
                         placeholder="Discussion room mein message type karein..."
-                        className="flex-1 px-4 py-3 rounded-xl bg-gray-50 dark:bg-[#1e1f21] border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-[#8E9297] outline-none focus:border-primary/70"
+                        className={`flex-1 rounded-xl bg-gray-50 dark:bg-[#1e1f21] border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-[#8E9297] outline-none focus:border-primary/70 ${compact ? 'px-3 py-2 text-sm' : 'px-4 py-3'}`}
                     />
                     <button
                         disabled={(!newMessage.trim() && pendingMedia.length === 0) || sending}
-                        className="px-5 py-3 rounded-xl bg-primary hover:bg-primary/90 text-white font-black disabled:opacity-50 flex items-center gap-2 shadow-lg shadow-primary/20"
+                        className={`rounded-xl bg-primary hover:bg-primary/90 text-white font-black disabled:opacity-50 flex items-center justify-center shadow-lg shadow-primary/20 ${compact ? 'px-4 py-2 text-sm gap-1.5' : 'px-5 py-3 gap-2'}`}
                     >
                         {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
                         <span className="hidden sm:inline">Send</span>

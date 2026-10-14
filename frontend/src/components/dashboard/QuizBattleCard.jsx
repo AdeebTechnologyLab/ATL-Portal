@@ -1,17 +1,22 @@
 import { useState, useEffect } from 'react';
-import { Brain, ChevronDown } from 'lucide-react';
+import { Brain, ChevronDown, Trophy, Crown } from 'lucide-react';
 import { quizGameAPI } from '../../services/api';
 import QuizGame from '../../pages/shared/QuizGame';
+
+const getPhotoUrl = (p) => (p && p.startsWith('http') ? p : p ? `${import.meta.env.VITE_API_BASE_URL?.replace('/api', '')}${p}` : '');
 
 const QuizBattleCard = () => {
     const [open, setOpen] = useState(false);
     const [openRooms, setOpenRooms] = useState([]);
+    const [leaders, setLeaders] = useState([]);
 
     // Open quiz challenges (dusre students ke waiting rooms)
     useEffect(() => {
         quizGameAPI.getOpen().then(res => setOpenRooms(res.data.data || [])).catch(() => {});
+        quizGameAPI.getLeaderboard().then(res => setLeaders((res.data.data || []).slice(0, 10))).catch(() => {});
         const interval = setInterval(() => {
             quizGameAPI.getOpen().then(res => setOpenRooms(res.data.data || [])).catch(() => {});
+            quizGameAPI.getLeaderboard().then(res => setLeaders((res.data.data || []).slice(0, 10))).catch(() => {});
         }, 10000);
         return () => clearInterval(interval);
     }, []);
@@ -44,7 +49,6 @@ const QuizBattleCard = () => {
                 />
             </button>
 
-            {/* Collapsible content — full Quiz Battle inline (no full screen) */}
             <div className={`${open ? 'block' : 'hidden'} px-4 pb-4`}>
                 <QuizGame inline onExit={() => setOpen(false)} />
             </div>

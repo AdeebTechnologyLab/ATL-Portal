@@ -67,7 +67,6 @@ import { logout, updateUser, refreshToken } from '../../features/auth/authSlice'
 import Sidebar from './Sidebar';
 import NotificationPopup from '../shared/NotificationPopup';
 import ChatWidget from '../shared/ChatWidget';
-import ProfileCompletionBanner from '../shared/ProfileCompletionBanner';
 
 
 import { userNotificationAPI, assignmentAPI, courseAPI, authAPI, attendanceAPI, feeAPI } from '../../services/api';
@@ -112,7 +111,7 @@ const DashboardLayout = () => {
 
     const isLearner = role === 'student' || role === 'intern';
     // Quiz Battle fee ke baghair bhi khelna allowed hai
-    const feeAccessAllowedPaths = [`/${role}/dashboard`, `/${role}/courses`, `/${role}/assignments`, `/${role}/discussion-room`, `/${role}/fees`, `/${role}/profile`, `/${role}/settings`, `/${role}/help-support`, `/${role}/quiz-game`];
+    const feeAccessAllowedPaths = [`/${role}/dashboard`, `/${role}/courses`, `/${role}/assignments`, `/${role}/notebook`, `/${role}/tests`, `/${role}/attendance`, `/${role}/chat`, `/${role}/discussion-room`, `/${role}/fees`, `/${role}/profile`, `/${role}/settings`, `/${role}/help-support`, `/${role}/quiz-game`];
     const isFeeAccessAllowedPath = feeAccessAllowedPaths.some(path => location.pathname.startsWith(path));
     const shouldShowFeeLock = isLearner && feeAccessStatus.hasOverdue && !isFeeAccessAllowedPath;
 
@@ -349,7 +348,7 @@ const DashboardLayout = () => {
             } else if (notification.type === 'graded') {
                 const message = (notification.message || '').toLowerCase();
                 if (message.includes('work log') || message.includes('daily task')) {
-                    navigate(`/${role}/daily-tasks`);
+                    navigate(`/${role}/notebook`);
                 } else if (message.includes('test')) {
                     navigate(`/${role}/tests`);
                 } else {
@@ -1030,10 +1029,7 @@ const DashboardLayout = () => {
                                 </div>
                             </div>
                         ) : (
-                            <>
-                                <ProfileCompletionBanner />
-                                <Outlet />
-                            </>
+                            <Outlet />
                         )}
                     </motion.div>
                 </main>

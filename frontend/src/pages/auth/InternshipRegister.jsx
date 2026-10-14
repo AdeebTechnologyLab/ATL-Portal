@@ -11,82 +11,17 @@ import { authAPI } from '../../services/api';
 import ImageCropper from '../../components/ui/ImageCropper';
 import { ButtonLoader } from '../../components/ui/Loader';
 import { PAKISTAN_CITIES, COUNTRIES } from '../../utils/locations';
+import { REQUIREMENT_OPTIONS, PROGRAM_OPTIONS } from '../../utils/internOptions';
 
-const PROGRAMS = [
-    'LMS Dev',
-    'Website Dev',
-    'App Dev',
-    'Software Dev',
-    'WordPress',
-    'Html',
-    'Css',
-    'Java',
-    'Python',
-    'PHP',
-    'Flutter',
-    'Android Studio',
-    'Firebase',
-    'MongoDB',
-    'MySQL',
-    'JavaScript',
-    'Bootstrap',
-    'Git & GitHub',
-    'Visual Studio Code',
-    'Vercel',
-    'Wix',
-    'Elementor',
-    'Webflow',
-    'Graphic Designer',
-    'UI/UX Designer',
-    'Video Editor',
-    'Motion Graphics',
-    'Photoshop',
-    'Illustrator',
-    'Premiere Pro',
-    'After Effects',
-    'Canva',
-    'Digital Marketing',
-    'SEO',
-    'Social Media Marketing',
-    'Google Ads',
-    'Meta Ads',
-    'Content Writer',
-    'AI',
-    'Machine Learning',
-    'IoT',
-    'Robotics',
-    'Cyber Security',
-    'Ethical Hacking',
-    'Network Security',
-    'Office Work (IT)',
-    'Basic Computer',
-    'Word',
-    'Excel',
-    'PowerPoint',
-    'Publisher',
-    'Data Entry',
-    'Team Manager',
-    'HR',
-    'Freelancing',
-    'E-Commerce',
-    'Trading',
-    'Taxation',
-    'Truck Dispatching',
-    'Home Architecture',
-    'AutoCAD',
-    'Chief Architect',
-    'YouTube',
-    'Social Media Management',
-    'Content Writing',
-    'Other'
-];
+const PROGRAMS = PROGRAM_OPTIONS;
 
 const INTERN_CITIES = ['Bahawalpur', 'Islamabad'];
 const CITIES = PAKISTAN_CITIES;
 const DURATIONS = ['3 Month', '6 Month', '1 Year'];
 const HEARD_OPTIONS = [
-    'Poster & Panaflex', 'Facebook', 'Instagram', 'WhatsApp', 'Website',
-    'YouTube', 'Event / Seminar', 'Friends & Family', 'Other'
+    'Facebook', 'Instagram', 'WhatsApp', 'LinkedIn', 'YouTube', 'TikTok', 'Twitter',
+    'Snapchat', 'Pinterest', 'Telegram', 'Website', 'Google', 'Google Maps',
+    'Poster & Panaflex', 'Event / Seminar', 'University', 'Teacher', 'Friends & Family', 'Other'
 ];
 
 const GUARDIAN_RELATIONS = ['Father', 'Mother', 'Brother', 'Sister', 'Uncle', 'Aunt', 'Grandfather', 'Grandmother', 'Other'];
@@ -165,6 +100,7 @@ const InternshipRegister = () => {
         internCity: '',
         internType: '',
         requirements: [],
+        otherRequirement: '',
         skills: [],
         otherSkills: '',
         resumeUrl: '',
@@ -290,6 +226,7 @@ const InternshipRegister = () => {
         if (!formData.internCity) newErrors.internCity = 'City is required';
         if (!formData.internType) newErrors.internType = 'Type is required';
         if (formData.requirements.length === 0) newErrors.requirements = 'Requirements selection is required';
+        if (formData.requirements.includes('Other') && !formData.otherRequirement.trim()) newErrors.otherRequirement = 'Please specify your other requirement';
         if (!formData.guardianName.trim()) newErrors.guardianName = "Guardian's name is required";
         if (!formData.guardianRelation) newErrors.guardianRelation = 'Guardian relationship is required';
         if (!formData.guardianPhone) newErrors.guardianPhone = 'Guardian WhatsApp number is required';
@@ -302,7 +239,7 @@ const InternshipRegister = () => {
         if (!formData.termsAccepted) newErrors.termsAccepted = 'Required';
 
         setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
+        return newErrors;
     };
 
     const scrollToFirstError = (newErrors) => {
@@ -310,55 +247,28 @@ const InternshipRegister = () => {
             'photo', 'fullName', 'fatherName', 'cnic', 'contact', 'dob', 'gender', 'email',
             'homeAddress', 'city', 'degree', 'university', 'semester',
             'rollNumber', 'cgpa', 'majorSubjects', 'internCity', 'internType',
-            'requirements', 'guardianName', 'guardianRelation', 'guardianPhone', 'guardianOccupation', 'reason', 'heardAbout',
+            'requirements', 'otherRequirement', 'guardianName', 'guardianRelation', 'guardianPhone', 'guardianOccupation', 'reason', 'heardAbout',
             'password', 'confirmPassword', 'termsAccepted'
         ];
-        for (const field of fieldOrder) {
-            if (newErrors[field]) {
-                const el = document.getElementById(`field-${field}`);
-                if (el) {
-                    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    const input = el.querySelector('input, select, textarea');
-                    if (input) setTimeout(() => input.focus(), 400);
-                }
-                break;
-            }
+        const ordered = [
+            ...fieldOrder.filter(field => newErrors[field]),
+            ...Object.keys(newErrors).filter(field => !fieldOrder.includes(field))
+        ];
+        for (const field of ordered) {
+            const el = document.getElementById(`field-${field}`) || document.querySelector(`[name="${field}"]`);
+            if (!el) continue;
+            const wrapper = el.closest('[id^="field-"]') || el;
+            wrapper.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            const input = wrapper.matches('input, select, textarea') ? wrapper : wrapper.querySelector('input, select, textarea');
+            if (input) setTimeout(() => input.focus({ preventScroll: true }), 400);
+            break;
         }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!validateForm()) {
-            const errs = {};
-            if (!photoFile) errs.photo = true;
-            if (!formData.fullName.trim()) errs.fullName = true;
-            if (!formData.fatherName.trim()) errs.fatherName = true;
-            if (!formData.dob) errs.dob = true;
-            if (!formData.gender) errs.gender = true;
-            if (!formData.cnic) errs.cnic = true;
-            if (!formData.contact) errs.contact = true;
-            if (!formData.email) errs.email = true;
-            if (!formData.homeAddress) errs.homeAddress = true;
-            if (!formData.city) errs.city = true;
-            if (!formData.degree) errs.degree = true;
-            if (!formData.university) errs.university = true;
-            if (!formData.semester) errs.semester = true;
-            if (!formData.rollNumber) errs.rollNumber = true;
-            if (!formData.cgpa) errs.cgpa = true;
-            if (!formData.majorSubjects) errs.majorSubjects = true;
-            if (!formData.internCity) errs.internCity = true;
-            if (!formData.internType) errs.internType = true;
-            if (formData.requirements.length === 0) errs.requirements = true;
-            if (!formData.guardianName.trim()) errs.guardianName = true;
-            if (!formData.guardianRelation) errs.guardianRelation = true;
-            if (!formData.guardianPhone) errs.guardianPhone = true;
-            if (!formData.guardianOccupation) errs.guardianOccupation = true;
-            if (!formData.reason) errs.reason = true;
-            if (!formData.heardAbout) errs.heardAbout = true;
-            if (!formData.password) errs.password = true;
-            if (formData.password !== formData.confirmPassword) errs.confirmPassword = true;
-            if (!formData.termsAccepted) errs.termsAccepted = true;
-            
+        const errs = validateForm();
+        if (Object.keys(errs).length > 0) {
             scrollToFirstError(errs);
             return;
         }
@@ -396,7 +306,11 @@ const InternshipRegister = () => {
             submitData.append('guardianPhone', formData.guardianPhone);
             submitData.append('guardianOccupation', formData.guardianOccupation);
             submitData.append('resumeUrl', formData.resumeUrl);
-            submitData.append('requirements', formData.requirements.join(', '));
+            const finalRequirements = formData.requirements.filter(req => req !== 'Other');
+            if (formData.requirements.includes('Other') && formData.otherRequirement.trim()) {
+                finalRequirements.push(formData.otherRequirement.trim());
+            }
+            submitData.append('requirements', finalRequirements.join(', '));
             submitData.append('reason', formData.reason);
             let finalSkills = formData.skills.filter(skill => skill !== 'Other');
             if (formData.skills.includes('Other') && formData.otherSkills.trim()) {
@@ -426,7 +340,7 @@ const InternshipRegister = () => {
         }
     };
 
-    const requirementOptions = ['Home WiFi', 'Personal Laptop', 'No Laptop', 'No WiFi'];
+    const requirementOptions = [...REQUIREMENT_OPTIONS, 'Other'];
 
     return (
         <div className="h-screen flex overflow-hidden overflow-x-hidden">
@@ -596,25 +510,41 @@ const InternshipRegister = () => {
                             
                             <div id="field-requirements">
                                 <label className="block text-sm font-medium text-gray-700 mb-2">Requirements</label>
-                                <div className="flex flex-wrap gap-3">
-                                    {requirementOptions.map(req => (
-                                        <label
-                                            key={req}
-                                            className={`px-4 py-2 rounded-full border cursor-pointer transition-all ${formData.requirements.includes(req)
-                                                ? 'bg-blue-100 border-blue-500 text-blue-700'
-                                                : 'bg-gray-50 border-gray-200 text-gray-600 hover:border-gray-300'
-                                                }`}
-                                        >
-                                            <input
-                                                type="checkbox"
-                                                checked={formData.requirements.includes(req)}
-                                                onChange={() => handleRequirementChange(req)}
-                                                className="hidden"
-                                            />
-                                            {req}
-                                        </label>
-                                    ))}
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                                    {requirementOptions.map(req => {
+                                        const checked = formData.requirements.includes(req);
+                                        return (
+                                            <label
+                                                key={req}
+                                                className={`flex items-center gap-3 px-4 py-3 rounded-xl border cursor-pointer transition-all ${checked
+                                                    ? 'bg-blue-50 border-blue-500 text-blue-700'
+                                                    : 'bg-white border-gray-200 text-gray-600 hover:border-blue-300 hover:bg-gray-50'
+                                                    }`}
+                                            >
+                                                <input
+                                                    type="checkbox"
+                                                    checked={checked}
+                                                    onChange={() => handleRequirementChange(req)}
+                                                    className="w-4 h-4 shrink-0 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                                                />
+                                                <span className="text-sm font-medium">{req}</span>
+                                            </label>
+                                        );
+                                    })}
                                 </div>
+                                {errors.requirements && <p className="mt-2 text-sm text-red-500">{errors.requirements}</p>}
+                                {formData.requirements.includes('Other') && (
+                                    <div className="mt-4">
+                                        <InputField
+                                            label="Specify Other Requirement"
+                                            name="otherRequirement"
+                                            placeholder="e.g., Need a mentor"
+                                            value={formData.otherRequirement}
+                                            onChange={handleChange}
+                                            error={errors.otherRequirement}
+                                        />
+                                    </div>
+                                )}
                             </div>
 
                             <div id="field-skills" className="pt-2">
@@ -740,7 +670,12 @@ const InternshipRegister = () => {
                                         onChange={handleChange}
                                         className="w-5 h-5 mt-0.5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                                     />
-                                    <span className="text-sm text-gray-700">I Accept All Terms and Conditions</span>
+                                    <span className="text-sm text-gray-700">
+                                        I Accept All Terms and Conditions
+                                        <span className="block mt-1 text-xs text-gray-500 leading-relaxed">
+                                            Mere pas personal laptop, stable internet hai, main serious aur responsible hoon, basic computer skills hain, achhi communication karta hoon, professional behavior rakhta hoon, aur messages ka jaldi jawab deta hoon.
+                                        </span>
+                                    </span>
                                 </label>
                             </div>
                         </div>

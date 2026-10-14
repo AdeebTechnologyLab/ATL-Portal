@@ -83,15 +83,16 @@ const SKILLS = [
 
 const CITIES = PAKISTAN_CITIES;
 const HEARD_OPTIONS = [
-    'Poster & Panaflex', 'Facebook', 'Instagram', 'WhatsApp Group', 'Website',
-    'YouTube', 'Friends & Family', 'Twitter', 'LinkedIn', 'Other'
+    'Facebook', 'Instagram', 'WhatsApp Group', 'LinkedIn', 'YouTube', 'TikTok', 'Twitter',
+    'Snapchat', 'Pinterest', 'Telegram', 'Website', 'Google', 'Google Maps',
+    'Poster & Panaflex', 'Event / Seminar', 'University', 'Teacher', 'Friends & Family', 'Other'
 ];
 
 const GUARDIAN_RELATIONS = ['Father', 'Mother', 'Brother', 'Sister', 'Uncle', 'Aunt', 'Grandfather', 'Grandmother', 'Other'];
 
 // Define components OUTSIDE to prevent re-creation and focus loss
-const InputField = ({ label, name, type = 'text', icon: Icon, placeholder, value, onChange, error, ...props }) => (
-    <div>
+const InputField = ({ id, label, name, type = 'text', icon: Icon, placeholder, value, onChange, error, ...props }) => (
+    <div id={id || `field-${name}`}>
         <label className="block text-sm font-medium text-gray-700 mb-1.5">{label}</label>
         <div className="relative">
             <input
@@ -272,7 +273,7 @@ const JobRegister = () => {
         if (!formData.termsAccepted) newErrors.termsAccepted = 'You must accept terms';
 
         setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
+        return newErrors;
     };
 
     
@@ -285,47 +286,25 @@ const JobRegister = () => {
             'qualification', 'teachingExp', 'experienceDetails', 'skills', 'otherSkills',
             'cvUrl', 'heardAbout', 'password', 'confirmPassword', 'termsAccepted'
         ];
-        for (const field of fieldOrder) {
-            if (newErrors[field]) {
-                const el = document.getElementById(`field-${field}`);
-                if (el) {
-                    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    const input = el.querySelector('input, select, textarea');
-                    if (input) setTimeout(() => input.focus(), 400);
-                }
-                break;
-            }
+        const ordered = [
+            ...fieldOrder.filter(field => newErrors[field]),
+            ...Object.keys(newErrors).filter(field => !fieldOrder.includes(field))
+        ];
+        for (const field of ordered) {
+            const el = document.getElementById(`field-${field}`) || document.querySelector(`[name="${field}"]`);
+            if (!el) continue;
+            const wrapper = el.closest('[id^="field-"]') || el;
+            wrapper.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            const input = wrapper.matches('input, select, textarea') ? wrapper : wrapper.querySelector('input, select, textarea');
+            if (input) setTimeout(() => input.focus({ preventScroll: true }), 400);
+            break;
         }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!validateForm()) {
-            const errs = {};
-            if (!photoFile) errs.photo = true;
-            if (!formData.fullName.trim()) errs.fullName = true;
-            if (!formData.fatherName.trim()) errs.fatherName = true;
-            if (!formData.email) errs.email = true;
-            if (!formData.phone) errs.phone = true;
-            if (!formData.cnic) errs.cnic = true;
-            if (!formData.dob) errs.dob = true;
-            if (!formData.gender) errs.gender = true;
-            if (!formData.guardianName.trim()) errs.guardianName = true;
-            if (!formData.guardianRelation) errs.guardianRelation = true;
-            if (!formData.guardianPhone) errs.guardianPhone = true;
-            if (!formData.guardianOccupation) errs.guardianOccupation = true;
-            if (!formData.address) errs.address = true;
-            if (!formData.city) errs.city = true;
-            if (!formData.country) errs.country = true;
-            if (!formData.qualification) errs.qualification = true;
-            if (!formData.teachingExp) errs.teachingExp = true;
-            if (!formData.experienceDetails.trim()) errs.experienceDetails = true;
-            if (formData.skills.length === 0) errs.skills = true;
-            if (formData.skills.includes('Other') && !formData.otherSkills.trim()) errs.otherSkills = true;
-            if (!formData.heardAbout) errs.heardAbout = true;
-            if (!formData.password) errs.password = true;
-            if (formData.password !== formData.confirmPassword) errs.confirmPassword = true;
-            if (!formData.termsAccepted) errs.termsAccepted = true;
+        const errs = validateForm();
+        if (Object.keys(errs).length > 0) {
             scrollToFirstError(errs);
             return;
         }
@@ -437,7 +416,7 @@ const JobRegister = () => {
                         )}
 
                         {/* Photo Upload */}
-                        <div className="flex flex-col items-center mb-6">
+                        <div id="field-photo" className="flex flex-col items-center mb-6">
                             <div className="relative group">
                                 <div className="w-24 h-24 rounded-2xl bg-gray-100 border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden transition-all group-hover:border-primary">
                                     {photoPreview ? (

@@ -9,7 +9,6 @@ import {
     CheckCircle,
     CreditCard,
     Calendar,
-    ArrowRight,
     FileText,
     Bell,
     Trash2,
@@ -22,6 +21,7 @@ import {
 import BirthdayWish from '../../components/dashboard/BirthdayWish';
 import GamesCard from '../../components/dashboard/GamesCard';
 import QuizBattleCard from '../../components/dashboard/QuizBattleCard';
+import DiscussionRoom from '../shared/DiscussionRoom';
 import WorkspaceRestrictedBanner from '../../components/dashboard/WorkspaceRestrictedBanner';
 import StatCard from '../../components/ui/StatCard';
 import Badge from '../../components/ui/Badge';
@@ -33,6 +33,7 @@ import { calculateOutstandingFees } from '../../utils/feeHelpers';
 import { useTranslation } from 'react-i18next';
 import { requestNotificationPermission, showAssignmentNotification, showGradingNotification, showAttendanceNotification } from '../../utils/desktopNotifications';
 import { getSocketURL } from '../../config/apiBaseUrl';
+import ProfileCompletionBanner from '../../components/shared/ProfileCompletionBanner';
 
 const SOCKET_URL = getSocketURL();
 
@@ -433,7 +434,7 @@ const StudentDashboard = () => {
                         </div>
                         <div className="grid grid-cols-2 sm:flex gap-2">
                             <button
-                                onClick={() => navigate(`/${role}/assignments`, { state: { tab: 'attendance' } })}
+                                onClick={() => navigate(`/${role}/attendance`)}
                                 className="px-3.5 sm:px-5 py-2.5 bg-white/10 hover:bg-white/20 rounded-xl font-black text-[9px] sm:text-[10px] uppercase tracking-widest transition-all duration-300 border border-white/20"
                             >
                                 Attendance
@@ -448,48 +449,20 @@ const StudentDashboard = () => {
                     </div>
                 </motion.div>
 
-                <BirthdayWish />
-
-                <QuizBattleCard />
-
-                <GamesCard />
-
-                {/* Discussion Room Widget */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.15 }}
-                    onClick={() => navigate(`/${role}/discussion-room`)}
-                    className="group relative overflow-hidden rounded-2xl border border-primary/20 bg-white dark:bg-gray-900 p-3.5 sm:p-4 shadow-sm hover:shadow-md transition-all cursor-pointer"
-                >
-                    <div className="absolute inset-y-0 right-0 w-1/2 bg-gradient-to-l from-primary/10 to-transparent pointer-events-none" />
-                    <div className="relative z-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                        <div className="flex items-center gap-3">
-                            <div className="w-11 h-11 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0 group-hover:bg-primary transition-colors">
-                                <MessageSquare className="w-5 h-5 text-primary group-hover:text-white transition-colors" />
-                            </div>
-                            <div>
-                                <p className="text-[9px] font-black uppercase tracking-[0.2em] text-primary">
-                                    Community Chat
-                                </p>
-                                <h3 className="text-base sm:text-lg font-black text-gray-900 dark:text-white uppercase italic tracking-tight">
-                                    Discussion Room
-                                </h3>
-                                <p className="hidden sm:block text-xs text-gray-500 dark:text-gray-400 mt-0.5 max-w-2xl">
-                                    Students aur interns yahan group discussion, help aur updates share kar sakte hain.
-                                </p>
-                            </div>
-                        </div>
-
-                        <button
-                            type="button"
-                            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-white text-[10px] font-black uppercase tracking-widest shadow-sm group-hover:-translate-y-0.5 transition-all"
-                        >
-                            Open Room
-                            <ArrowRight className="w-4 h-4" />
-                        </button>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 items-start">
+                    {/* Left: Profile + Birthday + Games stacked */}
+                    <div className="flex flex-col gap-4 sm:gap-5 min-w-0">
+                        <ProfileCompletionBanner />
+                        <BirthdayWish />
+                        <QuizBattleCard />
+                        <GamesCard />
                     </div>
-                </motion.div>
+
+                    {/* Right: Discussion Room live screen with chat */}
+                    <div className="relative min-w-0 h-[260px] sm:h-[280px] lg:h-[300px] rounded-2xl border border-primary/20 bg-gray-50 dark:bg-gray-950 overflow-hidden flex flex-col">
+                        <DiscussionRoom compact />
+                    </div>
+                </div>
 
                 {/* Live Class Banner - Big and Prominent */}
                 <AnimatePresence>
@@ -719,7 +692,7 @@ const StudentDashboard = () => {
                                             if (!course.isFirstMonthVerified) {
                                                 navigate(`/${role}/fees`);
                                             } else {
-                                                navigate(`/${role}/assignments`, { state: { courseId: course.id, tab: course.unreadMessages > 0 ? 'chat' : 'assignments' } });
+                                                navigate(course.unreadMessages > 0 ? `/${role}/chat` : `/${role}/assignments`, { state: { courseId: course.id } });
                                             }
                                         }}
                                     >

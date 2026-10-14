@@ -54,12 +54,6 @@ Open http://localhost:5173 — the frontend proxies `/api` to the backend (port 
 
 If you see *"Cannot reach the server"*, run `npm run dev` in the `backend` folder.
 
-### Common gotchas
-
-- **Deploy**: Push code to GitHub — Render (backend) and Vercel (frontend) redeploy automatically.
-- **Frontend**: Set `VITE_API_URL=https://lms-adeeb-technology-lab.onrender.com/api` in Vercel env.
-
-
 
 
 Redesigned Announcement Popup:

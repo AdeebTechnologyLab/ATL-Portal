@@ -6,7 +6,6 @@ import { Eye, EyeOff, Mail, Lock, ArrowLeft, GraduationCap } from 'lucide-react'
 import { loginStart, loginSuccess, loginFailure, clearError } from '../../features/auth/authSlice';
 import { authAPI } from '../../services/api';
 import { getStudentLandingPath } from '../../utils/postLoginRedirect';
-import { INCOMPLETE_PROFILE_DISMISS_KEY } from '../../utils/profileCompleteness';
 import { ButtonLoader } from '../../components/ui/Loader';
 import GuestChatWidget from '../../components/shared/GuestChatWidget';
 import { useTranslation } from 'react-i18next';
@@ -84,9 +83,6 @@ const Login = () => {
             });
 
             const { user, token } = response.data;
-
-            // Reset the incomplete-profile reminder so a fresh login shows it again.
-            sessionStorage.removeItem(INCOMPLETE_PROFILE_DISMISS_KEY);
 
             // Store user in localStorage for persistence
             // localStorage.setItem('user', JSON.stringify(user));

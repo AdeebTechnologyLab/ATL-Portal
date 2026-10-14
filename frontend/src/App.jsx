@@ -226,6 +226,10 @@ const AppRoutes = () => {
         <Route path="courses" element={<BrowseCourses />} />
         <Route path="fees" element={<FeeManagement />} />
         <Route path="assignments" element={<AssignmentSubmission />} />
+        <Route path="notebook" element={<AssignmentSubmission />} />
+        <Route path="tests" element={<AssignmentSubmission />} />
+        <Route path="attendance" element={<AssignmentSubmission />} />
+        <Route path="chat" element={<AssignmentSubmission />} />
         <Route path="marks" element={<MarksSheet />} />
         <Route path="discussion-room" element={<DiscussionRoom />} />
         <Route path="settings" element={<Settings />} />
@@ -245,6 +249,10 @@ const AppRoutes = () => {
         <Route path="courses" element={<BrowseCourses />} />
         <Route path="fees" element={<FeeManagement />} />
         <Route path="assignments" element={<AssignmentSubmission />} />
+        <Route path="notebook" element={<AssignmentSubmission />} />
+        <Route path="tests" element={<AssignmentSubmission />} />
+        <Route path="attendance" element={<AssignmentSubmission />} />
+        <Route path="chat" element={<AssignmentSubmission />} />
         <Route path="marks" element={<MarksSheet />} />
         <Route path="discussion-room" element={<DiscussionRoom />} />
         <Route path="settings" element={<Settings />} />
@@ -288,14 +296,12 @@ const AppRoutes = () => {
 
 import { Toaster } from 'react-hot-toast';
 import QuizChallengeNotification from './components/shared/QuizChallengeNotification';
-import IncompleteProfileReminder from './components/shared/IncompleteProfileReminder';
 
 function App() {
   return (
     <Router>
       <Toaster position="top-right" reverseOrder={false} />
       <QuizChallengeNotification />
-      <IncompleteProfileReminder />
       <Suspense fallback={<PageLoader />}>
         <AppRoutes />
       </Suspense>

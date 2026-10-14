@@ -23,8 +23,9 @@ const COURSES = [
 
 const ATTEND_CITIES = ['Bahawalpur', 'Islamabad'];
 const HEARD_OPTIONS = [
-    'Poster & Panaflex', 'Facebook', 'Instagram', 'WhatsApp Group', 'Website',
-    'YouTube', 'Friends & Family', 'Twitter', 'LinkedIn', 'Other'
+    'Facebook', 'Instagram', 'WhatsApp Group', 'LinkedIn', 'YouTube', 'TikTok', 'Twitter',
+    'Snapchat', 'Pinterest', 'Telegram', 'Website', 'Google', 'Google Maps',
+    'Poster & Panaflex', 'Event / Seminar', 'University', 'Teacher', 'Friends & Family', 'Other'
 ];
 
 const GUARDIAN_RELATIONS = ['Father', 'Mother', 'Brother', 'Sister', 'Uncle', 'Aunt', 'Grandfather', 'Grandmother', 'Other'];
@@ -211,7 +212,7 @@ const StudentRegister = () => {
         if (!formData.termsAccepted) newErrors.termsAccepted = 'You must accept terms';
 
         setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
+        return newErrors;
     };
 
     const scrollToFirstError = (newErrors) => {
@@ -223,48 +224,26 @@ const StudentRegister = () => {
             'city', 'country', 'address', 'heardAbout', 'password', 'confirmPassword',
             'termsAccepted'
         ];
-        for (const field of fieldOrder) {
-            if (newErrors[field]) {
-                const el = document.getElementById(`field-${field}`);
-                if (el) {
-                    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    // Focus first input/select inside
-                    const input = el.querySelector('input, select, textarea');
-                    if (input) setTimeout(() => input.focus(), 400);
-                }
-                break;
-            }
+        const ordered = [
+            ...fieldOrder.filter(field => newErrors[field]),
+            ...Object.keys(newErrors).filter(field => !fieldOrder.includes(field))
+        ];
+        for (const field of ordered) {
+            const el = document.getElementById(`field-${field}`) || document.querySelector(`[name="${field}"]`);
+            if (!el) continue;
+            const wrapper = el.closest('[id^="field-"]') || el;
+            wrapper.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            const input = wrapper.matches('input, select, textarea') ? wrapper : wrapper.querySelector('input, select, textarea');
+            if (input) setTimeout(() => input.focus({ preventScroll: true }), 400);
+            break;
         }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!validateForm()) {
-            // Get the current errors
-            const currentErrors = {};
-            if (!photoFile) currentErrors.photo = true;
-            if (!formData.fullName.trim()) currentErrors.fullName = true;
-            if (!formData.fatherName.trim()) currentErrors.fatherName = true;
-            if (!formData.phone) currentErrors.phone = true;
-            if (!formData.email) currentErrors.email = true;
-            if (!formData.cnic) currentErrors.cnic = true;
-            if (!formData.dob) currentErrors.dob = true;
-            if (!formData.gender) currentErrors.gender = true;
-            if (!formData.cityToAttend) currentErrors.cityToAttend = true;
-            if (!formData.attendClasses) currentErrors.attendClasses = true;
-            if (!formData.education) currentErrors.education = true;
-            if (!formData.guardianName) currentErrors.guardianName = true;
-            if (!formData.guardianRelation) currentErrors.guardianRelation = true;
-            if (!formData.guardianPhone) currentErrors.guardianPhone = true;
-            if (!formData.guardianOccupation) currentErrors.guardianOccupation = true;
-            if (!formData.address) currentErrors.address = true;
-            if (!formData.city) currentErrors.city = true;
-            if (!formData.country) currentErrors.country = true;
-            if (!formData.heardAbout) currentErrors.heardAbout = true;
-            if (!formData.password) currentErrors.password = true;
-            if (formData.password !== formData.confirmPassword) currentErrors.confirmPassword = true;
-            if (!formData.termsAccepted) currentErrors.termsAccepted = true;
-            scrollToFirstError(currentErrors);
+        const errs = validateForm();
+        if (Object.keys(errs).length > 0) {
+            scrollToFirstError(errs);
             return;
         }
 

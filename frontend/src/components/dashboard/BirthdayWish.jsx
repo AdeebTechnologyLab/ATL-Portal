@@ -73,7 +73,7 @@ const BirthdayWish = () => {
             id="birthday-confetti-container"
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            className="relative mb-4"
+            className="relative"
         >
             <style>{`
                 .confetti-piece {
@@ -95,25 +95,24 @@ const BirthdayWish = () => {
             >
                 <motion.div className="absolute inset-0 bg-white/5 pointer-events-none" />
 
-                <div className="relative z-10 flex flex-col sm:flex-row sm:items-center gap-3 px-4 py-3">
+                <div className="relative z-10 flex flex-col gap-2 px-3.5 py-2.5">
                     {/* Header */}
-                    <div className="flex items-center gap-2.5 shrink-0 sm:pr-3 sm:border-r sm:border-white/20">
-                        <div className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
-                            <Cake className="w-[18px] h-[18px] text-white" />
+                    <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center shrink-0">
+                            <Cake className="w-4 h-4 text-white" />
                         </div>
                         <div className="min-w-0">
-                            <p className="text-white font-bold text-sm leading-tight">
+                            <p className="text-white font-black text-[13px] leading-tight">
                                 Happy Birthday! 🎂
                             </p>
-                            <p className="text-white/70 text-[11px] leading-snug mt-0.5 hidden sm:block max-w-[220px]">
-                                <span className="block">Wishing our amazing students</span>
-                                <span className="block">a day filled with happiness, success, and joy! ✨</span>
+                            <p className="text-white/70 text-[10px] leading-snug mt-0.5 hidden sm:block">
+                                Wishing them joy, success &amp; happiness ✨
                             </p>
                         </div>
                     </div>
 
                     {/* Birthday people */}
-                    <div className="flex flex-1 gap-2 overflow-x-auto pb-0.5 sm:pb-0 scrollbar-thin">
+                    <div className="flex flex-wrap gap-2">
                         {birthdays.map((person) => {
                             const currentYear = new Date().getFullYear();
                             const hasWished = person.birthdayWishes?.some(
@@ -128,39 +127,39 @@ const BirthdayWish = () => {
                             return (
                                 <div
                                     key={person._id}
-                                    className="flex items-center gap-2.5 bg-white/15 hover:bg-white/20 border border-white/15 rounded-xl px-3 py-2.5 transition-colors"
+                                    className="flex items-center gap-2 bg-white/15 hover:bg-white/25 border border-white/15 rounded-lg px-2.5 py-1.5 transition-colors"
                                 >
                                     {person.photo ? (
                                         <img
                                             src={person.photo}
                                             alt=""
-                                            className="w-10 h-10 rounded-lg object-cover border border-white/30"
+                                            className="w-8 h-8 rounded-lg object-cover border border-white/30"
                                         />
                                     ) : (
-                                        <div className="w-10 h-10 rounded-lg bg-white/25 flex items-center justify-center text-white font-bold text-sm border border-white/30">
+                                        <div className="w-8 h-8 rounded-lg bg-white/25 flex items-center justify-center text-white font-bold text-xs border border-white/30">
                                             {person.name.charAt(0)}
                                         </div>
                                     )}
 
                                     <div className="min-w-0">
-                                        <p className="text-white font-semibold text-sm truncate leading-tight">{person.name}</p>
-                                        <p className="text-white/55 text-[10px] uppercase tracking-wide truncate mt-0.5">
+                                        <p className="text-white font-bold text-[13px] truncate leading-tight">{person.name}</p>
+                                        <p className="text-white/60 text-[9px] uppercase font-bold tracking-wide truncate mt-0.5">
                                             {roleLabel}
                                         </p>
                                     </div>
 
-                                    <div className="flex items-center gap-1.5 pl-2 border-l border-white/15 self-stretch py-0.5">
-                                        <span className="flex items-center gap-1 text-white/80 px-1">
+                                    <div className="flex items-center gap-1.5 pl-2 border-l border-white/15 self-stretch">
+                                        <span className="flex items-center gap-0.5 text-white/80 px-0.5">
                                             <Heart
-                                                className={`w-3.5 h-3.5 ${wishCount > 0 ? 'fill-red-300 text-red-300' : 'text-white/50'}`}
+                                                className={`w-3 h-3 ${wishCount > 0 ? 'fill-red-300 text-red-300' : 'text-white/50'}`}
                                             />
-                                            <span className="text-xs font-bold">{wishCount}</span>
+                                            <span className="text-[10px] font-black">{wishCount}</span>
                                         </span>
 
                                         <button
                                             onClick={() => handleWish(person._id, hasWished)}
                                             disabled={wishingId === person._id || hasWished}
-                                            className={`px-2.5 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wide flex items-center gap-1 transition-all ${hasWished
+                                            className={`px-2 py-1 rounded-md text-[9px] font-black uppercase tracking-wide flex items-center gap-1 transition-all ${hasWished
                                                     ? 'bg-white/10 text-white/45 cursor-default'
                                                     : 'bg-white text-primary hover:bg-white/90 active:scale-95'
                                                 }`}
@@ -171,7 +170,7 @@ const BirthdayWish = () => {
                                                 'Done'
                                             ) : (
                                                 <>
-                                                    Wish <Gift className="w-3 h-3" />
+                                                    Wish <Gift className="w-2.5 h-2.5" />
                                                 </>
                                             )}
                                         </button>

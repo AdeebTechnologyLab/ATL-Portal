@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { taskAPI } from '../../services/api';
 import { formatDate } from '../../utils/dateFormatter';
+import ProfileCompletionBanner from '../../components/shared/ProfileCompletionBanner';
 
 const JobDashboard = () => {
     const { user } = useSelector((state) => state.auth);
@@ -85,6 +86,8 @@ const JobDashboard = () => {
                     </div>
                 </div>
             </motion.div>
+
+            <ProfileCompletionBanner />
 
             {/* Stats Overview */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">

@@ -378,29 +378,31 @@ const StudentTestsTab = ({ courseId, isRestricted }) => {
                     </div>
                 </div>
 
-                <div className="flex-1 overflow-hidden flex flex-row">
+                <div className="flex-1 overflow-hidden flex flex-col sm:flex-row">
 
-                    {/* Left Sidebar: Question Numbers */}
-                    <div className="w-16 sm:w-20 shrink-0 overflow-y-auto no-scrollbar bg-slate-50 dark:bg-[#1a1f2e] border-r-2 border-slate-200 dark:border-white/5 py-4 flex flex-col items-center gap-2">
-                        <span className="text-[8px] font-black text-slate-500 uppercase tracking-widest mb-1">Q#</span>
-                        {shuffledQuestions.map((_, i) => (
-                            <button
-                                key={i}
-                                onClick={() => {
-                                    setDirection(i > currentQuestionIndex ? 1 : -1);
-                                    setCurrentQuestionIndex(i);
-                                }}
-                                className={`w-10 h-10 rounded-xl font-black text-sm transition-all border-2 ${
-                                    currentQuestionIndex === i
-                                    ? 'bg-primary border-primary text-white shadow-xl shadow-primary/30 scale-110 z-10'
-                                    : answers[shuffledQuestions[i]._id] !== undefined
-                                    ? 'bg-primary/10 border-primary/30 text-primary font-black'
-                                    : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-white/5 text-slate-500 dark:text-slate-600 hover:border-primary/30 hover:text-primary dark:hover:border-white/10'
-                                }`}
-                            >
-                                {i + 1}
-                            </button>
-                        ))}
+                    {/* Question Numbers: above progress bar on phone, sidebar on desktop */}
+                    <div className="w-full sm:w-24 shrink-0 overflow-y-auto no-scrollbar bg-slate-50 dark:bg-[#1a1f2e] border-b-2 sm:border-b-0 sm:border-r-2 border-slate-200 dark:border-white/5 py-2 sm:py-3 px-2 flex flex-col items-center gap-2">
+                        <span className="text-[8px] font-black text-slate-500 uppercase tracking-widest mb-1 sm:mb-1">Q#</span>
+                        <div className="grid grid-cols-10 sm:grid-cols-3 gap-1.5 w-full content-start justify-items-center">
+                            {shuffledQuestions.map((_, i) => (
+                                <button
+                                    key={i}
+                                    onClick={() => {
+                                        setDirection(i > currentQuestionIndex ? 1 : -1);
+                                        setCurrentQuestionIndex(i);
+                                    }}
+                                    className={`h-7 w-full sm:h-auto sm:aspect-square rounded-lg font-black text-[11px] leading-none transition-all border-2 ${
+                                        currentQuestionIndex === i
+                                        ? 'bg-primary border-primary text-white shadow-lg shadow-primary/30'
+                                        : answers[shuffledQuestions[i]._id] !== undefined
+                                        ? 'bg-primary/10 border-primary/30 text-primary font-black'
+                                        : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-white/5 text-slate-500 dark:text-slate-600 hover:border-primary/30 hover:text-primary dark:hover:border-white/10'
+                                    }`}
+                                >
+                                    {i + 1}
+                                </button>
+                            ))}
+                        </div>
                     </div>
 
                     {/* Right: Progress + Question Content */}

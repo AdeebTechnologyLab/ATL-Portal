@@ -499,96 +499,7 @@ const QuizGame = ({ inline = false, onExit = null }) => {
                         </>
                     )}
 
-                    {leaders.length > 0 && (
-                        <>
-                            <h2 className="mb-3 mt-8 flex items-center gap-2 text-sm font-black uppercase tracking-widest text-white/50">
-                                <Trophy className="h-4 w-4" /> Top Quiz Winners
-                            </h2>
-                            <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
-                                {/* Top 3 Podium */}
-                                <div className="mb-4 flex items-end justify-center gap-3">
-                                    {/* 2nd place */}
-                                    {leaders[1] && (
-                                        <div className="flex flex-1 max-w-[90px] flex-col items-center">
-                                            <div className="relative mb-1.5">
-                                                <div className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border-2 border-gray-300 bg-gray-200">
-                                                    {leaders[1].photo ? (
-                                                        <img src={getPhotoUrl(leaders[1].photo)} alt="" className="h-full w-full object-cover" />
-                                                    ) : (
-                                                        <span className="text-sm font-bold text-gray-400">{leaders[1].name?.[0]}</span>
-                                                    )}
-                                                </div>
-                                                <span className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-gray-400 text-[9px] font-black text-white">2</span>
-                                            </div>
-                                            <p className="w-full truncate text-center text-[10px] font-bold text-white/80">{leaders[1].name}</p>
-                                            <div className="mt-1 flex h-10 w-full items-center justify-center rounded-t-lg bg-gradient-to-t from-gray-400/60 to-gray-300/60">
-                                                <span className="text-[11px] font-black text-gray-900">{leaders[1].totalScore}</span>
-                                            </div>
-                                        </div>
-                                    )}
-                                    {/* 1st place */}
-                                    {leaders[0] && (
-                                        <div className="flex flex-1 max-w-[100px] flex-col items-center">
-                                            <div className="relative mb-1.5">
-                                                <Crown className="absolute -top-3 left-1/2 z-10 h-5 w-5 -translate-x-1/2 text-yellow-400" />
-                                                <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-full border-2 border-yellow-400 bg-yellow-300 shadow-lg shadow-yellow-400/30">
-                                                    {leaders[0].photo ? (
-                                                        <img src={getPhotoUrl(leaders[0].photo)} alt="" className="h-full w-full object-cover" />
-                                                    ) : (
-                                                        <span className="text-base font-bold text-yellow-700">{leaders[0].name?.[0]}</span>
-                                                    )}
-                                                </div>
-                                                <span className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-yellow-400 text-[9px] font-black text-white">1</span>
-                                            </div>
-                                            <p className="w-full truncate text-center text-[11px] font-black text-white">{leaders[0].name}</p>
-                                            <div className="mt-1 flex h-14 w-full items-center justify-center rounded-t-lg bg-gradient-to-t from-yellow-400 to-yellow-300 shadow-lg shadow-yellow-400/20">
-                                                <span className="text-sm font-black text-white drop-shadow">{leaders[0].totalScore}</span>
-                                            </div>
-                                        </div>
-                                    )}
-                                    {/* 3rd place */}
-                                    {leaders[2] && (
-                                        <div className="flex flex-1 max-w-[90px] flex-col items-center">
-                                            <div className="relative mb-1.5">
-                                                <div className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border-2 border-amber-600 bg-amber-200">
-                                                    {leaders[2].photo ? (
-                                                        <img src={getPhotoUrl(leaders[2].photo)} alt="" className="h-full w-full object-cover" />
-                                                    ) : (
-                                                        <span className="text-sm font-bold text-amber-700">{leaders[2].name?.[0]}</span>
-                                                    )}
-                                                </div>
-                                                <span className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-amber-600 text-[9px] font-black text-white">3</span>
-                                            </div>
-                                            <p className="w-full truncate text-center text-[10px] font-bold text-white/80">{leaders[2].name}</p>
-                                            <div className="mt-1 flex h-8 w-full items-center justify-center rounded-t-lg bg-gradient-to-t from-amber-600/70 to-amber-500/70">
-                                                <span className="text-[10px] font-black text-white">{leaders[2].totalScore}</span>
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
 
-                                {/* Rest of the list */}
-                                {leaders.slice(3).length > 0 && (
-                                    <div className="space-y-1.5">
-                                        {leaders.slice(3, 10).map((u, i) => (
-                                            <div key={u._id} className="flex items-center gap-2.5 rounded-xl bg-white/[0.03] px-3 py-2 transition-colors hover:bg-white/[0.06]">
-                                                <span className="w-5 text-center text-[11px] font-black text-white/40">{i + 4}</span>
-                                                <div className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white/10">
-                                                    {u.photo ? (
-                                                        <img src={getPhotoUrl(u.photo)} alt="" className="h-full w-full object-cover" />
-                                                    ) : (
-                                                        <span className="text-[10px] font-bold text-white/60">{u.name?.[0]}</span>
-                                                    )}
-                                                </div>
-                                                <p className="min-w-0 flex-1 truncate text-[11px] font-bold text-white/90">{u.name}</p>
-                                                <span className="w-16 text-right text-[11px] font-black text-violet-300">{u.totalScore} pts</span>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
-                        </>
-                    )}
 
                     {history.length > 0 && (
                         <>
@@ -612,6 +523,91 @@ const QuizGame = ({ inline = false, onExit = null }) => {
                                         </div>
                                     </div>
                                 ))}
+                            </div>
+                        </>
+                    )}
+
+                    {!inline && leaders.length > 0 && (
+                        <>
+                            <h2 className="mb-3 mt-8 flex items-center gap-2 text-sm font-black uppercase tracking-widest text-white/50">
+                                <Trophy className="h-4 w-4" /> Top Quiz Winners
+                            </h2>
+                            <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+                                <div className="mb-4 flex items-end justify-center gap-3">
+                                    {leaders[1] && (
+                                        <div className="flex flex-1 max-w-[90px] flex-col items-center">
+                                            <div className="relative mb-1.5">
+                                                <div className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border-2 border-gray-300 bg-gray-200">
+                                                    {leaders[1].photo ? (
+                                                        <img src={getPhotoUrl(leaders[1].photo)} alt="" className="h-full w-full object-cover" />
+                                                    ) : (
+                                                        <span className="text-sm font-bold text-gray-400">{leaders[1].name?.[0]}</span>
+                                                    )}
+                                                </div>
+                                                <span className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-gray-400 text-[9px] font-black text-white">2</span>
+                                            </div>
+                                            <p className="w-full truncate text-center text-[10px] font-bold text-white/80">{leaders[1].name}</p>
+                                            <div className="mt-1 flex h-10 w-full items-center justify-center rounded-t-lg bg-gradient-to-t from-gray-400/60 to-gray-300/60">
+                                                <span className="text-[11px] font-black text-gray-900">{leaders[1].totalScore}</span>
+                                            </div>
+                                        </div>
+                                    )}
+                                    {leaders[0] && (
+                                        <div className="flex flex-1 max-w-[100px] flex-col items-center">
+                                            <div className="relative mb-1.5">
+                                                <Crown className="absolute -top-3 left-1/2 z-10 h-5 w-5 -translate-x-1/2 text-yellow-400" />
+                                                <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-full border-2 border-yellow-400 bg-yellow-300 shadow-lg shadow-yellow-400/30">
+                                                    {leaders[0].photo ? (
+                                                        <img src={getPhotoUrl(leaders[0].photo)} alt="" className="h-full w-full object-cover" />
+                                                    ) : (
+                                                        <span className="text-base font-bold text-yellow-700">{leaders[0].name?.[0]}</span>
+                                                    )}
+                                                </div>
+                                                <span className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-yellow-400 text-[9px] font-black text-white">1</span>
+                                            </div>
+                                            <p className="w-full truncate text-center text-[11px] font-black text-white">{leaders[0].name}</p>
+                                            <div className="mt-1 flex h-14 w-full items-center justify-center rounded-t-lg bg-gradient-to-t from-yellow-400 to-yellow-300 shadow-lg shadow-yellow-400/20">
+                                                <span className="text-sm font-black text-white drop-shadow">{leaders[0].totalScore}</span>
+                                            </div>
+                                        </div>
+                                    )}
+                                    {leaders[2] && (
+                                        <div className="flex flex-1 max-w-[90px] flex-col items-center">
+                                            <div className="relative mb-1.5">
+                                                <div className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border-2 border-amber-600 bg-amber-200">
+                                                    {leaders[2].photo ? (
+                                                        <img src={getPhotoUrl(leaders[2].photo)} alt="" className="h-full w-full object-cover" />
+                                                    ) : (
+                                                        <span className="text-sm font-bold text-amber-700">{leaders[2].name?.[0]}</span>
+                                                    )}
+                                                </div>
+                                                <span className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-amber-600 text-[9px] font-black text-white">3</span>
+                                            </div>
+                                            <p className="w-full truncate text-center text-[10px] font-bold text-white/80">{leaders[2].name}</p>
+                                            <div className="mt-1 flex h-8 w-full items-center justify-center rounded-t-lg bg-gradient-to-t from-amber-600/70 to-amber-500/70">
+                                                <span className="text-[10px] font-black text-white">{leaders[2].totalScore}</span>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                                {leaders.slice(3).length > 0 && (
+                                    <div className="space-y-1.5">
+                                        {leaders.slice(3, 10).map((u, i) => (
+                                            <div key={u._id} className="flex items-center gap-2.5 rounded-xl bg-white/[0.03] px-3 py-2 transition-colors hover:bg-white/[0.06]">
+                                                <span className="w-5 text-center text-[11px] font-black text-white/40">{i + 4}</span>
+                                                <div className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white/10">
+                                                    {u.photo ? (
+                                                        <img src={getPhotoUrl(u.photo)} alt="" className="h-full w-full object-cover" />
+                                                    ) : (
+                                                        <span className="text-[10px] font-bold text-white/60">{u.name?.[0]}</span>
+                                                    )}
+                                                </div>
+                                                <p className="min-w-0 flex-1 truncate text-[11px] font-bold text-white/90">{u.name}</p>
+                                                <span className="w-16 text-right text-[11px] font-black text-violet-300">{u.totalScore} pts</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
                         </>
                     )}

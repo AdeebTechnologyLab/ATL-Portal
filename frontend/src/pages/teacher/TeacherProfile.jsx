@@ -14,8 +14,9 @@ import { formatDate } from '../../utils/dateFormatter';
 import { COUNTRIES } from '../../utils/locations';
 
 const HEARD_ABOUT_OPTIONS = [
-    'Poster & Panaflex', 'Facebook', 'Instagram', 'WhatsApp Group', 'Website',
-    'YouTube', 'Friends & Family', 'Twitter', 'LinkedIn', 'Other'
+    'Facebook', 'Instagram', 'WhatsApp Group', 'LinkedIn', 'YouTube', 'TikTok', 'Twitter',
+    'Snapchat', 'Pinterest', 'Telegram', 'Website', 'Google', 'Google Maps',
+    'Poster & Panaflex', 'Event / Seminar', 'University', 'Teacher', 'Friends & Family', 'Other'
 ];
 
 const asSelectOptions = (values, placeholder) => [

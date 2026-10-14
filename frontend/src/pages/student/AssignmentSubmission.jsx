@@ -43,6 +43,19 @@ const GoogleDriveIcon = ({ className = '' }) => (
     </svg>
 );
 
+const PATH_TAB_MAP = [
+    ['/notebook', 'daily_tasks'],
+    ['/tests', 'tests'],
+    ['/attendance', 'attendance'],
+    ['/chat', 'chat'],
+    ['/assignments', 'assignments'],
+];
+
+const tabFromPath = (pathname = '') => {
+    const match = PATH_TAB_MAP.find(([suffix]) => pathname.endsWith(suffix));
+    return match ? match[1] : null;
+};
+
 const AssignmentSubmission = () => {
     const { user, role } = useSelector((state) => state.auth);
     const location = useLocation();
@@ -50,7 +63,7 @@ const AssignmentSubmission = () => {
 
     const [myCourses, setMyCourses] = useState([]);
     const [selectedCourseId, setSelectedCourseId] = useState(location.state?.courseId || null);
-    const [activeTab, setActiveTab] = useState(location.state?.tab || 'daily_tasks');
+    const [activeTab, setActiveTab] = useState(location.state?.tab || tabFromPath(location.pathname) || 'daily_tasks');
     const [assignments, setAssignments] = useState([]);
     const [dailyTasks, setDailyTasks] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -107,15 +120,13 @@ const AssignmentSubmission = () => {
     }, [selectedCourseId]);
 
     useEffect(() => {
-        if (location.state?.tab) {
-            setActiveTab(location.state.tab);
-        }
+        setActiveTab(location.state?.tab || tabFromPath(location.pathname) || 'daily_tasks');
         if (location.state?.courseId) {
             setSelectedCourseId(location.state.courseId);
         } else if (myCourses.length === 1 && !selectedCourseId) {
             setSelectedCourseId(myCourses[0]._id);
         }
-    }, [location.state, myCourses, selectedCourseId]);
+    }, [location.state, location.pathname, myCourses, selectedCourseId]);
 
     const fetchMyCourses = async () => {
         setIsLoading(true);
@@ -598,39 +609,6 @@ const AssignmentSubmission = () => {
                         </div>
                     </div>
 
-                    {/* Navigation Tabs - Separate Row like Teacher Portal */}
-                    <div className="grid grid-cols-5 gap-1 sm:gap-2 bg-white dark:bg-slate-900/40 rounded-xl sm:rounded-2xl p-1 sm:p-1.5 border border-gray-100 dark:border-slate-800 shadow-sm">
-                        {[
-                            { id: 'daily_tasks', label: 'Notebook', icon: ClipboardList },
-                            { id: 'assignments', label: isInternCourse ? 'Projects' : 'Assignments', icon: FileText },
-                            { id: 'tests', label: 'Tests', icon: Zap },
-                            { id: 'attendance', label: 'Attendance', icon: Calendar },
-                            { id: 'chat', label: 'Chat', icon: MessageCircle },
-                        ].map((tab) => (
-                            <button
-                                key={tab.id}
-                                onClick={() => {
-                                    setActiveTab(tab.id);
-                                    navigate(location.pathname, {
-                                        replace: true,
-                                        state: {
-                                            ...location.state,
-                                            tab: tab.id,
-                                            courseId: selectedCourseId
-                                        }
-                                    });
-                                }}
-                                className={`min-w-0 flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2.5 py-2 sm:py-3.5 px-0.5 sm:px-6 rounded-lg sm:rounded-xl font-black text-[7px] min-[380px]:text-[8px] sm:text-[11px] uppercase tracking-normal sm:tracking-wider transition-all ${activeTab === tab.id
-                                    ? 'bg-primary text-white shadow-xl shadow-primary/30'
-                                    : 'text-gray-500 hover:bg-gray-50 dark:hover:bg-slate-800 hover:text-primary'
-                                    }`}
-                            >
-                                <tab.icon className={`w-4 h-4 shrink-0 ${activeTab === tab.id ? 'text-white' : 'text-gray-400 group-hover:text-primary'}`} />
-                                <span className="w-full text-center leading-tight break-words">{tab.label}</span>
-                            </button>
-                        ))}
-                    </div>
-
                     {/* Tab Content */}
                     <div className="min-h-[360px] sm:min-h-[500px]">
                         {isLoading ? (
@@ -654,6 +632,16 @@ const AssignmentSubmission = () => {
                         ) : activeTab === 'assignments' ? (
                             /* ASSIGNMENTS VIEW */
                             <div className="space-y-4 sm:space-y-8">
+                                <div>
+                                    <h2 className="text-lg sm:text-2xl font-black text-gray-900 dark:text-white uppercase italic tracking-tight">
+                                        {isInternCourse ? 'Projects Overview' : 'Assignments Overview'}
+                                    </h2>
+                                    <p className="text-gray-500 dark:text-slate-400 text-xs sm:text-sm mt-1">
+                                        {isInternCourse
+                                            ? 'Apne assigned projects, submission status aur deadlines ek jagah track karein.'
+                                            : 'Apne assigned tasks, submission status aur deadlines ek jagah track karein.'}
+                                    </p>
+                                </div>
                                 <div className="grid grid-cols-2 sm:grid-cols-5 overflow-hidden rounded-2xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900/50 shadow-sm">
                                     {[
                                         { id: 'all', label: 'Total', icon: FileText, count: assignments.length, accent: 'text-blue-600', iconBg: 'bg-blue-50 dark:bg-blue-500/10' },
