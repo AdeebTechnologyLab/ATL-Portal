@@ -288,12 +288,14 @@ const AppRoutes = () => {
 
 import { Toaster } from 'react-hot-toast';
 import QuizChallengeNotification from './components/shared/QuizChallengeNotification';
+import IncompleteProfileReminder from './components/shared/IncompleteProfileReminder';
 
 function App() {
   return (
     <Router>
       <Toaster position="top-right" reverseOrder={false} />
       <QuizChallengeNotification />
+      <IncompleteProfileReminder />
       <Suspense fallback={<PageLoader />}>
         <AppRoutes />
       </Suspense>

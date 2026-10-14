@@ -382,6 +382,7 @@ const InternsManagement = () => {
             education: intern.education || '',
             location: intern.location || '',
             city: intern.city || '',
+            country: intern.country || '',
             address: intern.address || '',
             guardianName: intern.guardianName || intern.fatherName || '',
             guardianRelation: intern.guardianRelation || '',

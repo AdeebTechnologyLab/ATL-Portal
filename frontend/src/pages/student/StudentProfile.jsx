@@ -4,7 +4,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import {
     User, Mail, Phone, MapPin, Calendar, CreditCard,
     Edit2, Save, X, Camera, BookOpen, GraduationCap, Users, Clock,
-    FileText, Briefcase, Globe, Award, Link as LinkIcon
+    FileText, Briefcase, Globe, Award, Link as LinkIcon, ExternalLink,
+    ListChecks, Sparkles
 } from 'lucide-react';
 import { authAPI, enrollmentAPI, settingsAPI } from '../../services/api';
 import { updateUser } from '../../features/auth/authSlice';
@@ -50,6 +51,62 @@ const InfoField = ({ icon: Icon, label, value, name, type = 'text', editable = t
                         </button>
                     )}
                 </div>
+            ) : (
+                <p className="text-sm sm:text-base font-medium text-gray-900 dark:text-white break-words">{value || 'Not provided'}</p>
+            )}
+        </div>
+    </div>
+);
+
+const ResumeLinkField = ({ icon: Icon, label, value, name, editable = true, isEditing, editForm, onChange }) => (
+    <div className="flex items-start gap-3 sm:gap-4 p-3 sm:p-4 bg-gray-50 dark:bg-gray-800 rounded-xl border border-transparent dark:border-gray-700">
+        <div className="w-9 h-9 sm:w-10 sm:h-10 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
+            <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+        </div>
+        <div className="flex-1 min-w-0">
+            <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-1">{label}</p>
+            {isEditing && editable ? (
+                <input
+                    type="url"
+                    name={name}
+                    value={editForm[name] || ''}
+                    onChange={onChange}
+                    placeholder="https://..."
+                    className="w-full min-w-0 px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white dark:bg-gray-900 dark:text-white"
+                />
+            ) : value ? (
+                <a
+                    href={value}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary-dark text-white text-sm font-semibold rounded-lg transition-colors shadow-sm active:scale-95"
+                >
+                    <ExternalLink className="w-4 h-4" />
+                    Resume Link
+                </a>
+            ) : (
+                <p className="text-sm sm:text-base font-medium text-gray-900 dark:text-white break-words">Not provided</p>
+            )}
+        </div>
+    </div>
+);
+
+const TextAreaField = ({ icon: Icon, label, value, name, placeholder, rows = 2, editable = true, isEditing, editForm, onChange }) => (
+    <div className="flex items-start gap-3 sm:gap-4 p-3 sm:p-4 bg-gray-50 dark:bg-gray-800 rounded-xl border border-transparent dark:border-gray-700">
+        <div className="w-9 h-9 sm:w-10 sm:h-10 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
+            <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+        </div>
+        <div className="flex-1 min-w-0">
+            <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-1">{label}</p>
+            {isEditing && editable ? (
+                <textarea
+                    name={name}
+                    value={editForm[name] || ''}
+                    onChange={onChange}
+                    rows={rows}
+                    placeholder={placeholder}
+                    className="w-full min-w-0 px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white dark:bg-gray-900 dark:text-white"
+                />
             ) : (
                 <p className="text-sm sm:text-base font-medium text-gray-900 dark:text-white break-words">{value || 'Not provided'}</p>
             )}
@@ -123,6 +180,8 @@ const StudentProfile = () => {
         majorSubjects: user?.majorSubjects || '',
         internshipDurationMonths: user?.internshipDurationMonths || '',
         resumeUrl: user?.resumeUrl || '',
+        requirements: user?.requirements || '',
+        skills: user?.skills || '',
         pictureUrl: user?.photo || '',
         registeredAt: user?.createdAt || new Date().toISOString(),
         isVerified: user?.isVerified || false
@@ -170,6 +229,8 @@ const StudentProfile = () => {
                 majorSubjects: user.majorSubjects || '',
                 internshipDurationMonths: user.internshipDurationMonths || '',
                 resumeUrl: user.resumeUrl || '',
+                requirements: user.requirements || '',
+                skills: user.skills || '',
                 pictureUrl: user.photo || '',
                 registeredAt: user.createdAt || new Date().toISOString(),
                 isVerified: user.isVerified || false
@@ -276,6 +337,8 @@ const StudentProfile = () => {
             formData.append('cgpa', editForm.cgpa || '');
             formData.append('majorSubjects', editForm.majorSubjects || '');
             formData.append('resumeUrl', editForm.resumeUrl || '');
+            formData.append('requirements', editForm.requirements || '');
+            formData.append('skills', editForm.skills || '');
 
             if (photoFile) {
                 formData.append('photo', photoFile);
@@ -491,6 +554,12 @@ const StudentProfile = () => {
                                     editable={canEditBio} 
                                 />
                             </div>
+                            {user?.role === 'intern' && (
+                                <>
+                                    <InfoField isEditing={isEditing} editForm={editForm} onChange={handleChange} icon={ListChecks} label="Requirements" value={profileData.requirements} name="requirements" editable={canEditBio} />
+                                    <TextAreaField isEditing={isEditing} editForm={editForm} onChange={handleChange} icon={Sparkles} label="My Skills" value={profileData.skills} name="skills" placeholder="e.g., Web Development, Graphic Designer, SEO" editable={canEditBio} />
+                                </>
+                            )}
                         </div>
                     </motion.div>
 
@@ -516,7 +585,7 @@ const StudentProfile = () => {
                                 </div>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                                     <InfoField isEditing={isEditing} editForm={editForm} onChange={handleChange} icon={Award} label="CGPA / Grade" value={profileData.cgpa} name="cgpa" editable={canEditBio} />
-                                    <InfoField isEditing={isEditing} editForm={editForm} onChange={handleChange} icon={LinkIcon} label="Resume Link" value={profileData.resumeUrl} name="resumeUrl" editable={canEditBio} />
+                                    <ResumeLinkField isEditing={isEditing} editForm={editForm} onChange={handleChange} icon={LinkIcon} label="Resume Link" value={profileData.resumeUrl} name="resumeUrl" editable={canEditBio} />
                                 </div>
                                 {user?.role === 'intern' && (
                                     <InfoField

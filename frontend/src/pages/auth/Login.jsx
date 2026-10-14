@@ -5,6 +5,8 @@ import { motion } from 'framer-motion';
 import { Eye, EyeOff, Mail, Lock, ArrowLeft, GraduationCap } from 'lucide-react';
 import { loginStart, loginSuccess, loginFailure, clearError } from '../../features/auth/authSlice';
 import { authAPI } from '../../services/api';
+import { getStudentLandingPath } from '../../utils/postLoginRedirect';
+import { INCOMPLETE_PROFILE_DISMISS_KEY } from '../../utils/profileCompleteness';
 import { ButtonLoader } from '../../components/ui/Loader';
 import GuestChatWidget from '../../components/shared/GuestChatWidget';
 import { useTranslation } from 'react-i18next';
@@ -22,6 +24,7 @@ const Login = () => {
         agreeTerms: true,
     });
     const [showPassword, setShowPassword] = useState(false);
+    const [isResolving, setIsResolving] = useState(false);
     const [errors, setErrors] = useState({});
     const [navigationMessage] = useState(() => window.history.state?.usr?.message || '');
 
@@ -82,6 +85,9 @@ const Login = () => {
 
             const { user, token } = response.data;
 
+            // Reset the incomplete-profile reminder so a fresh login shows it again.
+            sessionStorage.removeItem(INCOMPLETE_PROFILE_DISMISS_KEY);
+
             // Store user in localStorage for persistence
             // localStorage.setItem('user', JSON.stringify(user));
 
@@ -89,12 +95,23 @@ const Login = () => {
 
             // Navigate based on role
             const role = user.role;
-            if (role === 'admin') navigate('/admin/dashboard');
-            else if (role === 'teacher') navigate('/teacher/profile');
-            else if (role === 'intern') navigate('/intern/dashboard');
-            else if (role === 'job') navigate('/job/tasks');
-            else navigate('/student/profile');
+            if (role === 'admin') {
+                navigate('/admin/dashboard');
+            } else if (role === 'teacher') {
+                navigate('/teacher/profile');
+            } else if (role === 'job') {
+                navigate('/job/tasks');
+            } else if (role === 'student' || role === 'intern') {
+                // Students/interns without an enrollment go to courses/skills;
+                // those with an uncleared fee go straight to the payment screen.
+                setIsResolving(true);
+                const targetPath = await getStudentLandingPath(role);
+                navigate(targetPath);
+            } else {
+                navigate('/student/profile');
+            }
         } catch (err) {
+            setIsResolving(false);
             const message = err.response?.data?.message || t('auth.invalidCredentials');
             dispatch(loginFailure(message));
         }
@@ -306,11 +323,11 @@ const Login = () => {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.6 }}
                             type="submit"
-                            disabled={isLoading}
+                            disabled={isLoading || isResolving}
                             className="w-full py-4 bg-gray-900 hover:bg-black text-white font-bold rounded-xl transition-all duration-300 flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed active:scale-95"
                         >
-                            <ButtonLoader isLoading={isLoading}>
-                                {isLoading ? t('auth.signingIn') : t('auth.login')}
+                            <ButtonLoader isLoading={isLoading || isResolving}>
+                                {isLoading || isResolving ? t('auth.signingIn') : t('auth.login')}
                             </ButtonLoader>
                         </motion.button>
 
