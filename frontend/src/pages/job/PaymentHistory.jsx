@@ -48,8 +48,7 @@ const PaymentHistory = () => {
     if (loading) {
         return (
             <div className="flex min-h-[420px] flex-col items-center justify-center gap-3">
-                <img src="/loading.gif" alt="Loading payments" className="h-20 w-20 object-contain" />
-                <p className="font-medium text-gray-500 dark:text-slate-400">Loading your payments...</p>
+                <img src="/loading.gif" alt="Loading payments" className="w-32 h-32 sm:w-40 sm:h-40 object-contain" />
             </div>
         );
     }

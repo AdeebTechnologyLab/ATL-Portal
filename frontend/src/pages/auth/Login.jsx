@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { motion } from 'framer-motion';
-import { Eye, EyeOff, Mail, Lock, ArrowLeft, GraduationCap } from 'lucide-react';
+import { motion, useReducedMotion } from 'framer-motion';
+import { Eye, EyeOff, Mail, Lock, ArrowLeft, BookOpen, GraduationCap, Pencil, Lightbulb, Calculator, Laptop, Code2, Briefcase, Globe } from 'lucide-react';
 import { loginStart, loginSuccess, loginFailure, clearError } from '../../features/auth/authSlice';
 import { authAPI } from '../../services/api';
 import { getStudentLandingPath } from '../../utils/postLoginRedirect';
@@ -11,6 +11,7 @@ import GuestChatWidget from '../../components/shared/GuestChatWidget';
 import { useTranslation } from 'react-i18next';
 
 const Login = () => {
+    const reduceMotion = useReducedMotion();
     const { t } = useTranslation();
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -130,37 +131,61 @@ const Login = () => {
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-pink-500/10 rounded-full blur-3xl animate-float"></div>
                 </div>
 
+                <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
+                    {[
+                        { Icon: BookOpen, left: '8%', top: '12%', size: 44, delay: 0 },
+                        { Icon: GraduationCap, left: '74%', top: '16%', size: 58, delay: 1 },
+                        { Icon: Pencil, left: '13%', top: '72%', size: 36, delay: 2 },
+                        { Icon: Lightbulb, left: '80%', top: '69%', size: 42, delay: 0.5 },
+                        { Icon: Calculator, left: '46%', top: '84%', size: 34, delay: 1.5 },
+                        { Icon: GraduationCap, left: '38%', top: '6%', size: 32, delay: 2.5 },
+                        { Icon: Laptop, left: '9%', top: '40%', size: 46, delay: 1.2 },
+                        { Icon: Code2, left: '82%', top: '42%', size: 40, delay: 2.2 },
+                        { Icon: Briefcase, left: '65%', top: '88%', size: 34, delay: 0.8 },
+                        { Icon: Globe, left: '58%', top: '28%', size: 36, delay: 1.8 },
+                    ].map(({ Icon, left, top, size, delay }, index) => (
+                        <motion.div
+                            key={index}
+                            className="absolute text-white/[0.09]"
+                            style={{ left, top }}
+                            animate={reduceMotion ? {} : { y: [0, -20, 0], rotate: [-8, 8, -8] }}
+                            transition={{ duration: 7 + index, delay, repeat: Infinity, ease: 'easeInOut' }}
+                        >
+                            <Icon size={size} strokeWidth={1.25} />
+                        </motion.div>
+                    ))}
+                </div>
+
                 {/* Content */}
                 <div className="relative z-10 flex flex-col items-center justify-center w-full h-full p-8">
                     {/* Logo & Branding */}
-                    {/* Centered Logo Square */}
+                    {/* Collaboration logos in one shared card */}
                     <motion.div
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: 0.4, duration: 0.6 }}
-                        className="relative flex flex-col items-center justify-center gap-8"
+                        className="relative mb-8 flex w-full max-w-lg items-center gap-4 px-2 py-8"
                     >
-                        <div className="relative w-56 h-56 group flex-shrink-0">
-                            {/* Outer Glow */}
-                            <div className="absolute -inset-4 bg-primary/20 rounded-3xl blur-2xl group-hover:bg-primary/30 transition-all duration-500"></div>
-
-                            {/* Square Glass Container */}
-                            <div className="absolute inset-0 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 shadow-2xl overflow-hidden flex items-center justify-center p-6">
-                                <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
-                                <img
-                                    src="/logo.png"
-                                    alt="AdeebTechLab Logo"
-                                    className="w-full h-full object-contain transform group-hover:scale-105 transition-transform duration-500 relation z-10"
-                                    onError={(e) => {
-                                        e.target.style.display = 'none';
-                                        e.target.nextSibling.style.display = 'block';
-                                    }}
-                                />
-                                <GraduationCap className="w-20 h-20 text-white hidden" />
-                            </div>
+                        <motion.img
+                            src="/logo.png"
+                            alt="Adeeb Technology Lab logo"
+                            animate={{ y: reduceMotion ? 0 : [0, -5, 0] }}
+                            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+                            className="h-36 min-w-0 flex-1 object-contain xl:h-40"
+                        />
+                        <div className="flex shrink-0 flex-col items-center gap-3" aria-label="In collaboration with">
+                            <span className="h-6 w-px bg-white/15" />
+                            <span className="text-xl font-light text-white/60">×</span>
+                            <span className="h-6 w-px bg-white/15" />
                         </div>
+                        <motion.img
+                            src="/courslogo.png"
+                            alt="Collaboration partner logo"
+                            animate={{ y: reduceMotion ? 0 : [0, 5, 0] }}
+                            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+                            className="h-36 min-w-0 flex-1 object-contain xl:h-40"
+                        />
                     </motion.div>
-
                     {/* Branding Text - Moved Below Logo */}
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
@@ -169,7 +194,7 @@ const Login = () => {
                         className="flex flex-col items-center text-center relative z-20"
                     >
                         <h2 className="text-white text-3xl font-bold tracking-tight mb-2">{t('app.name')}</h2>
-                        <p className="text-white/60 text-base">{t('app.tagline')}</p>
+                        <p className="text-white/60 text-sm mt-1" style={{ fontFamily: "'JetBrains Mono', monospace" }}>{t('app.tagline').toLowerCase().replace(/\b\w/g, letter => letter.toUpperCase())}</p>
                     </motion.div>
 
                     {/* Decorative Lines */}

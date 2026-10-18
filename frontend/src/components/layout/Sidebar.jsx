@@ -704,7 +704,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                             <div>
                                 <h1 className="text-[var(--text-sidebar)] font-bold text-lg tracking-tight">{t('app.name')}</h1>
                                 <p className="text-primary text-[8px] font-black uppercase tracking-wider whitespace-nowrap">
-                                    digital tech software house
+                                    digital tech expert
                                 </p>
                             </div>
                         </div>

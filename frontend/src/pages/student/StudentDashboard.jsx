@@ -21,7 +21,8 @@ import {
 import BirthdayWish from '../../components/dashboard/BirthdayWish';
 import GamesCard from '../../components/dashboard/GamesCard';
 import QuizBattleCard from '../../components/dashboard/QuizBattleCard';
-import DiscussionRoom from '../shared/DiscussionRoom';
+
+import DiscussionRoomCard from '../../components/dashboard/DiscussionRoomCard';
 import WorkspaceRestrictedBanner from '../../components/dashboard/WorkspaceRestrictedBanner';
 import StatCard from '../../components/ui/StatCard';
 import Badge from '../../components/ui/Badge';
@@ -349,7 +350,7 @@ const StudentDashboard = () => {
             // Build stats
             setStats([
                 {
-                    title: t('dashboard.enrolledCourses'),
+                    title: 'Courses',
                     value: courses.filter(c => !c.isCompleted).length.toString(),
                     icon: BookOpen,
                     iconBg: 'bg-primary/5',
@@ -357,7 +358,7 @@ const StudentDashboard = () => {
                     onClick: () => navigate(`/${role}/courses`, { state: { activeTab: 'enrolled' } }),
                 },
                 {
-                    title: role === 'intern' ? t('dashboard.pendingTasksUpper') : t('dashboard.pendingAssignments'),
+                    title: role === 'intern' ? 'Projects' : 'Assignments',
                     value: activeAssignments.length.toString(),
                     icon: Clock,
                     iconBg: 'bg-primary/5',
@@ -373,7 +374,7 @@ const StudentDashboard = () => {
                     onClick: () => navigate(`/${role}/courses`, { state: { activeTab: 'completed' } })
                 },
                 {
-                    title: t('dashboard.totalPending'),
+                    title: 'Fee Pending',
                     value: totalPendingAmount > 0 ? `Rs ${totalPendingAmount.toLocaleString()}` : t('dashboard.allClear'),
                     valueClassName: totalPendingAmount > 0 ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400',
                     icon: CreditCard,
@@ -411,8 +412,7 @@ const StudentDashboard = () => {
     if (isLoading) {
         return (
             <div className="flex flex-col items-center justify-center h-64 gap-3">
-                <img src="/loading.gif" alt="Loading" className="w-20 h-20 object-contain" />
-                <span className="text-gray-600 dark:text-gray-400 font-medium">Loading dashboard...</span>
+                <img src="/loading.gif" alt="Loading" className="w-32 h-32 sm:w-40 sm:h-40 object-contain" />
             </div>
         );
     }
@@ -448,21 +448,6 @@ const StudentDashboard = () => {
                         </div>
                     </div>
                 </motion.div>
-
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 items-start">
-                    {/* Left: Profile + Birthday + Games stacked */}
-                    <div className="flex flex-col gap-4 sm:gap-5 min-w-0">
-                        <ProfileCompletionBanner />
-                        <BirthdayWish />
-                        <QuizBattleCard />
-                        <GamesCard />
-                    </div>
-
-                    {/* Right: Discussion Room live screen with chat */}
-                    <div className="relative min-w-0 h-[260px] sm:h-[280px] lg:h-[300px] rounded-2xl border border-primary/20 bg-gray-50 dark:bg-gray-950 overflow-hidden flex flex-col">
-                        <DiscussionRoom compact />
-                    </div>
-                </div>
 
                 {/* Live Class Banner - Big and Prominent */}
                 <AnimatePresence>
@@ -609,6 +594,14 @@ const StudentDashboard = () => {
                     ))}
                 </div>
 
+                <div className="space-y-3 sm:space-y-4">
+                        <ProfileCompletionBanner />
+                        <BirthdayWish />
+                        <QuizBattleCard />
+                        <GamesCard />
+                        <DiscussionRoomCard role={role} />
+                </div>
+
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
                     {/* Pending Assignments List */}
                     <motion.div
@@ -618,7 +611,7 @@ const StudentDashboard = () => {
                         className="lg:col-span-1 space-y-3"
                     >
                         <div className="flex items-center justify-between">
-                            <h3 className="text-lg font-bold text-gray-900 uppercase italic">{role === 'intern' ? t('dashboard.pendingTasksUpper') : t('dashboard.pendingAssignments')}</h3>
+                            <h3 className="text-lg font-bold text-gray-900 uppercase italic">{role === 'intern' ? 'Projects' : 'Assignments'}</h3>
                             <Badge variant="warning">{pendingAssignments.length}</Badge>
                         </div>
 

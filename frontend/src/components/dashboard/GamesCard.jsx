@@ -320,10 +320,11 @@ const GamesCard = () => {
         <div className="rounded-2xl border border-gray-100 bg-white shadow-sm dark:border-white/10 dark:bg-[#141418] overflow-hidden">
             {/* Header - always visible, clickable to toggle */}
             <button
+                aria-expanded={open}
                 onClick={() => setOpen(o => !o)}
-                className="w-full flex items-center gap-2.5 p-4 cursor-pointer select-none hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
+                className="w-full flex items-center gap-3 p-4 sm:p-5 cursor-pointer select-none hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
             >
-                <div className="p-1.5 rounded-lg bg-gradient-to-br from-yellow-400 to-orange-500 flex-shrink-0">
+                <div className="p-2.5 rounded-xl bg-gradient-to-br from-yellow-400 to-orange-500 flex-shrink-0">
                     <Trophy className="w-4 h-4 text-white" />
                 </div>
                 <span className="text-sm font-black text-gray-900 dark:text-white tracking-tight flex-1 text-left">Tip to Play</span>

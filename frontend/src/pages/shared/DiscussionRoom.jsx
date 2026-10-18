@@ -301,7 +301,7 @@ const DiscussionRoom = ({ compact = false }) => {
         >
 
                 {compact ? (
-                    <div className="shrink-0 flex items-center justify-between gap-3 px-3 py-1.5 border-b border-gray-100 dark:border-white/10 bg-gradient-to-r from-[var(--bg-sidebar)] to-[var(--bg-sidebar-light)]">
+                    <div className="shrink-0 flex items-center justify-between gap-3 px-4 py-3 border-b border-gray-100 dark:border-white/10 bg-gradient-to-r from-[var(--bg-sidebar)] to-[var(--bg-sidebar-light)]">
                         <div className="flex items-center gap-2 text-white">
                             <MessageSquare className="w-4 h-4" />
                             <span className="text-sm font-black tracking-tight">Discussion Room</span>
@@ -310,7 +310,7 @@ const DiscussionRoom = ({ compact = false }) => {
                             type="button"
                             onClick={() => navigate(`/${role}/discussion-room`)}
                             title="Open full screen"
-                            className="w-6 h-6 rounded-md bg-white/15 hover:bg-white/25 border border-white/20 text-white flex items-center justify-center transition-colors active:scale-95"
+                            className="w-9 h-9 rounded-xl bg-white/15 hover:bg-white/25 border border-white/20 text-white flex items-center justify-center transition-colors active:scale-95"
                         >
                             <Maximize2 className="w-3.5 h-3.5" />
                         </button>
@@ -359,7 +359,7 @@ const DiscussionRoom = ({ compact = false }) => {
                         Loading discussion...
                     </div>
                 ) : (
-                    <div ref={messagesContainerRef} className={`flex-1 min-h-0 overflow-y-auto bg-white dark:bg-gray-950 ${compact ? 'p-2 space-y-2' : 'p-4 md:p-6 space-y-5'}`}>
+                    <div ref={messagesContainerRef} className={`flex-1 min-h-0 overflow-y-auto bg-white dark:bg-gray-950 ${compact ? 'p-3 sm:p-4 space-y-3' : 'p-4 md:p-6 space-y-5'}`}>
                         {messages.length === 0 ? (
                             <div className="h-full flex flex-col items-center justify-center text-center text-gray-500 dark:text-gray-400">
                                     <MessageSquare className={`opacity-30 ${compact ? 'w-10 h-10 mb-2' : 'w-16 h-16 mb-3'}`} />
@@ -592,7 +592,7 @@ const DiscussionRoom = ({ compact = false }) => {
                     </form>
                 )}
 
-                <form onSubmit={sendMessage} className={`border-t border-gray-100 dark:border-white/10 bg-white dark:bg-[#171819] flex shrink-0 ${compact ? 'p-1.5 gap-1.5' : 'p-3 md:p-4 gap-3'}`}>
+                <form onSubmit={sendMessage} className={`border-t border-gray-100 dark:border-white/10 bg-white dark:bg-[#171819] flex shrink-0 ${compact ? 'p-2 sm:p-3 gap-2 items-center' : 'p-3 md:p-4 gap-3'}`}>
                     {canCreatePoll && !compact && (
                         <div className="relative shrink-0">
                             <button
@@ -634,11 +634,11 @@ const DiscussionRoom = ({ compact = false }) => {
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
                         placeholder="Discussion room mein message type karein..."
-                        className={`flex-1 rounded-xl bg-gray-50 dark:bg-[#1e1f21] border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-[#8E9297] outline-none focus:border-primary/70 ${compact ? 'px-3 py-2 text-sm' : 'px-4 py-3'}`}
+                        className={`min-w-0 flex-1 rounded-xl bg-gray-50 dark:bg-[#1e1f21] border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-[#8E9297] outline-none focus:border-primary/70 ${compact ? 'px-3 py-2.5 text-sm' : 'px-4 py-3'}`}
                     />
                     <button
                         disabled={(!newMessage.trim() && pendingMedia.length === 0) || sending}
-                        className={`rounded-xl bg-primary hover:bg-primary/90 text-white font-black disabled:opacity-50 flex items-center justify-center shadow-lg shadow-primary/20 ${compact ? 'px-4 py-2 text-sm gap-1.5' : 'px-5 py-3 gap-2'}`}
+                        className={`rounded-xl bg-primary hover:bg-primary/90 text-white font-black disabled:opacity-50 flex items-center justify-center shadow-lg shadow-primary/20 ${compact ? 'shrink-0 min-h-10 px-3 py-2 text-sm gap-1.5' : 'px-5 py-3 gap-2'}`}
                     >
                         {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
                         <span className="hidden sm:inline">Send</span>

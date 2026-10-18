@@ -5,7 +5,7 @@ import { io } from 'socket.io-client';
 import { motion } from 'framer-motion';
 import {
     BookOpen, Brain, CheckCircle2, Crown, Hourglass, Loader2,
-    Play, Swords, Target, Timer, Trophy, Users, XCircle, Zap
+    Swords, Target, Timer, Trophy, Users, XCircle, Zap
 } from 'lucide-react';
 import { quizGameAPI } from '../../services/api';
 import { getSocketURL } from '../../config/apiBaseUrl';
@@ -442,24 +442,17 @@ const QuizGame = ({ inline = false, onExit = null }) => {
 
                                     {selectedTest && (
                                         <>
-                                            <div className="mt-3 grid grid-cols-2 gap-3">
-                                                <button
-                                                    onClick={() => createGame(selectedTest._id, 'solo')}
-                                                    disabled={isBusy}
-                                                    className="flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 px-4 py-3 text-xs font-black uppercase tracking-wider shadow-lg shadow-emerald-500/25 disabled:opacity-50"
-                                                >
-                                                    <Play className="h-3.5 w-3.5" /> Solo
-                                                </button>
+                                            <div className="mt-3 grid grid-cols-1 gap-3">
                                                 <button
                                                     onClick={() => createGame(selectedTest._id, 'duel')}
                                                     disabled={isBusy}
                                                     className="flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-violet-500 to-indigo-600 px-4 py-3 text-xs font-black uppercase tracking-wider shadow-lg shadow-violet-500/25 disabled:opacity-50"
                                                 >
-                                                    <Swords className="h-3.5 w-3.5" /> 1v1
+                                                    <Swords className="h-3.5 w-3.5" /> Play
                                                 </button>
                                             </div>
                                             <p className="mt-3 text-center text-[11px] text-white/40">
-                                                <span className="font-bold text-emerald-300">Solo</span> = akele practice (foran start) · <span className="font-bold text-violet-300">1v1</span> = challenge bhejo, doosra join kare to race shuru
+                                                Challenge bhejo, doosra join kare to 1v1 race shuru.
                                             </p>
                                         </>
                                     )}

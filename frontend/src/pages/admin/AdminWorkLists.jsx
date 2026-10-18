@@ -310,24 +310,36 @@ const AdminWorkLists = () => {
     if (loading) return <Loader message="Loading work lists..." />;
 
     return (
-        <div className="min-h-full bg-gray-50/60 p-4 dark:bg-transparent sm:p-6 lg:p-8">
-            <div className="mx-auto max-w-7xl">
+        <div className="min-h-full min-w-0 w-full">
+            <div className="w-full min-w-0">
 
-                <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+                <div className="mb-5 flex flex-col gap-4 rounded-2xl border border-gray-200 bg-white p-4 dark:border-white/10 dark:bg-[#141418] sm:p-5 lg:flex-row lg:items-center lg:justify-between">
                     <div>
-                        <p className="text-xs font-black uppercase tracking-[0.2em] text-primary">{isAdmin ? 'Shared Work Lists' : 'My Work Lists'}</p>
-                        <h1 className="mt-1 text-2xl font-black text-gray-900 dark:text-white sm:text-3xl">Daily Work Lists</h1>
-                        <p className="mt-1 text-sm text-gray-500 dark:text-white/50">{isAdmin ? 'Lists manage karein aur users ko share karein.' : 'Apni lists banayein aur team ke sath share karein.'}</p>
+                        <h1 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-2xl">Work Tasks</h1>
+                        <p className="mt-1 text-xs sm:text-sm text-gray-500 dark:text-gray-400">Your lists, tasks and team progress.</p>
                     </div>
                     <div className="flex flex-col gap-2 sm:flex-row">
                         <div className="relative">
                             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-                            <input value={search} onChange={event => setSearch(event.target.value)} placeholder="Search..." className="w-full rounded-xl border border-gray-200 bg-white py-3 pl-10 pr-4 text-sm outline-none focus:border-primary dark:border-white/10 dark:bg-white/5 dark:text-white sm:w-56" />
+                            <input aria-label="Search work lists" value={search} onChange={event => setSearch(event.target.value)} placeholder="Search lists or tasks..." className="w-full rounded-xl border border-gray-200 bg-gray-50 py-3 pl-10 pr-4 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 dark:border-white/10 dark:bg-white/5 dark:text-white sm:w-64" />
                         </div>
                         {canCreate && <button onClick={() => { setListTitle(''); setShowCreateModal(true); }} className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-black text-white shadow-lg shadow-primary/20">
                             <ListPlus className="h-5 w-5" /> Create List
                         </button>}
                     </div>
+                </div>
+
+                <div className="mb-5 grid grid-cols-3 gap-2 sm:gap-3">
+                    {[
+                        { label: 'Lists', value: lists.length, color: 'text-blue-600 dark:text-blue-400' },
+                        { label: 'Pending', value: lists.reduce((total, list) => total + (list.items || []).filter(item => item.status !== 'completed').length, 0), color: 'text-amber-600 dark:text-amber-400' },
+                        { label: 'Completed', value: lists.reduce((total, list) => total + (list.items || []).filter(item => item.status === 'completed').length, 0), color: 'text-emerald-600 dark:text-emerald-400' },
+                    ].map(stat => (
+                        <div key={stat.label} className="rounded-xl border border-gray-200 bg-white px-3 py-3 dark:border-white/10 dark:bg-[#141418] sm:px-4">
+                            <p className={`text-xl font-bold tabular-nums sm:text-2xl ${stat.color}`}>{stat.value}</p>
+                            <p className="mt-1 text-[11px] sm:text-xs font-medium text-gray-500 dark:text-gray-400">{stat.label}</p>
+                        </div>
+                    ))}
                 </div>
 
                 {visibleLists.length === 0 ? (
@@ -337,7 +349,7 @@ const AdminWorkLists = () => {
                         <p className="mt-1 text-sm text-gray-400">{canCreate ? 'Create List press karke pehli list banayein.' : 'Admin aapke sath koi list share karega.'}</p>
                     </div>
                 ) : (
-                    <div className="grid items-start gap-5 md:grid-cols-2 xl:grid-cols-3">
+                    <div className="grid w-full min-w-0 grid-cols-1 items-start gap-4 md:grid-cols-2 xl:grid-cols-3">
                         {visibleLists.map(list => {
                             const activeItems = (list.items || []).filter(item => item.status !== 'completed');
                             const completedItems = (list.items || []).filter(item => item.status === 'completed');
@@ -345,9 +357,9 @@ const AdminWorkLists = () => {
                             const canManage = isAdmin || list.isOwner;
 
                             return (
-                                <section key={list._id} className="relative overflow-visible rounded-3xl border border-gray-100 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-[#141418]">
-                                    <div className="mb-5 flex items-center justify-between gap-3">
-                                        <h2 className="min-w-0 truncate text-xl font-bold text-gray-900 dark:text-white">{list.title}</h2>
+                                <section key={list._id} className="relative min-w-0 overflow-visible rounded-2xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#141418] sm:p-5">
+                                    <div className="mb-3 flex items-center justify-between gap-3">
+                                        <h2 className="min-w-0 break-words text-base font-bold text-gray-900 dark:text-white">{list.title}</h2>
                                         {(canManage || isTeacher) && <div className="relative">
                                             <button onClick={() => setMenuListId(menuListId === list._id ? '' : list._id)} className="rounded-full p-2 text-gray-400 hover:bg-gray-100 dark:hover:bg-white/10">
                                                 <MoreVertical className="h-5 w-5" />
@@ -363,8 +375,17 @@ const AdminWorkLists = () => {
                                         </div>}
                                     </div>
 
+                                    <div className="mb-4">
+                                        <div className="mb-2 flex items-center justify-between text-[11px] text-gray-500 dark:text-gray-400">
+                                            <span>{activeItems.length} pending</span>
+                                            <span>{completedItems.length}/{(list.items || []).length} completed</span>
+                                        </div>
+                                        <div role="progressbar" aria-label={`${list.title} completion`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(completedItems.length / Math.max(1, (list.items || []).length) * 100)} className="h-1.5 overflow-hidden rounded-full bg-gray-100 dark:bg-white/10">
+                                            <div className="h-full rounded-full bg-emerald-500 transition-all" style={{ width: `${completedItems.length / Math.max(1, (list.items || []).length) * 100}%` }} />
+                                        </div>
+                                    </div>
                                     {list.sharedWith && list.sharedWith.length > 0 && (
-                                        <div className="-mt-3 mb-4 flex flex-wrap gap-1.5">
+                                        <div className="mb-4 flex flex-wrap gap-1.5">
                                             {list.sharedWith.map(member => (
                                                 <span key={member._id || member} className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-xs font-bold text-primary">
                                                     <ProfileAvatar src={member.photo} name={member.name || 'User'} size="xs" border="border border-primary/30" />
@@ -379,7 +400,7 @@ const AdminWorkLists = () => {
                                         </div>
                                     )}
 
-                                    <button onClick={() => openAddTask(list._id)} className="mb-3 flex items-center gap-3 text-sm font-bold text-blue-600 hover:text-blue-700">
+                                    <button onClick={() => openAddTask(list._id)} className="mb-3 flex w-full min-h-11 items-center justify-center gap-2 rounded-xl border border-dashed border-blue-200 bg-blue-50/60 px-3 py-2 text-sm font-semibold text-blue-600 hover:bg-blue-50 dark:border-blue-500/30 dark:bg-blue-500/10 dark:text-blue-400">
                                         <span className="flex h-6 w-6 items-center justify-center rounded-full border-2 border-blue-500"><Plus className="h-4 w-4" /></span>
                                         Add a task
                                     </button>

@@ -3,14 +3,14 @@ import { motion } from 'framer-motion';
 
 const Loader = ({ message = 'Loading...', size = 'md' }) => {
     const sizeClasses = {
-        sm: 'w-24 h-24',
-        md: 'w-28 h-28',
-        lg: 'w-28 h-28',
-        xl: 'w-32 h-32'
+        sm: 'w-28 h-28 sm:w-32 sm:h-32',
+        md: 'w-32 h-32 sm:w-40 sm:h-40',
+        lg: 'w-40 h-40 sm:w-44 sm:h-44',
+        xl: 'w-44 h-44 sm:w-48 sm:h-48'
     };
 
     return (
-        <div className="flex flex-col items-center justify-center p-8 min-h-[60vh] w-full h-full flex-1">
+        <div role="status" aria-label={message || 'Loading'} className="flex flex-col items-center justify-center p-8 min-h-[60vh] w-full h-full flex-1">
             <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -26,15 +26,6 @@ const Loader = ({ message = 'Loading...', size = 'md' }) => {
                     }}
                 />
             </motion.div>
-            {message && (
-                <motion.p 
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="mt-2 text-gray-500 dark:text-gray-400 font-black uppercase tracking-[0.2em] text-xs animate-pulse"
-                >
-                    {message}
-                </motion.p>
-            )}
         </div>
     );
 };

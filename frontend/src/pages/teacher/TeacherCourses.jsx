@@ -18,7 +18,6 @@ import BirthdayWish from '../../components/dashboard/BirthdayWish';
 import GamesCard from '../../components/dashboard/GamesCard';
 import QuizBattleCard from '../../components/dashboard/QuizBattleCard';
 import ProfileCompletionBanner from '../../components/shared/ProfileCompletionBanner';
-import DiscussionRoom from '../shared/DiscussionRoom';
 import Loader, { ButtonLoader } from '../../components/ui/Loader';
 import { useTranslation } from 'react-i18next';
 
@@ -335,22 +334,6 @@ const TeacherCourses = ({ isDashboard = false, initialSearchMode = 'courses' }) 
     return (
         <>
             <div className="space-y-6">
-                {isDashboard && (
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 items-start">
-                        {/* Left: Profile + Birthday + Games stacked */}
-                        <div className="flex flex-col gap-4 sm:gap-5 min-w-0">
-                            <ProfileCompletionBanner />
-                            <BirthdayWish />
-                            <QuizBattleCard />
-                            <GamesCard />
-                        </div>
-
-                        {/* Right: Discussion Room live screen with chat */}
-                        <div className="relative min-w-0 h-[30vh] rounded-2xl border border-primary/20 bg-gray-50 dark:bg-gray-950 overflow-hidden">
-                            <DiscussionRoom compact />
-                        </div>
-                    </div>
-                )}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
                         <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
@@ -510,6 +493,37 @@ const TeacherCourses = ({ isDashboard = false, initialSearchMode = 'courses' }) 
 
 
 
+                {isDashboard && (
+                    <div className="space-y-3 sm:space-y-4">
+                        {/* Left: Profile + Birthday + Games stacked */}
+                        <div className="flex flex-col gap-3 sm:gap-4 min-w-0">
+                            <ProfileCompletionBanner />
+                            <BirthdayWish />
+                            <QuizBattleCard />
+                            <GamesCard />
+                        </div>
+
+                        {/* Compact discussion shortcut */}
+                        <div className="group relative flex items-center gap-3 sm:gap-4 overflow-hidden rounded-2xl border border-indigo-100 dark:border-indigo-400/20 bg-gradient-to-r from-indigo-50/80 via-white to-white dark:from-indigo-500/10 dark:via-[#141418] dark:to-[#141418] px-4 py-3 sm:px-5 shadow-sm transition-shadow hover:shadow-md">
+                            <span aria-hidden="true" className="absolute inset-y-3 left-0 w-1 rounded-r-full bg-indigo-500" />
+                            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 text-white shadow-sm shadow-indigo-500/20">
+                                <MessageSquare className="h-5 w-5" />
+                            </div>
+                            <div className="min-w-0 flex-1">
+                                <p className="text-sm font-bold tracking-tight text-gray-900 dark:text-white">Discussion Room</p>
+                                <p className="mt-0.5 text-[11px] sm:text-xs leading-relaxed text-gray-500 dark:text-gray-400">Ask, share &amp; connect</p>
+                            </div>
+                            <button
+                                type="button"
+                                onClick={() => navigate('/teacher/discussion-room')}
+                                aria-label="Open Discussion Room"
+                                className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-xl border border-indigo-100 dark:border-indigo-400/20 bg-white dark:bg-indigo-500/10 px-3 sm:px-4 text-xs font-bold text-indigo-600 dark:text-indigo-300 transition-colors hover:bg-indigo-50 dark:hover:bg-indigo-500/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
+                            >
+                                Open <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 motion-reduce:transform-none" />
+                            </button>
+                        </div>
+                    </div>
+                )}
                 {/* Filters and Search */}
                 {searchMode === 'courses' ? (
                     <div className="bg-white rounded-3xl p-4 sm:p-6 border border-gray-100 shadow-sm space-y-4">
