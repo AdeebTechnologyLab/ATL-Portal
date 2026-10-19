@@ -37,6 +37,9 @@
     "react-select": "^5.10.2",
     "socket.io-client": "^4.8.3"
   },
+  "overrides": {
+    "ws": "^8.22.0"
+  },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
     "@types/react": "^19.2.5",
