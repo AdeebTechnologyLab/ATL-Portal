@@ -109,7 +109,24 @@ const Login = () => {
             }
         } catch (err) {
             setIsResolving(false);
-            const message = err.response?.data?.message || t('auth.invalidCredentials');
+            const status = err.response?.status;
+            const serverMessage = err.response?.data?.message;
+            let message = serverMessage;
+            if (!message) {
+                if (!err.response) {
+                    message = 'Cannot reach the login server. Please check your connection and try again.';
+                } else if (status === 403) {
+                    message = 'The hosting server is blocking login requests (403 Forbidden). Please contact support.';
+                } else if (status >= 500) {
+                    message = 'The login server is temporarily unavailable. Please try again shortly.';
+                } else if (status === 429) {
+                    message = 'Too many login attempts. Please wait a moment and try again.';
+                } else if (status === 401) {
+                    message = t('auth.invalidCredentials');
+                } else {
+                    message = 'Unable to log in. Please try again or contact support.';
+                }
+            }
             dispatch(loginFailure(message));
         }
     };
