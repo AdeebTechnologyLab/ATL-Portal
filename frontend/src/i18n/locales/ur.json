@@ -190,13 +190,13 @@
     "searchStudent": "طالب علم تلاش کریں...",
     "googleMeetLink": "گوگل میٹ لنک",
     "startAdeebMeet": "ادیب میٹ شروع کریں",
-    "activeCourses": "فعال کورسز",
-    "activeStudents": "فعال طلباء",
-    "activeInterns": "فعال انٹرنز",
+    "activeCourses": "کورسز",
+    "activeStudents": "طلباء",
+    "activeInterns": "انٹرنز",
     "pendingGradings": "زیر التواء گریڈنگ",
-    "pendingReviews": "زیر التوا جائزے",
-    "todaysPresent": "آج کے حاضر",
-    "todaysAbsent": "آج کے غیر حاضر",
+    "pendingReviews": "زیر التوا",
+    "todaysPresent": "حاضر",
+    "todaysAbsent": "غیر حاضر",
     "searchCourse": "کورس یا استاد تلاش کریں..."
   }
 }

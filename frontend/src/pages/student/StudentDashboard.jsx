@@ -350,7 +350,7 @@ const StudentDashboard = () => {
             // Build stats
             setStats([
                 {
-                    title: 'Courses',
+                    title: role === 'intern' ? 'Skills' : 'Courses',
                     value: courses.filter(c => !c.isCompleted).length.toString(),
                     icon: BookOpen,
                     iconBg: 'bg-primary/5',

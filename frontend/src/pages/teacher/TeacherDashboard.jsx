@@ -248,7 +248,7 @@ const TeacherDashboard = () => {
                     onClick: () => navigate('/teacher/quick-attendance', { state: { initialCategory: 'interns' } })
                 },
                 {
-                    title: 'Pending Reviews',
+                    title: 'Pending',
                     value: totalPendingAssignments.toString(),
                     icon: ClipboardList,
                     iconBg: 'bg-amber-100',

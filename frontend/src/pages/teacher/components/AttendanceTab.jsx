@@ -333,13 +333,13 @@ const AttendanceTab = ({ course, students }) => {
                     <p className="text-xl sm:text-2xl font-black text-present-fixed">
                         {Object.values(attendanceMarks).filter(m => m.status === 'present').length}
                     </p>
-                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-1">Present Today</p>
+                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-1">Present</p>
                 </div>
                 <div className="bg-absent-fixed-light rounded-3xl p-4 border border-absent-fixed/10 text-center shadow-sm">
                     <p className="text-xl sm:text-2xl font-black text-absent-fixed">
                         {Object.values(attendanceMarks).filter(m => m.status === 'absent').length}
                     </p>
-                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-1">Absent Today</p>
+                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-1">Absent</p>
                 </div>
                 <div className="bg-primary/5 rounded-3xl p-4 border border-primary/10 text-center shadow-sm">
                     <p className="text-xl sm:text-2xl font-black text-primary">
@@ -349,7 +349,7 @@ const AttendanceTab = ({ course, students }) => {
                 </div>
                 <div className="bg-white rounded-3xl p-4 border border-gray-100 text-center shadow-sm">
                     <p className="text-xl sm:text-2xl font-black text-gray-900">{students.length}</p>
-                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-1">Total Students</p>
+                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-1">Students</p>
                 </div>
             </div>
 

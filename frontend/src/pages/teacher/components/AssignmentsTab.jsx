@@ -22,6 +22,18 @@ const getAutomaticFeedback = (percentage) => {
     return "Poor performance. Let's work on the basics and improve.";
 };
 
+const matchesTitleSearch = (title, query) => {
+    if (!query?.trim()) return true;
+    const normalize = (value) => String(value || '').toLowerCase().replace(/[^a-z0-9]+/g, '');
+    const haystack = normalize(title);
+    if (!haystack) return false;
+    return query
+        .toLowerCase()
+        .split(/[^a-z0-9]+/)
+        .filter(Boolean)
+        .every(token => haystack.includes(token));
+};
+
 const AssignmentsTab = ({ course, students }) => { // Accept students prop
     const isProjectCourse = ['intern', 'interns'].includes(String(course?.targetAudience || '').toLowerCase()) || (students?.length > 0 && students.every((student) => student.role === 'intern'));
     const itemLabel = isProjectCourse ? 'Project' : 'Assignment';
@@ -306,7 +318,7 @@ const AssignmentsTab = ({ course, students }) => { // Accept students prop
                         className="px-4 sm:px-6 py-2 sm:py-2.5 bg-primary hover:bg-primary/90 text-white rounded-xl font-black text-[10px] sm:text-xs uppercase tracking-widest transition-all flex items-center gap-2 shadow-lg shadow-primary/10 active:scale-95"
                     >
                         <Plus className="w-4 h-4" />
-                        Create {itemLabel}
+                        New {itemLabel}
                     </button>
                 </div>
             </div>
@@ -314,7 +326,7 @@ const AssignmentsTab = ({ course, students }) => { // Accept students prop
             {/* Quick Stats Summary Row */}
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
                 {[
-                    { id: 'all', label: `Total ${itemsLabel}`, icon: FileText, count: assignments.length, color: 'text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 border-blue-100 dark:border-blue-800/30', activeColor: 'ring-4 ring-blue-500/20 bg-blue-100 dark:bg-blue-900/40 border-blue-400 scale-105', onClick: () => setActiveStatFilter('all') },
+                    { id: 'all', label: 'Total', icon: FileText, count: assignments.length, color: 'text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 border-blue-100 dark:border-blue-800/30', activeColor: 'ring-4 ring-blue-500/20 bg-blue-100 dark:bg-blue-900/40 border-blue-400 scale-105', onClick: () => setActiveStatFilter('all') },
                     { id: 'submissions', label: 'Submissions', icon: CheckCircle, count: assignments.reduce((acc, a) => acc + (a.submissions?.length || 0), 0), color: 'text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 border-emerald-100 dark:border-emerald-800/30', activeColor: 'ring-4 ring-emerald-500/20 bg-emerald-100 dark:bg-emerald-900/40 border-emerald-400 scale-105', onClick: () => setActiveStatFilter(activeStatFilter === 'submissions' ? 'all' : 'submissions') },
                     { id: 'pending', label: 'Pending', icon: Clock, count: assignments.reduce((acc, a) => { const submissions = a.submissions || []; const gradedCount = submissions.filter(s => s.status === 'graded' || s.status === 'rejected').length; return acc + (submissions.length - gradedCount); }, 0), color: 'text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 border-amber-100 dark:border-amber-800/30', activeColor: 'ring-4 ring-amber-500/20 bg-amber-100 dark:bg-amber-900/40 border-amber-400 scale-105', onClick: () => setActiveStatFilter(activeStatFilter === 'pending' ? 'all' : 'pending') },
                     { id: 'rejected', label: 'Rejected', icon: X, count: assignments.reduce((acc, a) => acc + (a.submissions?.filter(s => s.status === 'rejected').length || 0), 0), color: 'text-red-700 dark:text-red-400 bg-red-50 dark:bg-red-900/20 border-red-100 dark:border-red-800/30', activeColor: 'ring-4 ring-red-500/20 bg-red-100 dark:bg-red-900/40 border-red-400 scale-105', onClick: () => setActiveStatFilter(activeStatFilter === 'rejected' ? 'all' : 'rejected') },
@@ -440,7 +452,7 @@ const AssignmentsTab = ({ course, students }) => { // Accept students prop
                         .filter(assignment => {
                             // 1. Filter by Assignment Title
                             if (assignmentTitleFilter.trim()) {
-                                const titleMatch = assignment.title?.toLowerCase().includes(assignmentTitleFilter.toLowerCase());
+                                const titleMatch = matchesTitleSearch(assignment.title, assignmentTitleFilter);
                                 if (!titleMatch) return false;
                             }
 

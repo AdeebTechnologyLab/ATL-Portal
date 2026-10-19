@@ -355,30 +355,21 @@ const TestsTab = ({ course, students }) => {
     return (
         <div className="space-y-6">
             <div className="flex flex-col gap-6">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm">
-                    <div className="flex items-center gap-4">
-                        <div className="p-3 bg-primary/5 rounded-2xl">
-                            <Zap className="w-6 h-6 text-primary" />
-                        </div>
-                        <div>
-                            <h3 className="text-xl font-black text-gray-900 uppercase">Tests & Exams</h3>
-                            <p className="text-xs text-gray-500 font-bold uppercase tracking-wider">Manage your MCQs and assessments</p>
-                        </div>
-                    </div>
-
-                    <div className="flex items-center gap-3">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <h3 className="font-bold text-gray-900 text-lg">Tests & Exams</h3>
+                    <div className="flex items-center gap-2 flex-wrap">
                         <button
                             onClick={fetchTests}
                             disabled={isLoading}
-                            className="flex items-center gap-2 px-5 py-2.5 bg-primary/5 text-primary rounded-xl font-black text-[10px] uppercase tracking-widest transition-all active:scale-95 disabled:opacity-50"
+                            className="flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 bg-primary/5 text-primary rounded-xl font-black text-[10px] uppercase tracking-widest transition-all active:scale-95 disabled:opacity-50"
                             title="Refresh Tests"
                         >
                             <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin' : ''}`} />
-                            Refresh Tests
+                            Refresh
                         </button>
                         <button
                             onClick={() => setIsCreateModalOpen(true)}
-                            className="flex items-center gap-2 px-6 py-2.5 bg-primary text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-primary/90 transition-all shadow-lg active:scale-95"
+                            className="px-4 sm:px-6 py-2 sm:py-2.5 bg-primary hover:bg-primary/90 text-white rounded-xl font-black text-[10px] sm:text-xs uppercase tracking-widest transition-all flex items-center gap-2 shadow-lg shadow-primary/10 active:scale-95"
                         >
                             <Plus className="w-4 h-4" />
                             New Test
@@ -388,10 +379,10 @@ const TestsTab = ({ course, students }) => {
 
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                     {[
-                        { label: 'Total Tests', icon: FileText, count: tests.length, color: 'text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 border-blue-100 dark:border-blue-800/30' },
-                        { label: 'Total Submissions', icon: CheckCircle, count: tests.reduce((acc, t) => acc + (t.submissions?.length || 0), 0), color: 'text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 border-emerald-100 dark:border-emerald-800/30' },
-                        { label: 'Total MCQs', icon: List, count: tests.reduce((acc, t) => acc + (t.questions?.length || 0), 0), color: 'text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 border-amber-100 dark:border-amber-800/30' },
-                        { label: 'Total Students', icon: Users, count: students.length, color: 'text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-800/50 border-gray-100 dark:border-gray-700' },
+                        { label: 'Total', icon: FileText, count: tests.length, color: 'text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 border-blue-100 dark:border-blue-800/30' },
+                        { label: 'Submissions', icon: CheckCircle, count: tests.reduce((acc, t) => acc + (t.submissions?.length || 0), 0), color: 'text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 border-emerald-100 dark:border-emerald-800/30' },
+                        { label: 'MCQs', icon: List, count: tests.reduce((acc, t) => acc + (t.questions?.length || 0), 0), color: 'text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 border-amber-100 dark:border-amber-800/30' },
+                        { label: 'Students', icon: Users, count: students.length, color: 'text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-800/50 border-gray-100 dark:border-gray-700' },
                     ].map((stat, i) => (
                         <div key={i} className={`${stat.color} border rounded-2xl p-4 flex items-center justify-between shadow-sm`}>
                             <div>

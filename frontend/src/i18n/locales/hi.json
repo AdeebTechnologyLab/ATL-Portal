@@ -190,13 +190,13 @@
     "searchStudent": "छात्र खोजें...",
     "googleMeetLink": "गूगल मीट लिंक",
     "startAdeebMeet": "अदीब मीट शुरू करें",
-    "activeCourses": "सक्रिय कोर्स",
-    "activeStudents": "सक्रिय छात्र",
-    "activeInterns": "सक्रिय इंटर्न",
+    "activeCourses": "कोर्स",
+    "activeStudents": "छात्र",
+    "activeInterns": "इंटर्न",
     "pendingGradings": "लंबित ग्रेडिंग",
-    "pendingReviews": "लंबित समीक्षाएं",
-    "todaysPresent": "आज के उपस्थित",
-    "todaysAbsent": "आज के अनुपस्थित",
+    "pendingReviews": "लंबित",
+    "todaysPresent": "उपस्थित",
+    "todaysAbsent": "अनुपस्थित",
     "searchCourse": "कोर्स या शिक्षक खोजें..."
   }
 }

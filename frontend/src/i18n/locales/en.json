@@ -193,13 +193,13 @@
     "searchStudent": "Search Student...",
     "googleMeetLink": "Google Meet Link",
     "startAdeebMeet": "Start Adeeb Meet",
-    "activeCourses": "Active Courses",
-    "activeStudents": "Active Students",
-    "activeInterns": "Active Interns",
+    "activeCourses": "Courses",
+    "activeStudents": "Students",
+    "activeInterns": "Interns",
     "pendingGradings": "Pending Gradings",
-    "pendingReviews": "Pending Reviews",
-    "todaysPresent": "Today's Present",
-    "todaysAbsent": "Today's Absent",
+    "pendingReviews": "Pending",
+    "todaysPresent": "Present",
+    "todaysAbsent": "Absent",
     "searchCourse": "Search Course or Teacher..."
   }
 }

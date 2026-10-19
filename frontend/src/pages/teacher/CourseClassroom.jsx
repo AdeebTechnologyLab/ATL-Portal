@@ -213,7 +213,7 @@ const CourseClassroom = () => {
                             <h3 className="font-semibold text-gray-900">All Assignments</h3>
                             <button className="px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-xl font-medium transition-all flex items-center gap-2 text-sm self-start">
                                 <Plus className="w-4 h-4" />
-                                Create Assignment
+                                New Assignment
                             </button>
                         </div>
 

@@ -266,7 +266,7 @@ const JobCourses = () => {
                             className="px-5 py-2.5 bg-primary hover:bg-purple-700 text-white rounded-xl font-medium flex items-center gap-2"
                         >
                             <ClipboardList className="w-4 h-4" />
-                            Create Assignment
+                            New Assignment
                         </button>
                     </div>
 

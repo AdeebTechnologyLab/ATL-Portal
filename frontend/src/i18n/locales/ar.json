@@ -190,13 +190,13 @@
     "searchStudent": "البحث عن طالب...",
     "googleMeetLink": "رابط جوجل ميت",
     "startAdeebMeet": "بدء أديب ميت",
-    "activeCourses": "الدورات النشطة",
-    "activeStudents": "الطلاب النشطون",
-    "activeInterns": "المتدربون النشطون",
+    "activeCourses": "الدورات",
+    "activeStudents": "الطلاب",
+    "activeInterns": "المتدربون",
     "pendingGradings": "الدرجات المعلقة",
-    "pendingReviews": "المراجعات المعلقة",
-    "todaysPresent": "حضور اليوم",
-    "todaysAbsent": "غياب اليوم",
+    "pendingReviews": "المعلقة",
+    "todaysPresent": "حضور",
+    "todaysAbsent": "غياب",
     "searchCourse": "البحث عن دورة أو معلم..."
   }
 }
