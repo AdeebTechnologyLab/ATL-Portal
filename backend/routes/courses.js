@@ -13,6 +13,8 @@ const Test = require('../models/Test');
 const Certificate = require('../models/Certificate');
 const LiveClass = require('../models/LiveClass');
 const User = require('../models/User');
+const moment = require('moment-timezone');
+const { getAttendanceDayRange } = require('../utils/attendanceDate');
 const { uploadCourse } = require('../config/cloudinary');
 
 // @route   GET /api/courses/teacher/dashboard
@@ -21,8 +23,11 @@ const { uploadCourse } = require('../config/cloudinary');
 router.get('/teacher/dashboard', protect, authorize('teacher', 'admin'), async (req, res) => {
     try {
         const teacherId = req.user._id.toString();
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
+
+        // Attendance dates are stored as start-of-day Asia/Karachi, so the range
+        // must be built in that timezone (server-local midnight is wrong whenever
+        // the server clock/timezone is not PKT).
+        const todayRange = getAttendanceDayRange(moment().tz('Asia/Karachi').format('YYYY-MM-DD'));
 
         // 1. Get all courses where this teacher is assigned AND not paused
         const mongoose = require('mongoose');
@@ -50,11 +55,11 @@ router.get('/teacher/dashboard', protect, authorize('teacher', 'admin'), async (
             .select('course submissions.marks submissions.status')
             .lean();
 
-        // 4. Get today's attendance for all courses in ONE query
+        // 4. Get today's attendance for all courses in ONE query (PKT calendar day)
         const todayAttendance = await Attendance.find({
             course: { $in: courseIds },
-            date: { $gte: today, $lt: new Date(today.getTime() + 24 * 60 * 60 * 1000) }
-        }).select('course records.status').lean();
+            date: { $gte: todayRange.start, $lte: todayRange.end }
+        }).select('course records.user records.status').lean();
 
         // Build lookup maps for O(1) access
         const enrollmentMap = {};
@@ -78,6 +83,19 @@ router.get('/teacher/dashboard', protect, authorize('teacher', 'admin'), async (
             }
         });
 
+        // Only active members are counted everywhere else in the UI
+        // (Quick Attendance), so attendance totals must use the same set.
+        const activeUserIds = {};
+        courseIds.forEach(id => { activeUserIds[id.toString()] = new Set(); });
+        enrollments.forEach(e => {
+            const courseId = (e.course?._id || e.course)?.toString();
+            const userId = (e.user?._id || e.user)?.toString();
+            if (!courseId || !userId || !activeUserIds[courseId]) return;
+            if (e.isActive && e.status !== 'completed' && !e.isPaused) {
+                activeUserIds[courseId].add(userId);
+            }
+        });
+
         // Populate assignment pending counts
         assignments.forEach(a => {
             const courseId = (a.course?._id || a.course).toString();
@@ -92,11 +110,14 @@ router.get('/teacher/dashboard', protect, authorize('teacher', 'admin'), async (
             }
         });
 
-        // Populate attendance counts
+        // Populate attendance counts (active students only, PKT day)
         todayAttendance.forEach(att => {
             const courseId = (att.course?._id || att.course).toString();
             if (attendanceMap[courseId]) {
+                const active = activeUserIds[courseId];
                 (att.records || []).forEach(r => {
+                    const userId = (r.user?._id || r.user)?.toString();
+                    if (!userId || (active && !active.has(userId))) return;
                     if (r.status === 'present') attendanceMap[courseId].present++;
                     else if (r.status === 'absent') attendanceMap[courseId].absent++;
                 });

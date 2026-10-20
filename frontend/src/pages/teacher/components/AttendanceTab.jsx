@@ -6,6 +6,7 @@ import ProfileAvatar from '../../../components/ui/ProfileAvatar';
 import { attendanceAPI, settingsAPI } from '../../../services/api';
 import Loader, { ButtonLoader } from '../../../components/ui/Loader';
 import { formatTime } from '../../../utils/dateFormatter';
+import { showToast } from '../../../utils/customToast';
 
 import {
     getLocalDateString,
@@ -146,6 +147,48 @@ const AttendanceTab = ({ course, students }) => {
         setIsLocked(locked);
     };
 
+    // Local cache is ONLY a queue of marks that the server has not confirmed yet.
+    // Confirmed marks must never override the server copy, otherwise this screen
+    // and Quick Attendance (which reads the server only) show different results.
+    const getCacheKey = () => `attendance_${course._id}_${selectedDate}`;
+
+    const readCache = () => {
+        try {
+            const raw = localStorage.getItem(getCacheKey());
+            const parsed = raw ? JSON.parse(raw) : {};
+            return parsed && typeof parsed === 'object' ? parsed : {};
+        } catch {
+            return {};
+        }
+    };
+
+    const writeCacheEntry = (studentId, entry) => {
+        try {
+            const cached = readCache();
+            cached[studentId] = entry;
+            localStorage.setItem(getCacheKey(), JSON.stringify(cached));
+        } catch { /* ignore storage errors */ }
+    };
+
+    const removeCacheEntry = (studentId) => {
+        try {
+            const cached = readCache();
+            delete cached[studentId];
+            if (Object.keys(cached).length === 0) localStorage.removeItem(getCacheKey());
+            else localStorage.setItem(getCacheKey(), JSON.stringify(cached));
+        } catch { /* ignore storage errors */ }
+    };
+
+    const readPendingMarks = () => {
+        const pending = {};
+        Object.entries(readCache()).forEach(([userId, mark]) => {
+            if (mark && mark.pending) {
+                pending[userId] = { status: mark.status, markedAt: mark.markedAt };
+            }
+        });
+        return pending;
+    };
+
     const fetchAttendance = async () => {
         setIsLoading(true);
         try {
@@ -153,24 +196,29 @@ const AttendanceTab = ({ course, students }) => {
             const data = response.data.attendance || response.data.data || {};
             const serverMarks = {};
             (data.records || []).forEach(record => {
-                serverMarks[record.user?._id || record.user] = {
+                const userId = record.user?._id || record.user;
+                if (!userId) return;
+                serverMarks[userId] = {
                     status: record.status,
                     markedAt: record.markedAt
                 };
             });
 
-            // Merge with local cache for unsaved changes
-            const cacheKey = `attendance_${course._id}_${selectedDate}`;
-            const cached = localStorage.getItem(cacheKey);
-            if (cached) {
-                const localMarks = JSON.parse(cached);
-                console.log('Restoring local unsaved markings for:', selectedDate);
-                setAttendanceMarks({ ...serverMarks, ...localMarks });
-            } else {
-                setAttendanceMarks(serverMarks);
+            // Restore only unsaved (unconfirmed) marks, and purge anything else
+            // that is still sitting in local storage from earlier sessions.
+            const pendingMarks = readPendingMarks();
+            const cached = readCache();
+            if (Object.keys(cached).length !== Object.keys(pendingMarks).length) {
+                if (Object.keys(pendingMarks).length === 0) localStorage.removeItem(getCacheKey());
+                else localStorage.setItem(getCacheKey(), JSON.stringify(pendingMarks));
             }
+
+            setAttendanceMarks({ ...serverMarks, ...pendingMarks });
         } catch (err) {
             console.error('Error fetching attendance:', err);
+            // Offline fallback: show marks that never reached the server.
+            const pendingMarks = readPendingMarks();
+            if (Object.keys(pendingMarks).length > 0) setAttendanceMarks(pendingMarks);
         } finally {
             setIsLoading(false);
         }
@@ -179,13 +227,14 @@ const AttendanceTab = ({ course, students }) => {
     const markAttendance = async (studentId, status) => {
         if (isLocked) return;
 
-        // 1. Update local state immediately for UI responsiveness
-        const newMarks = { ...attendanceMarks, [studentId]: { status, markedAt: new Date().toISOString() } };
-        setAttendanceMarks(newMarks);
+        const previousMark = attendanceMarks[studentId];
+        const markedAt = new Date().toISOString();
 
-        // 2. Save to local cache (fallback)
-        const cacheKey = `attendance_${course._id}_${selectedDate}`;
-        localStorage.setItem(cacheKey, JSON.stringify(newMarks));
+        // 1. Update local state immediately for UI responsiveness
+        setAttendanceMarks(prev => ({ ...prev, [studentId]: { status, markedAt } }));
+
+        // 2. Queue it locally in case the tab closes before the save confirms
+        writeCacheEntry(studentId, { status, markedAt, pending: true });
 
         const student = students.find(s => s.id === studentId);
 
@@ -261,9 +310,22 @@ const AttendanceTab = ({ course, students }) => {
                 records: [record]
             });
 
+            // Server confirmed it -> drop the local copy so it can never
+            // override the server value on the next fetch.
+            removeCacheEntry(studentId);
             setLastSaved(new Date());
         } catch (err) {
             console.error('Auto-save failed:', err);
+            // Server is the single source of truth: roll this student back
+            // (same behaviour as Quick Attendance) so both screens stay in sync.
+            setAttendanceMarks(prev => {
+                const next = { ...prev };
+                if (previousMark) next[studentId] = previousMark;
+                else delete next[studentId];
+                return next;
+            });
+            removeCacheEntry(studentId);
+            showToast.error('Sync Error', 'Failed to save attendance');
         } finally {
             setIsSaving(false);
         }
@@ -274,7 +336,8 @@ const AttendanceTab = ({ course, students }) => {
         try {
             const records = students.map(student => ({
                 userId: student.id,
-                status: attendanceMarks[student.id]?.status || 'absent'
+                status: attendanceMarks[student.id]?.status || 'absent',
+                mode: (student.attendType || '').toLowerCase().includes('online') ? 'online' : 'onsite'
             }));
             await attendanceAPI.mark({
                 courseId: course._id,
@@ -283,7 +346,7 @@ const AttendanceTab = ({ course, students }) => {
             });
 
             // Clear local cache after successful save
-            localStorage.removeItem(`attendance_${course._id}_${selectedDate}`);
+            localStorage.removeItem(getCacheKey());
 
             alert('Attendance saved successfully!');
         } catch (err) {
@@ -325,25 +388,31 @@ const AttendanceTab = ({ course, students }) => {
         return '';
     };
 
+    // Counts are based on THIS course's student list (not on every record that
+    // happens to exist on the server) so they match Quick Attendance exactly.
+    const presentCount = students.filter(s => attendanceMarks[s.id]?.status === 'present').length;
+    const absentCount = students.filter(s => attendanceMarks[s.id]?.status === 'absent').length;
+    const unmarkedCount = Math.max(students.length - presentCount - absentCount, 0);
+
     return (
         <div className="space-y-6">
             {/* Quick Summary Row */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 <div className="bg-present-fixed-light rounded-3xl p-4 border border-present-fixed/10 text-center shadow-sm">
                     <p className="text-xl sm:text-2xl font-black text-present-fixed">
-                        {Object.values(attendanceMarks).filter(m => m.status === 'present').length}
+                        {presentCount}
                     </p>
                     <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-1">Present</p>
                 </div>
                 <div className="bg-absent-fixed-light rounded-3xl p-4 border border-absent-fixed/10 text-center shadow-sm">
                     <p className="text-xl sm:text-2xl font-black text-absent-fixed">
-                        {Object.values(attendanceMarks).filter(m => m.status === 'absent').length}
+                        {absentCount}
                     </p>
                     <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-1">Absent</p>
                 </div>
                 <div className="bg-primary/5 rounded-3xl p-4 border border-primary/10 text-center shadow-sm">
                     <p className="text-xl sm:text-2xl font-black text-primary">
-                        {students.length - Object.keys(attendanceMarks).length}
+                        {unmarkedCount}
                     </p>
                     <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-1">Unmarked</p>
                 </div>

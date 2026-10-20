@@ -395,6 +395,7 @@ const AttendanceSheet = () => {
             photo: e.user?.photo || '',
             role: e.user?.role || 'intern',
             guardianPhone: e.user?.guardianPhone || '',
+            attendType: e.user?.attendType || '',
             location: course.city || course.location || 'N/A',
             courseName: course.title || course.name,
             enrolledAt: e.enrolledAt,
