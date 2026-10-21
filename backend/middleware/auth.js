@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const User = require('../models/User');
+const presenceUpdates = new Set();
 
 // Protect routes - verify JWT token
 const protect = async (req, res, next) => {
@@ -38,27 +39,41 @@ const protect = async (req, res, next) => {
             req.user = authenticatedUser;
             req.auth = decoded;
 
-            // Update lastSeen (debounced to 2 mins)
+            // Coalesce simultaneous requests and update presence atomically.
             const now = new Date();
-            if (!req.user.lastSeen || (now - req.user.lastSeen) > 2 * 60 * 1000) {
-                User.findByIdAndUpdate(req.user._id, { lastSeen: now }, { new: true })
+            const presenceKey = String(req.user._id);
+            const cutoff = new Date(now - 2 * 60 * 1000);
+            if ((!req.user.lastSeen || req.user.lastSeen < cutoff) && !presenceUpdates.has(presenceKey)) {
+                presenceUpdates.add(presenceKey);
+                Promise.resolve().then(() => User.findOneAndUpdate({
+                    _id: req.user._id,
+                    $or: [{ lastSeen: { $lt: cutoff } }, { lastSeen: null }],
+                }, { $set: { lastSeen: now } }, { new: true }).select('_id lastSeen'))
                     .then(updatedUser => {
                         const io = req.app.get('io');
-                        if (io) {
+                        if (io && updatedUser) {
                             io.emit('user_status_update', {
                                 userId: updatedUser._id.toString(),
                                 lastSeen: updatedUser.lastSeen
                             });
                         }
                     })
-                    .catch(err => console.error('Error updating lastSeen:', err));
+                    .catch(err => console.error('Error updating lastSeen:', err.name))
+                    .finally(() => presenceUpdates.delete(presenceKey));
             }
 
             if (process.env.NODE_ENV !== 'production') console.log(`🔐 Auth OK: ${req.user.name} (${req.user.role}) - ${req.method} ${req.originalUrl}`);
             next();
         } catch (error) {
-            console.log(`❌ Auth failed: Token verification error - ${error.message}`);
-            return res.status(401).json({ success: false, message: 'Not authorized, token failed' });
+            if (['JsonWebTokenError', 'TokenExpiredError', 'NotBeforeError'].includes(error.name)) {
+                return res.status(401).json({ success: false, message: 'Not authorized, token failed' });
+            }
+            if (/^(Mongo|Mongoose)/.test(error.name) || ['ECONNRESET', 'ETIMEDOUT', 'ECONNREFUSED'].includes(error.code)) {
+                console.error('Authentication database lookup unavailable:', error.name);
+                res.set('Retry-After', '3');
+                return res.status(503).json({ success: false, code: 'DATABASE_UNAVAILABLE', message: 'The database is temporarily busy. Please try again shortly.' });
+            }
+            return next(error);
         }
     }
 

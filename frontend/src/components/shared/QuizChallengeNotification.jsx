@@ -155,7 +155,10 @@ const QuizChallengeNotification = () => {
     useEffect(() => {
         if (!ready) return;
         let cancelled = false;
+        let polling = false;
         const poll = async () => {
+            if (polling || cancelled || document.hidden || !navigator.onLine) return;
+            polling = true;
             try {
                 const res = await quizGameAPI.getOpen();
                 if (cancelled) return;
@@ -169,12 +172,17 @@ const QuizChallengeNotification = () => {
                     if (!visible[id]) dismissRoom(id);
                 });
             } catch { /* ignore */ }
+            finally { polling = false; }
         };
         poll();
-        const interval = setInterval(poll, 8000);
+        const interval = setInterval(poll, 30000);
+        window.addEventListener('online', poll);
+        document.addEventListener('visibilitychange', poll);
         return () => {
             cancelled = true;
             clearInterval(interval);
+            window.removeEventListener('online', poll);
+            document.removeEventListener('visibilitychange', poll);
             dismissAll();
         };
     }, [myId, role]);
