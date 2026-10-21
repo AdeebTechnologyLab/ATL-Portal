@@ -1,72 +1,22 @@
-import axios from 'axios';
 import { getApiBaseUrl } from '../config/apiBaseUrl';
+import { createApiClient } from './createApiClient';
 
-// Create axios instance
-const api = axios.create({
-    timeout: 20000,
-    headers: {
-        'Content-Type': 'application/json'
-    }
-});
-
-// Resolve API URL on every request (live site uses /api → Vercel proxy → Render)
-api.interceptors.request.use((config) => {
-    config.baseURL = getApiBaseUrl();
-    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
-    if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-        if (import.meta.env.DEV) console.log(`🔐 [API] Request: ${config.method.toUpperCase()} ${config.url} with token`);
-    } else {
-        if (import.meta.env.DEV) console.warn(`⚠️ [API] Request: ${config.method.toUpperCase()} ${config.url} WITHOUT token`);
-    }
-    // Let the browser set multipart boundary (manual Content-Type breaks file uploads)
-    if (config.data instanceof FormData) {
-        delete config.headers['Content-Type'];
-    }
-    return config;
-});
-
-// Handle response errors
-api.interceptors.response.use(
-    (response) => {
-        if (import.meta.env.DEV) console.log(`✅ [API] Response: ${response.config.method.toUpperCase()} ${response.config.url} - Status: ${response.status}`);
-        return response;
+const api = createApiClient({
+    getBaseURL: getApiBaseUrl,
+    getToken: () => localStorage.getItem('token') || sessionStorage.getItem('token'),
+    onUnauthorized: () => {
+        for (const storage of [localStorage, sessionStorage]) {
+            for (const key of ['token', 'user', 'loginTime', 'rememberMe']) storage.removeItem(key);
+        }
+        window.location.href = '/login';
     },
-    (error) => {
-        if (import.meta.env.DEV) console.error(`❌ [API] Error: ${error.config?.method?.toUpperCase()} ${error.config?.url}`);
-        if (import.meta.env.DEV) console.error(`❌ [API] Status: ${error.response?.status}`);
-        if (import.meta.env.DEV) console.error(`❌ [API] Message: ${error.response?.data?.message || error.message}`);
-        if (import.meta.env.DEV) console.error(`❌ [API] Full Error:`, error.response?.data || error);
-
-        const isLoginRequest = error.config?.url === '/auth/login' || error.config?.url?.endsWith('/auth/login');
-        if (error.response?.status === 401 && !isLoginRequest) {
-            if (import.meta.env.DEV) console.warn('🚪 [API] 401 Unauthorized - Clearing session and redirecting to login');
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-            sessionStorage.removeItem('token');
-            sessionStorage.removeItem('user');
-            window.location.href = '/login';
-        }
-
-        // Slow network: retry GET once on timeout/network failure
-        const cfg = error.config;
-        const isGet = cfg?.method === 'get';
-        const isNetwork = !error.response && (error.code === 'ECONNABORTED' || error.code === 'ERR_NETWORK' || !error.response);
-        if (isGet && isNetwork && !cfg.__retried) {
-            cfg.__retried = true;
-            return api.request(cfg);
-        }
-
-        return Promise.reject(error);
-    }
-);
-
+});
 // Auth APIs
 export const authAPI = {
     register: (formData) => api.post('/auth/register', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
     }),
-    login: (credentials) => api.post('/auth/login', credentials),
+    login: (credentials) => api.post('/auth/login', credentials, { timeout: 60000 }),
     getMe: () => api.get('/auth/me'),
     updateProfile: (data) => api.put('/auth/profile', data, {
         headers: { 'Content-Type': 'multipart/form-data' }

@@ -287,21 +287,32 @@ const GamesCard = () => {
     const [leaders, setLeaders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [open, setOpen] = useState(false);
+    const fetchingLeaders = useRef(false);
 
     const fetchLeaders = useCallback(async () => {
+        if (fetchingLeaders.current || document.hidden || !navigator.onLine) return;
+        fetchingLeaders.current = true;
         try {
             const res = await statsAPI.getGames();
             setLeaders(res.data.data || []);
         } catch (err) {
             console.error('Failed to fetch games:', err);
+        } finally {
+            fetchingLeaders.current = false;
+            setLoading(false);
         }
-        setLoading(false);
     }, []);
 
     useEffect(() => {
         fetchLeaders();
-        const interval = setInterval(fetchLeaders, 5000);
-        return () => clearInterval(interval);
+        const interval = setInterval(fetchLeaders, 30000);
+        window.addEventListener('online', fetchLeaders);
+        document.addEventListener('visibilitychange', fetchLeaders);
+        return () => {
+            clearInterval(interval);
+            window.removeEventListener('online', fetchLeaders);
+            document.removeEventListener('visibilitychange', fetchLeaders);
+        };
     }, [fetchLeaders]);
 
     const handleGameScore = useCallback(async (score) => {

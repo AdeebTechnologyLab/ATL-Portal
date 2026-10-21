@@ -35,6 +35,7 @@ import { useTranslation } from 'react-i18next';
 import { requestNotificationPermission, showAssignmentNotification, showGradingNotification, showAttendanceNotification } from '../../utils/desktopNotifications';
 import { getSocketURL } from '../../config/apiBaseUrl';
 import ProfileCompletionBanner from '../../components/shared/ProfileCompletionBanner';
+import DataLoadError from '../../components/shared/DataLoadError';
 
 const SOCKET_URL = getSocketURL();
 
@@ -44,6 +45,9 @@ const StudentDashboard = () => {
     const navigate = useNavigate();
     const { role, user } = useSelector((state) => state.auth);
     const [isLoading, setIsLoading] = useState(true);
+    const [loadError, setLoadError] = useState(null);
+    const loadingDashboard = useRef(false);
+    const dashboardLoaded = useRef(false);
     const [enrolledCourses, setEnrolledCourses] = useState([]);
     const [pendingFees, setPendingFees] = useState(0);
     const [overdueInstallment, setOverdueInstallment] = useState(null);
@@ -59,6 +63,7 @@ const StudentDashboard = () => {
     useEffect(() => {
         fetchDashboardData();
         fetchActiveLiveClasses();
+        window.addEventListener('online', fetchDashboardData);
         fetchTimeTable();
 
         // Request notification permission on dashboard load
@@ -140,6 +145,7 @@ const StudentDashboard = () => {
         });
 
         return () => {
+            window.removeEventListener('online', fetchDashboardData);
             if (socketRef.current) {
                 socketRef.current.disconnect();
             }
@@ -258,16 +264,27 @@ const StudentDashboard = () => {
     };
 
     const fetchDashboardData = async () => {
-        setIsLoading(true);
+        if (loadingDashboard.current) return;
+        loadingDashboard.current = true;
+        if (!dashboardLoaded.current) setIsLoading(true);
+        setLoadError(null);
         try {
+            const [enrollmentResult, chatResult, feeResult, assignmentResult] = await Promise.allSettled([
+                enrollmentAPI.getMy(), chatAPI.getStudentCourses(), feeAPI.getMy(), assignmentAPI.getMy(),
+            ]);
+            // A failed request must not look like zero fees or zero assignments.
+            for (const result of [enrollmentResult, feeResult, assignmentResult]) {
+                if (result.status === 'rejected') throw result.reason;
+            }
             // Fetch enrollments
-            const enrollmentRes = await enrollmentAPI.getMy();
+            const enrollmentRes = enrollmentResult.value;
             const enrollments = enrollmentRes.data.data || [];
 
             // Fetch chat unread counts
             let chatData = [];
             try {
-                const chatRes = await chatAPI.getStudentCourses();
+                if (chatResult.status === 'rejected') throw chatResult.reason;
+                const chatRes = chatResult.value;
                 chatData = chatRes.data.data || [];
             } catch (e) {
                 console.error('Chat unread fetch failed', e);
@@ -299,7 +316,7 @@ const StudentDashboard = () => {
             // Fetch fees (pending until paid and admin-verified)
             let totalPendingAmount = 0;
             try {
-                const feeRes = await feeAPI.getMy();
+                const feeRes = feeResult.value;
                 const { totalAmount, overdueInstallment: overdue } = calculateOutstandingFees(feeRes.data.data || []);
                 totalPendingAmount = totalAmount;
                 setOverdueInstallment(overdue);
@@ -311,7 +328,7 @@ const StudentDashboard = () => {
             // Fetch assignments
             let activeAssignments = [];
             try {
-                const assignRes = await assignmentAPI.getMy();
+                const assignRes = assignmentResult.value;
                 const allAssignments = assignRes.data.assignments || [];
 
                 // Filter: Assigned to user, not submitted yet, and deadline is in the future
@@ -384,9 +401,12 @@ const StudentDashboard = () => {
                 },
             ]);
 
+            dashboardLoaded.current = true;
         } catch (error) {
+            setLoadError(error);
             console.error('Error fetching dashboard data:', error);
         } finally {
+            loadingDashboard.current = false;
             setIsLoading(false);
         }
     };
@@ -417,9 +437,12 @@ const StudentDashboard = () => {
         );
     }
 
+    if (loadError && !dashboardLoaded.current) return <DataLoadError error={loadError} onRetry={fetchDashboardData} />;
+
     return (
         <>
             <motion.div className="space-y-4 sm:space-y-5">
+                {loadError && <DataLoadError error={loadError} onRetry={fetchDashboardData} />}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}

@@ -7,6 +7,7 @@ const cloudinary = require('cloudinary').v2;
 const http = require('http');
 const { sendClassTimeReminders } = require('./utils/classTimeReminders');
 const compression = require('compression');
+const { connectWithRetry } = require('./utils/databaseConnection');
 
 // Load environment variables
 dotenv.config();
@@ -431,21 +432,19 @@ if (!mongoUri) {
     console.error('Missing MongoDB connection string. Create backend/.env and set MONGODB_URI (or MONGO_URI).');
     console.error('Example: copy backend/.env.example to backend/.env and restart the server.');
 } else {
-    mongoose.connect(mongoUri, {
+    connectWithRetry({ connect: () => mongoose.connect(mongoUri, {
         maxPoolSize: 10,
         minPoolSize: 1,
         maxIdleTimeMS: 60000,
         heartbeatFrequencyMS: 10000,
         serverSelectionTimeoutMS: 10000,
         socketTimeoutMS: 45000,
-        connectTimeoutMS: 10000,
+        connectTimeoutMS: 20000,
         retryWrites: true,
         retryReads: true,
         readPreference: 'primaryPreferred',
         w: 'majority'
-    })
-        .then(() => console.log('✅ MongoDB connected'))
-        .catch((err) => console.error('❌ MongoDB error:', err.message));
+    }) });
 }
 
 // Keep MongoDB connection alive
@@ -471,6 +470,7 @@ app.use('/api', (req, res, next) => {
     res.set('Retry-After', '3');
     return res.status(503).json({
         success: false,
+        code: 'DATABASE_RECONNECTING',
         message: 'Database is reconnecting. Please try again in a few seconds.'
     });
 });

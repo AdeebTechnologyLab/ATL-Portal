@@ -18,6 +18,7 @@ import BirthdayWish from '../../components/dashboard/BirthdayWish';
 import GamesCard from '../../components/dashboard/GamesCard';
 import QuizBattleCard from '../../components/dashboard/QuizBattleCard';
 import ProfileCompletionBanner from '../../components/shared/ProfileCompletionBanner';
+import DataLoadError from '../../components/shared/DataLoadError';
 import Loader, { ButtonLoader } from '../../components/ui/Loader';
 import { useTranslation } from 'react-i18next';
 
@@ -28,6 +29,9 @@ const TeacherCourses = ({ isDashboard = false, initialSearchMode = 'courses' }) 
     const navigate = useNavigate();
     const { user } = useSelector((state) => state.auth);
     const [isLoading, setIsLoading] = useState(true);
+    const [loadError, setLoadError] = useState(null);
+    const loadingCourses = useRef(false);
+    const coursesLoaded = useRef(false);
     const [myCourses, setMyCourses] = useState([]);
     const [filteredCourses, setFilteredCourses] = useState([]); // Filtered list
     // const [courseStudents, setCourseStudents] = useState([]); // Unused now
@@ -69,6 +73,7 @@ const TeacherCourses = ({ isDashboard = false, initialSearchMode = 'courses' }) 
     useEffect(() => {
         fetchMyCourses();
         fetchActiveLiveClasses();
+        window.addEventListener('online', fetchMyCourses);
 
         // Setup real-time updates
         socketRef.current = io(SOCKET_URL, { withCredentials: true });
@@ -92,6 +97,7 @@ const TeacherCourses = ({ isDashboard = false, initialSearchMode = 'courses' }) 
         socketRef.current.on('live_class_ended', () => fetchActiveLiveClasses());
 
         return () => {
+            window.removeEventListener('online', fetchMyCourses);
             if (socketRef.current) socketRef.current.disconnect();
         };
     }, []);
@@ -243,7 +249,10 @@ const TeacherCourses = ({ isDashboard = false, initialSearchMode = 'courses' }) 
     }, [myCourses, searchQuery, selectedCities, selectedTypes]);
 
     const fetchMyCourses = async () => {
-        setIsLoading(true);
+        if (loadingCourses.current) return;
+        loadingCourses.current = true;
+        if (!coursesLoaded.current) setIsLoading(true);
+        setLoadError(null);
         try {
             // Use optimized single-query endpoint
             const res = await courseAPI.getTeacherDashboard();
@@ -295,9 +304,12 @@ const TeacherCourses = ({ isDashboard = false, initialSearchMode = 'courses' }) 
 
             // Set the final list of courses
             setMyCourses(displayCourses);
+            coursesLoaded.current = true;
         } catch (error) {
+            setLoadError(error);
             console.error('Error fetching courses:', error);
         } finally {
+            loadingCourses.current = false;
             setIsLoading(false);
         }
     };
@@ -331,9 +343,12 @@ const TeacherCourses = ({ isDashboard = false, initialSearchMode = 'courses' }) 
         );
     }
 
+    if (loadError && !coursesLoaded.current) return <DataLoadError error={loadError} onRetry={fetchMyCourses} />;
+
     return (
         <>
             <div className="space-y-6">
+                {loadError && <DataLoadError error={loadError} onRetry={fetchMyCourses} />}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
                         <h1 className="text-xl sm:text-2xl font-bold text-gray-900">

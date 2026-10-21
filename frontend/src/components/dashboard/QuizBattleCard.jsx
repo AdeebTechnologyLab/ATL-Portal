@@ -13,13 +13,27 @@ const QuizBattleCard = () => {
 
     // Open quiz challenges (dusre students ke waiting rooms)
     useEffect(() => {
-        quizGameAPI.getOpen().then(res => setOpenRooms(res.data.data || [])).catch(() => {});
-        quizGameAPI.getLeaderboard().then(res => setLeaders((res.data.data || []).slice(0, 10))).catch(() => {});
-        const interval = setInterval(() => {
-            quizGameAPI.getOpen().then(res => setOpenRooms(res.data.data || [])).catch(() => {});
-            quizGameAPI.getLeaderboard().then(res => setLeaders((res.data.data || []).slice(0, 10))).catch(() => {});
-        }, 10000);
-        return () => clearInterval(interval);
+        let busy = false;
+        let disposed = false;
+        const refresh = async () => {
+            if (busy || disposed || document.hidden || !navigator.onLine) return;
+            busy = true;
+            const results = await Promise.allSettled([quizGameAPI.getOpen(), quizGameAPI.getLeaderboard()]);
+            busy = false;
+            if (disposed) return;
+            if (results[0].status === 'fulfilled') setOpenRooms(results[0].value.data.data || []);
+            if (results[1].status === 'fulfilled') setLeaders((results[1].value.data.data || []).slice(0, 10));
+        };
+        refresh();
+        const interval = setInterval(refresh, 30000);
+        window.addEventListener('online', refresh);
+        document.addEventListener('visibilitychange', refresh);
+        return () => {
+            disposed = true;
+            clearInterval(interval);
+            window.removeEventListener('online', refresh);
+            document.removeEventListener('visibilitychange', refresh);
+        };
     }, []);
 
     return (
