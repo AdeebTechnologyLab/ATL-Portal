@@ -181,10 +181,7 @@ const FeeManagement = () => {
             alert('Please select a file to upload');
             return;
         }
-        if (!slipId.trim()) {
-            setShowSlipError(true);
-            return;
-        }
+        // Bank Slip ID is no longer required
 
         setIsSubmitting(true);
         setError('');
@@ -667,7 +664,7 @@ const FeeManagement = () => {
                         {/* Course/amount summary removed per UX request */}
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Bank Slip ID (Transaction ID) <span className="text-red-500">*</span></label>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Bank Slip ID (Transaction ID)</label>
                             <input
                                 type="text"
                                 value={slipId}
@@ -675,14 +672,9 @@ const FeeManagement = () => {
                                     setSlipId(e.target.value);
                                     if (e.target.value.trim()) setShowSlipError(false);
                                 }}
-                                placeholder="Enter the unique ID from your slip"
-                                className={`w-full px-4 py-2 border ${showSlipError ? 'border-red-500 ring-1 ring-red-500' : 'border-gray-200'} rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all`}
+                                placeholder="Enter the unique ID from your slip (optional)"
+                                className={`w-full px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all`}
                             />
-                            {showSlipError && (
-                                <p className="text-xs text-red-500 mt-1 font-bold italic">
-                                    enter id number to submit
-                                </p>
-                            )}
                         </div>
 
                         <div className="border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-xl p-3 sm:p-4 text-center hover:border-primary transition-colors group cursor-pointer relative">
