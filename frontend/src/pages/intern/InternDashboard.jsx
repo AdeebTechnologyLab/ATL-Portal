@@ -10,6 +10,7 @@ import StatCard from '../../components/ui/StatCard';
 import Badge from '../../components/ui/Badge';
 import GamesCard from '../../components/dashboard/GamesCard';
 import QuizBattleCard from '../../components/dashboard/QuizBattleCard';
+import LiveClassBanner, { liveClassPrimaryButtonClass, liveClassDisabledButtonClass } from '../../components/dashboard/LiveClassBanner';
 import { enrollmentAPI, assignmentAPI, feeAPI, liveClassAPI, chatAPI, settingsAPI, attendanceAPI } from '../../services/api';
 import { getCourseIcon } from '../../utils/courseIcons';
 import { calculateOutstandingFees } from '../../utils/feeHelpers';
@@ -291,77 +292,41 @@ const InternDashboard = () => {
                         className="relative overflow-hidden"
                     >
                         {activeLiveClasses.map((liveClass) => (
-                            <div
-                                key={liveClass._id}
-                                className="bg-gradient-to-r from-red-600 via-red-500 to-primary rounded-3xl p-6 md:p-8 text-white shadow-2xl shadow-red-200 border-4 border-red-400"
-                            >
-                                {/* Animated Background Pulses */}
-                                <div className="absolute top-0 left-0 w-full h-full overflow-hidden rounded-3xl">
-                                    <div className="absolute top-1/2 left-1/4 w-64 h-64 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
-                                    <div className="absolute top-1/2 right-1/4 w-48 h-48 bg-yellow-400/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '0.5s' }}></div>
-                                </div>
-
-                                <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                                    <div className="flex items-start gap-4">
-                                        {/* Animated Live Indicator */}
-                                        <div className="flex-shrink-0">
-                                            <div className="relative">
-                                                <div className="w-16 h-16 md:w-20 md:h-20 bg-white/20 backdrop-blur rounded-2xl flex items-center justify-center">
-                                                    <Video className="w-8 h-8 md:w-10 md:h-10" />
-                                                </div>
-                                                <div className="absolute -top-2 -right-2 flex items-center gap-1 bg-white text-red-600 px-2 py-1 rounded-full text-xs font-black uppercase">
-                                                    <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
-                                                    LIVE
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div>
-                                            <div className="flex items-center gap-2 mb-1">
-                                                <span className="text-xs font-bold uppercase tracking-widest text-white/80">{t('dashboard.liveClassInProgress')}</span>
-                                            </div>
-                                            <h2 className="text-2xl md:text-3xl font-black uppercase tracking-tight">
-                                                {liveClass.title}
-                                            </h2>
-                                            {liveClass.autoEndMinutes ? (() => {
-                                                const secondsLeft = liveClass._secondsLeft ?? Math.max(0, Math.round((new Date(liveClass.startTime).getTime() + liveClass.autoEndMinutes * 60 * 1000 - Date.now()) / 1000));
-                                                const mins = Math.floor(secondsLeft / 60);
-                                                const secs = secondsLeft % 60;
-                                                const isExpiringSoon = secondsLeft <= 60;
-                                                return (
-                                                    <span className={`inline-flex items-center gap-1.5 mt-2 text-xs font-black px-2.5 py-1 rounded-full ${isExpiringSoon ? 'bg-white text-red-600 animate-pulse' : 'bg-white/20 text-white'}`}>
-                                                        <Timer className="w-3.5 h-3.5" />
-                                                        Ends in {String(mins).padStart(2, '0')}:{String(secs).padStart(2, '0')}
-                                                    </span>
-                                                );
-                                            })() : null}
-                                            {liveClass.description && (
-                                                <p className="text-white/80 mt-1 text-sm md:text-base">{liveClass.description}</p>
-                                            )}
-                                            <p className="text-white/70 text-sm mt-2">
-                                                {t('dashboard.liveClassBy', { name: liveClass.createdBy?.name || 'Teacher' })}
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    {enrollments.length > 0 && pendingFees === 0 ? (
+                            <LiveClassBanner key={liveClass._id} liveClass={liveClass}>
+                                {liveClass.link?.includes('/live-meet/') ? (
+                                    enrollments.length > 0 && pendingFees === 0 ? (
+                                        <button
+                                            onClick={() => window.open(`/live-meet/${liveClass.link.split('/').pop()}`, '_blank')}
+                                            className={liveClassPrimaryButtonClass}
+                                        >
+                                            <Video className="h-4 w-4 transition-transform group-hover/btn:scale-110" />
+                                            {t('dashboard.joinMeet')}
+                                        </button>
+                                    ) : (
+                                        <span className={liveClassDisabledButtonClass}>
+                                            <Video className="h-4 w-4" />
+                                            {pendingFees > 0 ? 'Pay Fee to Join' : 'Enroll to Join'}
+                                        </span>
+                                    )
+                                ) : (
+                                    enrollments.length > 0 && pendingFees === 0 ? (
                                         <a
                                             href={liveClass.link}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="flex-shrink-0 px-8 py-4 md:px-10 md:py-5 bg-white text-red-600 rounded-2xl font-black uppercase tracking-widest text-sm md:text-base hover:bg-gray-100 transition-all shadow-lg flex items-center gap-3 group"
+                                            className={liveClassPrimaryButtonClass}
                                         >
-                                            <ExternalLink className="w-5 h-5 md:w-6 md:h-6 group-hover:rotate-12 transition-transform" />
+                                            <ExternalLink className="h-4 w-4 transition-transform group-hover/btn:rotate-12" />
                                             {t('dashboard.joinNow')}
                                         </a>
                                     ) : (
-                                        <span className="flex-shrink-0 px-8 py-4 md:px-10 md:py-5 bg-white/20 text-white/60 rounded-2xl font-black uppercase tracking-widest text-sm md:text-base flex items-center gap-3 cursor-not-allowed">
-                                            <ExternalLink className="w-5 h-5 md:w-6 md:h-6" />
+                                        <span className={liveClassDisabledButtonClass}>
+                                            <ExternalLink className="h-4 w-4" />
                                             {pendingFees > 0 ? 'Pay Fee to Join' : 'Enroll to Join'}
                                         </span>
-                                    )}
-                                </div>
-                            </div>
+                                    )
+                                )}
+                            </LiveClassBanner>
                         ))}
                     </motion.div>
                 )}

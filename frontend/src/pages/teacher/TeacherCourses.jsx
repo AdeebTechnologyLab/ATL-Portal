@@ -17,6 +17,7 @@ import { getCourseIcon, getCourseStyle } from '../../utils/courseIcons';
 import BirthdayWish from '../../components/dashboard/BirthdayWish';
 import GamesCard from '../../components/dashboard/GamesCard';
 import QuizBattleCard from '../../components/dashboard/QuizBattleCard';
+import LiveClassBanner, { liveClassPrimaryButtonClass, liveClassGhostButtonClass } from '../../components/dashboard/LiveClassBanner';
 import ProfileCompletionBanner from '../../components/shared/ProfileCompletionBanner';
 import DataLoadError from '../../components/shared/DataLoadError';
 import Loader, { ButtonLoader } from '../../components/ui/Loader';
@@ -397,58 +398,40 @@ const TeacherCourses = ({ isDashboard = false, initialSearchMode = 'courses' }) 
                 {/* Active Live Classes Banner */}
                 {activeLiveClasses.length > 0 && (
                     <motion.div
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="bg-gradient-to-r from-red-500 to-primary rounded-2xl p-4 text-white"
+                        initial={{ opacity: 0, y: -20, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        className="relative overflow-hidden space-y-3"
                     >
-                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                            <div className="flex items-center gap-3">
-                                <div className="w-3 h-3 bg-white rounded-full animate-pulse"></div>
-                                <span className="font-bold text-sm sm:text-base line-clamp-1">🔴 Live Class Active: {activeLiveClasses[0]?.title}</span>
-                                {(() => {
-                                    const lc = activeLiveClasses[0];
-                                    if (!lc?.autoEndMinutes) return null;
-                                    const sl = lc._secondsLeft;
-                                    if (sl == null) return null;
-                                    const mins = Math.floor(sl / 60);
-                                    const secs = sl % 60;
-                                    return (
-                                        <span className="flex items-center gap-1 bg-white/20 px-2 py-1 rounded-lg text-[10px] sm:text-sm font-bold ml-2 whitespace-nowrap">
-                                            <Timer className="w-3 h-3 sm:w-4 h-4" />
-                                            {`${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`} left
-                                        </span>
-                                    );
-                                })()}
-                            </div>
-                            <div className="flex gap-2">
-                                {activeLiveClasses[0]?.link?.includes('/live-meet/') ? (
+                        {activeLiveClasses.map((liveClass) => (
+                            <LiveClassBanner key={liveClass._id} liveClass={liveClass}>
+                                {liveClass.link?.includes('/live-meet/') ? (
                                     <button
-                                        onClick={() => window.open(`/live-meet/${activeLiveClasses[0].link.split('/').pop()}`, '_blank')}
-                                        className="flex-1 sm:flex-none px-4 py-2 bg-white text-primary rounded-lg font-bold text-xs hover:bg-gray-100 transition-colors flex items-center justify-center gap-2"
+                                        onClick={() => window.open(`/live-meet/${liveClass.link.split('/').pop()}`, '_blank')}
+                                        className={liveClassPrimaryButtonClass}
                                     >
-                                        <Video className="w-4 h-4" />
+                                        <Video className="h-4 w-4 transition-transform group-hover/btn:scale-110" />
                                         Open Meet
                                     </button>
                                 ) : (
                                     <a
-                                        href={activeLiveClasses[0]?.link}
+                                        href={liveClass.link}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="flex-1 sm:flex-none px-4 py-2 bg-white text-red-600 rounded-lg font-bold text-xs hover:bg-gray-100 transition-colors flex items-center justify-center gap-2"
+                                        className={liveClassPrimaryButtonClass}
                                     >
-                                        <ExternalLink className="w-4 h-4" />
+                                        <ExternalLink className="h-4 w-4 transition-transform group-hover/btn:rotate-12" />
                                         Open
                                     </a>
                                 )}
                                 <button
-                                    onClick={() => handleEndLiveClass(activeLiveClasses[0]?._id)}
-                                    className="flex-1 sm:flex-none px-4 py-2 bg-red-700 text-white rounded-lg font-bold text-xs hover:bg-red-800 transition-colors flex items-center justify-center gap-2"
+                                    onClick={() => handleEndLiveClass(liveClass._id)}
+                                    className={liveClassGhostButtonClass}
                                 >
-                                    <StopCircle className="w-4 h-4" />
+                                    <StopCircle className="h-4 w-4" />
                                     End
                                 </button>
-                            </div>
-                        </div>
+                            </LiveClassBanner>
+                        ))}
                     </motion.div>
                 )}
 
