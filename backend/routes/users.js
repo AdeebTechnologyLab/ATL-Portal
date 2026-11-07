@@ -29,7 +29,7 @@ const Fee = require('../models/Fee');
 const Enrollment = require('../models/Enrollment');
 const PaidTask = require('../models/PaidTask');
 const Course = require('../models/Course');
-const { uploadPhoto, deleteCloudinaryImage } = require('../config/cloudinary');
+const { uploadPhoto, deleteCloudinaryImage, extractPublicId } = require('../config/cloudinary');
 const moment = require('moment-timezone');
 const { sendPushNotification } = require('../utils/pushHelper');
 
@@ -597,8 +597,9 @@ router.put('/:id', protect, requireManagementAccess, uploadPhoto.single('photo')
 
         // If photo uploaded, update path
         if (req.file) {
-            // Delete old image from Cloudinary if user already has one
-            if (currentUser.photo) {
+            // Only delete the previous asset when it has a different public_id.
+            // Fixed public_ids (user_<id>) are overwritten in place.
+            if (currentUser.photo && extractPublicId(currentUser.photo) !== extractPublicId(req.file.path)) {
                 await deleteCloudinaryImage(currentUser.photo);
             }
             updateData.photo = req.file.path;
@@ -658,6 +659,31 @@ router.put('/:id', protect, requireManagementAccess, uploadPhoto.single('photo')
                 { $set: syncData }
             );
             linkedUpdatedCount += syncResult.modifiedCount;
+        }
+
+        // Notify linked accounts in real time so their screens refresh
+        try {
+            const io = req.app.get('io');
+            if (io) {
+                const usersToNotify = await User.find({ _id: { $in: linkedAccountIds } }).select('_id');
+                const payload = {
+                    type: 'user_profile_updated',
+                    userId: req.params.id,
+                    updates: syncData
+                };
+                usersToNotify.forEach(u => {
+                    try {
+                        io.to(u._id.toString()).emit('user_updated', payload);
+                        io.to(u._id.toString()).emit('new_browser_notification', {
+                            title: 'Profile Updated',
+                            message: 'Your account information was updated by admin.',
+                            url: '/'
+                        });
+                    } catch (e) { /* ignore */ }
+                });
+            }
+        } catch (emitErr) {
+            console.error('Error emitting user update sockets:', emitErr);
         }
 
         res.json({

@@ -187,11 +187,17 @@ router.put('/:id', protect, authorize('admin', 'teacher'), requireActiveTeacher,
 
             const io = req.app.get('io');
             newlyAssignedManagers.forEach(newManagerId => {
-                if (io) io.to(newManagerId).emit('new_browser_notification', {
-                    title: 'Job Assigned to You',
-                    message: `You can now edit "${task.title}" and chat with its applicants.`,
-                    url: '/teacher/jobs'
-                });
+                if (io) {
+                    io.to(newManagerId).emit('new_browser_notification', {
+                        title: 'Job Assigned to You',
+                        message: `You can now edit "${task.title}" and chat with its applicants.`,
+                        url: '/teacher/jobs'
+                    });
+                    io.to(newManagerId).emit('task_assigned', {
+                        taskId: task._id.toString(),
+                        title: task.title
+                    });
+                }
                 sendPushNotification(newManagerId, { title: 'New Job to Manage', body: `You can now manage "${task.title}" and its applicants.`, icon: '/logo.png', url: '/teacher/jobs' });
             });
         }
@@ -429,6 +435,10 @@ router.put('/:id/assign', protect, authorize('admin', 'teacher'), requireActiveT
                 title: 'Task Assigned',
                 message: `You have been assigned to the task: "${task.title}".`,
                 url: '/job/tasks'
+            });
+            io.to(userId.toString()).emit('task_assigned', {
+                taskId: task._id.toString(),
+                title: task.title
             });
 
             // Push Notification for Student

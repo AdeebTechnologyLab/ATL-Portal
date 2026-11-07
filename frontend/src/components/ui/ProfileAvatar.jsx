@@ -1,4 +1,5 @@
 import { User } from 'lucide-react';
+import { getBackendOrigin } from '../../config/apiBaseUrl';
 
 /**
  * Consistent profile avatar component used across the app.
@@ -30,25 +31,33 @@ const ProfileAvatar = ({
 }) => {
     const sizeClass = SIZE_MAP[size] || SIZE_MAP.md;
     const initial = (name || '?').charAt(0).toUpperCase();
+    const resolvedSrc = src
+        ? (src.startsWith('http') ? src : `${getBackendOrigin()}${src.startsWith('/') ? '' : '/'}${src}`)
+        : null;
+    const fallbackUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(name || 'User')}&background=FF6B00&color=fff`;
 
     return (
         <div
-            className={`${sizeClass} ${shape} overflow-hidden flex-shrink-0 flex items-center justify-center ${border} ${className} ${!src ? fallbackColor : 'bg-gray-100'}`}
+            className={`${sizeClass} ${shape} overflow-hidden flex-shrink-0 flex items-center justify-center ${border} ${className} ${!resolvedSrc ? fallbackColor : 'bg-gray-100'}`}
         >
-            {src ? (
+            {resolvedSrc ? (
                 <img
-                    src={src}
+                    src={resolvedSrc}
                     alt={name}
                     className="w-full h-full object-cover object-center"
                     loading="lazy"
                     onError={(e) => {
-                        // Hide broken image, show fallback
-                        e.target.style.display = 'none';
-                        e.target.parentElement.classList.add(...fallbackColor.split(' '));
+                        e.target.onerror = null;
+                        e.target.src = fallbackUrl;
                     }}
                 />
             ) : (
-                <span className="font-bold text-white select-none">{initial}</span>
+                <img
+                    src={fallbackUrl}
+                    alt={name}
+                    className="w-full h-full object-cover object-center"
+                    loading="lazy"
+                />
             )}
         </div>
     );

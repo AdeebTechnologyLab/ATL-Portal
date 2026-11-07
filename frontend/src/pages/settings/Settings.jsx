@@ -103,6 +103,9 @@ const Settings = () => {
         email: user?.email || '',
         phone: user?.phone || '',
     });
+    const [photoFile, setPhotoFile] = useState(null);
+    const [photoPreview, setPhotoPreview] = useState(null);
+    const photoInputRef = useRef(null);
 
     const [isChangingPassword, setIsChangingPassword] = useState(false);
     const [isSavingPassword, setIsSavingPassword] = useState(false);
@@ -183,6 +186,8 @@ const Settings = () => {
                 email: user.email || '',
                 phone: user.phone || '',
             });
+            setPhotoFile(null);
+            setPhotoPreview(null);
             if (user.preferences?.customTheme) {
                 setCustomTheme(user.preferences.customTheme);
             }
@@ -202,14 +207,17 @@ const Settings = () => {
     const handleSaveProfile = async () => {
         setIsSavingProfile(true);
         try {
-            const response = await authAPI.updateProfile({
-                name: profileForm.name,
-                email: profileForm.email,
-                phone: profileForm.phone,
-            });
+            const formData = new FormData();
+            formData.append('name', profileForm.name);
+            formData.append('email', profileForm.email);
+            formData.append('phone', profileForm.phone);
+            if (photoFile) formData.append('photo', photoFile);
+            const response = await authAPI.updateProfile(formData);
             if (response.data.user) {
                 dispatch(updateUser(response.data.user));
             }
+            setPhotoFile(null);
+            setPhotoPreview(null);
             setIsEditingProfile(false);
             showSuccessMessage('Profile updated successfully!');
         } catch (error) {
@@ -321,8 +329,8 @@ const Settings = () => {
                         <div className="flex items-start gap-4">
                             <div className="relative group shrink-0">
                                 <div className="w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center overflow-hidden border-2 border-primary/20">
-                                    {user?.photo ? (
-                                        <img src={user.photo} alt={user.name} className="w-full h-full object-cover" />
+                                    {photoPreview || user?.photo ? (
+                                        <img src={photoPreview || user.photo} alt={user.name} className="w-full h-full object-cover" />
                                     ) : (
                                         <span className="text-xl font-black text-primary">
                                             {(user?.name || 'U').charAt(0).toUpperCase()}
@@ -330,9 +338,27 @@ const Settings = () => {
                                     )}
                                 </div>
                                 {isEditingProfile && (
-                                    <div className="absolute inset-0 bg-black/40 rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
-                                        <Camera className="w-5 h-5 text-white" />
-                                    </div>
+                                    <>
+                                        <input
+                                            ref={photoInputRef}
+                                            type="file"
+                                            accept="image/*"
+                                            className="hidden"
+                                            onChange={(e) => {
+                                                const file = e.target.files?.[0];
+                                                if (file) {
+                                                    setPhotoFile(file);
+                                                    setPhotoPreview(URL.createObjectURL(file));
+                                                }
+                                            }}
+                                        />
+                                        <div
+                                            onClick={() => photoInputRef.current?.click()}
+                                            className="absolute inset-0 bg-black/40 rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                                        >
+                                            <Camera className="w-5 h-5 text-white" />
+                                        </div>
+                                    </>
                                 )}
                             </div>
                             <div className="flex-1 min-w-0 space-y-3">
@@ -377,7 +403,7 @@ const Settings = () => {
                                                 Save
                                             </button>
                                             <button
-                                                onClick={() => { setIsEditingProfile(false); setProfileForm({ name: user?.name || '', email: user?.email || '', phone: user?.phone || '' }); }}
+                                                onClick={() => { setIsEditingProfile(false); setProfileForm({ name: user?.name || '', email: user?.email || '', phone: user?.phone || '' }); setPhotoFile(null); setPhotoPreview(null); }}
                                                 className="px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-[10px] font-black uppercase tracking-widest rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors flex items-center gap-2"
                                             >
                                                 <X className="w-3.5 h-3.5" />

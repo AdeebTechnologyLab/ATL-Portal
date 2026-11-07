@@ -233,6 +233,7 @@ const DashboardLayout = () => {
         socket.on('new_browser_notification', handleRefresh);
         socket.on('new_assignment', handleRefresh);
         socket.on('new_submission', handleRefresh);
+        socket.on('new_browser_notification', handleRefresh);
         socket.on('attendance_updated', handleRefresh);
         socket.on('fee_updated', handleRefresh);
         socket.on('class_time_reminder', playClassReminderRing);

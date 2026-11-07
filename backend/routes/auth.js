@@ -4,13 +4,28 @@ const crypto = require('crypto');
 const { sendEmail, sendEmailWithTimeout, isEmailConfigured, getEmailConfigIssue } = require('../utils/email');
 const { getClientUrl } = require('../config/client');
 const { protect, authorize } = require('../middleware/auth');
-const { uploadPhoto, uploadRegistration, deleteCloudinaryImage } = require('../config/cloudinary');
+const { uploadPhoto, uploadRegistration, deleteCloudinaryImage, extractPublicId } = require('../config/cloudinary');
 const User = require('../models/User');
 
 const getLinkedAccountQuery = (user) => {
     const rollNo = user.rollNo?.toString().trim();
     if (rollNo) return { rollNo };
     return { email: user.email?.toString().trim().toLowerCase() };
+};
+
+// Keep the profile photo identical across every portal linked to the same person.
+// Returns the best (most recently updated non-empty) photo for the linked group.
+const syncLinkedPhoto = async (user) => {
+    if (!user) return null;
+    const linked = await User.find(getLinkedAccountQuery(user)).select('photo updatedAt');
+    const candidates = linked.filter((account) => account.photo);
+    candidates.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+    const bestPhoto = candidates.length ? candidates[0].photo : null;
+    if (bestPhoto && user.photo !== bestPhoto) {
+        await User.updateMany(getLinkedAccountQuery(user), { $set: { photo: bestPhoto } });
+        user.photo = bestPhoto;
+    }
+    return user.photo || bestPhoto || null;
 };
 
 // ---------- in-memory rate limiting (per-process; enough for a single instance) ----------
@@ -122,6 +137,7 @@ router.post('/register', uploadRegistration.fields([
             const userWithPhoto = await User.findOne({ email, photo: { $exists: true, $ne: null, $ne: '' } });
             if (userWithPhoto) {
                 userData.photo = userWithPhoto.photo;
+                syncData.photo = userData.photo;
                 console.log(`Reusing existing photo for ${email}`);
             }
         }
@@ -354,6 +370,9 @@ router.post('/login', async (req, res) => {
             return res.status(401).json({ success: false, message: 'Invalid credentials' });
         }
 
+        // Keep profile photo consistent across all linked portals
+        await syncLinkedPhoto(user);
+
         // Check if account has been revoked by admin
         if (user.role !== 'admin' && !user.isVerified) {
             return res.status(403).json({
@@ -428,6 +447,7 @@ router.post('/login', async (req, res) => {
 router.get('/me', protect, async (req, res) => {
     try {
         const user = await User.findById(req.user.id);
+        if (user) await syncLinkedPhoto(user);
         res.json({ success: true, user });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
@@ -521,6 +541,9 @@ router.post('/switch-role', protect, async (req, res) => {
             });
         }
 
+        // Keep profile photo consistent across all linked portals
+        await syncLinkedPhoto(targetUser);
+
         // Generate a new token for the target user (same session duration logic as login)
         const { rememberMe } = req.body;
         const keepRemembered = typeof rememberMe === 'boolean' ? rememberMe : Boolean(req.auth?.rememberMe);
@@ -579,36 +602,17 @@ router.put('/profile', protect, uploadPhoto.single('photo'), async (req, res) =>
             const bioSetting = await SystemSetting.findOne({ key: settingKey });
             const isBioEditingAllowed = bioSetting ? bioSetting.value : false; // Default to false if not set
 
-            if (!isBioEditingAllowed && req.file) {
-                return res.status(403).json({
-                    success: false,
-                    message: 'Profile image editing is currently disabled by the administrator.'
-                });
-            }
-
-            if (
-                !isBioEditingAllowed &&
-                requestedEmail &&
-                requestedEmail !== currentUser.email
-            ) {
-                return res.status(403).json({
-                    success: false,
-                    message: 'Email editing is currently disabled by the administrator.'
-                });
-            }
-
             // Check if user has no data - allow editing to fill initial data
             const hasNoData = !currentUser.phone && !currentUser.city && !currentUser.address;
 
             if (!isBioEditingAllowed && !hasNoData) {
-                // Email and photo both follow the admin bio permission.
-                if (!req.file && !requestedEmail) {
-                    return res.status(403).json({
-                        success: false,
-                        message: 'Profile editing is currently disabled by the administrator.'
-                    });
-                }
-                req.body = requestedEmail ? { email: requestedEmail } : {};
+                // Profile editing is locked, but the core account fields
+                // (name, phone, email, photo) must always stay editable.
+                const filteredBody = {};
+                if (req.body.name !== undefined) filteredBody.name = req.body.name;
+                if (req.body.phone !== undefined) filteredBody.phone = req.body.phone;
+                if (requestedEmail) filteredBody.email = requestedEmail;
+                req.body = filteredBody;
             }
         }
 
@@ -625,8 +629,10 @@ router.put('/profile', protect, uploadPhoto.single('photo'), async (req, res) =>
 
         // Add new photo if uploaded
         if (req.file) {
-            // Delete old image from Cloudinary if user already has one
-            if (currentUser.photo) {
+            // Delete the previous image only when it lives under a different
+            // Cloudinary public_id. Fixed public_ids (user_<id>) are overwritten
+            // in place, so deleting here would remove the freshly uploaded file.
+            if (currentUser.photo && extractPublicId(currentUser.photo) !== extractPublicId(req.file.path)) {
                 await deleteCloudinaryImage(currentUser.photo);
             }
             updates.photo = req.file.path;

@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { io } from 'socket.io-client';
 import {
     Briefcase, Clock, FileText, CheckCircle, XCircle, AlertCircle
 } from 'lucide-react';
 import { taskAPI } from '../../services/api';
 import { formatDate } from '../../utils/dateFormatter';
+import { getSocketURL } from '../../config/apiBaseUrl';
 import ProfileCompletionBanner from '../../components/shared/ProfileCompletionBanner';
 
 const JobDashboard = () => {
@@ -16,9 +18,14 @@ const JobDashboard = () => {
     const [tasks, setTasks] = useState([]);
     const [assignedTasks, setAssignedTasks] = useState([]);
 
+    const SOCKET_URL = getSocketURL();
     useEffect(() => {
         fetchDashboardData();
-    }, []);
+        const socket = io(SOCKET_URL, { query: { userId: user?.id || user?._id } });
+        socket.on('new_browser_notification', () => fetchDashboardData());
+        socket.on('task_assigned', () => fetchDashboardData());
+        return () => socket.disconnect();
+    }, [user]);
 
     const fetchDashboardData = async () => {
         setIsLoading(true);
