@@ -28,6 +28,9 @@ const AdminWorkLists = () => {
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [listTitle, setListTitle] = useState('');
     const [creating, setCreating] = useState(false);
+    const [renameListId, setRenameListId] = useState('');
+    const [renameTitle, setRenameTitle] = useState('');
+    const [renaming, setRenaming] = useState(false);
     const [search, setSearch] = useState('');
     const [menuListId, setMenuListId] = useState('');
     const [addingToListId, setAddingToListId] = useState('');
@@ -66,10 +69,13 @@ const AdminWorkLists = () => {
 
     const visibleLists = useMemo(() => {
         const query = search.trim().toLowerCase();
-        return lists.filter(list => !query
-            || list.title?.toLowerCase().includes(query)
-            || (list.items || []).some(item => item.title?.toLowerCase().includes(query))
-        );
+        const pendingCount = (list) => (list.items || []).filter(item => item.status !== 'completed').length;
+        return lists
+            .filter(list => !query
+                || list.title?.toLowerCase().includes(query)
+                || (list.items || []).some(item => item.title?.toLowerCase().includes(query))
+            )
+            .sort((a, b) => pendingCount(b) - pendingCount(a));
     }, [lists, search]);
 
     const replaceList = (updatedList) => {
@@ -94,15 +100,39 @@ const AdminWorkLists = () => {
         }
     };
 
-    const renameList = async (list) => {
-        const title = window.prompt('List ka naya title:', list.title)?.trim();
-        if (!title || title === list.title) return;
+    const openRenameModal = (list) => {
+        setRenameListId(list._id);
+        setRenameTitle(list.title || '');
+        setMenuListId('');
+    };
+
+    const closeRenameModal = () => {
+        setRenameListId('');
+        setRenameTitle('');
+    };
+
+    const renameList = async (event) => {
+        event.preventDefault();
+        const title = renameTitle.trim();
+        if (!title) {
+            toast.error('List title khali nahi ho sakta.');
+            return;
+        }
+        const list = lists.find(item => item._id === renameListId);
+        if (!list || title === list.title) {
+            closeRenameModal();
+            return;
+        }
+        setRenaming(true);
         try {
-            const response = await adminWorkTaskAPI.update(list._id, { title });
+            const response = await adminWorkTaskAPI.update(renameListId, { title });
             replaceList(response.data.data);
-            setMenuListId('');
+            closeRenameModal();
+            toast.success('List rename ho gayi.');
         } catch (error) {
             toast.error(error.response?.data?.message || 'List rename nahi ho saki.');
+        } finally {
+            setRenaming(false);
         }
     };
 
@@ -115,18 +145,6 @@ const AdminWorkLists = () => {
             toast.success('List delete ho gayi.');
         } catch (error) {
             toast.error(error.response?.data?.message || 'List delete nahi ho saki.');
-        }
-    };
-
-    const updateListStatus = async (list, status) => {
-        const previousStatus = list.status;
-        setLists(current => current.map(item => item._id === list._id ? { ...item, status } : item));
-        try {
-            const response = await adminWorkTaskAPI.update(list._id, { status });
-            replaceList(response.data.data);
-        } catch (error) {
-            setLists(current => current.map(item => item._id === list._id ? { ...item, status: previousStatus } : item));
-            toast.error(error.response?.data?.message || 'List status update nahi ho saka.');
         }
     };
 
@@ -366,7 +384,7 @@ const AdminWorkLists = () => {
                                             </button>
                                             {menuListId === list._id && (
                                                 <div className="absolute right-0 top-10 z-30 w-44 overflow-hidden rounded-xl border border-gray-100 bg-white py-1 shadow-xl dark:border-white/10 dark:bg-gray-900">
-                                                    {canManage && <button onClick={() => renameList(list)} className="w-full px-4 py-2.5 text-left text-sm font-semibold text-gray-700 hover:bg-gray-50 dark:text-white/80 dark:hover:bg-white/5">Rename list</button>}
+                                                    {canManage && <button onClick={() => openRenameModal(list)} className="w-full px-4 py-2.5 text-left text-sm font-semibold text-gray-700 hover:bg-gray-50 dark:text-white/80 dark:hover:bg-white/5">Rename list</button>}
                                                     <button onClick={() => openShareModal(list._id)} className="w-full px-4 py-2.5 text-left text-sm font-semibold text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-500/10">Add user</button>
                                                     {canManage && list.sharedWith && list.sharedWith.length > 0 && <button onClick={() => openRemoveUserModal(list._id)} className="w-full px-4 py-2.5 text-left text-sm font-semibold text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-500/10">Remove user</button>}
                                                     {canManage && <button onClick={() => deleteList(list)} className="w-full px-4 py-2.5 text-left text-sm font-semibold text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10">Delete list</button>}
@@ -552,6 +570,25 @@ const AdminWorkLists = () => {
                         <div className="mt-5 flex justify-end gap-3">
                             <button type="button" onClick={() => setShowCreateModal(false)} className="rounded-xl border border-gray-200 px-5 py-3 text-sm font-bold text-gray-600 dark:border-white/10 dark:text-white/70">Cancel</button>
                             <button disabled={creating} className="rounded-xl bg-primary px-5 py-3 text-sm font-black text-white disabled:opacity-60">{creating ? 'Creating...' : 'Create List'}</button>
+                        </div>
+                    </form>
+                </div>
+            )}
+
+            {renameListId && (
+                <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm" onMouseDown={closeRenameModal}>
+                    <form onSubmit={renameList} onMouseDown={event => event.stopPropagation()} className="w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl dark:bg-gray-900">
+                        <div className="mb-5 flex items-center justify-between">
+                            <div>
+                                <p className="text-xs font-black uppercase tracking-[0.18em] text-primary">Rename List</p>
+                                <h2 className="mt-1 text-xl font-black text-gray-900 dark:text-white">List ka naya title dein</h2>
+                            </div>
+                            <button type="button" onClick={closeRenameModal} className="rounded-xl p-2 text-gray-400 hover:bg-gray-100 dark:hover:bg-white/10"><X className="h-5 w-5" /></button>
+                        </div>
+                        <input autoFocus required maxLength={200} value={renameTitle} onChange={event => setRenameTitle(event.target.value)} placeholder="Example: CEO Tasks" className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 font-semibold outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 dark:border-white/10 dark:bg-black/20 dark:text-white" />
+                        <div className="mt-5 flex justify-end gap-3">
+                            <button type="button" onClick={closeRenameModal} className="rounded-xl border border-gray-200 px-5 py-3 text-sm font-bold text-gray-600 dark:border-white/10 dark:text-white/70">Cancel</button>
+                            <button disabled={renaming} className="rounded-xl bg-primary px-5 py-3 text-sm font-black text-white disabled:opacity-60">{renaming ? 'Saving...' : 'Save'}</button>
                         </div>
                     </form>
                 </div>
