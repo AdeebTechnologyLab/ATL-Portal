@@ -65,8 +65,8 @@ const LiveClassBanner = ({ liveClass, children, className = '' }) => {
                                     </span>
                                 </span>
                             )}
-                            <span className="inline-flex min-w-0 items-center gap-2 text-xs font-semibold text-white/85">
-                                <span className="relative flex h-6 w-6 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white/15 text-[9px] font-black text-white">
+                            <span className="inline-flex min-w-0 items-center gap-2.5 rounded-full bg-white/5 py-1 pl-1 pr-3 ring-1 ring-white/10">
+                                <span className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-primary to-red-500 text-[11px] font-black uppercase text-white ring-2 ring-white/20">
                                     {hostInitials}
                                     {hostPhoto && (
                                         <img
@@ -77,7 +77,10 @@ const LiveClassBanner = ({ liveClass, children, className = '' }) => {
                                         />
                                     )}
                                 </span>
-                                <span className="truncate">{hostName}</span>
+                                <span className="min-w-0 text-left leading-tight">
+                                    <span className="block text-[9px] font-bold uppercase tracking-[0.18em] text-white/40">Host</span>
+                                    <span className="block truncate text-xs font-semibold text-white/90">{hostName}</span>
+                                </span>
                             </span>
                         </div>
 

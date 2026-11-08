@@ -62,7 +62,7 @@ router.get('/', protect, authorize('teacher', 'admin'), async (req, res) => {
         // admin sab dekhta hai.
         const query = req.user.role === 'admin' ? {} : {};
         let liveClasses = await LiveClass.find(query)
-            .populate('createdBy', 'name')
+            .populate('createdBy', 'name photo')
             .populate('course', 'title')
             .sort('-createdAt');
 

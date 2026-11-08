@@ -423,13 +423,15 @@ const TeacherCourses = ({ isDashboard = false, initialSearchMode = 'courses' }) 
                                         Open
                                     </a>
                                 )}
-                                <button
-                                    onClick={() => handleEndLiveClass(liveClass._id)}
-                                    className={liveClassGhostButtonClass}
-                                >
-                                    <StopCircle className="h-4 w-4" />
-                                    End
-                                </button>
+                                {String(liveClass.createdBy?._id || liveClass.createdBy) === String(user?.id || user?._id) && (
+                                    <button
+                                        onClick={() => handleEndLiveClass(liveClass._id)}
+                                        className={liveClassGhostButtonClass}
+                                    >
+                                        <StopCircle className="h-4 w-4" />
+                                        End
+                                    </button>
+                                )}
                             </LiveClassBanner>
                         ))}
                     </motion.div>
