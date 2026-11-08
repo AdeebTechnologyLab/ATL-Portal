@@ -475,6 +475,46 @@ app.use('/api', (req, res, next) => {
     });
 });
 
+// Real-time data sync: after a successful admin/teacher write request, notify
+// connected clients so their screens refresh automatically without a page
+// reload. Routes that already have dedicated socket events are skipped.
+const realtimeSkipPrefixes = [
+    '/auth', '/chat', '/user-notifications', '/notifications', '/quiz-game',
+    '/live-class', '/stats', '/reports', '/google-drive', '/directory', '/health',
+    '/fees', '/attendance'
+];
+
+app.use('/api', (req, res, next) => {
+    const method = req.method.toUpperCase();
+    if (!['POST', 'PUT', 'PATCH', 'DELETE'].includes(method)) return next();
+
+    const relativePath = req.path;
+    if (realtimeSkipPrefixes.some((prefix) => relativePath === prefix || relativePath.startsWith(`${prefix}/`))) {
+        return next();
+    }
+
+    res.on('finish', () => {
+        if (res.statusCode < 200 || res.statusCode >= 300) return;
+
+        const actorRole = req.user?.role;
+        if (!['admin', 'teacher'].includes(actorRole)) return;
+
+        try {
+            io.emit('data_changed', {
+                resource: relativePath.split('/').filter(Boolean)[0] || '',
+                path: req.originalUrl,
+                method,
+                actorId: req.user?._id || req.user?.id || null,
+                actorRole
+            });
+        } catch (error) {
+            console.error('Failed to broadcast data_changed:', error);
+        }
+    });
+
+    next();
+});
+
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);

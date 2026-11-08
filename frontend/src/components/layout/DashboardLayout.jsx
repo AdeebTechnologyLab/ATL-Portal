@@ -104,6 +104,7 @@ const DashboardLayout = () => {
     const [currentDateTime, setCurrentDateTime] = useState(() => new Date());
     const [pendingTasks, setPendingTasks] = useState([]);
     const [isPageLoading, setIsPageLoading] = useState(false);
+    const [dataVersion, setDataVersion] = useState(0);
     const [isWeeklyOff, setIsWeeklyOff] = useState(false);
     const [weeklyOffDayName, setWeeklyOffDayName] = useState('');
     const [feeAccessStatus, setFeeAccessStatus] = useState({ loading: true, hasOverdue: false, overdueInstallment: null });
@@ -238,6 +239,35 @@ const DashboardLayout = () => {
         socket.on('fee_updated', handleRefresh);
         socket.on('class_time_reminder', playClassReminderRing);
         socket.on('new_daily_task', handleRefresh);
+
+        // Generic real-time sync: whenever someone else changes data anywhere,
+        // soft-refresh the current screen so it shows fresh data without a reload.
+        let dataRefreshTimer = null;
+        socket.on('data_changed', (payload) => {
+            const myId = user.id || user._id;
+            if (payload?.actorId && String(payload.actorId) === String(myId)) return;
+
+            if (dataRefreshTimer) clearTimeout(dataRefreshTimer);
+            dataRefreshTimer = setTimeout(() => {
+                handleRefresh();
+
+                const path = window.location.pathname;
+                const skipSoftRefresh = ['/live-meet', '/discussion-room', '/chat', '/job-chat']
+                    .some((segment) => path.includes(segment));
+                const active = document.activeElement;
+                const isTyping = !!active && (
+                    active.tagName === 'INPUT' ||
+                    active.tagName === 'TEXTAREA' ||
+                    active.tagName === 'SELECT' ||
+                    active.isContentEditable
+                );
+
+                if (!skipSoftRefresh && !isTyping) {
+                    setDataVersion((version) => version + 1);
+                }
+            }, 400);
+        });
+
         socket.on('user_updated', (data) => {
             try {
                 if (data && data.updates) {
@@ -250,6 +280,7 @@ const DashboardLayout = () => {
 
         return () => {
             clearInterval(interval);
+            if (dataRefreshTimer) clearTimeout(dataRefreshTimer);
             socket.disconnect();
         };
     }, [role, user, fetchFeeAccessStatus]);
@@ -990,7 +1021,7 @@ const DashboardLayout = () => {
                         )}
                     </AnimatePresence>
                     <motion.div
-                        key={location.pathname}
+                        key={`${location.pathname}-${dataVersion}`}
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.3 }}
