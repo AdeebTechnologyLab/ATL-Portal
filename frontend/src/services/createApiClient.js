@@ -35,7 +35,7 @@ export const createApiClient = ({ getBaseURL, getToken, onUnauthorized, wait = w
         // A delayed response from a previous account must not log out the current one.
         if (config.__sessionToken !== getToken()) throw error;
         const status = error.response?.status;
-        const login = config.url?.split('?')[0]?.endsWith('/auth/login');
+        const login = /\/auth\/(login|google)$/.test(config.url?.split('?')[0] || '');
         if (status === 401 && !login && config.__sessionToken) onUnauthorized();
         const transient = status === 502 || status === 503 || status === 504
             || (!error.response && ['ECONNABORTED', 'ETIMEDOUT', 'ERR_NETWORK'].includes(error.code));

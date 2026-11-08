@@ -659,6 +659,15 @@ const InternsManagement = () => {
         }
     };
 
+    const openGmailCompose = (emailWindow, to, subject, body) => {
+        const url = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(to)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        if (emailWindow && !emailWindow.closed) {
+            emailWindow.location.replace(url);
+        } else {
+            window.open(url, '_blank', 'noopener,noreferrer');
+        }
+    };
+
     const createInternReportLink = async (intern) => {
         const [enrollmentsRes, assignmentsRes, feesRes, dailyTasksRes] = await Promise.all([
             enrollmentAPI.getUserEnrollments(intern._id),
@@ -728,12 +737,15 @@ const InternsManagement = () => {
 
     const handleInternStrikeOffEmail = async (event, intern) => {
         event.preventDefault();
+        if (!intern.email) { alert('Email address not found for this intern.'); return; }
+        const emailWindow = window.open('', '_blank');
         try {
             const { reportUrl, enrollments } = await createInternReportLink(intern);
             const subject = 'Internship Strike Off Notice - Adeeb Technology Lab';
             const body = getInternStrikeOffMessage(intern, reportUrl, enrollments).replaceAll('*', '');
-            window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${intern.email}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`, '_blank');
+            openGmailCompose(emailWindow, intern.email, subject, body);
         } catch (error) {
+            if (emailWindow && !emailWindow.closed) emailWindow.close();
             alert(`Academic report link create nahi ho saka: ${error.response?.data?.message || error.message}`);
         }
     };
@@ -1233,22 +1245,28 @@ const InternsManagement = () => {
                                             {((getInternStatus(intern) === 'Completed') || (intern.registeredOld && (intern.totalEnrollments || 0) === 0) || (intern.email && (((intern.totalEnrollments || 0) === 0) || getInternStatus(intern) === 'Active'))) && (
                                                 <button
                                                     onClick={async (event) => {
+                                                        event.preventDefault();
+                                                        if (!intern.email) { alert('Email address not found for this intern.'); return; }
+
                                                         if (intern.registeredOld && (intern.totalEnrollments || 0) === 0) {
-                                                            event.preventDefault();
-                                                            if (!intern.email) { alert('Email address not found for this intern.'); return; }
                                                             const body = getOldInternMessage(intern).replaceAll('*', '');
-                                                            window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${intern.email}&su=${encodeURIComponent('Admissions & Internships Are Open Again - Adeeb Technology Lab')}&body=${encodeURIComponent(body)}`, '_blank');
+                                                            openGmailCompose(null, intern.email, 'Admissions & Internships Are Open Again - Adeeb Technology Lab', body);
                                                             return;
                                                         }
                                                         if (getInternStatus(intern) === 'Completed') {
-                                                            event.preventDefault();
-                                                            if (!intern.email) { alert('Email address not found for this intern.'); return; }
-                                                            const body = (await getCompletionMessage(intern)).replaceAll('*', '');
-                                                            window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${intern.email}&su=${encodeURIComponent('Congratulations on Completing Your Internship - Adeeb Technology Lab')}&body=${encodeURIComponent(body)}`, '_blank');
+                                                            const emailWindow = window.open('', '_blank');
+                                                            try {
+                                                                const body = (await getCompletionMessage(intern)).replaceAll('*', '');
+                                                                openGmailCompose(emailWindow, intern.email, 'Congratulations on Completing Your Internship - Adeeb Technology Lab', body);
+                                                            } catch (error) {
+                                                                if (emailWindow && !emailWindow.closed) emailWindow.close();
+                                                                console.error(error);
+                                                                alert('Email prepare nahi ho saka. Please try again.');
+                                                            }
                                                             return;
                                                         }
                                                         if (getInternStatus(intern) === 'Active' && !hasPaidFee(intern._id)) {
-                                                            event.preventDefault();
+                                                            const emailWindow = window.open('', '_blank');
                                                             try {
                                                                 const enrollRes = await enrollmentAPI.getUserEnrollments(intern._id);
                                                                 const enrollments = enrollRes.data.data || [];
@@ -1256,7 +1274,7 @@ const InternsManagement = () => {
                                                                 intern.enrolledCourseName = courseNames;
                                                             } catch (e) { console.error(e); }
                                                             const body = getFeeReminderMessage(intern).replaceAll('*', '');
-                                                            window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${intern.email}&su=${encodeURIComponent('Course Fee Reminder - Adeeb Technology Lab')}&body=${encodeURIComponent(body)}`, '_blank');
+                                                            openGmailCompose(emailWindow, intern.email, 'Course Fee Reminder - Adeeb Technology Lab', body);
                                                             return;
                                                         }
                                                         if (getInternStatus(intern) === 'Active') {

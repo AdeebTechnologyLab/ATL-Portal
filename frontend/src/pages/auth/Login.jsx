@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { motion, useReducedMotion } from 'framer-motion';
@@ -9,6 +9,15 @@ import { getStudentLandingPath } from '../../utils/postLoginRedirect';
 import { ButtonLoader } from '../../components/ui/Loader';
 import GuestChatWidget from '../../components/shared/GuestChatWidget';
 import { useTranslation } from 'react-i18next';
+
+const GoogleIcon = ({ className = 'h-5 w-5' }) => (
+    <svg className={className} viewBox="0 0 48 48" aria-hidden="true">
+        <path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303C33.65 32.657 29.223 36 24 36c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z" />
+        <path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z" />
+        <path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238C29.211 35.091 26.715 36 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z" />
+        <path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44c11.045 0 20-8.955 20-20 0-1.341-.138-2.65-.389-3.917z" />
+    </svg>
+);
 
 const Login = () => {
     const reduceMotion = useReducedMotion();
@@ -27,6 +36,9 @@ const Login = () => {
     const [isResolving, setIsResolving] = useState(false);
     const [errors, setErrors] = useState({});
     const [navigationMessage] = useState(() => window.history.state?.usr?.message || '');
+    const tokenClientRef = useRef(null);
+    const [googleReady, setGoogleReady] = useState(() => Boolean(window.google?.accounts?.oauth2));
+    const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
     useEffect(() => {
         if (!navigationMessage) return;
@@ -34,6 +46,92 @@ const Login = () => {
         delete nextHistoryState.usr;
         window.history.replaceState(nextHistoryState, '', window.location.href);
     }, [navigationMessage]);
+
+    const finishLogin = useCallback(async (user, token, rememberMe) => {
+        dispatch(loginSuccess({ user, token, rememberMe }));
+
+        const role = user.role;
+        if (role === 'admin') {
+            navigate('/admin/dashboard');
+        } else if (role === 'teacher') {
+            navigate('/teacher/profile');
+        } else if (role === 'job') {
+            navigate('/job/tasks');
+        } else if (role === 'student' || role === 'intern') {
+            // Students/interns without an enrollment go to courses/skills;
+            // those with an uncleared fee go straight to the payment screen.
+            setIsResolving(true);
+            const targetPath = await getStudentLandingPath(role);
+            navigate(targetPath);
+        } else {
+            navigate('/student/profile');
+        }
+    }, [dispatch, navigate]);
+
+    // Load Google Identity Services once.
+    useEffect(() => {
+        if (!googleClientId || googleReady) return undefined;
+
+        const scriptId = 'google-gsi-script';
+        const existing = document.getElementById(scriptId);
+        const handleLoad = () => setGoogleReady(true);
+
+        if (existing) {
+            existing.addEventListener('load', handleLoad);
+            return () => existing.removeEventListener('load', handleLoad);
+        }
+
+        const script = document.createElement('script');
+        script.id = scriptId;
+        script.src = 'https://accounts.google.com/gsi/client';
+        script.async = true;
+        script.defer = true;
+        script.addEventListener('load', handleLoad);
+        document.head.appendChild(script);
+        return () => script.removeEventListener('load', handleLoad);
+    }, [googleClientId, googleReady]);
+
+    // Create the Google OAuth token client used by the custom button.
+    useEffect(() => {
+        if (!googleClientId || !googleReady || !window.google?.accounts?.oauth2) return;
+
+        tokenClientRef.current = window.google.accounts.oauth2.initTokenClient({
+            client_id: googleClientId,
+            scope: 'openid email profile',
+            callback: async (tokenResponse) => {
+                if (tokenResponse?.error) {
+                    dispatch(loginFailure(tokenResponse.error_description || 'Google sign-in was cancelled.'));
+                    return;
+                }
+                if (!tokenResponse?.access_token) return;
+
+                dispatch(loginStart());
+                try {
+                    const res = await authAPI.googleLogin({
+                        accessToken: tokenResponse.access_token,
+                        rememberMe: formData.rememberMe
+                    });
+                    const { user, token } = res.data;
+                    await finishLogin(user, token, formData.rememberMe);
+                } catch (err) {
+                    setIsResolving(false);
+                    const message = err.response?.data?.message
+                        || (err.response
+                            ? 'Google sign-in failed. Please try again.'
+                            : 'Cannot reach the login server. Please check your connection and try again.');
+                    dispatch(loginFailure(message));
+                }
+            }
+        });
+    }, [googleClientId, googleReady, formData.rememberMe, dispatch, finishLogin]);
+
+    const handleGoogleLogin = () => {
+        if (!tokenClientRef.current) {
+            dispatch(loginFailure('Google sign-in is still loading. Please try again in a moment.'));
+            return;
+        }
+        tokenClientRef.current.requestAccessToken({ prompt: 'select_account' });
+    };
 
     const validateForm = () => {
         const newErrors = {};
@@ -88,25 +186,7 @@ const Login = () => {
             // Store user in localStorage for persistence
             // localStorage.setItem('user', JSON.stringify(user));
 
-            dispatch(loginSuccess({ user, token, rememberMe: formData.rememberMe }));
-
-            // Navigate based on role
-            const role = user.role;
-            if (role === 'admin') {
-                navigate('/admin/dashboard');
-            } else if (role === 'teacher') {
-                navigate('/teacher/profile');
-            } else if (role === 'job') {
-                navigate('/job/tasks');
-            } else if (role === 'student' || role === 'intern') {
-                // Students/interns without an enrollment go to courses/skills;
-                // those with an uncleared fee go straight to the payment screen.
-                setIsResolving(true);
-                const targetPath = await getStudentLandingPath(role);
-                navigate(targetPath);
-            } else {
-                navigate('/student/profile');
-            }
+            await finishLogin(user, token, formData.rememberMe);
         } catch (err) {
             setIsResolving(false);
             const status = err.response?.status;
@@ -260,7 +340,6 @@ const Login = () => {
                         </motion.div>
                     )}
 
-
                     {/* Login Form */}
                     <form onSubmit={handleSubmit} className="space-y-5">
                         {/* Email Field */}
@@ -355,19 +434,36 @@ const Login = () => {
                             </Link>
                         </motion.div>
 
-                        {/* Submit Button */}
-                        <motion.button
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.6 }}
-                            type="submit"
-                            disabled={isLoading || isResolving}
-                            className="w-full py-4 bg-gray-900 hover:bg-black text-white font-bold rounded-xl transition-all duration-300 flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed active:scale-95"
-                        >
-                            <ButtonLoader isLoading={isLoading || isResolving}>
-                                {isLoading || isResolving ? t('auth.signingIn') : t('auth.login')}
-                            </ButtonLoader>
-                        </motion.button>
+                        {/* Submit + Google */}
+                        <div className="flex items-stretch gap-3">
+                            <motion.button
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.6 }}
+                                type="submit"
+                                disabled={isLoading || isResolving}
+                                className="flex-1 py-4 bg-white hover:bg-gray-50 text-gray-900 font-bold rounded-xl border-2 border-gray-900 transition-all duration-300 flex items-center justify-center space-x-2 transform hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed active:scale-95"
+                            >
+                                <ButtonLoader isLoading={isLoading || isResolving}>
+                                    {isLoading || isResolving ? t('auth.signingIn') : t('auth.login')}
+                                </ButtonLoader>
+                            </motion.button>
+
+                            {googleClientId && (
+                                <motion.button
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.65 }}
+                                    type="button"
+                                    onClick={handleGoogleLogin}
+                                    title="Login with Google"
+                                    className="flex items-center justify-center gap-2 rounded-xl border-2 border-gray-900 bg-white px-4 py-4 font-bold text-gray-900 transition-all duration-300 hover:bg-gray-50 transform hover:-translate-y-0.5 active:scale-95"
+                                >
+                                    <GoogleIcon className="h-5 w-5" />
+                                    <span>Google</span>
+                                </motion.button>
+                            )}
+                        </div>
 
                         <div className="relative flex py-2 items-center">
                             <div className="flex-grow border-t border-gray-200"></div>

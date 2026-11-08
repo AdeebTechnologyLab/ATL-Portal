@@ -71,7 +71,9 @@ router.get('/my', protect, async (req, res) => {
         // Auto-repair: If any fee has no installments, create default one
         let updated = false;
         for (let fee of fees) {
-            if (!fee.installments || fee.installments.length === 0) {
+            // Skip auto-repair when admin manually cleared the plan, otherwise a
+            // deleted challan would reappear on the student's next fetch.
+            if (!fee.planCleared && (!fee.installments || fee.installments.length === 0)) {
                 const amount = fee.totalFee > 0 ? fee.totalFee : (fee.course?.fee || 0);
                 if (amount > 0) {
                     fee.installments = [{
@@ -443,7 +445,16 @@ router.post('/:id/installments', protect, requireScreenAccess('fee_verification'
             }
         }
 
+        const previousHadUnpaid = fee.installments.some(inst => inst.status !== 'verified' && inst.status !== 'paid');
         fee.installments = newInstallments;
+        // A manually saved plan with a pending month means auto-generation should
+        // resume. If the admin removed every unpaid month, keep them deleted by
+        // marking the plan as cleared so the daily job cannot recreate one.
+        if (newInstallments.some(i => i.status === 'pending')) {
+            fee.planCleared = false;
+        } else if (previousHadUnpaid) {
+            fee.planCleared = true;
+        }
         fee.updateStatus();
         await fee.save();
 
@@ -580,6 +591,11 @@ router.delete('/:id/installments/:installmentId', protect, requireScreenAccess('
         }
 
         // Otherwise just save the updated installments list
+        // If no unpaid installment is left, mark the plan as manually cleared so
+        // the daily generation job cannot recreate the deleted challan.
+        if (!fee.installments.some(inst => inst.status !== 'verified' && inst.status !== 'paid')) {
+            fee.planCleared = true;
+        }
         fee.updateStatus();
         await fee.save();
 

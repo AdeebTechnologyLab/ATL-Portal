@@ -55,6 +55,10 @@ const feeSchema = new mongoose.Schema({
     rollNoAssigned: {
         type: Boolean,
         default: false
+    },
+    planCleared: {
+        type: Boolean,
+        default: false
     }
 }, {
     timestamps: true

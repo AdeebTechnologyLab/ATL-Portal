@@ -41,6 +41,13 @@ const generateInstallments = async (io) => {
                     continue;
                 }
 
+                // Skip if admin manually cleared the fee plan (deleted the challan).
+                // Without this, the daily job would regenerate a deleted month.
+                if (fee.planCleared) {
+                    console.log(`⏭️ Skipping fee ${fee._id} - plan manually cleared by admin`);
+                    continue;
+                }
+
                 // Check if enrollment is paused
                 const enrollment = await Enrollment.findOne({
                     user: fee.user._id || fee.user,

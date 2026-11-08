@@ -28,6 +28,49 @@ const syncLinkedPhoto = async (user) => {
     return user.photo || bestPhoto || null;
 };
 
+// Shape returned to the client after any successful login (password or Google).
+const buildAuthUserResponse = (user) => ({
+    id: user._id,
+    _id: user._id,
+    name: user.name,
+    email: user.email,
+    role: user.role,
+    photo: user.photo,
+    rollNo: user.rollNo,
+    phone: user.phone,
+    location: user.location,
+    // Job fields
+    skills: user.skills,
+    experience: user.experience,
+    portfolio: user.portfolio,
+    completedTasks: user.completedTasks,
+    rating: user.rating,
+    // Teacher fields
+    specialization: user.specialization,
+    department: user.department,
+    qualification: user.qualification,
+    // Student/Intern fields
+    cnic: user.cnic,
+    dob: user.dob,
+    age: user.age,
+    gender: user.gender,
+    education: user.education,
+    guardianName: user.guardianName,
+    guardianRelation: user.guardianRelation,
+    guardianPhone: user.guardianPhone,
+    guardianOccupation: user.guardianOccupation,
+    address: user.address,
+    city: user.city,
+    country: user.country,
+    attendType: user.attendType,
+    heardAbout: user.heardAbout,
+    feeScreenshot: user.feeScreenshot,
+    // Common fields
+    isVerified: user.isVerified,
+    preferences: user.preferences,
+    createdAt: user.createdAt
+});
+
 // ---------- in-memory rate limiting (per-process; enough for a single instance) ----------
 const rateBuckets = new Map();
 const getClientIp = (req) => {
@@ -393,50 +436,127 @@ router.post('/login', async (req, res) => {
         res.json({
             success: true,
             token,
-            user: {
-                id: user._id,
-                _id: user._id, // Include both for compatibility
-                name: user.name,
-                email: user.email,
-                role: user.role,
-                photo: user.photo,
-                rollNo: user.rollNo,
-                phone: user.phone,
-                location: user.location,
-                // Job fields
-                skills: user.skills,
-                experience: user.experience,
-                portfolio: user.portfolio,
-                completedTasks: user.completedTasks,
-                rating: user.rating,
-                // Teacher fields
-                specialization: user.specialization,
-                department: user.department,
-                qualification: user.qualification,
-                // Student/Intern fields
-                cnic: user.cnic,
-                dob: user.dob,
-                age: user.age,
-                gender: user.gender,
-                education: user.education,
-                guardianName: user.guardianName,
-                guardianRelation: user.guardianRelation,
-                guardianPhone: user.guardianPhone,
-                guardianOccupation: user.guardianOccupation,
-                address: user.address,
-                city: user.city,
-                country: user.country,
-                attendType: user.attendType,
-                heardAbout: user.heardAbout,
-                feeScreenshot: user.feeScreenshot,
-                // Common fields
-                isVerified: user.isVerified,
-                preferences: user.preferences,
-                createdAt: user.createdAt
-            }
+            user: buildAuthUserResponse(user)
         });
     } catch (error) {
         console.error('Login error:', error);
+        res.status(500).json({ success: false, message: error.message });
+    }
+});
+
+// @route   POST /api/auth/google
+// @desc    Login with a Google ID token or OAuth access token
+// @access  Public
+router.post('/google', async (req, res) => {
+    try {
+        const { credential, accessToken, rememberMe } = req.body;
+        if (!credential && !accessToken) {
+            return res.status(400).json({ success: false, message: 'Google credential is required' });
+        }
+
+        const googleClientId = process.env.GOOGLE_CLIENT_ID || process.env.GOOGLE_DRIVE_CLIENT_ID;
+        if (!googleClientId) {
+            return res.status(503).json({
+                success: false,
+                message: 'Google login is not configured. Please contact support.'
+            });
+        }
+
+        let googleProfile;
+        try {
+            const { OAuth2Client } = require('google-auth-library');
+            const client = new OAuth2Client(googleClientId);
+
+            if (credential) {
+                // ID token from Google Identity Services.
+                const ticket = await client.verifyIdToken({ idToken: credential, audience: googleClientId });
+                const payload = ticket.getPayload();
+                googleProfile = {
+                    email: payload?.email,
+                    emailVerified: payload?.email_verified !== false,
+                    picture: payload?.picture
+                };
+            } else {
+                // Access token from the OAuth2 token client (custom Google button).
+                const tokenInfo = await client.getTokenInfo(accessToken);
+                if (String(tokenInfo?.aud) !== googleClientId) {
+                    throw new Error('Google token audience mismatch');
+                }
+                client.setCredentials({ access_token: accessToken });
+                const { google } = require('googleapis');
+                const oauth2 = google.oauth2({ version: 'v2', auth: client });
+                const { data } = await oauth2.userinfo.get();
+                googleProfile = {
+                    email: data?.email,
+                    emailVerified: data?.verified_email !== false,
+                    picture: data?.picture
+                };
+            }
+        } catch (error) {
+            console.error('Google token verification failed:', error.message);
+            return res.status(401).json({
+                success: false,
+                message: 'Google sign-in failed. Please try again.'
+            });
+        }
+
+        const email = String(googleProfile?.email || '').trim().toLowerCase();
+        if (!email || !googleProfile.emailVerified) {
+            return res.status(401).json({
+                success: false,
+                message: 'This Google account email is not verified.'
+            });
+        }
+
+        const users = await User.find({ email })
+            .select('+password')
+            .read('primary')
+            .maxTimeMS(10000);
+
+        if (!users || users.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'No account found with this Google email. Please register first.'
+            });
+        }
+
+        // Same priority as password login: admin > teacher > student > intern > job
+        const rolePriority = ['admin', 'teacher', 'student', 'intern', 'job'];
+        const user = users.find(u => u.role === 'admin')
+            || users.find(u => u.role === 'teacher')
+            || users.find(u => u.role === 'student')
+            || users.find(u => u.role === 'intern')
+            || users.find(u => u.role === 'job')
+            || users.find(u => rolePriority.includes(u.role))
+            || users[0];
+
+        if (user.role !== 'admin' && !user.isVerified) {
+            return res.status(403).json({
+                success: false,
+                message: 'Your account has been suspended by admin. Please contact support.',
+                isRevoked: true
+            });
+        }
+
+        // Use the Google profile picture only when the account has none yet.
+        if (!user.photo && googleProfile.picture) {
+            user.photo = googleProfile.picture;
+        }
+
+        await syncLinkedPhoto(user);
+
+        user.lastSeen = new Date();
+        await user.save({ validateBeforeSave: false });
+
+        const token = user.getSignedJwtToken('2h', Boolean(rememberMe));
+
+        res.json({
+            success: true,
+            token,
+            user: buildAuthUserResponse(user)
+        });
+    } catch (error) {
+        console.error('Google login error:', error);
         res.status(500).json({ success: false, message: error.message });
     }
 });

@@ -767,6 +767,15 @@ const StudentsManagement = () => {
         }
     };
 
+    const openGmailCompose = (emailWindow, to, subject, body) => {
+        const url = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(to)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        if (emailWindow && !emailWindow.closed) {
+            emailWindow.location.replace(url);
+        } else {
+            window.open(url, '_blank', 'noopener,noreferrer');
+        }
+    };
+
     const createStudentReportLink = async (student) => {
         const [enrollmentsRes, assignmentsRes, feesRes, dailyTasksRes] = await Promise.all([
             enrollmentAPI.getUserEnrollments(student._id),
@@ -821,12 +830,15 @@ const StudentsManagement = () => {
 
     const handleStudentStrikeOffEmail = async (event, student) => {
         event.preventDefault();
+        if (!student.email) { alert('Email address not found for this student.'); return; }
+        const emailWindow = window.open('', '_blank');
         try {
             const { reportUrl, enrollments } = await createStudentReportLink(student);
             const subject = 'Student Strike Off Notice - The Computer Courses';
             const body = getStudentStrikeOffMessage(student, reportUrl, enrollments).replaceAll('*', '');
-            window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${student.email}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`, '_blank');
+            openGmailCompose(emailWindow, student.email, subject, body);
         } catch (error) {
+            if (emailWindow && !emailWindow.closed) emailWindow.close();
             alert(`Academic report link create nahi ho saka: ${error.response?.data?.message || error.message}`);
         }
     };
@@ -1170,22 +1182,28 @@ const StudentsManagement = () => {
                                             {((getStudentStatus(student) === 'Completed') || (student.registeredOld && (student.totalEnrollments || 0) === 0) || (student.email && (((student.totalEnrollments || 0) === 0) || getStudentStatus(student) === 'Active'))) && (
                                                 <button
                                                     onClick={async (event) => {
+                                                        event.preventDefault();
+                                                        if (!student.email) { alert('Email address not found for this student.'); return; }
+
                                                         if (student.registeredOld && (student.totalEnrollments || 0) === 0) {
-                                                            event.preventDefault();
-                                                            if (!student.email) { alert('Email address not found for this student.'); return; }
                                                             const body = getOldStudentMessage(student).replaceAll('*', '');
-                                                            window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${student.email}&su=${encodeURIComponent('Admissions Are Open Again - Adeeb Technology Lab')}&body=${encodeURIComponent(body)}`, '_blank');
+                                                            openGmailCompose(null, student.email, 'Admissions Are Open Again - Adeeb Technology Lab', body);
                                                             return;
                                                         }
                                                         if (getStudentStatus(student) === 'Completed') {
-                                                            event.preventDefault();
-                                                            if (!student.email) { alert('Email address not found for this student.'); return; }
-                                                            const body = (await getCompletionMessage(student)).replaceAll('*', '');
-                                                            window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${student.email}&su=${encodeURIComponent('Congratulations on Completing Your Course - Adeeb Technology Lab')}&body=${encodeURIComponent(body)}`, '_blank');
+                                                            const emailWindow = window.open('', '_blank');
+                                                            try {
+                                                                const body = (await getCompletionMessage(student)).replaceAll('*', '');
+                                                                openGmailCompose(emailWindow, student.email, 'Congratulations on Completing Your Course - Adeeb Technology Lab', body);
+                                                            } catch (error) {
+                                                                if (emailWindow && !emailWindow.closed) emailWindow.close();
+                                                                console.error(error);
+                                                                alert('Email prepare nahi ho saka. Please try again.');
+                                                            }
                                                             return;
                                                         }
                                                         if (getStudentStatus(student) === 'Active' && !hasPaidFee(student._id)) {
-                                                            event.preventDefault();
+                                                            const emailWindow = window.open('', '_blank');
                                                             try {
                                                                 const enrollRes = await enrollmentAPI.getUserEnrollments(student._id);
                                                                 const enrollments = enrollRes.data.data || [];
@@ -1193,7 +1211,7 @@ const StudentsManagement = () => {
                                                                 student.enrolledCourseName = courseNames;
                                                             } catch (e) { console.error(e); }
                                                             const body = getFeeReminderMessage(student).replaceAll('*', '');
-                                                            window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${student.email}&su=${encodeURIComponent('Course Fee Reminder - Adeeb Technology Lab')}&body=${encodeURIComponent(body)}`, '_blank');
+                                                            openGmailCompose(emailWindow, student.email, 'Course Fee Reminder - Adeeb Technology Lab', body);
                                                             return;
                                                         }
                                                         if (getStudentStatus(student) === 'Active') {
