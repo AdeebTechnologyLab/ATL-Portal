@@ -120,6 +120,7 @@ const Settings = () => {
         assignmentAlerts: true,
         gradeAlerts: true,
         announcementAlerts: true,
+        officialNotices: user?.preferences?.notificationPopup?.enabled !== false,
     });
     const [customTheme, setCustomTheme] = useState(() => user?.preferences?.customTheme || {
         primary: '#7C3AED',
@@ -191,6 +192,10 @@ const Settings = () => {
             if (user.preferences?.customTheme) {
                 setCustomTheme(user.preferences.customTheme);
             }
+            setNotifications(prev => ({
+                ...prev,
+                officialNotices: user.preferences?.notificationPopup?.enabled !== false,
+            }));
         }
     }, [user]);
 
@@ -262,8 +267,30 @@ const Settings = () => {
         }
     };
 
-    const handleNotificationToggle = (key) => {
-        setNotifications(prev => ({ ...prev, [key]: !prev[key] }));
+    const handleNotificationToggle = async (key) => {
+        const nextValue = !notifications[key];
+
+        if (key === 'officialNotices') {
+            setNotifications(prev => ({ ...prev, [key]: nextValue }));
+            try {
+                const response = await authAPI.updateNotificationPreference({ popupEnabled: nextValue });
+                const notificationPopup = response.data.notificationPopup || { enabled: nextValue, snoozeUntil: null };
+                dispatch(updateUser({
+                    preferences: { ...(user?.preferences || {}), notificationPopup },
+                }));
+                if (nextValue) {
+                    localStorage.removeItem('atl_official_notice_snooze_until');
+                }
+                showSuccessMessage(nextValue ? 'Official notices enabled!' : 'Official notices disabled permanently!');
+            } catch (error) {
+                console.error('Failed to save notification preference:', error);
+                setNotifications(prev => ({ ...prev, [key]: !nextValue }));
+                showSuccessMessage('Could not update notification preference.');
+            }
+            return;
+        }
+
+        setNotifications(prev => ({ ...prev, [key]: nextValue }));
         showSuccessMessage('Notification preference updated!');
     };
 
@@ -564,6 +591,7 @@ const Settings = () => {
                             { key: 'assignmentAlerts', label: 'Assignment Alerts', desc: 'New assignments & deadlines' },
                             { key: 'gradeAlerts', label: 'Grade Alerts', desc: 'Marks & grade updates' },
                             { key: 'announcementAlerts', label: 'Announcements', desc: 'Institution announcements' },
+                            { key: 'officialNotices', label: 'Official Notice Popup', desc: 'Dashboard announcement popup' },
                         ].map((item) => (
                             <button
                                 key={item.key}

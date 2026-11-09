@@ -39,6 +39,22 @@ const NotificationPopup = () => {
                     console.error("Failed to fetch latest user data", e);
                 }
 
+                // Permanently disabled from Settings? Never show the popup.
+                if (latestUser?.preferences?.notificationPopup?.enabled === false) {
+                    setIsVisible(false);
+                    return;
+                }
+
+                // Temporarily dismissed for 10 days from the popup button.
+                const localSnooze = Number(localStorage.getItem('atl_official_notice_snooze_until') || 0);
+                const prefSnooze = latestUser?.preferences?.notificationPopup?.snoozeUntil
+                    ? new Date(latestUser.preferences.notificationPopup.snoozeUntil).getTime()
+                    : 0;
+                if (Math.max(localSnooze, prefSnooze) > Date.now()) {
+                    setIsVisible(false);
+                    return;
+                }
+
                 const response = await notificationAPI.getActive();
                 const fetched = response.data.data || [];
                 
@@ -73,10 +89,32 @@ const NotificationPopup = () => {
         };
 
         fetchActive();
-    }, [location.pathname, user?.classTime, role]);
+    }, [location.pathname, user?.classTime, user?.preferences?.notificationPopup?.enabled, role]);
 
     const handleDismiss = () => {
         setIsVisible(false);
+    };
+
+    // Hide the official notice popup for 10 days.
+    const handleSnooze = async () => {
+        const snoozeUntil = Date.now() + 10 * 24 * 60 * 60 * 1000;
+        localStorage.setItem('atl_official_notice_snooze_until', String(snoozeUntil));
+        setIsVisible(false);
+        try {
+            await authAPI.updateNotificationPreference({ snoozeUntil: new Date(snoozeUntil).toISOString() });
+            dispatch(updateUser({
+                preferences: {
+                    ...(user?.preferences || {}),
+                    notificationPopup: {
+                        ...(user?.preferences?.notificationPopup || {}),
+                        snoozeUntil: new Date(snoozeUntil).toISOString(),
+                    },
+                },
+            }));
+        } catch (error) {
+            // The local snooze still keeps it hidden on this device.
+            console.error('Failed to save snooze preference:', error);
+        }
     };
 
 
@@ -239,12 +277,22 @@ const NotificationPopup = () => {
 
                                 </div>
                             </div>
-                            <button
-                                onClick={handleDismiss}
-                                className={`p-2 md:p-3 rounded-xl md:rounded-2xl transition-all active:scale-90 flex-shrink-0 ${isDark ? 'text-white/40 hover:text-white hover:bg-white/10' : 'text-slate-400 hover:text-slate-900 hover:bg-slate-100'}`}
-                            >
-                                <X className="w-5 h-5 md:w-6 md:h-6" />
-                            </button>
+                            <div className="flex items-center gap-1 md:gap-2 flex-shrink-0">
+                                <button
+                                    onClick={handleSnooze}
+                                    title="Temporary close for 10 days"
+                                    className={`flex items-center gap-1.5 px-2.5 md:px-3 py-2 md:py-3 rounded-xl md:rounded-2xl transition-all active:scale-90 flex-shrink-0 text-[10px] md:text-xs font-bold ${isDark ? 'text-white/50 hover:text-white hover:bg-white/10' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100'}`}
+                                >
+                                    <Clock className="w-4 h-4 md:w-5 md:h-5" />
+                                    <span>Close 10 Days</span>
+                                </button>
+                                <button
+                                    onClick={handleDismiss}
+                                    className={`p-2 md:p-3 rounded-xl md:rounded-2xl transition-all active:scale-90 flex-shrink-0 ${isDark ? 'text-white/40 hover:text-white hover:bg-white/10' : 'text-slate-400 hover:text-slate-900 hover:bg-slate-100'}`}
+                                >
+                                    <X className="w-5 h-5 md:w-6 md:h-6" />
+                                </button>
+                            </div>
                         </div>
 
                         {/* Scrollable Notifications Container */}

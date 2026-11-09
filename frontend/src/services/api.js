@@ -29,6 +29,7 @@ export const authAPI = {
     getAvailableRoles: () => api.get('/auth/available-roles'),
     switchRole: (data) => api.post('/auth/switch-role', data),
     updateThemePreference: (colorTheme, customTheme) => api.put('/auth/preferences/theme', { colorTheme, customTheme }),
+    updateNotificationPreference: (data) => api.put('/auth/preferences/notifications', data),
     changePassword: (data) => api.put('/auth/change-password', data)
 };
 

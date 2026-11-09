@@ -83,6 +83,10 @@ const userSchema = new mongoose.Schema({
             primary: { type: String, default: '#7C3AED' },
             accent: { type: String, default: '#06B6D4' },
             sidebar: { type: String, default: '#1E1B4B' }
+        },
+        notificationPopup: {
+            enabled: { type: Boolean, default: true },
+            snoozeUntil: { type: Date, default: null }
         }
     },
     // Common fields

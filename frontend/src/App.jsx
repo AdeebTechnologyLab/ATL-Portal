@@ -297,6 +297,7 @@ const AppRoutes = () => {
 
 import { Toaster } from 'react-hot-toast';
 import QuizChallengeNotification from './components/shared/QuizChallengeNotification';
+import InAppNotification from './components/shared/InAppNotification';
 import NetworkStatus from './components/shared/NetworkStatus';
 
 function App() {
@@ -305,6 +306,7 @@ function App() {
       <NetworkStatus />
       <Toaster position="top-right" reverseOrder={false} />
       <QuizChallengeNotification />
+      <InAppNotification />
       <Suspense fallback={<PageLoader />}>
         <AppRoutes />
       </Suspense>

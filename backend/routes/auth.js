@@ -756,6 +756,57 @@ router.put('/preferences/theme', protect, async (req, res) => {
     }
 });
 
+// Save the official notice popup preference across every role linked to this user.
+router.put('/preferences/notifications', protect, async (req, res) => {
+    try {
+        const currentUser = await User.findById(req.user.id);
+        if (!currentUser) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        const update = {};
+        if (typeof req.body.popupEnabled === 'boolean') {
+            update['preferences.notificationPopup.enabled'] = req.body.popupEnabled;
+            // Turning it back on clears any temporary snooze.
+            if (req.body.popupEnabled) {
+                update['preferences.notificationPopup.snoozeUntil'] = null;
+            }
+        }
+
+        if (Object.prototype.hasOwnProperty.call(req.body, 'snoozeUntil')) {
+            if (req.body.snoozeUntil === null) {
+                update['preferences.notificationPopup.snoozeUntil'] = null;
+            } else {
+                const snoozeDate = new Date(req.body.snoozeUntil);
+                if (Number.isNaN(snoozeDate.getTime())) {
+                    return res.status(400).json({ success: false, message: 'Invalid snooze date' });
+                }
+                update['preferences.notificationPopup.snoozeUntil'] = snoozeDate;
+            }
+        }
+
+        if (Object.keys(update).length === 0) {
+            return res.status(400).json({ success: false, message: 'Nothing to update' });
+        }
+
+        await User.updateMany(getLinkedAccountQuery(currentUser), { $set: update });
+
+        const preferences = {
+            enabled: typeof req.body.popupEnabled === 'boolean'
+                ? req.body.popupEnabled
+                : currentUser.preferences?.notificationPopup?.enabled !== false,
+            snoozeUntil: Object.prototype.hasOwnProperty.call(update, 'preferences.notificationPopup.snoozeUntil')
+                ? update['preferences.notificationPopup.snoozeUntil']
+                : (currentUser.preferences?.notificationPopup?.snoozeUntil || null)
+        };
+
+        res.json({ success: true, notificationPopup: preferences });
+    } catch (error) {
+        console.error('Notification preference update error:', error);
+        res.status(500).json({ success: false, message: 'Could not save notification preference' });
+    }
+});
+
 // @route   GET /api/auth/available-roles
 // @desc    Get all roles registered under the current user's email
 // @access  Private
