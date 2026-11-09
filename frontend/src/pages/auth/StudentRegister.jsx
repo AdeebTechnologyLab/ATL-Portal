@@ -1,5 +1,6 @@
 import GuestChatWidget from '../../components/shared/GuestChatWidget';
 import RegistrationLeftPanel from '../../components/auth/RegistrationLeftPanel';
+import GoogleSignupButton from '../../components/auth/GoogleSignupButton';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -538,6 +539,18 @@ const StudentRegister = () => {
                                 {isLoading ? 'Registering...' : 'Register Now'}
                             </ButtonLoader>
                         </button>
+
+                        <GoogleSignupButton
+                            role="student"
+                            termsAccepted={formData.termsAccepted}
+                            onRequireTerms={() => {
+                                const termsError = { termsAccepted: 'You must accept terms' };
+                                setErrors(prev => ({ ...prev, ...termsError }));
+                                scrollToFirstError(termsError);
+                            }}
+                            onError={setApiError}
+                            disabled={isLoading}
+                        />
                     </form>
                 </div>
             </motion.div>

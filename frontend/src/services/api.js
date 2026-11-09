@@ -18,6 +18,7 @@ export const authAPI = {
     }),
     login: (credentials) => api.post('/auth/login', credentials, { timeout: 60000 }),
     googleLogin: (data) => api.post('/auth/google', data, { timeout: 60000 }),
+    googleRegister: (data) => api.post('/auth/google/register', data, { timeout: 60000 }),
     getMe: () => api.get('/auth/me'),
     updateProfile: (data) => api.put('/auth/profile', data, {
         headers: { 'Content-Type': 'multipart/form-data' }

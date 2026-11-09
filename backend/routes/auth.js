@@ -71,6 +71,51 @@ const buildAuthUserResponse = (user) => ({
     createdAt: user.createdAt
 });
 
+// Verify a Google ID token or OAuth access token and return the basic profile.
+const verifyGoogleProfile = async ({ credential, accessToken, googleClientId }) => {
+    const { OAuth2Client } = require('google-auth-library');
+    const client = new OAuth2Client(googleClientId);
+
+    if (credential) {
+        // ID token from Google Identity Services.
+        const ticket = await client.verifyIdToken({ idToken: credential, audience: googleClientId });
+        const payload = ticket.getPayload();
+        return {
+            email: payload?.email,
+            emailVerified: payload?.email_verified !== false,
+            picture: payload?.picture,
+            name: payload?.name
+        };
+    }
+
+    // Access token from the OAuth2 token client (custom Google button).
+    const tokenInfo = await client.getTokenInfo(accessToken);
+    if (String(tokenInfo?.aud) !== googleClientId) {
+        throw new Error('Google token audience mismatch');
+    }
+    client.setCredentials({ access_token: accessToken });
+    const { google } = require('googleapis');
+    const oauth2 = google.oauth2({ version: 'v2', auth: client });
+    const { data } = await oauth2.userinfo.get();
+    return {
+        email: data?.email,
+        emailVerified: data?.verified_email !== false,
+        picture: data?.picture,
+        name: data?.name
+    };
+};
+
+const pickUserByRolePriority = (users) => {
+    const rolePriority = ['admin', 'teacher', 'student', 'intern', 'job'];
+    return users.find(u => u.role === 'admin')
+        || users.find(u => u.role === 'teacher')
+        || users.find(u => u.role === 'student')
+        || users.find(u => u.role === 'intern')
+        || users.find(u => u.role === 'job')
+        || users.find(u => rolePriority.includes(u.role))
+        || users[0];
+};
+
 // ---------- in-memory rate limiting (per-process; enough for a single instance) ----------
 const rateBuckets = new Map();
 const getClientIp = (req) => {
@@ -464,34 +509,7 @@ router.post('/google', async (req, res) => {
 
         let googleProfile;
         try {
-            const { OAuth2Client } = require('google-auth-library');
-            const client = new OAuth2Client(googleClientId);
-
-            if (credential) {
-                // ID token from Google Identity Services.
-                const ticket = await client.verifyIdToken({ idToken: credential, audience: googleClientId });
-                const payload = ticket.getPayload();
-                googleProfile = {
-                    email: payload?.email,
-                    emailVerified: payload?.email_verified !== false,
-                    picture: payload?.picture
-                };
-            } else {
-                // Access token from the OAuth2 token client (custom Google button).
-                const tokenInfo = await client.getTokenInfo(accessToken);
-                if (String(tokenInfo?.aud) !== googleClientId) {
-                    throw new Error('Google token audience mismatch');
-                }
-                client.setCredentials({ access_token: accessToken });
-                const { google } = require('googleapis');
-                const oauth2 = google.oauth2({ version: 'v2', auth: client });
-                const { data } = await oauth2.userinfo.get();
-                googleProfile = {
-                    email: data?.email,
-                    emailVerified: data?.verified_email !== false,
-                    picture: data?.picture
-                };
-            }
+            googleProfile = await verifyGoogleProfile({ credential, accessToken, googleClientId });
         } catch (error) {
             console.error('Google token verification failed:', error.message);
             return res.status(401).json({
@@ -521,14 +539,7 @@ router.post('/google', async (req, res) => {
         }
 
         // Same priority as password login: admin > teacher > student > intern > job
-        const rolePriority = ['admin', 'teacher', 'student', 'intern', 'job'];
-        const user = users.find(u => u.role === 'admin')
-            || users.find(u => u.role === 'teacher')
-            || users.find(u => u.role === 'student')
-            || users.find(u => u.role === 'intern')
-            || users.find(u => u.role === 'job')
-            || users.find(u => rolePriority.includes(u.role))
-            || users[0];
+        const user = pickUserByRolePriority(users);
 
         if (user.role !== 'admin' && !user.isVerified) {
             return res.status(403).json({
@@ -557,6 +568,137 @@ router.post('/google', async (req, res) => {
         });
     } catch (error) {
         console.error('Google login error:', error);
+        res.status(500).json({ success: false, message: error.message });
+    }
+});
+
+// @route   POST /api/auth/google/register
+// @desc    Sign up with Google using only the details Google provides
+// @access  Public
+router.post('/google/register', async (req, res) => {
+    try {
+        const { credential, accessToken, rememberMe, role } = req.body;
+        if (!credential && !accessToken) {
+            return res.status(400).json({ success: false, message: 'Google credential is required' });
+        }
+
+        const requestedRole = ['student', 'intern', 'job', 'teacher'].includes(String(role || '').toLowerCase())
+            ? String(role).toLowerCase()
+            : 'student';
+
+        const googleClientId = process.env.GOOGLE_CLIENT_ID || process.env.GOOGLE_DRIVE_CLIENT_ID;
+        if (!googleClientId) {
+            return res.status(503).json({
+                success: false,
+                message: 'Google signup is not configured. Please contact support.'
+            });
+        }
+
+        let googleProfile;
+        try {
+            googleProfile = await verifyGoogleProfile({ credential, accessToken, googleClientId });
+        } catch (error) {
+            console.error('Google token verification failed:', error.message);
+            return res.status(401).json({
+                success: false,
+                message: 'Google signup failed. Please try again.'
+            });
+        }
+
+        const email = String(googleProfile?.email || '').trim().toLowerCase();
+        if (!email || !googleProfile.emailVerified) {
+            return res.status(401).json({
+                success: false,
+                message: 'This Google account email is not verified.'
+            });
+        }
+
+        // If this email is already registered, log the user in instead of
+        // creating a duplicate account.
+        const users = await User.find({ email })
+            .select('+password')
+            .read('primary')
+            .maxTimeMS(10000);
+
+        if (users && users.length > 0) {
+            const user = pickUserByRolePriority(users);
+            if (user.role !== 'admin' && !user.isVerified) {
+                return res.status(403).json({
+                    success: false,
+                    message: 'Your account has been suspended by admin. Please contact support.',
+                    isRevoked: true
+                });
+            }
+
+            if (!user.photo && googleProfile.picture) {
+                user.photo = googleProfile.picture;
+            }
+
+            await syncLinkedPhoto(user);
+
+            user.lastSeen = new Date();
+            await user.save({ validateBeforeSave: false });
+
+            const token = user.getSignedJwtToken('2h', Boolean(rememberMe));
+
+            return res.json({
+                success: true,
+                isNew: false,
+                token,
+                user: buildAuthUserResponse(user)
+            });
+        }
+
+        const Counter = require('../models/Counter');
+        const assignedRollNo = await Counter.getNextRollNo();
+        const generatedPassword = crypto.randomBytes(32).toString('hex');
+
+        const userData = {
+            name: String(googleProfile.name || '').trim() || email.split('@')[0],
+            email,
+            password: generatedPassword,
+            role: requestedRole,
+            isVerified: true,
+            rollNo: assignedRollNo
+        };
+
+        if (googleProfile.picture) {
+            userData.photo = googleProfile.picture;
+        }
+
+        let user;
+        try {
+            user = await User.create(userData);
+        } catch (createError) {
+            if (createError.code === 11000) {
+                const existingUsers = await User.find({ email })
+                    .select('+password')
+                    .read('primary')
+                    .maxTimeMS(10000);
+                if (existingUsers && existingUsers.length > 0) {
+                    const existingUser = pickUserByRolePriority(existingUsers);
+                    const token = existingUser.getSignedJwtToken('2h', Boolean(rememberMe));
+                    return res.json({
+                        success: true,
+                        isNew: false,
+                        token,
+                        user: buildAuthUserResponse(existingUser)
+                    });
+                }
+            }
+            throw createError;
+        }
+
+        const token = user.getSignedJwtToken('2h', Boolean(rememberMe));
+
+        res.status(201).json({
+            success: true,
+            isNew: true,
+            token,
+            user: buildAuthUserResponse(user)
+        });
+    } catch (error) {
+        console.error('Google registration error:', error);
         res.status(500).json({ success: false, message: error.message });
     }
 });
