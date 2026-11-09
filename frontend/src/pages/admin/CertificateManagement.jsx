@@ -64,8 +64,14 @@ const CertificateManagement = () => {
         fetchAllData();
     }, []);
 
-    const fetchAllData = async () => {
-        setIsLoading(true);
+    useEffect(() => {
+        const handleDataChanged = () => fetchAllData({ silent: true });
+        window.addEventListener('app-data-changed', handleDataChanged);
+        return () => window.removeEventListener('app-data-changed', handleDataChanged);
+    }, []);
+
+    const fetchAllData = async ({ silent = false } = {}) => {
+        if (!silent) setIsLoading(true);
         try {
             console.log('🔄 [CERT] Starting to fetch data...');
             console.log('👤 [CERT] User:', user);
@@ -150,7 +156,7 @@ const CertificateManagement = () => {
                 alert(`Error loading certificate data: ${error.response?.data?.message || error.message || 'Unknown error'}`);
             }
         } finally {
-            setIsLoading(false);
+            if (!silent) setIsLoading(false);
         }
     };
 

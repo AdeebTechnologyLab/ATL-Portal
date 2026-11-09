@@ -104,7 +104,6 @@ const DashboardLayout = () => {
     const [currentDateTime, setCurrentDateTime] = useState(() => new Date());
     const [pendingTasks, setPendingTasks] = useState([]);
     const [isPageLoading, setIsPageLoading] = useState(false);
-    const [dataVersion, setDataVersion] = useState(0);
     const [isWeeklyOff, setIsWeeklyOff] = useState(false);
     const [weeklyOffDayName, setWeeklyOffDayName] = useState('');
     const [feeAccessStatus, setFeeAccessStatus] = useState({ loading: true, hasOverdue: false, overdueInstallment: null });
@@ -241,7 +240,8 @@ const DashboardLayout = () => {
         socket.on('new_daily_task', handleRefresh);
 
         // Generic real-time sync: whenever someone else changes data anywhere,
-        // soft-refresh the current screen so it shows fresh data without a reload.
+        // let the current screen refresh its data in place. We dispatch an event
+        // instead of remounting the page so the scroll position is preserved.
         let dataRefreshTimer = null;
         socket.on('data_changed', (payload) => {
             const myId = user.id || user._id;
@@ -263,7 +263,7 @@ const DashboardLayout = () => {
                 );
 
                 if (!skipSoftRefresh && !isTyping) {
-                    setDataVersion((version) => version + 1);
+                    window.dispatchEvent(new CustomEvent('app-data-changed', { detail: payload }));
                 }
             }, 400);
         });
@@ -1021,7 +1021,7 @@ const DashboardLayout = () => {
                         )}
                     </AnimatePresence>
                     <motion.div
-                        key={`${location.pathname}-${dataVersion}`}
+                        key={location.pathname}
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.3 }}
