@@ -451,7 +451,7 @@ const AssignmentSubmission = () => {
     };
 
     const getStatusConfig = (status, deadline) => {
-        if (status === 'graded') return { label: 'Graded', variant: 'success' };
+        if (status === 'graded') return { label: 'Completed', variant: 'success' };
         if (status === 'submitted') return { label: 'Submitted', variant: 'info' };
         if (status === 'rejected') return { label: 'Rejected', variant: 'error' };
         if (isDeadlinePassed(deadline)) return { label: 'Overdue', variant: 'error' };
@@ -702,51 +702,53 @@ const AssignmentSubmission = () => {
                                                     key={assignment.id}
                                                     initial={{ opacity: 0, y: 10 }}
                                                     animate={{ opacity: 1, y: 0 }}
-                                                    className={`bg-white dark:bg-slate-900/40 rounded-2xl p-4 sm:p-8 border border-gray-100 dark:border-slate-800 shadow-sm transition-all hover:shadow-xl hover:border-primary dark:hover:border-primary/50 group relative overflow-hidden ${assignment.status === 'graded' ? 'opacity-95' : ''}`}
+                                                    className={`rounded-2xl p-4 sm:p-8 border-2 border-primary shadow-sm transition-all hover:shadow-xl group relative overflow-hidden backdrop-blur-md ${submissionStatus === 'graded' ? 'bg-emerald-50/20 dark:bg-emerald-500/5' : submissionStatus === 'submitted' ? 'bg-blue-50/20 dark:bg-blue-500/5' : (submissionStatus === 'rejected' || deadlinePassed) ? 'bg-red-50/20 dark:bg-red-500/5' : 'bg-amber-50/20 dark:bg-amber-500/5'} ${assignment.status === 'graded' ? 'opacity-95' : ''}`}
                                                 >
                                                     <div className={`absolute top-0 right-0 w-40 h-40 rounded-full -mr-20 -mt-20 blur-3xl opacity-10 transition-opacity group-hover:opacity-20 ${assignment.status === 'graded' ? 'bg-primary' : assignment.status === 'overdue' ? 'bg-red-500' : 'bg-amber-500'}`}></div>
 
                                                     <div className="flex flex-col h-full relative z-10">
-                                                        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2.5 mb-4 sm:mb-6">
+                                                        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2.5 mb-2 sm:mb-3">
                                                             <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
-                                                                <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl flex items-center justify-center text-white shadow-lg shrink-0 ${assignment.status === 'graded' ? 'bg-primary' : assignment.status === 'submitted' ? 'bg-blue-600' : 'bg-primary-dark'}`}>
-                                                                    <FileText className="w-5 h-5 sm:w-6 sm:h-6" />
-                                                                </div>
                                                                 <div className="min-w-0">
-                                                                    {(() => {
-                                                                        const sortedAssignments = [...assignments].sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
-                                                                        const assignmentNumber = sortedAssignments.findIndex(a => String(a._id || a.id) === String(assignment._id || assignment.id)) + 1;
-                                                                        return <span className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block mb-1">ASSIGNMENT #{assignmentNumber}</span>;
-                                                                    })()}
-                                                                    <h3 className="font-black text-gray-900 dark:text-white text-sm sm:text-lg uppercase tracking-tight group-hover:text-primary transition-colors break-words">{assignment.title}</h3>
+                                                                    <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                                                                        {(() => {
+                                                                            const sortedAssignments = [...assignments].sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+                                                                            const assignmentNumber = sortedAssignments.findIndex(a => String(a._id || a.id) === String(assignment._id || assignment.id)) + 1;
+                                                                            return <span className="text-xs sm:text-sm font-black text-primary bg-primary/5 px-2.5 py-1 rounded-lg border border-primary/10 uppercase tracking-tight">#{assignmentNumber}</span>;
+                                                                        })()}
+                                                                        <h3 className="font-black text-gray-900 dark:text-white text-sm sm:text-lg uppercase tracking-tight group-hover:text-primary transition-colors break-words">{assignment.title}</h3>
+                                                                        <Badge variant={statusConfig.variant}>{statusConfig.label.toUpperCase()}</Badge>
+                                                                    </div>
+                                                                    {/* Deadline & Remaining Time */}
+                                                                    <p className="text-[9px] sm:text-[10px] text-gray-400 font-medium flex flex-wrap items-center gap-1.5 uppercase tracking-wide sm:tracking-wider mt-1">
+                                                                        <Clock className="w-3.5 h-3.5" />
+                                                                        Dead Line: {formatDate(assignment.dueDate)}
+                                                                        {!deadlinePassed && (submissionStatus === 'pending' || submissionStatus === 'rejected' || canResubmit) && (
+                                                                            <span className="text-[10px] font-black text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 px-2 py-0.5 rounded-lg border border-amber-100 dark:border-amber-800/30 animate-pulse ml-1 normal-case">
+                                                                                {getTimeRemaining(assignment.dueDate)}
+                                                                            </span>
+                                                                        )}
+                                                                    </p>
                                                                 </div>
                                                             </div>
-                                                            <div className="self-start sm:self-auto">
-                                                                <Badge variant={statusConfig.variant}>{statusConfig.label.toUpperCase()}</Badge>
-                                                            </div>
+                                                            {submissionStatus === 'graded' && submissionMarks !== undefined && Number(submissionMarks) > 0 && (
+                                                                <div className="self-start sm:self-auto text-right bg-primary/5 px-4 py-2 rounded-2xl border border-primary/10">
+                                                                    <p className="text-[10px] font-black text-primary uppercase tracking-widest mb-1">Marks</p>
+                                                                    <p className="text-3xl font-black text-primary leading-none">{submissionMarks}<span className="text-lg opacity-50">/{assignment.totalMarks}</span></p>
+                                                                </div>
+                                                            )}
                                                         </div>
 
                                                         <RichTextContent
                                                             html={assignment.description}
                                                             className="mb-4 sm:mb-6 dark:text-gray-400"
                                                             emptyText="No instructions provided."
+                                                            clampLines={3}
                                                         />
 
                                                         {/* Compact Action Row */}
                                                         <div className="mt-auto pt-4 sm:pt-6 border-t border-gray-50 dark:border-slate-800/50 flex flex-col sm:flex-row sm:flex-wrap sm:items-center justify-between gap-3 sm:gap-4">
                                                             <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-2 sm:gap-3 w-full sm:w-auto">
-                                                                {/* Deadline & Remaining Time */}
-                                                                <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 bg-gray-50 dark:bg-slate-800/50 px-3 py-2 rounded-xl border border-gray-100 dark:border-slate-800">
-                                                                    <Calendar className="w-3.5 h-3.5 text-primary" />
-                                                                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Dead Line:</span>
-                                                                    <span className="text-[10px] font-black text-gray-900 dark:text-gray-200 uppercase">{formatDate(assignment.dueDate)}</span>
-                                                                    {!deadlinePassed && (submissionStatus === 'pending' || submissionStatus === 'rejected' || canResubmit) && (
-                                                                        <span className="text-[10px] font-black text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 px-2 py-0.5 rounded-lg border border-amber-100 dark:border-amber-800/30 animate-pulse ml-1">
-                                                                            {getTimeRemaining(assignment.dueDate)}
-                                                                        </span>
-                                                                    )}
-                                                                </div>
-
                                                                 {/* Inline Rejection Feedback */}
                                                                 {submissionStatus === 'rejected' && submissionFeedback && (
                                                                     <div className="flex items-center gap-2 px-3 py-2 bg-red-50 dark:bg-red-900/10 rounded-xl border border-red-100 dark:border-red-800/30">
@@ -788,12 +790,6 @@ const AssignmentSubmission = () => {
 
                                                             {/* Action Button / Graded Score on Right */}
                                                             <div className="flex items-center gap-3 sm:gap-4 w-full sm:w-auto sm:shrink-0 sm:ml-auto">
-                                                                {submissionStatus === 'graded' && submissionMarks !== undefined && (
-                                                                    <div className="text-right bg-primary/5 px-4 py-2 rounded-2xl border border-primary/10">
-                                                                        <p className="text-[10px] font-black text-primary uppercase tracking-widest mb-1">Marks</p>
-                                                                        <p className="text-3xl font-black text-primary leading-none">{submissionMarks}<span className="text-lg opacity-50">/{assignment.totalMarks}</span></p>
-                                                                    </div>
-                                                                )}
                                                                 {(canSubmit || canResubmit) && selectedAssignment?._id !== assignment._id && (
                                                                 <button
                                                                     onClick={() => handleOpenSubmission(assignment, mySubmission)}
@@ -1020,10 +1016,10 @@ const AssignmentSubmission = () => {
                                     {/* Daily Tasks Filter Stats */}
                                     <div className="grid grid-cols-2 sm:grid-cols-4 overflow-hidden rounded-2xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900/50 shadow-sm mb-4 sm:mb-8">
                                         {[
-                                            { id: 'all', label: isInternCourse ? 'Total' : 'Total Classes', icon: BookOpen, count: dailyTasks.length, accent: 'text-blue-600', iconBg: 'bg-blue-50 dark:bg-blue-500/10' },
-                                            { id: 'verified', label: isInternCourse ? 'Verified' : 'Verified Classes', icon: CheckCircle, count: dailyTasks.filter(t => t.status === 'verified' || t.status === 'graded').length, accent: 'text-emerald-600', iconBg: 'bg-emerald-50 dark:bg-emerald-500/10' },
-                                            { id: 'pending', label: isInternCourse ? 'Pending' : 'Pending Verification', icon: Clock, count: dailyTasks.filter(t => t.status === 'submitted' || t.status === 'pending').length, accent: 'text-amber-600', iconBg: 'bg-amber-50 dark:bg-amber-500/10' },
-                                            { id: 'rejected', label: isInternCourse ? 'Rejected' : 'Rejected Classes', icon: XCircle, count: dailyTasks.filter(t => t.status === 'rejected').length, accent: 'text-red-600', iconBg: 'bg-red-50 dark:bg-red-500/10' },
+                                            { id: 'all', label: 'Total', icon: BookOpen, count: dailyTasks.length, accent: 'text-blue-600', iconBg: 'bg-blue-50 dark:bg-blue-500/10' },
+                                            { id: 'verified', label: 'Completed', icon: CheckCircle, count: dailyTasks.filter(t => t.status === 'verified' || t.status === 'graded').length, accent: 'text-emerald-600', iconBg: 'bg-emerald-50 dark:bg-emerald-500/10' },
+                                            { id: 'pending', label: 'Pending', icon: Clock, count: dailyTasks.filter(t => t.status === 'submitted' || t.status === 'pending').length, accent: 'text-amber-600', iconBg: 'bg-amber-50 dark:bg-amber-500/10' },
+                                            { id: 'rejected', label: 'Rejected', icon: XCircle, count: dailyTasks.filter(t => t.status === 'rejected').length, accent: 'text-red-600', iconBg: 'bg-red-50 dark:bg-red-500/10' },
                                         ].map((stat, index) => (
                                             <button
                                                 key={stat.id}
@@ -1109,28 +1105,16 @@ const AssignmentSubmission = () => {
                                                         initial={{ opacity: 0, x: -10 }} 
                                                         animate={{ opacity: 1, x: 0 }} 
                                                         transition={{ delay: idx * 0.05 }} 
-                                                        className="bg-white dark:bg-slate-900/40 p-4 sm:p-7 rounded-2xl sm:rounded-3xl border border-gray-100 dark:border-slate-800 shadow-sm relative overflow-hidden"
+                                                        className={`p-4 sm:p-7 rounded-2xl sm:rounded-3xl border-2 border-primary shadow-sm relative overflow-hidden backdrop-blur-md ${task.status === 'verified' || task.status === 'graded' ? 'bg-emerald-50/20 dark:bg-emerald-500/5' : task.status === 'rejected' ? 'bg-red-50/20 dark:bg-red-500/5' : 'bg-amber-50/20 dark:bg-amber-500/5'}`}
                                                     >
                                                         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-4 sm:mb-6">
                                                             <div className="flex items-start sm:items-center gap-3 sm:gap-4 min-w-0">
-                                                                {user?.photo ? (
-                                                                    <img src={user.photo} alt="" className="w-11 h-11 rounded-full object-cover border border-primary/10" />
-                                                                ) : (
-                                                                    <div className="w-11 h-11 rounded-full bg-primary/5 flex items-center justify-center text-primary font-bold border border-primary/10 uppercase">
-                                                                        {user?.name?.charAt(0)}
-                                                                    </div>
-                                                                )}
                                                                 <div className="min-w-0">
                                                                     <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mb-0.5">
-                                                                        <span className="text-[10px] font-black text-primary bg-primary/5 px-2 py-0.5 rounded-lg border border-primary/10 uppercase tracking-tight">
+                                                                        <span className="text-xs sm:text-sm font-black text-primary bg-primary/5 px-2.5 py-1 rounded-lg border border-primary/10 uppercase tracking-tight">
                                                                             {isInternCourse ? 'LOG' : 'CLASS'} #{logNumber}
                                                                         </span>
-                                                                        <h4 className="font-bold text-sm sm:text-base text-gray-900 dark:text-white uppercase tracking-tight break-words">{user?.name}</h4>
-                                                                        {user?.rollNo && (
-                                                                            <span className="text-[10px] font-black text-red-500 bg-red-50 dark:bg-red-900/20 px-2 py-0.5 rounded-lg border border-red-100 dark:border-red-800/30">
-                                                                                {user?.rollNo}
-                                                                            </span>
-                                                                        )}
+                                                                        <Badge variant={task.status === 'verified' || task.status === 'graded' ? 'success' : task.status === 'rejected' ? 'error' : 'warning'}>{(task.status === 'verified' || task.status === 'graded') ? 'COMPLETED' : task.status.toUpperCase()}</Badge>
                                                                     </div>
                                                                     <p className="text-[9px] sm:text-[10px] text-gray-400 font-medium flex items-center gap-1 sm:gap-1.5 uppercase tracking-wide sm:tracking-wider mt-1">
                                                                         <Clock className="w-3.5 h-3.5" />
@@ -1138,8 +1122,13 @@ const AssignmentSubmission = () => {
                                                                     </p>
                                                                 </div>
                                                             </div>
-                                                            <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
-                                                                <Badge variant={task.status === 'verified' || task.status === 'graded' ? 'success' : task.status === 'rejected' ? 'error' : 'warning'}>{task.status.toUpperCase()}</Badge>
+                                                            <div className="flex items-start gap-2 sm:gap-3 flex-wrap justify-end">
+                                                                    {(task.marks !== undefined && task.marks !== null && Number(task.marks) > 0) && (
+                                                                        <div className="text-right bg-primary/5 px-4 py-2 rounded-2xl border border-primary/10">
+                                                                            <p className="text-[10px] font-black text-primary uppercase tracking-widest mb-1">Marks</p>
+                                                                            <p className="text-3xl font-black text-primary leading-none">{task.marks}<span className="text-lg opacity-50">/10</span></p>
+                                                                        </div>
+                                                                    )}
                                                                 {/* Edit/Delete only when NOT graded or verified */}
                                                                 {(task.status !== 'verified' && task.status !== 'graded') && (
                                                                     <>
@@ -1191,6 +1180,7 @@ const AssignmentSubmission = () => {
                                                         <RichTextContent
                                                             html={task.content}
                                                             className="bg-gray-50/50 dark:bg-black/20 p-3 sm:p-5 rounded-xl sm:rounded-2xl border border-gray-100 dark:border-slate-800 mb-3 sm:mb-4"
+                                                            clampLines={3}
                                                         />
                                                         )}
                                                         
@@ -1203,12 +1193,6 @@ const AssignmentSubmission = () => {
 
                                                         {task.feedback && (
                                                             <div className="mt-4 sm:mt-5 pt-4 sm:pt-5 border-t border-gray-100 dark:border-slate-800/50 flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-2.5 sm:gap-4">
-                                                                {/* Compact Score */}
-                                                                <div className="flex items-center gap-2 px-3 py-1.5 bg-primary/5 dark:bg-primary/20 rounded-xl border border-primary/10 dark:border-primary/30">
-                                                                    <span className="text-[10px] font-black text-primary uppercase tracking-widest">Marks:</span>
-                                                                    <span className="text-sm font-black text-primary">{task.marks !== undefined ? task.marks : 0}<span className="text-[10px]">/10</span></span>
-                                                                </div>
-
                                                                 {/* Inline Feedback */}
                                                                 <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 flex-1 min-w-0 w-full">
                                                                     <span className="text-[9px] sm:text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest shrink-0">Teacher Feedback:</span>

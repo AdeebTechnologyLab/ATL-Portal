@@ -246,13 +246,13 @@ const StudentWorkView = ({ student, onBack }) => {
                                                         initial={{ opacity: 0, y: 8 }}
                                                         animate={{ opacity: 1, y: 0 }}
                                                         transition={{ delay: idx * 0.05 }}
-                                                        className="bg-gray-50 rounded-2xl p-5 border border-gray-100"
+                                                        className="bg-gray-50 rounded-2xl p-5 border border-primary/40"
                                                     >
                                                         <div className="flex items-start justify-between gap-4 mb-3">
                                                             <div className="flex-1">
                                                                 <div className="flex flex-wrap items-center gap-2 mb-1">
-                                                                    <span className="text-[10px] font-black text-gray-400 bg-white px-2 py-0.5 rounded border border-gray-200 uppercase tracking-tight">
-                                                                        ASGN #{idx + 1}
+                                                                    <span className="text-[10px] font-black text-primary bg-primary/5 px-2 py-0.5 rounded border border-primary/20 uppercase tracking-tight">
+                                                                        #{idx + 1}
                                                                     </span>
                                                                     <h4 className="font-bold text-gray-900 uppercase tracking-tight">{assignment.title}</h4>
                                                                     {isOverdue && !submission && (
@@ -378,7 +378,7 @@ const StudentWorkView = ({ student, onBack }) => {
                                                     initial={{ opacity: 0, y: 8 }}
                                                     animate={{ opacity: 1, y: 0 }}
                                                     transition={{ delay: idx * 0.05 }}
-                                                    className={`bg-gray-50 rounded-2xl p-5 border border-gray-100 ${task.status === 'verified' || task.status === 'graded' ? 'opacity-70' : ''}`}
+                                                    className={`bg-gray-50 rounded-2xl p-5 border-2 border-primary ${task.status === 'verified' || task.status === 'graded' ? 'opacity-70' : ''}`}
                                                 >
                                                     <div className="flex items-start justify-between gap-4">
                                                         <div className="flex-1">
@@ -412,6 +412,7 @@ const StudentWorkView = ({ student, onBack }) => {
                                                             <RichTextContent
                                                                 html={task.content}
                                                                 className="bg-white p-4 rounded-2xl border border-gray-100 italic"
+                                                                clampLines={3}
                                                             />
 
                                                             {task.feedback && (
@@ -425,7 +426,7 @@ const StudentWorkView = ({ student, onBack }) => {
                                                         <div className="flex-shrink-0">
                                                             <Badge variant={statusVariant[task.status] || 'warning'}>
                                                                 {task.status === 'verified' || task.status === 'graded'
-                                                                    ? 'VERIFIED ✅'
+                                                                    ? 'COMPLETED ✅'
                                                                     : task.status === 'rejected'
                                                                         ? 'REJECTED ❌'
                                                                         : 'PENDING ⏳'}

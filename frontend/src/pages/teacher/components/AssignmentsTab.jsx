@@ -506,12 +506,12 @@ const AssignmentsTab = ({ course, students }) => { // Accept students prop
                                     key={assignment._id}
                                     initial={{ opacity: 0, y: 10 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    className={`bg-white rounded-2xl p-4 sm:p-6 border border-gray-100 hover:shadow-lg transition-all ${isFullyGraded ? 'opacity-50 grayscale-[0.5]' : ''}`}
+                                    className={`rounded-2xl p-4 sm:p-6 border-2 border-primary hover:shadow-lg transition-all backdrop-blur-md ${isFullyGraded ? 'bg-emerald-50/20 dark:bg-emerald-500/5' : isOverdue ? 'bg-red-50/20 dark:bg-red-500/5' : isScheduled ? 'bg-blue-50/20 dark:bg-blue-500/5' : 'bg-amber-50/20 dark:bg-amber-500/5'} ${isFullyGraded ? 'opacity-50 grayscale-[0.5]' : ''}`}
                                 >
                                     <div className="flex flex-col sm:flex-row sm:items-start justify-between mb-4 gap-3">
                                         <div className="flex-1 min-w-0">
                                             <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-1">
-                                                <span className="text-[10px] sm:text-xs font-black text-gray-300 tracking-tighter uppercase whitespace-nowrap bg-gray-50 px-2 py-1 rounded-lg border border-gray-100">ASGN #{assignmentNumber}</span>
+                                                <span className="text-[10px] sm:text-xs font-black text-primary tracking-tighter uppercase whitespace-nowrap bg-primary/10 px-2 py-1 rounded-lg border border-primary/20">#{assignmentNumber}</span>
                                                 <h4 className="font-bold text-gray-900 text-base sm:text-lg uppercase tracking-tight">{assignment.title}</h4>
                                                 <div className="flex flex-wrap gap-1.5 sm:gap-2">
                                                     <Badge variant="info">ASSIGNED</Badge>
@@ -524,6 +524,7 @@ const AssignmentsTab = ({ course, students }) => { // Accept students prop
                                                 html={assignment.description}
                                                 className="text-xs sm:text-sm"
                                                 emptyText="No description"
+                                                clampLines={3}
                                             />
                                         </div>
                                         <div className="flex items-center sm:flex-col sm:items-end gap-3 sm:gap-1 shrink-0">
@@ -1146,7 +1147,7 @@ const AssignmentsTab = ({ course, students }) => { // Accept students prop
                             <div className="flex-1 min-w-0">
                                 <div className="flex items-center gap-2 mb-1.5 flex-wrap">
                                     <span className="text-[9px] font-black text-primary bg-primary/10 px-2 py-0.5 rounded-md uppercase tracking-widest">
-                                        Assignment #{assignments.indexOf(selectedAssignment) + 1}
+                                        #{assignments.indexOf(selectedAssignment) + 1}
                                     </span>
                                     {selectedAssignment.course?.title && (
                                         <span className="text-[9px] font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md uppercase tracking-widest">

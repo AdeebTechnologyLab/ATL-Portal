@@ -281,6 +281,16 @@ router.get('/unread', protect, async (req, res) => {
 // DISCUSSION ROOM ROUTES (common group chat for everyone)
 // =====================================================
 
+const DISCUSSION_SENDER_FIELDS = 'name role email photo rollNo lastSeen';
+
+const populateDiscussionMessage = (query) => query
+    .populate('sender', DISCUSSION_SENDER_FIELDS)
+    .populate({
+        path: 'replyTo',
+        select: 'text media poll sender',
+        populate: { path: 'sender', select: 'name role photo rollNo' }
+    });
+
 // @route   GET /api/chat/discussion/online-count
 // @desc    Get currently online users count for discussion room
 // @access  Private
@@ -356,12 +366,11 @@ router.put('/discussion/read', protect, async (req, res) => {
 // @access  Private
 router.get('/discussion', protect, async (req, res) => {
     try {
-        const messages = await GlobalMessage.find({
+        const messages = await populateDiscussionMessage(GlobalMessage.find({
             discussionRoom: true,
             course: null,
             task: null
-        })
-            .populate('sender', 'name role email photo rollNo lastSeen')
+        }))
             .sort('createdAt')
             .limit(500)
             .lean();
@@ -379,18 +388,25 @@ router.post('/discussion', protect, async (req, res) => {
     try {
         const text = (req.body.text || '').trim();
         const media = req.body.media || [];
+        const replyToId = req.body.replyTo || null;
         if (!text && media.length === 0) return res.status(400).json({ success: false, message: 'Message is required' });
+
+        let replyTo = null;
+        if (replyToId && mongoose.Types.ObjectId.isValid(replyToId)) {
+            const target = await GlobalMessage.findOne({ _id: replyToId, discussionRoom: true }).select('_id');
+            if (target) replyTo = target._id;
+        }
 
         const message = await GlobalMessage.create({
             sender: req.user.id,
             recipient: null,
             text,
             media,
-            discussionRoom: true
+            discussionRoom: true,
+            replyTo
         });
 
-        const populatedMessage = await GlobalMessage.findById(message._id)
-            .populate('sender', 'name role email photo rollNo lastSeen');
+        const populatedMessage = await populateDiscussionMessage(GlobalMessage.findById(message._id));
 
         const io = req.app.get('io');
         if (io) {
@@ -433,8 +449,7 @@ router.post('/discussion/poll', protect, authorize('teacher'), async (req, res) 
             }
         });
 
-        const populatedMessage = await GlobalMessage.findById(message._id)
-            .populate('sender', 'name role email photo rollNo lastSeen');
+        const populatedMessage = await populateDiscussionMessage(GlobalMessage.findById(message._id));
 
         const io = req.app.get('io');
         if (io) {
@@ -478,8 +493,7 @@ router.put('/discussion/:messageId/poll-vote', protect, async (req, res) => {
 
         await message.save();
 
-        const populatedMessage = await GlobalMessage.findById(message._id)
-            .populate('sender', 'name role email photo rollNo lastSeen');
+        const populatedMessage = await populateDiscussionMessage(GlobalMessage.findById(message._id));
 
         const io = req.app.get('io');
         if (io) io.emit('discussion_poll_updated', populatedMessage);
@@ -524,8 +538,7 @@ router.put('/discussion/:messageId/reaction', protect, async (req, res) => {
 
         await message.save();
 
-        const populatedMessage = await GlobalMessage.findById(message._id)
-            .populate('sender', 'name role email photo rollNo lastSeen');
+        const populatedMessage = await populateDiscussionMessage(GlobalMessage.findById(message._id));
 
         const io = req.app.get('io');
         if (io) {

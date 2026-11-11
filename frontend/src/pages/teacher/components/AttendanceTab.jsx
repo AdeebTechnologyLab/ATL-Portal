@@ -47,7 +47,7 @@ const getStatusColor = (lastSeen) => {
 const AttendanceTab = ({ course, students }) => {
     const [selectedDate, setSelectedDate] = useState(getTodayAttendanceDateKey());
     const [attendanceMarks, setAttendanceMarks] = useState({});
-    const [isSaving, setIsSaving] = useState(false);
+    const [, setIsSaving] = useState(false);
     const [lastSaved, setLastSaved] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [isLocked, setIsLocked] = useState(false);
@@ -331,32 +331,6 @@ const AttendanceTab = ({ course, students }) => {
         }
     };
 
-    const handleSave = async () => {
-        setIsSaving(true);
-        try {
-            const records = students.map(student => ({
-                userId: student.id,
-                status: attendanceMarks[student.id]?.status || 'absent',
-                mode: (student.attendType || '').toLowerCase().includes('online') ? 'online' : 'onsite'
-            }));
-            await attendanceAPI.mark({
-                courseId: course._id,
-                date: selectedDate,
-                records
-            });
-
-            // Clear local cache after successful save
-            localStorage.removeItem(getCacheKey());
-
-            alert('Attendance saved successfully!');
-        } catch (err) {
-            console.error('Error saving:', err);
-            alert('Failed to save attendance');
-        } finally {
-            setIsSaving(false);
-        }
-    };
-
     const filteredStudents = students.filter(student =>
         student.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         student.rollNo?.toLowerCase().includes(searchQuery.toLowerCase())
@@ -535,16 +509,6 @@ const AttendanceTab = ({ course, students }) => {
                             className="bg-transparent border-none outline-none w-full text-xs sm:text-sm font-medium"
                         />
                     </div>
-                    {!isLocked && (
-                        <button
-                            onClick={handleSave}
-                            disabled={isSaving}
-                            className="w-full sm:w-auto px-6 sm:px-8 py-2.5 sm:py-3 bg-primary hover:bg-primary text-white rounded-2xl flex items-center justify-center gap-2 font-bold transition-all shadow-lg shadow-primary text-sm"
-                        >
-                            {isSaving ? <ButtonLoader /> : <Save className="w-4 h-4 sm:w-5 sm:h-5" />}
-                            {isSaving ? 'SAVING...' : 'SAVE'}
-                        </button>
-                    )}
                 </div>
 
                 <div className="overflow-x-auto">

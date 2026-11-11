@@ -687,11 +687,14 @@ const StudentTestsTab = ({ courseId, isRestricted }) => {
                     }).map((test) => {
                         const submission = test.submissions?.[0];
                         const isCompleted = !!submission;
+                        const testNumber = [...tests]
+                            .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
+                            .findIndex(item => String(item._id) === String(test._id)) + 1;
 
                         return (
                             <div 
                                 key={test._id}
-                                className="bg-white border-2 border-gray-100 rounded-3xl p-6 transition-all group"
+                                className="bg-white border-2 border-primary rounded-3xl p-6 transition-all group"
                             >
                                 <div className="flex items-start justify-between mb-4">
                                     <div className="p-3 rounded-2xl bg-primary/5">
@@ -702,7 +705,10 @@ const StudentTestsTab = ({ courseId, isRestricted }) => {
                                     </Badge>
                                 </div>
                                 
-                                <h4 className="text-lg font-black text-gray-900 mb-1 uppercase tracking-tight">{test.title}</h4>
+                                <div className="flex flex-wrap items-center gap-2 mb-1">
+                                    <span className="text-[10px] sm:text-xs font-black text-primary tracking-tighter uppercase whitespace-nowrap bg-primary/10 px-2 py-1 rounded-lg border border-primary/20">#{testNumber}</span>
+                                    <h4 className="text-lg font-black text-gray-900 uppercase tracking-tight">{test.title}</h4>
+                                </div>
                                 <div className="flex items-center gap-4 mb-6">
                                     <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{test.duration} MINS</span>
                                     {test.dueDate && (

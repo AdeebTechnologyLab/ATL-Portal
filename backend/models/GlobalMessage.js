@@ -60,6 +60,11 @@ const globalMessageSchema = new mongoose.Schema({
             createdAt: { type: Date, default: Date.now }
         }
     ],
+    replyTo: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'GlobalMessage',
+        default: null
+    },
     poll: {
         question: { type: String, default: '' },
         options: [

@@ -389,7 +389,7 @@ const MarksSheet = () => {
                                                         <div key={idx} className="p-3 rounded-xl border border-gray-100 dark:border-slate-700 bg-gray-50/70 dark:bg-slate-800/60">
                                                             <div className="flex items-start justify-between gap-3">
                                                                 <div className="min-w-0">
-                                                                    <p className="text-[9px] font-black text-blue-600 uppercase tracking-widest">Assignment #{grade.number} · {grade.date}</p>
+                                                                    <p className="text-[9px] font-black text-primary uppercase tracking-widest">#{grade.number} · {grade.date}</p>
                                                                     <h5 className="text-sm font-bold text-gray-900 dark:text-white mt-1 break-words">{grade.assessment}</h5>
                                                                 </div>
                                                                 <div className={`text-right shrink-0 ${gInfo.color}`}>
@@ -423,7 +423,7 @@ const MarksSheet = () => {
                                                             const gInfo = getGrade(parseFloat(perc));
                                                             return (
                                                                 <tr key={idx} className="hover:bg-gray-50/50 dark:hover:bg-slate-800/70 transition-colors">
-                                                                    <td className="py-4 px-6 font-black text-gray-300 dark:text-slate-500">ASGN #{grade.number}</td>
+                                                                    <td className="py-4 px-6 font-black text-primary">#{grade.number}</td>
                                                                     <td className="py-4 px-6 font-medium text-gray-500 dark:text-slate-400 text-xs">{grade.date}</td>
                                                                     <td className="py-4 px-6 font-bold text-gray-900 dark:text-white">{grade.assessment}</td>
                                                                     <td className="py-4 px-6 font-medium text-gray-600 dark:text-slate-300">
@@ -538,7 +538,7 @@ const MarksSheet = () => {
                                                                 const perc = calculatePercentage(grade.marks, grade.total);
                                                                 const gInfo = getGrade(parseFloat(perc));
                                                                 return (
-                                                                    <div key={idx} className="p-3 rounded-xl border border-gray-100 dark:border-slate-700 bg-gray-50/70 dark:bg-slate-800/60">
+                                                        <div key={idx} className="p-3 rounded-xl border border-primary/40 bg-gray-50/70 dark:bg-slate-800/60">
                                                                         <div className="flex items-start justify-between gap-3">
                                                                             <div className="min-w-0">
                                                                                 <p className="text-[9px] font-black text-primary uppercase tracking-widest">Test #{grade.number} - {grade.date}</p>

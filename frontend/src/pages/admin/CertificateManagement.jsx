@@ -18,9 +18,10 @@ const CertificateManagement = () => {
     const [selectedCities, setSelectedCities] = useState([]); // Array of strings
     const [selectedTypes, setSelectedTypes] = useState([]);  // Array of strings
     const [enrollmentStatusFilter, setEnrollmentStatusFilter] = useState('all'); // 'all', 'active', 'completed'
+    const [minVerifiedChallans, setMinVerifiedChallans] = useState(0); // 0 = all, N = N or more
     const [certificateStartDate, setCertificateStartDate] = useState('');
     const [certificateEndDate, setCertificateEndDate] = useState('');
-    const [expandedCourse, setExpandedCourse] = useState(null);
+    const [expandedCourses, setExpandedCourses] = useState([]);
 
     // Helper to get local date string YYYY-MM-DD
     const getLocalDateString = (date) => {
@@ -342,6 +343,13 @@ const CertificateManagement = () => {
         setSearchQuery('');
         setCertificateStartDate('');
         setCertificateEndDate('');
+        setMinVerifiedChallans(0);
+        setEnrollmentStatusFilter('all');
+    };
+
+    const matchesChallanFilter = (student) => {
+        if (!minVerifiedChallans) return true;
+        return (student?.verifiedChallans || 0) >= minVerifiedChallans;
     };
 
     const isDateRangeActive = !!certificateStartDate || !!certificateEndDate;
@@ -378,6 +386,7 @@ const CertificateManagement = () => {
 
         // Filter students by enrollment status
         const filteredStudents = c.students.filter(s => {
+            if (!matchesChallanFilter(s)) return false;
             if (!isCertificateInDateRange(s.certificate)) return false;
             if (isDateRangeActive) return s.certificateIssued;
             if (enrollmentStatusFilter === 'all') return true;
@@ -391,6 +400,7 @@ const CertificateManagement = () => {
     }).map(c => ({
         ...c,
         students: c.students.filter(s => {
+            if (!matchesChallanFilter(s)) return false;
             if (!isCertificateInDateRange(s.certificate)) return false;
             if (isDateRangeActive) return s.certificateIssued;
             if (enrollmentStatusFilter === 'all') return true;
@@ -399,6 +409,26 @@ const CertificateManagement = () => {
             return true;
         })
     }));
+
+    const filtersActive = searchQuery.trim() !== '' ||
+        selectedTypes.length > 0 ||
+        selectedCities.length > 0 ||
+        enrollmentStatusFilter !== 'all' ||
+        minVerifiedChallans > 0 ||
+        isDateRangeActive;
+
+    useEffect(() => {
+        if (filtersActive) {
+            setExpandedCourses(filteredCourses.map(c => c.id));
+        } else {
+            setExpandedCourses([]);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [searchQuery, selectedTypes, selectedCities, enrollmentStatusFilter, minVerifiedChallans, certificateStartDate, certificateEndDate]);
+
+    const toggleCourse = (id) => {
+        setExpandedCourses(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
+    };
 
     const filteredRequests = requests.filter(r => {
         if (isDateRangeActive) return false;
@@ -530,7 +560,7 @@ const CertificateManagement = () => {
                         </div>
 
                         {/* Clear Button */}
-                        {(selectedTypes.length > 0 || selectedCities.length > 0 || searchQuery || isDateRangeActive) && (
+                        {(selectedTypes.length > 0 || selectedCities.length > 0 || searchQuery || isDateRangeActive || minVerifiedChallans > 0 || enrollmentStatusFilter !== 'all') && (
                             <button
                                 onClick={clearFilters}
                                 className="flex items-center justify-center gap-2 px-4 py-3 text-rose-500 hover:bg-rose-50 rounded-xl transition-all text-sm font-bold uppercase tracking-widest"
@@ -541,7 +571,7 @@ const CertificateManagement = () => {
                         )}
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
                         {/* Audience Filters */}
                         <div className="space-y-2">
                             <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Audience</p>
@@ -587,7 +617,6 @@ const CertificateManagement = () => {
                             <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Status</p>
                             <div className="flex items-center gap-2 bg-gray-50 p-1.5 rounded-2xl">
                                 {[
-                                    { id: 'all', label: 'All' },
                                     { id: 'active', label: 'Active' },
                                     { id: 'completed', label: 'Completed' }
                                 ].map((status) => (
@@ -600,6 +629,28 @@ const CertificateManagement = () => {
                                             }`}
                                     >
                                         {status.label}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="space-y-2">
+                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Verified Challans</p>
+                            <div className="flex items-center gap-2 bg-gray-50 p-1.5 rounded-2xl">
+                                {[
+                                    { value: 1, label: '1' },
+                                    { value: 2, label: '2' },
+                                    { value: 3, label: '3+' }
+                                ].map((item) => (
+                                    <button
+                                        key={item.value}
+                                        onClick={() => setMinVerifiedChallans(item.value)}
+                                        className={`flex-1 px-2 py-2 rounded-xl font-bold text-xs transition-all ${minVerifiedChallans === item.value
+                                            ? 'bg-white text-primary shadow-md border border-primary/10'
+                                            : 'text-gray-500 hover:text-gray-700 hover:bg-white/50'
+                                            }`}
+                                    >
+                                        {item.label}
                                     </button>
                                 ))}
                             </div>
@@ -733,7 +784,7 @@ const CertificateManagement = () => {
                                     className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 overflow-hidden"
                                 >
                                     <div
-                                        onClick={() => setExpandedCourse(expandedCourse === course.id ? null : course.id)}
+                                        onClick={() => toggleCourse(course.id)}
                                         className="flex items-center justify-between p-4 sm:p-5 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
                                     >
                                         <div className="flex items-center gap-4">
@@ -752,10 +803,10 @@ const CertificateManagement = () => {
                                                 </div>
                                             </div>
                                         </div>
-                                        <ChevronDown className={`w-5 h-5 text-gray-400 dark:text-gray-500 transition-transform flex-shrink-0 ${expandedCourse === course.id ? 'rotate-180' : ''}`} />
+                                        <ChevronDown className={`w-5 h-5 text-gray-400 dark:text-gray-500 transition-transform flex-shrink-0 ${expandedCourses.includes(course.id) ? 'rotate-180' : ''}`} />
                                     </div>
 
-                                    {expandedCourse === course.id && (
+                                    {expandedCourses.includes(course.id) && (
                                         <div className="border-t border-gray-100 dark:border-gray-700 overflow-x-auto">
                                             <table className="w-full">
                                                 <thead className="bg-gray-50/50 dark:bg-gray-700/50">

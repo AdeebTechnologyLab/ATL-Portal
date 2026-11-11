@@ -165,7 +165,7 @@ const DailyTasksTab = ({ course, students = [] }) => {
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
                 {[
                     { id: 'all', label: 'Total', icon: BookOpen, count: tasks.length, color: 'text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 border-blue-100 dark:border-blue-800/30', activeColor: 'ring-4 ring-blue-500/20 bg-blue-100 dark:bg-blue-900/40 border-blue-400 scale-105', onClick: () => setActiveStatFilter('all') },
-                    { id: 'verified', label: 'Verified', icon: CheckCircle, count: tasks.filter(t => t.status === 'verified' || t.status === 'graded').length, color: 'text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 border-emerald-100 dark:border-emerald-800/30', activeColor: 'ring-4 ring-emerald-500/20 bg-emerald-100 dark:bg-emerald-900/40 border-emerald-400 scale-105', onClick: () => setActiveStatFilter(activeStatFilter === 'verified' ? 'all' : 'verified') },
+                    { id: 'verified', label: 'Completed', icon: CheckCircle, count: tasks.filter(t => t.status === 'verified' || t.status === 'graded').length, color: 'text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 border-emerald-100 dark:border-emerald-800/30', activeColor: 'ring-4 ring-emerald-500/20 bg-emerald-100 dark:bg-emerald-900/40 border-emerald-400 scale-105', onClick: () => setActiveStatFilter(activeStatFilter === 'verified' ? 'all' : 'verified') },
                     { id: 'pending', label: 'Pending', icon: Clock, count: tasks.filter(t => t.status === 'submitted' || t.status === 'pending').length, color: 'text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 border-amber-100 dark:border-amber-800/30', activeColor: 'ring-4 ring-amber-500/20 bg-amber-100 dark:bg-amber-900/40 border-amber-400 scale-105', onClick: () => setActiveStatFilter(activeStatFilter === 'pending' ? 'all' : 'pending') },
                     { id: 'rejected', label: 'Rejected', icon: XCircle, count: tasks.filter(t => t.status === 'rejected').length, color: 'text-red-700 dark:text-red-400 bg-red-50 dark:bg-red-900/20 border-red-100 dark:border-red-800/30', activeColor: 'ring-4 ring-red-500/20 bg-red-100 dark:bg-red-900/40 border-red-400 scale-105', onClick: () => setActiveStatFilter(activeStatFilter === 'rejected' ? 'all' : 'rejected') },
                 ].map((stat) => (
@@ -242,7 +242,7 @@ const DailyTasksTab = ({ course, students = [] }) => {
                                 key={task._id}
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                className={`bg-white p-4 sm:p-6 rounded-2xl border border-gray-100 hover:shadow-md transition-all group ${task.status === 'verified' ? 'opacity-60 bg-gray-50/30' : ''}`}
+                                className={`p-4 sm:p-6 rounded-2xl border-2 border-primary hover:shadow-md transition-all group backdrop-blur-md ${task.status === 'verified' || task.status === 'graded' ? 'bg-emerald-50/20 dark:bg-emerald-500/5' : task.status === 'rejected' ? 'bg-red-50/20 dark:bg-red-500/5' : 'bg-amber-50/20 dark:bg-amber-500/5'} ${task.status === 'verified' ? 'opacity-60' : ''}`}
                             >
                                 <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                                     <div className="flex items-start gap-3 sm:gap-4 flex-1 min-w-0">
@@ -289,6 +289,7 @@ const DailyTasksTab = ({ course, students = [] }) => {
                                                 <RichTextContent
                                                     html={task.content}
                                                     className="bg-gray-50 p-3 sm:p-4 rounded-2xl border border-gray-100 italic text-xs sm:text-sm"
+                                                    clampLines={3}
                                                 />
                                             </div>
 
@@ -303,7 +304,7 @@ const DailyTasksTab = ({ course, students = [] }) => {
 
                                     <div className="flex flex-row sm:flex-col items-start sm:items-end gap-2 sm:gap-3 shrink-0">
                                         <Badge variant={task.status === 'verified' || task.status === 'graded' ? 'success' : task.status === 'rejected' ? 'error' : 'warning'}>
-                                            {task.status === 'verified' || task.status === 'graded' ? 'VERIFIED ✅' : task.status === 'rejected' ? 'REJECTED ❌' : 'PENDING ⏳'}
+                                            {task.status === 'verified' || task.status === 'graded' ? 'COMPLETED ✅' : task.status === 'rejected' ? 'REJECTED ❌' : 'PENDING ⏳'}
                                         </Badge>
 
                                         <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">

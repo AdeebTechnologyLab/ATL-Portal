@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { io } from 'socket.io-client';
-import { MessageSquare, Send, Trash2, Users, Loader2, Circle, BarChart3, Plus, X, Smile, Maximize2 } from 'lucide-react';
+import { MessageSquare, Send, Trash2, Users, Loader2, Circle, BarChart3, Plus, X, Smile, Maximize2, Reply } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { chatAPI, googleDriveAPI } from '../../services/api';
 import { getSocketURL } from '../../config/apiBaseUrl';
@@ -80,6 +80,13 @@ const getPollStats = (poll = {}, myId) => {
     return { totalVotes, myVoteIndex };
 };
 
+const getReplyPreview = (message = {}) => {
+    if (message.poll?.question) return `Poll: ${message.poll.question}`;
+    if (message.text) return message.text;
+    if (message.media?.length) return message.media[0].name || 'Attachment';
+    return 'Message';
+};
+
 const DiscussionRoom = ({ compact = false }) => {
     const { user, role } = useSelector((state) => state.auth);
     const navigate = useNavigate();
@@ -88,12 +95,12 @@ const DiscussionRoom = ({ compact = false }) => {
     const [loading, setLoading] = useState(true);
     const [sending, setSending] = useState(false);
     const [onlineCount, setOnlineCount] = useState(0);
-    const [reactionPickerFor, setReactionPickerFor] = useState(null);
     const [showPollForm, setShowPollForm] = useState(false);
     const [showComposerActions, setShowComposerActions] = useState(false);
     const [pollQuestion, setPollQuestion] = useState('');
     const [pollOptions, setPollOptions] = useState(['', '']);
     const [pendingMedia, setPendingMedia] = useState([]);
+    const [replyTo, setReplyTo] = useState(null);
     const [driveStatus, setDriveStatus] = useState({ connected: false });
     const socketRef = useRef(null);
     const messagesContainerRef = useRef(null);
@@ -197,6 +204,14 @@ const DiscussionRoom = ({ compact = false }) => {
         });
     };
 
+    const scrollToMessage = (messageId) => {
+        const element = document.getElementById(`discussion-msg-${messageId}`);
+        if (!element) return;
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        element.classList.add('ring-2', 'ring-primary', 'rounded-2xl');
+        setTimeout(() => element.classList.remove('ring-2', 'ring-primary', 'rounded-2xl'), 1500);
+    };
+
     useLayoutEffect(() => {
         if (!loading) {
             scrollToBottom(false);
@@ -216,9 +231,10 @@ const DiscussionRoom = ({ compact = false }) => {
         setSending(true);
         setNewMessage('');
         try {
-            const res = await chatAPI.sendDiscussionMessage(text, pendingMedia);
+            const res = await chatAPI.sendDiscussionMessage(text, pendingMedia, replyTo?._id || null);
             const saved = res.data.data;
             setPendingMedia([]);
+            setReplyTo(null);
             setMessages(prev => prev.some(m => String(m._id) === String(saved._id)) ? prev : [...prev, saved]);
         } catch (error) {
             setNewMessage(text);
@@ -243,6 +259,7 @@ const DiscussionRoom = ({ compact = false }) => {
         try {
             await chatAPI.clearDiscussion();
             setMessages([]);
+            setReplyTo(null);
         } catch (error) {
             alert(error.response?.data?.message || 'Discussion clear nahi ho saki.');
         }
@@ -250,7 +267,6 @@ const DiscussionRoom = ({ compact = false }) => {
 
     const handleReaction = async (messageId, emoji) => {
         try {
-            setReactionPickerFor(null);
             const res = await chatAPI.toggleDiscussionReaction(messageId, emoji);
             const updatedMessage = res.data.data;
             setMessages(prev => prev.map(msg => String(msg._id) === String(messageId) ? updatedMessage : msg));
@@ -359,7 +375,7 @@ const DiscussionRoom = ({ compact = false }) => {
                         Loading discussion...
                     </div>
                 ) : (
-                    <div ref={messagesContainerRef} className={`flex-1 min-h-0 overflow-y-auto bg-white dark:bg-gray-950 ${compact ? 'p-3 sm:p-4 space-y-3' : 'p-4 md:p-6 space-y-5'}`}>
+                    <div ref={messagesContainerRef} className={`flex-1 min-h-0 overflow-y-auto bg-gradient-to-b from-slate-50 via-slate-100 to-slate-50 dark:from-[#0f172a] dark:via-[#0b1220] dark:to-[#0f172a] ${compact ? 'p-3 sm:p-4 space-y-3' : 'p-4 md:p-6 space-y-5'}`}>
                         {messages.length === 0 ? (
                             <div className="h-full flex flex-col items-center justify-center text-center text-gray-500 dark:text-gray-400">
                                     <MessageSquare className={`opacity-30 ${compact ? 'w-10 h-10 mb-2' : 'w-16 h-16 mb-3'}`} />
@@ -376,42 +392,64 @@ const DiscussionRoom = ({ compact = false }) => {
                             const hasPoll = !!msg.poll?.question;
                             const { totalVotes, myVoteIndex } = getPollStats(msg.poll, myId);
                             return (
-                                <div key={msg._id} className={`flex items-start ${compact ? 'gap-2' : 'gap-4'} ${mine ? 'justify-end flex-row-reverse' : 'justify-start'}`}>
+                                <div key={msg._id} id={`discussion-msg-${msg._id}`} className={`flex items-end ${compact ? 'gap-2' : 'gap-3'} ${mine ? 'justify-end flex-row-reverse' : 'justify-start'}`}>
                                     <div className="relative shrink-0">
                                         <img
                                             src={getSenderPhoto(sender, user)}
                                             alt={sender.name || 'User'}
                                             onContextMenu={(e) => e.preventDefault()}
                                             draggable={false}
-                                            className={`rounded-full object-cover border border-primary/50 shadow-sm select-none ${compact ? 'w-7 h-7' : 'w-11 h-11'}`}
+                                            className={`rounded-full object-cover ring-2 ring-white dark:ring-gray-900 shadow-sm select-none ${compact ? 'w-7 h-7' : 'w-10 h-10'}`}
                                         />
                                         {online && (
                                             <span className={`absolute -bottom-0.5 -right-0.5 rounded-full bg-green-500 border-2 border-white dark:border-gray-950 shadow-[0_0_10px_rgba(34,197,94,0.9)] ${compact ? 'w-2.5 h-2.5' : 'w-3.5 h-3.5'}`} />
                                         )}
                                     </div>
-                                    <div className={`min-w-0 sm:max-w-[72%] ${compact ? 'max-w-[calc(100%-40px)]' : 'max-w-[calc(100%-64px)]'} ${mine ? 'ml-auto' : 'mr-auto'}`}>
-                                        <div className={`group relative rounded-xl ${
+                                    <div className={`min-w-0 sm:max-w-[74%] ${compact ? 'max-w-[calc(100%-40px)]' : 'max-w-[calc(100%-64px)]'} ${mine ? 'ml-auto' : 'mr-auto'}`}>
+                                        <div className={`group relative overflow-visible rounded-2xl ring-1 shadow-[0_2px_12px_rgba(15,23,42,0.05)] ${
                                             mine
-                                                ? 'bg-primary/5 border-primary/15'
-                                                : 'bg-gray-50 dark:bg-[#1e1f21] border-gray-100 dark:border-white/[0.06]'
-                                        } border shadow-sm overflow-visible ${
-                                            compact ? 'px-3 py-2' : 'px-5 py-4'
+                                                ? 'bg-gradient-to-br from-primary/[0.12] to-primary/[0.04] ring-primary/20'
+                                                : 'bg-white dark:bg-[#202225] ring-gray-100 dark:ring-white/[0.07]'
                                         } ${
-                                            mine ? 'rounded-tr-sm' : 'rounded-tl-sm'
+                                            compact ? 'px-3 py-2' : 'px-4 py-3'
+                                        } ${
+                                            mine ? 'rounded-tr-md' : 'rounded-tl-md'
                                         }`}>
-                                            <span className={`absolute rounded-full bg-primary/60 ${compact ? 'top-2 bottom-2 w-[2px]' : 'top-3 bottom-3 w-[3px]'} ${mine ? 'right-0' : 'left-0'}`} />
-                                            <div className={`flex items-center justify-between gap-3 ${compact ? 'mb-0.5' : 'mb-2'}`}>
+                                            <div className={`flex items-center justify-between gap-3 ${compact ? 'mb-1' : 'mb-1.5'}`}>
                                                 <div className="flex items-center gap-2 min-w-0">
-                                                    <span className={`font-black text-gray-900 dark:text-white truncate ${compact ? 'text-xs' : 'text-sm'}`}>
+                                                    <span
+                                                        title={sender.rollNo ? `Roll No: ${sender.rollNo}` : undefined}
+                                                        className={`font-bold text-gray-900 dark:text-white truncate ${compact ? 'text-xs' : 'text-[13px]'} ${sender.rollNo ? 'cursor-help' : ''}`}
+                                                    >
                                                         {sender.name || 'User'}
                                                     </span>
-                                                    {sender.rollNo && (
-                                                        <span className={`shrink-0 font-bold text-gray-500 dark:text-[#8E9297] ${compact ? 'text-[9px]' : 'text-[11px]'}`}>
-                                                            #{sender.rollNo}
-                                                        </span>
-                                                    )}
                                                 </div>
+                                                <span className={`shrink-0 font-medium text-gray-400 dark:text-gray-500 ${compact ? 'text-[9px]' : 'text-[10px]'}`}>
+                                                    {new Date(msg.createdAt).toLocaleString('en-US', {
+                                                        day: '2-digit',
+                                                        month: 'short',
+                                                        hour: '2-digit',
+                                                        minute: '2-digit',
+                                                        hour12: true
+                                                    })}
+                                                </span>
                                             </div>
+                                            {msg.replyTo && (
+                                                <button
+                                                    type="button"
+                                                    onClick={() => scrollToMessage(msg.replyTo._id)}
+                                                    className={`w-full text-left mb-2 rounded-xl border-l-[3px] border-primary/70 bg-primary/[0.06] hover:bg-primary/10 transition-colors ${compact ? 'px-2 py-1' : 'px-3 py-1.5'}`}
+                                                    title="Jump to original message"
+                                                >
+                                                    <span className="flex items-center gap-1 text-primary font-bold text-[10px]">
+                                                        <Reply className="w-3 h-3" />
+                                                        {msg.replyTo.sender?.name || 'User'}
+                                                    </span>
+                                                    <span className={`block truncate text-gray-600 dark:text-gray-300 ${compact ? 'text-[11px]' : 'text-xs'}`}>
+                                                        {getReplyPreview(msg.replyTo)}
+                                                    </span>
+                                                </button>
+                                            )}
                                             {hasPoll ? (
                                                 <div className="space-y-3">
                                                     <div className="rounded-2xl border border-primary/15 bg-white/70 dark:bg-white/5 p-4">
@@ -458,77 +496,87 @@ const DiscussionRoom = ({ compact = false }) => {
                                                     </div>
                                                 </div>
                                             ) : (
-                                                <p className={`whitespace-pre-wrap break-words font-normal text-gray-800 dark:text-white ${compact ? 'text-[13px] leading-snug' : 'text-sm leading-relaxed'}`}>
+                                                <p className={`whitespace-pre-wrap break-words font-normal text-gray-700 dark:text-gray-100 ${compact ? 'text-[13px] leading-snug' : 'text-[13.5px] leading-relaxed'}`}>
                                                     {renderMessageText(msg.text)}
                                                 </p>
                                             )}
                                             <ChatMediaDisplay media={msg.media} isMine={mine} />
-                                            <div className={`flex flex-wrap items-center justify-between gap-2 ${compact ? 'mt-1.5' : 'mt-3'}`}>
-                                                <div className="flex flex-wrap items-center gap-2">
-                                                {Object.entries(reactionGroups).map(([emoji, users]) => {
-                                                    const reactedByMe = users.includes(String(myId));
-                                                    return (
-                                                        <button
-                                                            key={emoji}
-                                                            type="button"
-                                                            onClick={() => handleReaction(msg._id, emoji)}
-                                                            className={`rounded-full font-black border transition-all ${compact ? 'px-2 py-0.5 text-[10px]' : 'px-2.5 py-1 text-xs'} ${
-                                                                reactedByMe
-                                                                    ? 'bg-primary text-white border-primary shadow-sm'
-                                                                    : 'bg-white dark:bg-white/5 text-gray-700 dark:text-white border-gray-200 dark:border-white/10 hover:border-primary/40'
-                                                            }`}
-                                                            title={reactedByMe ? 'Remove reaction' : 'React'}
-                                                        >
-                                                            <span className="mr-1">{emoji}</span>
-                                                            {users.length}
-                                                        </button>
-                                                    );
-                                                })}
-                                                </div>
-                                                        <div className="relative ml-auto flex items-center gap-2">
-                                                            <span className={`${compact ? 'text-[9px]' : 'text-[10px]'} font-semibold text-gray-500 dark:text-[#8E9297]`}>
-                                                        {new Date(msg.createdAt).toLocaleString('en-US', {
-                                                            day: '2-digit',
-                                                            month: 'short',
-                                                            hour: '2-digit',
-                                                            minute: '2-digit',
-                                                            hour12: true
-                                                        })}
-                                                    </span>
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => setReactionPickerFor(reactionPickerFor === msg._id ? null : msg._id)}
-                                                        className="relative w-7 h-7 rounded-full text-sm font-black bg-gray-100 dark:bg-white/5 text-transparent border border-gray-200 dark:border-white/10 hover:border-primary/40 transition-all flex items-center justify-center after:content-['😊'] after:absolute after:inset-0 after:flex after:items-center after:justify-center after:text-gray-500 dark:after:text-gray-300"
-                                                        title="Add reaction"
-                                                        style={{ display: 'none' }}
-                                                    >
-                                                        😊
-                                                    </button>
-                                                    {reactionPickerFor === msg._id && (
-                                                        <div className={`absolute z-[999] bottom-full mb-2 ${mine ? 'right-0' : 'left-0'} flex items-center gap-1 rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-gray-900 p-2 shadow-xl`}>
-                                                            {REACTION_EMOJIS.map((emoji) => (
-                                                                <button
-                                                                    key={emoji}
-                                                                    type="button"
-                                                                    onClick={() => handleReaction(msg._id, emoji)}
-                                                                    className="w-9 h-9 rounded-xl text-lg hover:bg-primary/10 transition-all"
-                                                                >
-                                                                    {emoji}
-                                                                </button>
-                                                            ))}
-                                                        </div>
-                                                    )}
-                                                </div>
+                                            <div className={`absolute z-40 flex flex-col items-center gap-1.5 top-1/2 -translate-y-1/2 ${compact ? (mine ? '-left-3' : '-right-3') : (mine ? '-left-4' : '-right-4')}`}>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setReplyTo(msg)}
+                                                    className={`rounded-full bg-white dark:bg-gray-800 ring-1 ring-black/5 dark:ring-white/10 shadow-sm hover:shadow-md hover:ring-primary/40 transition-all flex items-center justify-center text-gray-500 dark:text-gray-300 ${compact ? 'w-7 h-7' : 'w-8 h-8'}`}
+                                                    title="Reply to message"
+                                                >
+                                                    <Reply className={compact ? 'w-3.5 h-3.5' : 'w-4 h-4'} />
+                                                </button>
                                             </div>
-                                            <button
-                                                type="button"
-                                                onClick={() => setReactionPickerFor(reactionPickerFor === msg._id ? null : msg._id)}
-                                                className={`absolute z-40 rounded-full bg-white/80 dark:bg-gray-800/80 backdrop-blur border border-gray-200/80 dark:border-white/10 shadow-sm hover:shadow-md hover:border-primary/40 transition-all flex items-center justify-center text-transparent ${compact ? '-bottom-3 w-7 h-7' : '-bottom-4 w-8 h-8'} ${compact ? (mine ? '-left-3' : '-right-3') : (mine ? '-left-4' : '-right-4')}`}
-                                                title="Add reaction"
-                                            >
-                                                <Smile className={`absolute text-black/50 ${compact ? 'w-3.5 h-3.5' : 'w-4 h-4'}`} />
-                                                😊
-                                            </button>
+                                            <div className={`absolute z-40 flex max-w-full items-center gap-1 ${compact ? '-bottom-3' : '-bottom-4'} ${mine ? 'right-0' : 'left-0'}`}>
+                                                {Object.keys(reactionGroups).length > 0 ? (
+                                                    <div className="relative group/reactions max-w-full">
+                                                        <div className={`flex max-w-full flex-wrap items-center gap-0.5 rounded-2xl bg-white dark:bg-gray-800 ring-1 ring-black/5 dark:ring-white/10 shadow-sm ${compact ? 'px-1.5 py-0.5' : 'px-2 py-1'}`}>
+                                                            {Object.entries(reactionGroups).map(([emoji, users]) => {
+                                                                const reactedByMe = users.includes(String(myId));
+                                                                return (
+                                                                    <button
+                                                                        key={emoji}
+                                                                        type="button"
+                                                                        onClick={() => handleReaction(msg._id, emoji)}
+                                                                        className={`rounded-full font-black transition-all ${compact ? 'px-1.5 py-0.5 text-[10px]' : 'px-2 py-0.5 text-xs'} ${
+                                                                            reactedByMe
+                                                                                ? 'bg-primary text-white'
+                                                                                : 'text-gray-700 dark:text-white hover:bg-primary/10'
+                                                                        }`}
+                                                                        title={reactedByMe ? 'Remove reaction' : 'React'}
+                                                                    >
+                                                                        <span className="mr-0.5">{emoji}</span>
+                                                                        {users.length}
+                                                                    </button>
+                                                                );
+                                                            })}
+                                                        </div>
+                                                        <div className={`hidden group-hover/reactions:flex absolute z-[999] bottom-full pb-2 ${mine ? 'right-0' : 'left-0'}`}>
+                                                            <div className="flex items-center gap-1 rounded-2xl bg-white dark:bg-[#202225] ring-1 ring-black/5 dark:ring-white/10 p-1.5 shadow-2xl">
+                                                                {REACTION_EMOJIS.map((emoji) => (
+                                                                    <button
+                                                                        key={emoji}
+                                                                        type="button"
+                                                                        onClick={() => handleReaction(msg._id, emoji)}
+                                                                        className="w-9 h-9 rounded-xl text-lg hover:bg-primary/10 transition-all"
+                                                                    >
+                                                                        {emoji}
+                                                                    </button>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                ) : (
+                                                    <div className="relative group/face">
+                                                        <button
+                                                            type="button"
+                                                            className={`rounded-full bg-white dark:bg-gray-800 ring-1 ring-black/5 dark:ring-white/10 shadow-sm hover:shadow-md hover:ring-primary/40 transition-all flex items-center justify-center text-transparent ${compact ? 'w-7 h-7' : 'w-8 h-8'}`}
+                                                            title="Add reaction"
+                                                        >
+                                                            <Smile className={`absolute text-black/50 ${compact ? 'w-3.5 h-3.5' : 'w-4 h-4'}`} />
+                                                            😊
+                                                        </button>
+                                                        <div className={`hidden group-hover/face:flex absolute z-[999] bottom-full pb-2 ${mine ? 'right-0' : 'left-0'}`}>
+                                                            <div className="flex items-center gap-1 rounded-2xl bg-white dark:bg-[#202225] ring-1 ring-black/5 dark:ring-white/10 p-1.5 shadow-2xl">
+                                                                {REACTION_EMOJIS.map((emoji) => (
+                                                                    <button
+                                                                        key={emoji}
+                                                                        type="button"
+                                                                        onClick={() => handleReaction(msg._id, emoji)}
+                                                                        className="w-9 h-9 rounded-xl text-lg hover:bg-primary/10 transition-all"
+                                                                    >
+                                                                        {emoji}
+                                                                    </button>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
                                             {isAdmin && (
                                                 <button
                                                     onClick={() => deleteMessage(msg._id)}
@@ -590,6 +638,26 @@ const DiscussionRoom = ({ compact = false }) => {
                             </button>
                         </div>
                     </form>
+                )}
+
+                {replyTo && (
+                    <div className={`mx-3 md:mx-4 mb-2 flex items-center gap-3 rounded-xl border border-primary/20 bg-primary/5 dark:bg-white/5 ${compact ? 'px-3 py-2' : 'px-4 py-2.5'}`}>
+                        <Reply className="w-4 h-4 text-primary shrink-0" />
+                        <div className="min-w-0 flex-1">
+                            <p className="text-[10px] font-black uppercase tracking-widest text-primary truncate">
+                                Replying to {replyTo.sender?.name || 'User'}
+                            </p>
+                            <p className="text-xs text-gray-600 dark:text-gray-300 truncate">{getReplyPreview(replyTo)}</p>
+                        </div>
+                        <button
+                            type="button"
+                            onClick={() => setReplyTo(null)}
+                            className="shrink-0 w-7 h-7 rounded-lg hover:bg-primary/10 text-gray-500 dark:text-gray-300 flex items-center justify-center"
+                            title="Cancel reply"
+                        >
+                            <X className="w-4 h-4" />
+                        </button>
+                    </div>
                 )}
 
                 <form onSubmit={sendMessage} className={`border-t border-gray-100 dark:border-white/10 bg-white dark:bg-[#171819] flex shrink-0 ${compact ? 'p-2 sm:p-3 gap-2 items-center' : 'p-3 md:p-4 gap-3'}`}>

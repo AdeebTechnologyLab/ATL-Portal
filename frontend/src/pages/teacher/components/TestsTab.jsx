@@ -494,17 +494,24 @@ const TestsTab = ({ course, students }) => {
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {filteredTests.map((test) => (
+                    {filteredTests.map((test) => {
+                        const testNumber = [...tests]
+                            .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
+                            .findIndex(item => String(item._id) === String(test._id)) + 1;
+                        return (
                         <motion.div
                             key={test._id}
                             layout
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-xl hover:shadow-primary/10/20 transition-all group"
+                            className="bg-white rounded-2xl border-2 border-primary overflow-hidden shadow-sm hover:shadow-xl hover:shadow-primary/10/20 transition-all group"
                         >
                             <div className="p-6 space-y-4">
                                 <div className="flex justify-between items-start">
-                                    <h4 className="text-lg font-black text-primary uppercase leading-tight">{test.title}</h4>
+                                    <div className="flex flex-wrap items-center gap-2 min-w-0 flex-1">
+                                        <span className="text-[10px] sm:text-xs font-black text-primary tracking-tighter uppercase whitespace-nowrap bg-primary/10 px-2 py-1 rounded-lg border border-primary/20">#{testNumber}</span>
+                                        <h4 className="text-lg font-black text-primary uppercase leading-tight">{test.title}</h4>
+                                    </div>
                                     <div className="flex items-center gap-1 shrink-0">
                                         <button
                                             onClick={() => {
@@ -609,7 +616,8 @@ const TestsTab = ({ course, students }) => {
                                 </div>
                             </div>
                         </motion.div>
-                    ))}
+                        );
+                    })}
                 </div>
             )}
 

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Users, PauseCircle, UserCheck, RefreshCw } from 'lucide-react';
+import { Users, PauseCircle, UserCheck, RefreshCw, BookOpen, Calendar } from 'lucide-react';
 import { enrollmentAPI } from '../../../services/api';
 import Loader from '../../../components/ui/Loader';
 import { formatDate } from '../../../utils/dateFormatter';
@@ -89,43 +89,62 @@ const StudentsTab = ({ course }) => {
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: index * 0.04 }}
-                                className={`flex items-center gap-4 p-4 rounded-2xl border transition-all ${isPaused
-                                    ? 'bg-amber-50 border-amber-200'
-                                    : 'bg-gray-50 border-gray-100'
+                                className={`group flex items-center gap-4 p-4 sm:p-5 rounded-2xl border transition-all hover:shadow-md ${isPaused
+                                    ? 'bg-amber-50/60 dark:bg-amber-500/5 border-amber-200 dark:border-amber-500/20'
+                                    : 'bg-white dark:bg-slate-900/40 border-gray-100 dark:border-slate-700 hover:border-primary/30'
                                     }`}
                             >
                                 {/* Avatar */}
-                                <div className={`w-11 h-11 rounded-xl overflow-hidden flex-shrink-0 border-2 ${isPaused ? 'border-amber-300 opacity-60' : 'border-white shadow'}`}>
-                                    {student.photo ? (
-                                        <img src={student.photo} alt={student.name} className="w-full h-full object-cover" />
-                                    ) : (
-                                        <div className="w-full h-full bg-gradient-to-br from-primary to-blue-500 flex items-center justify-center text-white font-bold text-sm">
-                                            {(student.name || 'S').charAt(0).toUpperCase()}
-                                        </div>
-                                    )}
+                                <div className="relative flex-shrink-0">
+                                    <div className={`w-14 h-14 rounded-2xl overflow-hidden border-2 ${isPaused ? 'border-amber-300 opacity-60' : 'border-white dark:border-slate-700 shadow'}`}>
+                                        {student.photo ? (
+                                            <img src={student.photo} alt={student.name} className="w-full h-full object-cover" />
+                                        ) : (
+                                            <div className="w-full h-full bg-gradient-to-br from-primary to-blue-500 flex items-center justify-center text-white font-black text-lg">
+                                                {(student.name || 'S').charAt(0).toUpperCase()}
+                                            </div>
+                                        )}
+                                    </div>
+                                    <span className={`absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full border-2 border-white dark:border-slate-900 ${isPaused ? 'bg-amber-400' : 'bg-emerald-500'}`} />
                                 </div>
 
                                 {/* Info */}
                                 <div className="flex-1 min-w-0">
                                     <div className="flex items-center gap-2 flex-wrap">
-                                        <p className={`font-bold text-sm truncate ${isPaused ? 'text-amber-800' : 'text-gray-900'}`}>
+                                        <p className={`font-black text-sm sm:text-base truncate ${isPaused ? 'text-amber-800 dark:text-amber-300' : 'text-gray-900 dark:text-white'}`}>
                                             {student.name || 'Unknown Student'}
                                         </p>
                                         {isPaused && (
-                                            <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-amber-200 text-amber-800 text-[10px] font-black uppercase rounded-full tracking-wider">
+                                            <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-amber-200 dark:bg-amber-500/20 text-amber-800 dark:text-amber-300 text-[10px] font-black uppercase rounded-full tracking-wider">
                                                 <PauseCircle className="w-2.5 h-2.5" />
                                                 Paused
                                             </span>
                                         )}
                                     </div>
-                                    <p className="text-xs text-gray-400 font-medium">
-                                        {student.rollNo || '—'} &bull; {student.email || '—'}
-                                    </p>
-                                    {isPaused && enrollment.pausedAt && (
-                                        <p className="text-[10px] text-amber-600 font-medium mt-0.5">
-                                            Paused on {formatDate(enrollment.pausedAt)}
-                                        </p>
-                                    )}
+
+                                    <div className="flex items-center gap-2 mt-0.5 flex-wrap text-xs">
+                                        {student.rollNo && (
+                                            <span className="font-black text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-slate-800 px-1.5 py-0.5 rounded-md">{student.rollNo}</span>
+                                        )}
+                                        <span className="text-gray-400 font-medium truncate">{student.email || '—'}</span>
+                                    </div>
+
+                                    <div className="flex items-center gap-x-3 gap-y-1 mt-2 flex-wrap">
+                                        <span className="inline-flex items-center gap-1 text-[11px] font-bold text-primary">
+                                            <BookOpen className="w-3 h-3" />
+                                            {enrollment.course?.title || course?.title || '—'}
+                                        </span>
+                                        <span className="inline-flex items-center gap-1 text-[11px] text-gray-400 font-medium">
+                                            <Calendar className="w-3 h-3" />
+                                            Joined {formatDate(enrollment.installments?.[0]?.paidDate || enrollment.enrolledAt || enrollment.createdAt)}
+                                        </span>
+                                        {isPaused && enrollment.pausedAt && (
+                                            <span className="inline-flex items-center gap-1 text-[11px] text-amber-600 font-medium">
+                                                <PauseCircle className="w-3 h-3" />
+                                                Paused {formatDate(enrollment.pausedAt)}
+                                            </span>
+                                        )}
+                                    </div>
                                 </div>
                             </motion.div>
                         );
