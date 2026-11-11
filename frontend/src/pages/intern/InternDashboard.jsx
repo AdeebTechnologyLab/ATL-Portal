@@ -97,7 +97,11 @@ const InternDashboard = () => {
             fetchDashboardData();
         });
 
+        // Scheduled meetings ke liye: start time aane par bhi update mile
+        const livePoll = setInterval(fetchActiveLiveClasses, 30000);
+
         return () => {
+            clearInterval(livePoll);
             if (socketRef.current) {
                 socketRef.current.disconnect();
             }

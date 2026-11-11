@@ -153,7 +153,7 @@ const TeacherCourses = ({ isDashboard = false, initialSearchMode = 'courses' }) 
                 ...liveClassForm,
                 link: finalLink,
                 autoEndMinutes: liveClassForm.autoEndMinutes ? parseInt(liveClassForm.autoEndMinutes) : null,
-                startAt: liveClassForm.startAt || null
+                startAt: liveClassForm.startAt ? new Date(liveClassForm.startAt).toISOString() : null
             });
             setShowLiveClassModal(false);
             setLiveClassForm({ title: '', link: 'https://meet.google.com/ayf-xaxd-ixz', description: '', visibility: 'all', autoEndMinutes: '', startAt: '' });
