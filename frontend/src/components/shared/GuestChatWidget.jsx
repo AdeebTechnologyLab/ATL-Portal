@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { MessageCircle, X, Send, User } from 'lucide-react';
 import { getAnswer, isUrl, openExternalUrl } from './chatbotHelper';
 
-const GuestChatWidget = () => {
+const GuestChatWidget = ({ onOpenChange }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState('');
@@ -32,6 +32,10 @@ const GuestChatWidget = () => {
         setTimeout(performScroll, 50);
         setTimeout(performScroll, 200);
     };
+
+    useEffect(() => {
+        onOpenChange?.(isOpen);
+    }, [isOpen, onOpenChange]);
 
     useEffect(() => {
         if (isOpen && messages.length > 0) {

@@ -8,6 +8,7 @@ import { authAPI } from '../../services/api';
 import { getStudentLandingPath } from '../../utils/postLoginRedirect';
 import { ButtonLoader } from '../../components/ui/Loader';
 import GuestChatWidget from '../../components/shared/GuestChatWidget';
+import WhatsAppWidget from '../../components/shared/WhatsAppWidget';
 import { useTranslation } from 'react-i18next';
 
 const GoogleIcon = ({ className = 'h-5 w-5' }) => (
@@ -33,6 +34,7 @@ const Login = () => {
         agreeTerms: true,
     });
     const [showPassword, setShowPassword] = useState(false);
+    const [chatOpen, setChatOpen] = useState(false);
     const [isResolving, setIsResolving] = useState(false);
     const [errors, setErrors] = useState({});
     const [navigationMessage] = useState(() => window.history.state?.usr?.message || '');
@@ -511,7 +513,8 @@ const Login = () => {
                     </form>
                 </div>
             </motion.div>
-            <GuestChatWidget />
+            <GuestChatWidget onOpenChange={setChatOpen} />
+            <WhatsAppWidget hidden={chatOpen} />
         </div>
     );
 };

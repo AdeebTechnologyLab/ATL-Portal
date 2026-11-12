@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Send, User, Mail, Phone } from 'lucide-react';
 
@@ -8,21 +8,13 @@ const WhatsAppIcon = ({ className }) => (
     </svg>
 );
 
-const WhatsAppWidget = () => {
+const WhatsAppWidget = ({ hidden = false }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [formData, setFormData] = useState({
         name: '',
         email: '',
         phone: ''
     });
-
-    useEffect(() => {
-        // Auto-open after 10 seconds to catch user's attention
-        const timer = setTimeout(() => {
-            setIsOpen(true);
-        }, 10000);
-        return () => clearTimeout(timer);
-    }, []);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -34,6 +26,8 @@ const WhatsAppWidget = () => {
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
+
+    if (hidden) return null;
 
     return (
         <div className="fixed bottom-28 left-6 z-[9999] flex flex-col items-start">
