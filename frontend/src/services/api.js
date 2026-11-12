@@ -24,6 +24,7 @@ export const authAPI = {
         headers: { 'Content-Type': 'multipart/form-data' }
     }),
     forgotPassword: (data) => api.post('/auth/forgot-password', data),
+    resetPasswordWithOtp: (data) => api.post('/auth/reset-password-otp', data),
     resetPassword: (token, data) => api.post(`/auth/reset-password/${token}`, data),
     checkResetToken: (token) => api.get(`/auth/reset-password/${token}`),
     getAvailableRoles: () => api.get('/auth/available-roles'),

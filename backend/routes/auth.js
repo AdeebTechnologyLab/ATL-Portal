@@ -1176,43 +1176,63 @@ router.post('/forgot-password', async (req, res) => {
             return res.json(genericSuccess);
         }
 
-        // Generate reset token
-        const resetToken = crypto.randomBytes(32).toString('hex');
-        user.passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
-        user.passwordResetExpires = Date.now() + 60 * 60 * 1000;
+        // Generate a 6-digit OTP (valid 15 minutes) and store only its hash.
+        const otp = crypto.randomInt(0, 1000000).toString().padStart(6, '0');
+        user.passwordResetToken = crypto.createHash('sha256').update(otp).digest('hex');
+        user.passwordResetExpires = Date.now() + 15 * 60 * 1000;
         await user.save({ validateBeforeSave: false });
 
-        const resetUrl = `${getClientUrl(req)}/reset-password/${resetToken}`;
-        const roleLabel = user.role.charAt(0).toUpperCase() + user.role.slice(1);
-
-        // Dev fallback: no SMTP configured, so hand the reset link back directly.
+        // Dev fallback: no SMTP configured, so hand the OTP back directly.
         if (configIssue) {
-            console.log(`🔑 [DEV] Password reset link for ${user.email}: ${resetUrl}`);
+            console.log(`🔑 [DEV] Password reset OTP for ${user.email}: ${otp}`);
             return res.json({
                 ...genericSuccess,
-                message: 'Email is not configured in development. Use the link below to reset the password.',
-                devResetUrl: resetUrl,
+                message: 'Email is not configured in development. Use the OTP below to reset the password.',
+                devOtp: otp,
             });
         }
 
+        const socialLinkStyle =
+            'display:inline-block;margin:3px 4px;padding:8px 12px;border-radius:8px;background:#f3f4f6;color:#374151;text-decoration:none;font-size:12px;font-weight:bold;';
         const emailPayload = {
             to: user.email,
-            subject: 'Reset your Adeeb Technology Lab password',
-            text: `Hi ${user.name},\n\nReset your password: ${resetUrl}\n\nThis link expires in 1 hour.`,
+            subject: 'Your Adeeb Technology Lab password reset code',
+            text: `Hello ${user.name},\n\nWe received a request to reset your password for your Adeeb Technology Lab account.\n\nYour One-Time Password (OTP) is: ${otp}\n\nThis OTP code is valid for 15 minutes.\n\nIf you did not request a password reset, please ignore this email or contact our support team.\n\n© 2026 Adeeb Technology Lab. Great People work with Adeeb Technology Lab.`,
             html: `
-                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden;">
-                    <div style="background: linear-gradient(135deg, #ff8e01, #e67e00); padding: 24px; text-align: center;">
-                        <h1 style="color: #fff; margin: 0; font-size: 22px;">Adeeb Technology Lab</h1>
-                        <p style="color: rgba(255,255,255,0.9); margin: 8px 0 0; font-size: 14px;">Password Reset</p>
-                    </div>
-                    <div style="padding: 24px; color: #333;">
-                        <p>Hi <strong>${user.name}</strong>,</p>
-                        <p>Reset the password for your <strong>${roleLabel}</strong> account:</p>
-                        <p style="text-align: center; margin: 28px 0;">
-                            <a href="${resetUrl}" style="display: inline-block; padding: 14px 28px; background: #ff8e01; color: #fff; text-decoration: none; border-radius: 8px; font-weight: bold;">Reset Password</a>
-                        </p>
-                        <p style="font-size: 13px; color: #666; word-break: break-all;">Or copy: <a href="${resetUrl}">${resetUrl}</a></p>
-                        <p style="font-size: 13px; color: #888;">Expires in 1 hour. Check spam if you don't see this email.</p>
+                <div style="font-family: Arial, Helvetica, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; background: #f5f6f8;">
+                    <div style="background: #ffffff; border: 1px solid #e5e7eb; border-radius: 16px; overflow: hidden;">
+                        <div style="background: linear-gradient(135deg, #ff8e01, #e67e00); padding: 28px; text-align: center;">
+                            <h1 style="margin: 0; color: #ffffff; font-size: 22px;">Adeeb Technology Lab</h1>
+                            <p style="margin: 6px 0 0; color: rgba(255,255,255,0.9); font-size: 13px; letter-spacing: 1px; text-transform: uppercase;">Password Reset OTP</p>
+                        </div>
+                        <div style="padding: 28px; color: #333333;">
+                            <p style="margin: 0 0 12px; font-size: 15px;">Hello <strong>${user.name}</strong>,</p>
+                            <p style="margin: 0 0 18px; font-size: 14px; line-height: 1.6; color: #555555;">
+                                We received a request to reset your password for your <strong>Adeeb Technology Lab</strong> account. Please use the following One-Time Password (OTP) to proceed:
+                            </p>
+                            <div style="text-align: center; margin: 26px 0;">
+                                <div style="display: inline-block; padding: 16px 28px; background: #fff7ed; border: 2px dashed #ff8e01; border-radius: 12px; letter-spacing: 10px; font-size: 32px; font-weight: bold; color: #1f2937;">${otp}</div>
+                            </div>
+                            <p style="margin: 0 0 16px; font-size: 14px; color: #555555;">For your security, this OTP code is valid for <strong>15 minutes</strong>.</p>
+                            <p style="margin: 0 0 24px; font-size: 14px; line-height: 1.6; color: #555555;">
+                                If you did not request a password reset, please ignore this email or reach out to our support team to secure your account.
+                            </p>
+                            <div style="text-align: center; margin: 24px 0 4px;">
+                                <a href="https://wa.me/923092333121" style="display: inline-block; padding: 12px 22px; background: #25d366; color: #ffffff; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 14px;">Contact Support on WhatsApp</a>
+                            </div>
+                        </div>
+                        <div style="padding: 22px 28px 28px; text-align: center; border-top: 1px solid #eeeeee; background: #fafafa;">
+                            <p style="margin: 0 0 10px; font-size: 11px; color: #888888; text-transform: uppercase; letter-spacing: 1.5px; font-weight: bold;">Follow us</p>
+                            <div style="margin: 0 0 16px;">
+                                <a href="https://web.facebook.com/AdeebTechnologyLab" style="${socialLinkStyle}">Facebook</a>
+                                <a href="https://www.instagram.com/adeebtechlab/" style="${socialLinkStyle}">Instagram</a>
+                                <a href="https://www.linkedin.com/company/AdeebTechnologyLab/" style="${socialLinkStyle}">LinkedIn</a>
+                                <a href="https://www.youtube.com/AdeebTechnologyLab" style="${socialLinkStyle}">YouTube</a>
+                                <a href="https://wa.me/923092333121" style="${socialLinkStyle}">WhatsApp</a>
+                            </div>
+                            <p style="margin: 0; font-size: 12px; color: #999999;">© 2026 Adeeb Technology Lab. All rights reserved.</p>
+                            <p style="margin: 6px 0 0; font-size: 12px; color: #999999;">Great People work with Adeeb Technology Lab</p>
+                        </div>
                     </div>
                 </div>
             `,
@@ -1238,13 +1258,13 @@ router.post('/forgot-password', async (req, res) => {
                 console.error('🔴 Gmail SMTP fix: update EMAIL_PASS with a valid Gmail App Password.');
             }
 
-            // Dev fallback: SMTP failed, but keep the flow usable by returning the link.
+            // Dev fallback: SMTP failed, but keep the flow usable by returning the OTP.
             if (!isProd) {
-                console.log(`🔑 [DEV] Email failed; password reset link for ${user.email}: ${resetUrl}`);
+                console.log(`🔑 [DEV] Email failed; password reset OTP for ${user.email}: ${otp}`);
                 return res.json({
                     ...genericSuccess,
-                    message: 'Email could not be sent in development. Use the link below to reset the password.',
-                    devResetUrl: resetUrl,
+                    message: 'Email could not be sent in development. Use the OTP below to reset the password.',
+                    devOtp: otp,
                 });
             }
 
@@ -1344,6 +1364,72 @@ router.post('/reset-password/:token', async (req, res) => {
     } catch (error) {
         console.error('Reset password error:', error);
         res.status(500).json({ success: false, message: error.message });
+    }
+});
+
+// @route   POST /api/auth/reset-password-otp
+// @desc    Reset password using email + 6-digit OTP
+// @access  Public
+router.post('/reset-password-otp', async (req, res) => {
+    try {
+        const ipHit = rateLimit(`rp:otp:ip:${getClientIp(req)}`, 20, 15 * 60 * 1000);
+        if (!ipHit.allowed) return sendRateLimitResponse(res, ipHit.resetAt);
+
+        const { email, otp, password } = req.body || {};
+
+        if (typeof email !== 'string' || !email.trim() || typeof otp !== 'string' || !otp.trim()) {
+            return res.status(400).json({ success: false, message: 'Email and OTP are required' });
+        }
+        if (typeof password !== 'string' || !password.trim()) {
+            return res.status(400).json({ success: false, message: 'Please enter a new password' });
+        }
+        if (password.length < 4) {
+            return res.status(400).json({ success: false, message: 'Password must be at least 4 characters' });
+        }
+        if (password.length > 128) {
+            return res.status(400).json({ success: false, message: 'Password is too long (max 128 characters)' });
+        }
+
+        const normalizedEmail = email.toLowerCase().trim();
+        const emailHit = rateLimit(`rp:otp:mail:${normalizedEmail}`, 10, 15 * 60 * 1000);
+        if (!emailHit.allowed) return sendRateLimitResponse(res, emailHit.resetAt);
+
+        const hashedOtp = crypto.createHash('sha256').update(otp.trim()).digest('hex');
+        const user = await User.findOne({
+            email: normalizedEmail,
+            passwordResetToken: hashedOtp,
+            passwordResetExpires: { $gt: Date.now() },
+        });
+
+        if (!user) {
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid or expired OTP. Please request a new code.',
+            });
+        }
+
+        user.password = password;
+        user.passwordResetToken = undefined;
+        user.passwordResetExpires = undefined;
+        await user.save();
+
+        const syncResult = await User.updateMany(
+            {
+                $and: [getLinkedAccountQuery(user), { _id: { $ne: user._id } }],
+            },
+            {
+                $set: { password },
+                $unset: { passwordResetToken: '', passwordResetExpires: '' },
+            }
+        );
+
+        return res.json({
+            success: true,
+            message: `Password reset for ${syncResult.modifiedCount + 1} linked portal account(s). Please login with your new password.`,
+        });
+    } catch (error) {
+        console.error('Reset password OTP error:', error);
+        return res.status(500).json({ success: false, message: error.message });
     }
 });
 
