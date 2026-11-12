@@ -1136,7 +1136,7 @@ router.post('/forgot-password', async (req, res) => {
 
         const genericSuccess = {
             success: true,
-            message: 'If an account exists with this email, you will receive a password reset link shortly.',
+            message: 'If an account exists with this email, you will receive a password reset OTP shortly.',
         };
 
         if (typeof email !== 'string' || !email.trim()) {
