@@ -1152,15 +1152,22 @@ router.post('/forgot-password', async (req, res) => {
         const emailHit = rateLimit(`fp:mail:${normalizedEmail}`, 5, 15 * 60 * 1000);
         if (!emailHit.allowed) return sendRateLimitResponse(res, emailHit.resetAt);
 
-        // Fail loudly when email creds are placeholders/missing instead of showing
-        // a fake "check your inbox" success that never delivers.
+        // In production, fail loudly when email creds are placeholders/missing
+        // instead of showing a fake "check your inbox" success that never delivers.
+        // In development, fall back to returning the reset link so the flow stays testable.
+        const isProd = process.env.NODE_ENV === 'production';
         const configIssue = getEmailConfigIssue();
-        if (configIssue) {
+        if (configIssue && isProd) {
             console.error(`❌ Forgot-password blocked: ${configIssue}`);
             return res.status(503).json({
                 success: false,
                 message: `Password reset email is temporarily unavailable. ${configIssue}`,
             });
+        }
+        if (configIssue) {
+            console.warn(
+                `⚠️ Forgot-password email disabled in dev (${configIssue}). Reset link will be returned instead.`
+            );
         }
 
         const user = await User.findOne({ email: normalizedEmail }).sort({ updatedAt: -1 });
@@ -1177,6 +1184,16 @@ router.post('/forgot-password', async (req, res) => {
 
         const resetUrl = `${getClientUrl(req)}/reset-password/${resetToken}`;
         const roleLabel = user.role.charAt(0).toUpperCase() + user.role.slice(1);
+
+        // Dev fallback: no SMTP configured, so hand the reset link back directly.
+        if (configIssue) {
+            console.log(`🔑 [DEV] Password reset link for ${user.email}: ${resetUrl}`);
+            return res.json({
+                ...genericSuccess,
+                message: 'Email is not configured in development. Use the link below to reset the password.',
+                devResetUrl: resetUrl,
+            });
+        }
 
         const emailPayload = {
             to: user.email,
@@ -1219,6 +1236,16 @@ router.post('/forgot-password', async (req, res) => {
                 console.error('🔴 SMTP fix: verify EMAIL_USER/EMAIL_FROM and Gmail App Password settings.');
             } else if (err.code === 'EAUTH' || /invalid login|authentication failed/i.test(err.message)) {
                 console.error('🔴 Gmail SMTP fix: update EMAIL_PASS with a valid Gmail App Password.');
+            }
+
+            // Dev fallback: SMTP failed, but keep the flow usable by returning the link.
+            if (!isProd) {
+                console.log(`🔑 [DEV] Email failed; password reset link for ${user.email}: ${resetUrl}`);
+                return res.json({
+                    ...genericSuccess,
+                    message: 'Email could not be sent in development. Use the link below to reset the password.',
+                    devResetUrl: resetUrl,
+                });
             }
 
             return res.status(502).json({

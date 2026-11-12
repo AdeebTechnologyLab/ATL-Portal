@@ -10,16 +10,19 @@ const ForgotPassword = () => {
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState('');
+    const [devResetUrl, setDevResetUrl] = useState('');
 
     const sendResetLink = async (emailToSend) => {
         setLoading(true);
         setError('');
         setSuccess(false);
+        setDevResetUrl('');
 
         try {
-            await authAPI.forgotPassword({
+            const response = await authAPI.forgotPassword({
                 email: emailToSend.toLowerCase().trim(),
             });
+            setDevResetUrl(response?.data?.devResetUrl || '');
             setSuccess(true);
         } catch (err) {
             const serverMessage = err.response?.data?.message;
@@ -79,17 +82,50 @@ const ForgotPassword = () => {
                     </p>
 
                     {success ? (
-                        <div className="bg-orange-500/15 border border-orange-500/40 rounded-lg p-4">
-                            <div className="flex items-start gap-3">
-                                <CheckCircle className="w-5 h-5 text-[#FF8E01] mt-0.5 shrink-0" />
-                                <div>
-                                    <h3 className="text-white font-semibold">Check your email</h3>
-                                    <p className="text-white/80 text-sm mt-1">
-                                        If an account exists for <strong>{email}</strong>, you will receive a reset link
-                                        within a few minutes. Also check Spam / Promotions.
-                                    </p>
+                        <div className="space-y-3">
+                            {devResetUrl ? (
+                                <div className="bg-emerald-500/15 border border-emerald-500/40 rounded-lg p-4">
+                                    <div className="flex items-start gap-3">
+                                        <CheckCircle className="w-5 h-5 text-emerald-400 mt-0.5 shrink-0" />
+                                        <div>
+                                            <h3 className="text-white font-semibold">Reset link ready (dev)</h3>
+                                            <p className="text-white/80 text-sm mt-1">
+                                                Email is not configured in development. Use the link below to reset the
+                                                password for <strong>{email}</strong>.
+                                            </p>
+                                            <a
+                                                href={devResetUrl}
+                                                className="mt-3 inline-flex items-center gap-2 px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-semibold rounded-lg transition"
+                                            >
+                                                Open reset link
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
+                            ) : (
+                                <div className="bg-orange-500/15 border border-orange-500/40 rounded-lg p-4">
+                                    <div className="flex items-start gap-3">
+                                        <CheckCircle className="w-5 h-5 text-[#FF8E01] mt-0.5 shrink-0" />
+                                        <div>
+                                            <h3 className="text-white font-semibold">Check your email</h3>
+                                            <p className="text-white/80 text-sm mt-1">
+                                                If an account exists for <strong>{email}</strong>, you will receive a reset
+                                                link within a few minutes. Also check Spam / Promotions.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setSuccess(false);
+                                    setDevResetUrl('');
+                                }}
+                                className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-white/10 border border-white/20 text-white text-sm font-semibold rounded-lg hover:bg-white/20 transition"
+                            >
+                                Use a different email
+                            </button>
                         </div>
                     ) : (
                         <form onSubmit={handleSubmit} className="space-y-4">
