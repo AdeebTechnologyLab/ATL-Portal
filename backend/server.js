@@ -293,6 +293,12 @@ io.on('connection', (socket) => {
     });
 
     socket.on('classroom_media_state', (data) => {
+        // Keep the stored details fresh so people who join later see the
+        // correct mute/camera state instead of the state at join time.
+        if (socket.userDetails) {
+            socket.userDetails.isMuted = data.isMuted;
+            socket.userDetails.isVideoOff = data.isVideoOff;
+        }
         socket.to(data.roomId).emit('classroom_media_state', {
             socketId: socket.id,
             isMuted: data.isMuted,

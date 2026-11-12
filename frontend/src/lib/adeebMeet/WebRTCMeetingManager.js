@@ -1,9 +1,9 @@
 import {
-    ICE_SERVERS,
     acquireCameraTrack,
     acquireDisplayStream,
     acquireMicrophoneTrack,
     createDummyVideoTrack,
+    getIceServers,
     getScreenShareUnsupportedReason,
     isDisplayMediaSupported,
 } from './webrtcConfig';
@@ -55,6 +55,7 @@ export class WebRTCMeetingManager {
         );
         this.screenTrack = null;
         this._stoppingScreen = false;
+        this._iceServersPromise = null;
         this.destroyed = false;
 
         this._bindSocket();
@@ -126,13 +127,26 @@ export class WebRTCMeetingManager {
         this.onPeersChange?.(list);
     }
 
-    _getOrCreatePeer(remoteSocketId, userDetails) {
+    _getIceServers() {
+        if (!this._iceServersPromise) {
+            this._iceServersPromise = getIceServers();
+        }
+        return this._iceServersPromise;
+    }
+
+    async _getOrCreatePeer(remoteSocketId, userDetails) {
+        if (this.peers.has(remoteSocketId)) {
+            return this.peers.get(remoteSocketId);
+        }
+
+        const iceServers = await this._getIceServers();
+        if (this.destroyed) return null;
         if (this.peers.has(remoteSocketId)) {
             return this.peers.get(remoteSocketId);
         }
 
         const pc = new RTCPeerConnection({
-            iceServers: ICE_SERVERS,
+            iceServers,
             bundlePolicy: 'max-bundle',
         });
         const remoteStream = new MediaStream();
@@ -154,6 +168,9 @@ export class WebRTCMeetingManager {
 
         pc.ontrack = (event) => {
             const track = event.track;
+            console.info(
+                `[AdeebMeet] remote ${track.kind} track from ${remoteSocketId}: ${track.label || 'unlabeled'}`
+            );
             const existing = remoteStream.getTracks().find((t) => t.kind === track.kind);
             if (existing) remoteStream.removeTrack(existing);
             remoteStream.addTrack(track);
@@ -170,8 +187,14 @@ export class WebRTCMeetingManager {
             this._scheduleEmitPeers();
         };
 
+        const loggedCandidateTypes = new Set();
         pc.onicecandidate = (event) => {
             if (!event.candidate) return;
+            const type = event.candidate.type;
+            if (type && !loggedCandidateTypes.has(type)) {
+                loggedCandidateTypes.add(type);
+                console.info(`[AdeebMeet] ICE ${type} candidate gathered for ${remoteSocketId}`);
+            }
             this.socket.emit('classroom_signal', {
                 to: remoteSocketId,
                 signal: { type: 'ice', candidate: event.candidate.toJSON() },
@@ -180,12 +203,17 @@ export class WebRTCMeetingManager {
         };
 
         pc.onconnectionstatechange = () => {
+            console.info(
+                `[AdeebMeet] peer ${remoteSocketId} state: ${pc.connectionState}`
+            );
             if (pc.connectionState === 'failed') {
+                console.warn('[AdeebMeet] peer connection failed, restarting ICE:', remoteSocketId);
                 try {
                     pc.restartIce?.();
                 } catch {
                     /* ignore */
                 }
+                this._renegotiatePeer(remoteSocketId).catch(() => {});
             }
             this._scheduleEmitPeers();
         };
@@ -211,7 +239,8 @@ export class WebRTCMeetingManager {
     async _handleSignal(from, signal, userDetails) {
         if (this.destroyed) return;
 
-        const entry = this._getOrCreatePeer(from, userDetails);
+        const entry = await this._getOrCreatePeer(from, userDetails);
+        if (!entry) return;
         const { pc } = entry;
         const polite = this._isPolite(from);
 
@@ -262,7 +291,8 @@ export class WebRTCMeetingManager {
         if (this.destroyed || remoteSocketId === this.mySocketId) return;
         if (this.peers.has(remoteSocketId)) return;
 
-        const entry = this._getOrCreatePeer(remoteSocketId, userDetails);
+        const entry = await this._getOrCreatePeer(remoteSocketId, userDetails);
+        if (!entry) return;
         const { pc } = entry;
 
         if (!asInitiator) return;
@@ -669,6 +699,18 @@ export class WebRTCMeetingManager {
     joinRoom(roomId) {
         this.roomId = roomId;
         this.socket.emit('join_classroom', roomId, this.myUserDetails);
+    }
+
+    resetForReconnect(newSocketId) {
+        if (newSocketId) this.mySocketId = newSocketId;
+        for (const [id] of this.peers) {
+            this._removePeer(id);
+        }
+        this.peers.clear();
+        this._scheduleEmitPeers();
+        if (this.roomId) {
+            this.socket.emit('join_classroom', this.roomId, this.myUserDetails);
+        }
     }
 
     leaveRoom() {

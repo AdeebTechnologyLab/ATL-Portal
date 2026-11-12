@@ -48,6 +48,22 @@ const attachStreamToVideo = (videoEl, stream) => {
     if (playPromise?.catch) playPromise.catch(() => {});
 };
 
+/** Try to play every remote video. Returns false when the browser blocked
+ *  autoplay with sound (NotAllowedError) — caller can then prompt the user. */
+const tryPlayRemoteVideos = async () => {
+    const videos = Array.from(document.querySelectorAll('.adeeb-meet video[data-remote="true"]'));
+    let blocked = false;
+    for (const video of videos) {
+        if (!video.srcObject) continue;
+        try {
+            await video.play();
+        } catch (err) {
+            if (err?.name === 'NotAllowedError') blocked = true;
+        }
+    }
+    return !blocked;
+};
+
 const AdeebMeet = () => {
     const { roomName } = useParams();
     const navigate = useNavigate();
@@ -82,10 +98,14 @@ const AdeebMeet = () => {
     const [selectedSpeakerDevice, setSelectedSpeakerDevice] = useState('');
     const [showSpeakerMenu, setShowSpeakerMenu] = useState(false);
     const [speakerMuted, setSpeakerMuted] = useState(false);
+    const [audioBlocked, setAudioBlocked] = useState(false);
     const [focusedTileId, setFocusedTileId] = useState(null);
     const [handRaised, setHandRaised] = useState(false);
     const [raisedHands, setRaisedHands] = useState({});
     const myUserId = user?._id || user?.id;
+    const myUserName = user?.name;
+    const myUserPhoto = user?.photo;
+    const myUserRollNo = user?.rollNo || user?.rollNumber;
     const socketRef = useRef(null);
     const audioMonitorRef = useRef(null);
     const managerRef = useRef(null);
@@ -123,14 +143,17 @@ const AdeebMeet = () => {
     }, []);
 
     useEffect(() => {
-        if (!user || !roomName) return;
+        if (!myUserId || !roomName) return;
 
         let cancelled = false;
 
         const init = async () => {
             try {
                 const { stream, hasAudio, hasVideo } = await buildLocalMediaStream();
-                if (cancelled) return;
+                if (cancelled) {
+                    stream.getTracks().forEach((t) => t.stop());
+                    return;
+                }
 
                 let videoTrack = stream.getVideoTracks()[0];
                 if (videoTrack) videoTrack.enabled = false;
@@ -142,6 +165,13 @@ const AdeebMeet = () => {
                 setIsVideoOff(true);
                 if (!hasAudio && !hasVideo) {
                     showToast.info('Info', 'Camera/mic unavailable — you can still listen and chat');
+                } else if (!hasAudio) {
+                    showToast.error(
+                        'Microphone Unavailable',
+                        'Your mic could not be started. Others will not hear you.'
+                    );
+                } else if (!hasVideo) {
+                    showToast.info('Camera Unavailable', 'Camera could not be started — audio only.');
                 }
 
                 const { audioInputs, videoInputs } = await enumerateMediaDevices();
@@ -185,11 +215,11 @@ const AdeebMeet = () => {
                 }
 
                 const userDetails = {
-                    id: user?._id || user?.id,
-                    name: user?.name || 'Guest',
-                    photo: user?.photo || null,
+                    id: myUserId,
+                    name: myUserName || 'Guest',
+                    photo: myUserPhoto || null,
                     role: role || 'student',
-                    rollNo: user?.rollNo || user?.rollNumber || null,
+                    rollNo: myUserRollNo || null,
                     course: courseNames || null,
                     isMuted: !hasAudio,
                     isVideoOff: true
@@ -307,7 +337,9 @@ const AdeebMeet = () => {
 
                 socket.io.on('reconnect', () => {
                     showToast.success('Reconnected', 'Reconnected to meeting');
-                    managerRef.current?.joinRoom(roomName);
+                    // New socket.id → old peer connections are dead. Reset them
+                    // and rejoin so fresh offers are exchanged.
+                    managerRef.current?.resetForReconnect(socket.id);
                 });
 
                 setIsLoading(false);
@@ -327,14 +359,13 @@ const AdeebMeet = () => {
             userStreamRef.current?.getTracks().forEach((t) => t.stop());
             audioMonitorRef.current?.stop();
         };
-    }, [roomName, user, role, leaveClass, appendMessage, myUserId]);
+    }, [roomName, role, leaveClass, appendMessage, myUserId, myUserName, myUserPhoto, myUserRollNo]);
 
     useEffect(() => {
-        const unlockPlayback = () => {
+        const unlockPlayback = async () => {
             audioMonitorRef.current?.resumeContext?.().catch(() => {});
-            document.querySelectorAll('.adeeb-meet video').forEach((el) => {
-                el.play?.().catch(() => {});
-            });
+            const ok = await tryPlayRemoteVideos();
+            if (ok) setAudioBlocked(false);
         };
         document.addEventListener('click', unlockPlayback);
         document.addEventListener('keydown', unlockPlayback);
@@ -411,12 +442,15 @@ const AdeebMeet = () => {
 
     useEffect(() => {
         if (!peers.length) return;
-        const timer = setTimeout(() => {
-            document.querySelectorAll('.adeeb-meet video:not([muted])').forEach((el) => {
-                el.play?.().catch(() => {});
-            });
+        let cancelled = false;
+        const timer = setTimeout(async () => {
+            const ok = await tryPlayRemoteVideos();
+            if (!cancelled && !ok) setAudioBlocked(true);
         }, 300);
-        return () => clearTimeout(timer);
+        return () => {
+            cancelled = true;
+            clearTimeout(timer);
+        };
     }, [peers]);
 
     useEffect(() => {
@@ -1179,6 +1213,25 @@ const AdeebMeet = () => {
                     <ControlBtn onClick={toggleFullscreen} icon={Maximize2} label="Fullscreen" />
                 </div>
             </footer>
+
+            <AnimatePresence>
+                {audioBlocked && !isLoading && (
+                    <motion.button
+                        type="button"
+                        initial={{ opacity: 0, y: 12 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 12 }}
+                        onClick={async () => {
+                            const ok = await tryPlayRemoteVideos();
+                            if (ok) setAudioBlocked(false);
+                        }}
+                        className="fixed bottom-24 left-1/2 -translate-x-1/2 z-[60] flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-bold text-white shadow-2xl shadow-primary/30"
+                    >
+                        <Volume2 className="h-4 w-4" />
+                        Tap to enable audio
+                    </motion.button>
+                )}
+            </AnimatePresence>
 
             <AnimatePresence>
                 {isLoading && (

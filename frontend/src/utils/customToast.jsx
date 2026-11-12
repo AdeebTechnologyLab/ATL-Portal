@@ -2,6 +2,30 @@ import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import { X, Bell, Info, AlertCircle, CheckCircle, GraduationCap } from 'lucide-react';
 
+let toastAudio = null;
+let lastToastSoundAt = 0;
+
+/** Play the notification ringtone that ships in /public. Throttled so a burst
+ *  of toasts doesn't stack the sound on top of itself. */
+const playToastSound = () => {
+    try {
+        const now = Date.now();
+        if (now - lastToastSoundAt < 1200) return;
+        lastToastSoundAt = now;
+
+        if (!toastAudio) {
+            toastAudio = new Audio('/ringtone.wav');
+            toastAudio.preload = 'auto';
+            toastAudio.volume = 0.7;
+        }
+        toastAudio.currentTime = 0;
+        const promise = toastAudio.play();
+        if (promise?.catch) promise.catch(() => {});
+    } catch {
+        /* autoplay may be blocked until the first user gesture */
+    }
+};
+
 const CustomToast = ({ t, title, message, type = 'info', icon: IconComponent, onClick }) => {
     const getColors = () => {
         switch (type) {
@@ -74,7 +98,8 @@ const CustomToast = ({ t, title, message, type = 'info', icon: IconComponent, on
 };
 
 const createToast = (type) => (title, message, icon, options = {}) => {
-    const { onClick, duration = Infinity } = options || {};
+    const { onClick, duration = Infinity, sound = true } = options || {};
+    if (sound) playToastSound();
     toast.custom(
         (t) => (
             <CustomToast
