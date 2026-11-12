@@ -1224,11 +1224,19 @@ router.post('/forgot-password', async (req, res) => {
                         <div style="padding: 22px 28px 28px; text-align: center; border-top: 1px solid #eeeeee; background: #fafafa;">
                             <p style="margin: 0 0 10px; font-size: 11px; color: #888888; text-transform: uppercase; letter-spacing: 1.5px; font-weight: bold;">Follow us</p>
                             <div style="margin: 0 0 16px;">
+                                <a href="https://adeeb-technology-lab-website.vercel.app/" style="${socialLinkStyle}">Website</a>
                                 <a href="https://web.facebook.com/AdeebTechnologyLab" style="${socialLinkStyle}">Facebook</a>
                                 <a href="https://www.instagram.com/adeebtechlab/" style="${socialLinkStyle}">Instagram</a>
                                 <a href="https://www.linkedin.com/company/AdeebTechnologyLab/" style="${socialLinkStyle}">LinkedIn</a>
+                                <a href="https://x.com/AdeebTechLab" style="${socialLinkStyle}">X (Twitter)</a>
                                 <a href="https://www.youtube.com/AdeebTechnologyLab" style="${socialLinkStyle}">YouTube</a>
-                                <a href="https://wa.me/923092333121" style="${socialLinkStyle}">WhatsApp</a>
+                                <a href="https://www.tiktok.com/@adeebtechnologylab" style="${socialLinkStyle}">TikTok</a>
+                                <a href="https://www.threads.com/@adeebtechlab" style="${socialLinkStyle}">Threads</a>
+                                <a href="https://github.com/AdeebTechLab" style="${socialLinkStyle}">GitHub</a>
+                                <a href="https://www.snapchat.com/@salmanadeeb02" style="${socialLinkStyle}">Snapchat</a>
+                                <a href="https://www.pinterest.com/adeebtechnologylab/" style="${socialLinkStyle}">Pinterest</a>
+                                <a href="https://www.whatsapp.com/channel/0029VaCeeBg4inos1Eqtbc43" style="${socialLinkStyle}">WhatsApp Channel</a>
+                                <a href="mailto:info.AdeebTechLab@gmail.com" style="${socialLinkStyle}">Email</a>
                             </div>
                             <p style="margin: 0; font-size: 12px; color: #999999;">© 2026 Adeeb Technology Lab. All rights reserved.</p>
                             <p style="margin: 6px 0 0; font-size: 12px; color: #999999;">Great People work with Adeeb Technology Lab</p>

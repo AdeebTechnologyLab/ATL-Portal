@@ -383,6 +383,11 @@ export const helpSupportAPI = {
     update: (data) => api.put('/help-support', data),
 };
 
+// Branded email API (admin/teacher notifications)
+export const emailAPI = {
+    send: (data) => api.post('/email/send', data, { timeout: 30000 }),
+};
+
 // Teacher Screen Assignment API
 export const teacherScreenAssignmentAPI = {
     getAll: () => api.get('/teacher-screen-assignments'),

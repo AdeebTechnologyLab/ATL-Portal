@@ -62,6 +62,7 @@ const adminWorkTaskRoutes = require('./routes/adminWorkTasks');
 const quizGameRoutes = require('./routes/quizGame');
 const helpSupportRoutes = require('./routes/helpSupport');
 const teacherScreenAssignmentRoutes = require('./routes/teacherScreenAssignments');
+const emailRoutes = require('./routes/email');
 
 // Import attendance lock function
 const { lockTodayAttendance } = require('./controllers/attendanceController');
@@ -481,7 +482,7 @@ app.use('/api', (req, res, next) => {
 const realtimeSkipPrefixes = [
     '/auth', '/chat', '/user-notifications', '/notifications', '/quiz-game',
     '/live-class', '/stats', '/reports', '/google-drive', '/directory', '/health',
-    '/fees', '/attendance'
+    '/fees', '/attendance', '/email'
 ];
 
 app.use('/api', (req, res, next) => {
@@ -544,6 +545,7 @@ app.use('/api/quiz-game', quizGameRoutes);
 app.use('/api/payment-methods', paymentMethodRoutes);
 app.use('/api/help-support', helpSupportRoutes);
 app.use('/api/teacher-screen-assignments', teacherScreenAssignmentRoutes);
+app.use('/api/email', emailRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

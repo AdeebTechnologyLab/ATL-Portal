@@ -9,7 +9,7 @@ import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import Badge from '../../components/ui/Badge';
 import Modal from '../../components/ui/Modal';
-import { userAPI, settingsAPI, enrollmentAPI, assignmentAPI, feeAPI, courseAPI, reportAPI, dailyTaskAPI } from '../../services/api';
+import { userAPI, settingsAPI, enrollmentAPI, assignmentAPI, feeAPI, courseAPI, reportAPI, dailyTaskAPI, emailAPI } from '../../services/api';
 import { generateComprehensiveReport } from '../../utils/reportGenerator';
 import Loader, { ButtonLoader } from '../../components/ui/Loader';
 import ImageCropper from '../../components/ui/ImageCropper';
@@ -767,12 +767,14 @@ const StudentsManagement = () => {
         }
     };
 
-    const openGmailCompose = (emailWindow, to, subject, body) => {
-        const url = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(to)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-        if (emailWindow && !emailWindow.closed) {
-            emailWindow.location.replace(url);
-        } else {
-            window.open(url, '_blank', 'noopener,noreferrer');
+    const sendBrandedEmail = async (emailWindow, to, subject, body) => {
+        if (emailWindow && !emailWindow.closed) emailWindow.close();
+        try {
+            await emailAPI.send({ to, subject, heading: subject, message: body });
+            alert(`Email sent successfully to ${to}`);
+        } catch (error) {
+            console.error('Email send failed:', error);
+            alert(error.response?.data?.message || 'Email could not be sent. Please try again.');
         }
     };
 
@@ -836,7 +838,7 @@ const StudentsManagement = () => {
             const { reportUrl, enrollments } = await createStudentReportLink(student);
             const subject = 'Student Strike Off Notice - The Computer Courses';
             const body = getStudentStrikeOffMessage(student, reportUrl, enrollments).replaceAll('*', '');
-            openGmailCompose(emailWindow, student.email, subject, body);
+            sendBrandedEmail(emailWindow, student.email, subject, body);
         } catch (error) {
             if (emailWindow && !emailWindow.closed) emailWindow.close();
             alert(`Academic report link create nahi ho saka: ${error.response?.data?.message || error.message}`);
@@ -1187,14 +1189,14 @@ const StudentsManagement = () => {
 
                                                         if (student.registeredOld && (student.totalEnrollments || 0) === 0) {
                                                             const body = getOldStudentMessage(student).replaceAll('*', '');
-                                                            openGmailCompose(null, student.email, 'Admissions Are Open Again - Adeeb Technology Lab', body);
+                                                            sendBrandedEmail(null, student.email, 'Admissions Are Open Again - Adeeb Technology Lab', body);
                                                             return;
                                                         }
                                                         if (getStudentStatus(student) === 'Completed') {
                                                             const emailWindow = window.open('', '_blank');
                                                             try {
                                                                 const body = (await getCompletionMessage(student)).replaceAll('*', '');
-                                                                openGmailCompose(emailWindow, student.email, 'Congratulations on Completing Your Course - Adeeb Technology Lab', body);
+                                                                sendBrandedEmail(emailWindow, student.email, 'Congratulations on Completing Your Course - Adeeb Technology Lab', body);
                                                             } catch (error) {
                                                                 if (emailWindow && !emailWindow.closed) emailWindow.close();
                                                                 console.error(error);
@@ -1211,7 +1213,7 @@ const StudentsManagement = () => {
                                                                 student.enrolledCourseName = courseNames;
                                                             } catch (e) { console.error(e); }
                                                             const body = getFeeReminderMessage(student).replaceAll('*', '');
-                                                            openGmailCompose(emailWindow, student.email, 'Course Fee Reminder - Adeeb Technology Lab', body);
+                                                            sendBrandedEmail(emailWindow, student.email, 'Course Fee Reminder - Adeeb Technology Lab', body);
                                                             return;
                                                         }
                                                         if (getStudentStatus(student) === 'Active') {

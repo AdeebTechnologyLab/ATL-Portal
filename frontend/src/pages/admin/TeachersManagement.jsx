@@ -10,7 +10,7 @@ import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import Badge from '../../components/ui/Badge';
 import Modal from '../../components/ui/Modal';
-import { userAPI, settingsAPI, courseAPI } from '../../services/api';
+import { userAPI, settingsAPI, courseAPI, emailAPI } from '../../services/api';
 import ImageCropper from '../../components/ui/ImageCropper';
 import AssignScreenButton from '../../components/admin/AssignScreenButton';
 import { formatDate } from '../../utils/dateFormatter';
@@ -512,13 +512,19 @@ const TeachersManagement = () => {
         window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`, '_blank');
     };
 
-    const openTeacherCompletionEmail = (teacher) => {
+    const openTeacherCompletionEmail = async (teacher) => {
         if (!teacher.email) { window.alert('Email address not found for this teacher.'); return; }
         const subject = teacher.registeredOld
             ? 'Teaching Applications Are Open Again - Adeeb Technology Lab'
             : 'Congratulations on Completing Your Teaching Assignment - Adeeb Technology Lab';
         const body = (teacher.registeredOld ? getOldTeacherMessage(teacher) : getTeacherCompletionMessage(teacher)).replaceAll('*', '');
-        window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${teacher.email}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`, '_blank');
+        try {
+            await emailAPI.send({ to: teacher.email, subject, heading: subject, message: body });
+            window.alert(`Email sent successfully to ${teacher.email}`);
+        } catch (error) {
+            console.error('Email send failed:', error);
+            window.alert(error.response?.data?.message || 'Email could not be sent. Please try again.');
+        }
     };
 
     const filteredTeachers = teachers.filter(t => {

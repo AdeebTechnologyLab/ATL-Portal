@@ -8,7 +8,7 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import Badge from '../../components/ui/Badge';
 import Modal from '../../components/ui/Modal';
-import { feeAPI, userAPI, enrollmentAPI } from '../../services/api';
+import { feeAPI, userAPI, enrollmentAPI, emailAPI } from '../../services/api';
 import { paymentMethodAPI } from '../../services/api';
 import AdminFeeMethods from './AdminFeeMethods';
 import { showToast } from '../../utils/customToast';
@@ -370,6 +370,27 @@ const FeeVerification = () => {
             setError(err.response?.data?.message || 'Failed to delete installment');
         } finally {
             setIsProcessing(false);
+        }
+    };
+
+    const sendFeeReminderEmail = async (fee, inst) => {
+        const to = fee.user?.email;
+        if (!to) {
+            alert('Student email address not found.');
+            return;
+        }
+
+        const subject = `Fee Payment Reminder - ${fee.course?.title || 'LMS Adeeb Technology Lab'}`;
+        const location = fee.course?.city || fee.user?.location;
+        const locString = location ? ` ${location.charAt(0).toUpperCase() + location.slice(1)}` : '';
+        const message = `Assalam-o-Alaikum ${fee.user.name},\n\nThis is a reminder from LMS Adeeb Technology Lab${locString} regarding your course fee for ${fee.course?.title}.\n\nStatus: ${inst.status}\nAmount: Rs ${inst.amount?.toLocaleString()}\nDue Date: ${formatDate(inst.dueDate)}\n\nPlease submit your fee and upload the receipt on the portal: https://adeebtechhub.online/\n\nThank you!`;
+
+        try {
+            await emailAPI.send({ to, subject, heading: subject, message });
+            showToast.success('Email Sent', `Fee reminder emailed to ${to}.`, Mail);
+        } catch (err) {
+            console.error('Error sending fee reminder email:', err);
+            showToast.error('Email Failed', err.response?.data?.message || 'Email could not be sent. Please try again.');
         }
     };
 
@@ -769,16 +790,15 @@ const FeeVerification = () => {
                                                     </button>
 
                                                     {fee.user?.email ? (
-                                                        <a
-                                                            href={`https://mail.google.com/mail/?view=cm&fs=1&to=${fee.user.email}&su=${encodeURIComponent(`Fee Payment Reminder - ${fee.course?.title || 'LMS Adeeb Technology Lab'}`)}&body=${encodeURIComponent(`Assalam-o-Alaikum ${fee.user.name},\n\nThis is a reminder from LMS Adeeb Technology Lab${fee.course?.city || fee.user?.location ? ` ${fee.course?.city || fee.user?.location}` : ''} regarding your course fee for ${fee.course?.title}.\n\nStatus: ${inst.status}\nAmount: Rs ${inst.amount?.toLocaleString()}\nDue Date: ${formatDate(inst.dueDate)}\n\nPlease submit your fee and upload the receipt on the portal: https://adeebtechhub.online/\n\nThank you!`)}`}
-                                                            target="_blank"
-                                                            rel="noopener noreferrer"
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => sendFeeReminderEmail(fee, inst)}
                                                             className="flex-1 sm:flex-none min-w-0 h-9 px-2.5 sm:px-3.5 bg-sky-500 hover:bg-sky-600 text-white rounded-lg text-[10px] sm:text-xs font-bold uppercase tracking-wide flex items-center justify-center gap-1.5 transition-all shadow-sm hover:shadow-md"
-                                                            title="Send Gmail Reminder"
+                                                            title="Send Fee Reminder Email"
                                                         >
                                                             <Mail className="w-3.5 h-3.5 shrink-0" />
                                                             <span className="truncate">Email</span>
-                                                        </a>
+                                                        </button>
                                                     ) : (
                                                         <button
                                                             onClick={() => alert('Student email address not found.')}
@@ -1012,16 +1032,15 @@ const FeeVerification = () => {
                                                         <span className="truncate">Guardian</span>
                                                     </button>
                                                     {fee.user?.email ? (
-                                                        <a
-                                                            href={`https://mail.google.com/mail/?view=cm&fs=1&to=${fee.user.email}&su=${encodeURIComponent(`Fee Payment Reminder - ${fee.course?.title || 'LMS Adeeb Technology Lab'}`)}&body=${encodeURIComponent(`Assalam-o-Alaikum ${fee.user.name},\n\nThis is a reminder from LMS Adeeb Technology Lab${fee.course?.city || fee.user?.location ? ` ${fee.course?.city || fee.user?.location}` : ''} regarding your course fee for ${fee.course?.title}.\n\nStatus: Pending\nAmount: Rs ${inst.amount?.toLocaleString()}\nDue Date: ${formatDate(inst.dueDate)}\n\nPlease submit your fee and upload the receipt on the portal: https://adeebtechhub.online/\n\nThank you!`)}`}
-                                                            target="_blank"
-                                                            rel="noopener noreferrer"
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => sendFeeReminderEmail(fee, inst)}
                                                             className="flex-1 sm:flex-none min-w-0 h-9 px-2.5 sm:px-3.5 bg-sky-500 hover:bg-sky-600 text-white rounded-lg text-[10px] sm:text-xs font-bold uppercase tracking-wide flex items-center justify-center gap-1.5 transition-all shadow-sm hover:shadow-md"
-                                                            title="Send Gmail Reminder"
+                                                            title="Send Fee Reminder Email"
                                                         >
                                                             <Mail className="w-3.5 h-3.5 shrink-0" />
                                                             <span className="truncate">Email</span>
-                                                        </a>
+                                                        </button>
                                                     ) : (
                                                         <button
                                                             onClick={() => alert('Student email address not found.')}
