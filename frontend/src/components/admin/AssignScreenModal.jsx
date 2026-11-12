@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, X, UserPlus, Check, Loader2 } from 'lucide-react';
 import { userAPI, teacherScreenAssignmentAPI } from '../../services/api';
-import toast from 'react-hot-toast';
+import { showToast } from '../../utils/customToast';
 
 const AssignScreenModal = ({ isOpen, onClose, screenId, screenName }) => {
     const [searchQuery, setSearchQuery] = useState('');
@@ -63,13 +63,13 @@ const AssignScreenModal = ({ isOpen, onClose, screenId, screenName }) => {
         setAssigning(true);
         try {
             await teacherScreenAssignmentAPI.assign(screenId, selectedIds);
-            toast.success(`Screen assigned to ${selectedIds.length} teacher(s)`);
+            showToast.success('Screen Assigned', `Screen assigned to ${selectedIds.length} teacher(s)`);
             setSelectedIds([]);
             setSearchQuery('');
             setTeachers([]);
             fetchAssigned();
         } catch (error) {
-            toast.error(error.response?.data?.message || 'Failed to assign screen');
+            showToast.error('Assign Failed', error.response?.data?.message || 'Failed to assign screen');
         } finally {
             setAssigning(false);
         }
@@ -78,10 +78,10 @@ const AssignScreenModal = ({ isOpen, onClose, screenId, screenName }) => {
     const handleRemove = async (teacherId) => {
         try {
             await teacherScreenAssignmentAPI.remove(screenId, teacherId);
-            toast.success('Access removed');
+            showToast.success('Access Removed', 'Access removed');
             fetchAssigned();
         } catch (error) {
-            toast.error('Failed to remove access');
+            showToast.error('Remove Failed', 'Failed to remove access');
         }
     };
 

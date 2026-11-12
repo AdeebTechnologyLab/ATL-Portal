@@ -6,7 +6,7 @@ import { teacherScreenAssignmentAPI } from '../../services/api';
 import Loader from '../../components/ui/Loader';
 import AssignScreenModal from '../../components/admin/AssignScreenModal';
 import { formatDate } from '../../utils/dateFormatter';
-import toast from 'react-hot-toast';
+import { showToast } from '../../utils/customToast';
 
 const SCREEN_LABELS = {
     student_directory: 'Directory', teacher_directory: 'Teacher Directory',
@@ -34,7 +34,7 @@ const ManageScreens = () => {
             const res = await teacherScreenAssignmentAPI.getAll();
             setAssignments(res.data.data || []);
         } catch (error) {
-            toast.error('Failed to load assignments');
+            showToast.error('Error', 'Failed to load assignments');
         } finally {
             setLoading(false);
         }
@@ -49,10 +49,10 @@ const ManageScreens = () => {
     const handleRemove = async (screenId, teacherId) => {
         try {
             await teacherScreenAssignmentAPI.remove(screenId, teacherId);
-            toast.success('Access removed');
+            showToast.success('Success', 'Access removed');
             fetchAssignments();
         } catch {
-            toast.error('Failed to remove');
+            showToast.error('Error', 'Failed to remove');
         }
     };
 

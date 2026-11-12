@@ -169,7 +169,7 @@ const InAppNotification = () => {
                 </div>
             ),
             {
-                duration: 5000,
+                duration: Infinity,
                 id: toastId,
                 style: { maxWidth: '420px', width: '100%', padding: 0, background: 'transparent' },
             }

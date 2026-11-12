@@ -4,7 +4,7 @@ import {
     GraduationCap, BookOpen, Briefcase, Users, Plus, Trash2, Save, Loader2, ChevronDown, ChevronUp, FileText
 } from 'lucide-react';
 import { registrationPageAPI } from '../../services/api';
-import toast from 'react-hot-toast';
+import { showToast } from '../../utils/customToast';
 import AssignScreenButton from '../../components/admin/AssignScreenButton';
 
 
@@ -41,7 +41,7 @@ const RegistrationPages = () => {
             console.log('📋 Registration Pages loaded:', Object.keys(data));
             setPages(data);
         } catch (error) {
-            toast.error('Failed to load registration pages');
+            showToast.error('Error', 'Failed to load registration pages');
         } finally {
             setLoading(false);
         }
@@ -144,9 +144,9 @@ const RegistrationPages = () => {
         setSaving(true);
         try {
             await registrationPageAPI.update(activeTab, pages[activeTab]);
-            toast.success(`${activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} page updated!`);
+            showToast.success('Success', `${activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} page updated!`);
         } catch (error) {
-            toast.error('Failed to save changes');
+            showToast.error('Error', 'Failed to save changes');
         } finally {
             setSaving(false);
         }

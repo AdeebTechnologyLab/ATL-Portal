@@ -4,8 +4,8 @@ import {
     Check, ChevronDown, ChevronRight, Circle, ListPlus, MoreVertical,
     Pencil, Plus, Search, Trash2, X, UserPlus, UserMinus
 } from 'lucide-react';
-import toast from 'react-hot-toast';
 import { adminWorkTaskAPI, userAPI } from '../../services/api';
+import { showToast } from '../../utils/customToast';
 import Loader from '../../components/ui/Loader';
 import ProfileAvatar from '../../components/ui/ProfileAvatar';
 
@@ -57,7 +57,7 @@ const AdminWorkLists = () => {
             const response = await adminWorkTaskAPI.getAll();
             setLists(response.data.data || []);
         } catch (error) {
-            toast.error(error.response?.data?.message || 'Lists load nahi ho sake.');
+            showToast.error('Error', error.response?.data?.message || 'Lists load nahi ho sake.');
         } finally {
             setLoading(false);
         }
@@ -92,9 +92,9 @@ const AdminWorkLists = () => {
             setLists(current => [response.data.data, ...current]);
             setListTitle('');
             setShowCreateModal(false);
-            toast.success('List create ho gayi.');
+            showToast.success('Success', 'List create ho gayi.');
         } catch (error) {
-            toast.error(error.response?.data?.message || 'List create nahi ho saki.');
+            showToast.error('Error', error.response?.data?.message || 'List create nahi ho saki.');
         } finally {
             setCreating(false);
         }
@@ -115,7 +115,7 @@ const AdminWorkLists = () => {
         event.preventDefault();
         const title = renameTitle.trim();
         if (!title) {
-            toast.error('List title khali nahi ho sakta.');
+            showToast.error('Error', 'List title khali nahi ho sakta.');
             return;
         }
         const list = lists.find(item => item._id === renameListId);
@@ -128,9 +128,9 @@ const AdminWorkLists = () => {
             const response = await adminWorkTaskAPI.update(renameListId, { title });
             replaceList(response.data.data);
             closeRenameModal();
-            toast.success('List rename ho gayi.');
+            showToast.success('Success', 'List rename ho gayi.');
         } catch (error) {
-            toast.error(error.response?.data?.message || 'List rename nahi ho saki.');
+            showToast.error('Error', error.response?.data?.message || 'List rename nahi ho saki.');
         } finally {
             setRenaming(false);
         }
@@ -142,9 +142,9 @@ const AdminWorkLists = () => {
             await adminWorkTaskAPI.delete(list._id);
             setLists(current => current.filter(item => item._id !== list._id));
             setMenuListId('');
-            toast.success('List delete ho gayi.');
+            showToast.success('Success', 'List delete ho gayi.');
         } catch (error) {
-            toast.error(error.response?.data?.message || 'List delete nahi ho saki.');
+            showToast.error('Error', error.response?.data?.message || 'List delete nahi ho saki.');
         }
     };
 
@@ -165,7 +165,7 @@ const AdminWorkLists = () => {
             setNewTaskTitle('');
             setAddingToListId('');
         } catch (error) {
-            toast.error(error.response?.data?.message || 'Task add nahi ho saka.');
+            showToast.error('Error', error.response?.data?.message || 'Task add nahi ho saka.');
         } finally {
             setSavingId('');
         }
@@ -197,7 +197,7 @@ const AdminWorkLists = () => {
                 return next;
             });
         } catch (error) {
-            toast.error(error.response?.data?.message || 'Task update nahi ho saka.');
+            showToast.error('Error', error.response?.data?.message || 'Task update nahi ho saka.');
         } finally {
             savingRef.current = '';
             setSavingId('');
@@ -234,7 +234,7 @@ const AdminWorkLists = () => {
         const draft = getDraft(item);
         const title = (draft.title || '').trim();
         if (!title) {
-            toast.error('Task title khali nahi ho sakta.');
+            showToast.error('Error', 'Task title khali nahi ho sakta.');
             return;
         }
         const changes = {};
@@ -254,7 +254,7 @@ const AdminWorkLists = () => {
             const response = await adminWorkTaskAPI.deleteItem(list._id, item._id);
             replaceList(response.data.data);
         } catch (error) {
-            toast.error(error.response?.data?.message || 'Task delete nahi ho saka.');
+            showToast.error('Error', error.response?.data?.message || 'Task delete nahi ho saka.');
         }
     };
 
@@ -288,10 +288,10 @@ const AdminWorkLists = () => {
         try {
             const response = await adminWorkTaskAPI.share(shareListId, userId);
             replaceList(response.data.data);
-            toast.success('User add ho gaya.');
+            showToast.success('Success', 'User add ho gaya.');
             setShareResults(current => current.filter(u => u._id !== userId));
         } catch (error) {
-            toast.error(error.response?.data?.message || 'User add nahi ho saka.');
+            showToast.error('Error', error.response?.data?.message || 'User add nahi ho saka.');
         } finally {
             setShareAdding('');
         }
@@ -313,9 +313,9 @@ const AdminWorkLists = () => {
         try {
             const response = await adminWorkTaskAPI.unshare(listId, userId);
             replaceList(response.data.data);
-            toast.success('User remove ho gaya.');
+            showToast.success('Success', 'User remove ho gaya.');
         } catch (error) {
-            toast.error(error.response?.data?.message || 'User remove nahi ho saka.');
+            showToast.error('Error', error.response?.data?.message || 'User remove nahi ho saka.');
         } finally {
             setRemovingUserId('');
         }

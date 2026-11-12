@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import { paymentMethodAPI } from '../../services/api';
 import Loader from '../../components/ui/Loader';
-import toast from 'react-hot-toast';
+import { showToast } from '../../utils/customToast';
 
 const PRESET_COLORS = [
     '#10b981', '#3b82f6', '#8b5cf6', '#f59e0b', '#ef4444',
@@ -41,7 +41,7 @@ const AdminFeeMethods = ({ embedded = false }) => {
             setMethods(res.data.data || []);
         } catch (err) {
             console.error('Error loading payment methods:', err);
-            toast.error('Failed to load payment methods');
+            showToast.error('Error', 'Failed to load payment methods');
         } finally {
             setLoading(false);
         }
@@ -52,24 +52,24 @@ const AdminFeeMethods = ({ embedded = false }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!form.bankName.trim() || !form.accountName.trim() || !form.accountNumber.trim()) {
-            toast.error('Please fill all required fields');
+            showToast.error('Error', 'Please fill all required fields');
             return;
         }
         setSaving(true);
         try {
             if (editingId) {
                 await paymentMethodAPI.update(editingId, form);
-                toast.success('Payment method updated');
+                showToast.success('Success', 'Payment method updated');
             } else {
                 await paymentMethodAPI.create({ ...form, order: methods.length });
-                toast.success('Payment method created');
+                showToast.success('Success', 'Payment method created');
             }
             setShowForm(false);
             setEditingId(null);
             setForm(emptyForm);
             loadMethods();
         } catch (err) {
-            toast.error(err.response?.data?.message || 'Failed to save');
+            showToast.error('Error', err.response?.data?.message || 'Failed to save');
         } finally {
             setSaving(false);
         }
@@ -91,17 +91,17 @@ const AdminFeeMethods = ({ embedded = false }) => {
     const handleDelete = async (id) => {
         try {
             await paymentMethodAPI.delete(id);
-            toast.success('Deleted successfully');
+            showToast.success('Success', 'Deleted successfully');
             setDeleteConfirm(null);
             loadMethods();
         } catch (err) {
-            toast.error('Failed to delete');
+            showToast.error('Error', 'Failed to delete');
         }
     };
 
     const handleCopy = (text) => {
         navigator.clipboard.writeText(text);
-        toast.success('Copied!');
+        showToast.success('Success', 'Copied!');
     };
 
     const toggleActive = async (method) => {
@@ -109,7 +109,7 @@ const AdminFeeMethods = ({ embedded = false }) => {
             await paymentMethodAPI.update(method._id, { isActive: !method.isActive });
             loadMethods();
         } catch (err) {
-            toast.error('Failed to update');
+            showToast.error('Error', 'Failed to update');
         }
     };
 

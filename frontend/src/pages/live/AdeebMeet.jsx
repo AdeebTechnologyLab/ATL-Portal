@@ -24,7 +24,7 @@ import {
     Pin,
 } from 'lucide-react';
 import { io } from 'socket.io-client';
-import toast from 'react-hot-toast';
+import { showToast } from '../../utils/customToast';
 import { WebRTCMeetingManager } from '../../lib/adeebMeet/WebRTCMeetingManager';
 import {
     buildLocalMediaStream,
@@ -141,7 +141,7 @@ const AdeebMeet = () => {
                 setIsMuted(!hasAudio);
                 setIsVideoOff(true);
                 if (!hasAudio && !hasVideo) {
-                    toast('Camera/mic unavailable — you can still listen and chat', { icon: 'ℹ️' });
+                    showToast.info('Info', 'Camera/mic unavailable — you can still listen and chat');
                 }
 
                 const { audioInputs, videoInputs } = await enumerateMediaDevices();
@@ -196,19 +196,19 @@ const AdeebMeet = () => {
                 };
 
                 const onClassEnded = () => {
-                    toast.error('Teacher ended the class');
+                    showToast.error('Class Ended', 'Teacher ended the class');
                     leaveClass();
                 };
 
                 const onKicked = () => {
-                    toast.error('You were removed from the class');
+                    showToast.error('Removed', 'You were removed from the class');
                     leaveClass();
                 };
 
                 const onForceMute = () => {
                     managerRef.current?.setMuted(true);
                     setIsMuted(true);
-                    toast('Teacher muted your microphone', { icon: '🔇' });
+                    showToast.info('Muted', 'Teacher muted your microphone');
                 };
 
                 const socket = io(SOCKET_URL, {
@@ -260,7 +260,7 @@ const AdeebMeet = () => {
 
                 socket.on('connect_error', () => {
                     setConnectionStatus('error');
-                    toast.error('Could not connect to meeting server');
+                    showToast.error('Connection Failed', 'Could not connect to meeting server');
                 });
 
                 socket.on('classroom_message', (data) => {
@@ -292,7 +292,7 @@ const AdeebMeet = () => {
                     });
                     if (socketId === socket.id) setHandRaised(!!raised);
                     else if (raised && userDetails?.name) {
-                        toast(`${userDetails.name} raised hand`, { icon: '🖐️', duration: 2500 });
+                        showToast.info('Hand Raised', `${userDetails.name} raised hand`);
                     }
                 });
 
@@ -306,14 +306,14 @@ const AdeebMeet = () => {
                 });
 
                 socket.io.on('reconnect', () => {
-                    toast.success('Reconnected to meeting');
+                    showToast.success('Reconnected', 'Reconnected to meeting');
                     managerRef.current?.joinRoom(roomName);
                 });
 
                 setIsLoading(false);
             } catch (err) {
                 console.error('Meet init error:', err);
-                toast.error('Failed to start meeting');
+                showToast.error('Meeting Failed', 'Failed to start meeting');
                 setIsLoading(false);
             }
         };
@@ -469,13 +469,13 @@ const AdeebMeet = () => {
                 isVideoOff,
             });
         } catch (err) {
-            toast.error(err.message || 'Microphone unavailable');
+            showToast.error('Microphone Error', err.message || 'Microphone unavailable');
         }
     };
 
     const toggleVideo = async () => {
         if (isScreenSharing) {
-            toast('Screen share band karke camera use karein', { icon: 'ℹ️' });
+            showToast.info('Info', 'Screen share band karke camera use karein');
             return;
         }
         const next = !isVideoOff;
@@ -491,7 +491,7 @@ const AdeebMeet = () => {
                 isVideoOff: next
             });
         } catch (err) {
-            toast.error(err?.message || 'Could not access camera');
+            showToast.error('Camera Error', err?.message || 'Could not access camera');
         }
     };
 
@@ -508,7 +508,7 @@ const AdeebMeet = () => {
             });
             setShowAudioMenu(false);
         } catch (err) {
-            toast.error(err.message || 'Could not switch microphone');
+            showToast.error('Microphone Error', err.message || 'Could not switch microphone');
         }
     };
 
@@ -528,7 +528,7 @@ const AdeebMeet = () => {
             });
             setShowVideoMenu(false);
         } catch (err) {
-            toast.error(err.message || 'Could not switch camera');
+            showToast.error('Camera Error', err.message || 'Could not switch camera');
         }
     };
 
@@ -539,7 +539,7 @@ const AdeebMeet = () => {
             roomId: roomName,
             raised: next,
         });
-        if (next) toast('Hand raised — everyone can see', { icon: '🖐️', duration: 2000 });
+        if (next) showToast.info('Hand Raised', 'Hand raised — everyone can see');
     };
 
     const toggleScreenShare = async () => {
@@ -547,10 +547,10 @@ const AdeebMeet = () => {
         try {
             if (!isScreenSharing) {
                 if (!isDisplayMediaSupported()) {
-                    toast.error(
+                    showToast.error(
+                        'Screen Share Unavailable',
                         getScreenShareUnsupportedReason() ||
-                            'Screen sharing is not available on this device.',
-                        { duration: 6000 }
+                            'Screen sharing is not available on this device.'
                     );
                     return;
                 }
@@ -566,7 +566,7 @@ const AdeebMeet = () => {
                     isMuted,
                     isVideoOff,
                 });
-                toast.success('Screen sharing started');
+                showToast.success('Screen Sharing', 'Screen sharing started');
             } else {
                 await managerRef.current.stopScreenShare();
                 screenStreamRef.current = null;
@@ -584,11 +584,11 @@ const AdeebMeet = () => {
         } catch (err) {
             console.error(err);
             if (err?.name === 'NotAllowedError') {
-                toast.error('Screen share cancelled or permission denied.');
+                showToast.error('Screen Share', 'Screen share cancelled or permission denied.');
             } else if (err?.name === 'AbortError') {
-                toast.error('Screen share was cancelled.');
+                showToast.error('Screen Share', 'Screen share was cancelled.');
             } else {
-                toast.error(err.message || 'Screen share failed', { duration: 5000 });
+                showToast.error('Screen Share', err.message || 'Screen share failed');
             }
         }
     };
@@ -620,7 +620,7 @@ const AdeebMeet = () => {
         const el = mainContainerRef.current;
         if (!el) return;
         if (!document.fullscreenElement) {
-            el.requestFullscreen?.().catch(() => toast.error('Fullscreen not supported'));
+            el.requestFullscreen?.().catch(() => showToast.error('Fullscreen', 'Fullscreen not supported'));
         } else {
             document.exitFullscreen?.();
         }

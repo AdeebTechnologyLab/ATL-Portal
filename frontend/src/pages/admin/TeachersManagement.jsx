@@ -14,6 +14,7 @@ import { userAPI, settingsAPI, courseAPI, emailAPI } from '../../services/api';
 import ImageCropper from '../../components/ui/ImageCropper';
 import AssignScreenButton from '../../components/admin/AssignScreenButton';
 import { formatDate } from '../../utils/dateFormatter';
+import { showToast } from '../../utils/customToast';
 
 
 const TeachersManagement = () => {
@@ -520,10 +521,12 @@ const TeachersManagement = () => {
         const body = (teacher.registeredOld ? getOldTeacherMessage(teacher) : getTeacherCompletionMessage(teacher)).replaceAll('*', '');
         try {
             await emailAPI.send({ to: teacher.email, subject, heading: subject, message: body });
-            window.alert(`Email sent successfully to ${teacher.email}`);
+            showToast.success('Email Sent', `Email sent successfully to ${teacher.email}. Click to open details.`, Mail, {
+                onClick: () => handleEditClick(teacher),
+            });
         } catch (error) {
             console.error('Email send failed:', error);
-            window.alert(error.response?.data?.message || 'Email could not be sent. Please try again.');
+            showToast.error('Email Failed', error.response?.data?.message || 'Email could not be sent. Please try again.');
         }
     };
 

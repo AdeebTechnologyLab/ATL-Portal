@@ -2,7 +2,7 @@ import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import { X, Bell, Info, AlertCircle, CheckCircle, GraduationCap } from 'lucide-react';
 
-const CustomToast = ({ t, title, message, type = 'info', icon: IconComponent }) => {
+const CustomToast = ({ t, title, message, type = 'info', icon: IconComponent, onClick }) => {
     const getColors = () => {
         switch (type) {
             case 'success': return { bg: 'bg-primary', border: 'border-primary', text: 'text-primary', icon: 'text-primary', iconBg: 'bg-primary' };
@@ -13,13 +13,29 @@ const CustomToast = ({ t, title, message, type = 'info', icon: IconComponent }) 
     };
 
     const colors = getColors();
+    const isClickable = typeof onClick === 'function';
+
+    const handleClick = () => {
+        if (!isClickable) return;
+        onClick();
+        toast.dismiss(t.id);
+    };
 
     return (
         <motion.div
             initial={{ opacity: 0, y: 50, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
-            className={`max-w-md w-full bg-white dark:bg-[#1a1f2e] shadow-2xl rounded-2xl pointer-events-auto flex ring-1 ring-black ring-opacity-5 overflow-hidden border-2 ${colors.border}`}
+            onClick={handleClick}
+            role={isClickable ? 'button' : undefined}
+            tabIndex={isClickable ? 0 : undefined}
+            onKeyDown={isClickable ? (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleClick();
+                }
+            } : undefined}
+            className={`max-w-md w-full bg-white dark:bg-[#1a1f2e] shadow-2xl rounded-2xl pointer-events-auto flex ring-1 ring-black ring-opacity-5 overflow-hidden border-2 ${colors.border} ${isClickable ? 'cursor-pointer transition-transform hover:scale-[1.01]' : ''}`}
         >
             <div className="flex-1 w-0 p-4">
                 <div className="flex items-start">
@@ -34,8 +50,12 @@ const CustomToast = ({ t, title, message, type = 'info', icon: IconComponent }) 
                                 <span className="text-[10px] font-black text-primary uppercase tracking-[0.2em]">LMS Adeeb Tech Lab</span>
                             </div>
                             <button
-                                onClick={() => toast.dismiss(t.id)}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    toast.dismiss(t.id);
+                                }}
                                 className="text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors p-1 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg"
+                                aria-label="Close notification"
                             >
                                 <X className="w-4 h-4" />
                             </button>
@@ -53,27 +73,28 @@ const CustomToast = ({ t, title, message, type = 'info', icon: IconComponent }) 
     );
 };
 
+const createToast = (type) => (title, message, icon, options = {}) => {
+    const { onClick, duration = Infinity } = options || {};
+    toast.custom(
+        (t) => (
+            <CustomToast
+                t={t}
+                title={title}
+                message={message}
+                type={type}
+                icon={icon}
+                onClick={onClick}
+            />
+        ),
+        { duration }
+    );
+};
+
 export const showToast = {
-    success: (title, message, icon) => {
-        toast.custom((t) => (
-            <CustomToast t={t} title={title} message={message} type="success" icon={icon} />
-        ));
-    },
-    error: (title, message, icon) => {
-        toast.custom((t) => (
-            <CustomToast t={t} title={title} message={message} type="error" icon={icon} />
-        ));
-    },
-    warning: (title, message, icon) => {
-        toast.custom((t) => (
-            <CustomToast t={t} title={title} message={message} type="warning" icon={icon} />
-        ));
-    },
-    info: (title, message, icon) => {
-        toast.custom((t) => (
-            <CustomToast t={t} title={title} message={message} type="info" icon={icon} />
-        ));
-    }
+    success: createToast('success'),
+    error: createToast('error'),
+    warning: createToast('warning'),
+    info: createToast('info')
 };
 
 
