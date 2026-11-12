@@ -16,10 +16,8 @@ import {
     UserMinus,
     VolumeX,
     Volume2,
-    LayoutGrid,
     Maximize2,
     Minimize2,
-    Sidebar as SidebarIcon,
     X,
     ChevronDown,
     Hand,
@@ -63,7 +61,7 @@ const AdeebMeet = () => {
     const [showParticipants, setShowParticipants] = useState(true);
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState('');
-    const [layout, setLayout] = useState('grid');
+    const [layout] = useState('grid');
     const [peers, setPeers] = useState([]);
     const [participants, setParticipants] = useState([]);
     const [connectionStatus, setConnectionStatus] = useState('connecting');
@@ -235,7 +233,19 @@ const AdeebMeet = () => {
                                 ...prev,
                                 [socketId]: active,
                             }));
-                            if (active) setScreenFocusOn(true);
+                            if (socketId === socket.id) {
+                                if (active) {
+                                    setScreenFocusOn(true);
+                                } else {
+                                    // Browser ke native "Stop sharing" se bhi UI sync rahe
+                                    screenStreamRef.current = null;
+                                    if (userVideoRef.current) {
+                                        userVideoRef.current.srcObject = userStreamRef.current;
+                                    }
+                                    setIsScreenSharing(false);
+                                    setScreenFocusOn(false);
+                                }
+                            }
                         },
                     });
                     manager.onClassEnded = onClassEnded;
@@ -464,10 +474,17 @@ const AdeebMeet = () => {
     };
 
     const toggleVideo = async () => {
+        if (isScreenSharing) {
+            toast('Screen share band karke camera use karein', { icon: 'ℹ️' });
+            return;
+        }
         const next = !isVideoOff;
         try {
             await managerRef.current?.setVideoEnabled(!next);
             setIsVideoOff(next);
+            if (userVideoRef.current && userStreamRef.current) {
+                attachStreamToVideo(userVideoRef.current, userStreamRef.current);
+            }
             socketRef.current?.emit('classroom_media_state', {
                 roomId: roomName,
                 isMuted,
@@ -750,7 +767,7 @@ const AdeebMeet = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
         >
-            <header className="h-14 bg-black/60 backdrop-blur-xl border-b border-white/5 flex items-center justify-between px-4 md:px-6 z-30 shrink-0">
+            <header className="h-14 bg-black/60 backdrop-blur-xl border-b border-white/5 flex items-center justify-between gap-2 px-3 sm:px-4 md:px-6 z-30 shrink-0">
                 <motion.div
                     className="flex items-center gap-3"
                     initial={{ x: -20, opacity: 0 }}
@@ -759,27 +776,28 @@ const AdeebMeet = () => {
                     <motion.img
                         src="/logo.png"
                         alt="LMS"
-                        className="h-10 w-10 object-contain"
+                        className="h-8 w-8 sm:h-10 sm:w-10 object-contain"
                         whileHover={{ scale: 1.05 }}
                     />
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.1 }}
+                        className="min-w-0"
                     >
-                        <h2 className="text-sm font-black uppercase tracking-tighter italic flex items-center gap-2">
+                        <h2 className="text-xs sm:text-sm font-black uppercase tracking-tighter italic flex items-center gap-2 whitespace-nowrap">
                             Adeeb Meet
                             <span className="bg-red-500 text-[9px] px-1.5 py-0.5 rounded-full not-italic animate-pulse">
                                 LIVE
                             </span>
                         </h2>
-                        <p className="text-[10px] text-white/40 font-bold uppercase tracking-widest">
+                        <p className="hidden sm:block text-[10px] text-white/40 font-bold uppercase tracking-widest truncate max-w-[42vw]">
                             Room: {roomName} · {participants.length} joined
                         </p>
                     </motion.div>
                 </motion.div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
                     <div className="hidden md:flex items-center gap-2 px-3 py-1.5 bg-white/5 rounded-lg border border-white/10">
                         <ShieldCheck
                             className={`w-4 h-4 ${connectionStatus === 'connected' ? 'text-emerald-500' : 'text-amber-500'}`}
@@ -791,7 +809,7 @@ const AdeebMeet = () => {
                     <button
                         type="button"
                         onClick={leaveClass}
-                        className="px-3 py-2 bg-white/5 hover:bg-rose-500/20 hover:text-rose-400 border border-white/10 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2"
+                        className="px-2 sm:px-3 py-2 bg-white/5 hover:bg-rose-500/20 hover:text-rose-400 border border-white/10 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-1.5 sm:gap-2 whitespace-nowrap"
                     >
                         <LogOut className="w-4 h-4" />
                         Leave
@@ -800,7 +818,7 @@ const AdeebMeet = () => {
                         <button
                             type="button"
                             onClick={endClassForEveryone}
-                            className="px-3 py-2 bg-rose-500 hover:bg-rose-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all"
+                            className="px-2 sm:px-3 py-2 bg-rose-500 hover:bg-rose-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap"
                         >
                             End Class
                         </button>
@@ -808,7 +826,7 @@ const AdeebMeet = () => {
                 </div>
             </header>
 
-            <main className="flex-1 flex overflow-hidden min-h-0 h-0">
+            <main className="relative flex-1 flex overflow-hidden min-h-0 h-0">
                 <div className="flex-1 flex flex-col min-h-0 p-2 md:p-3 overflow-hidden">
                     {showScreenLayout ? (
                         <div className="flex flex-col lg:flex-row gap-2 md:gap-3 flex-1 min-h-0 h-full">
@@ -933,7 +951,7 @@ const AdeebMeet = () => {
                             animate={{ x: 0, opacity: 1 }}
                             exit={{ x: 320, opacity: 0 }}
                             transition={{ type: 'spring', damping: 28, stiffness: 300 }}
-                            className="w-full max-w-[320px] bg-black/50 backdrop-blur-3xl border-l border-white/5 flex flex-col shrink-0"
+                            className="absolute inset-y-0 right-0 z-40 w-[85vw] max-w-[320px] bg-black/50 backdrop-blur-3xl border-l border-white/5 flex flex-col shrink-0 lg:static lg:z-auto"
                         >
                             <motion.div
                                 className="flex border-b border-white/5"
@@ -1055,8 +1073,8 @@ const AdeebMeet = () => {
                 </AnimatePresence>
             </main>
 
-            <footer className="h-[72px] md:h-20 bg-black/80 backdrop-blur-2xl border-t border-white/5 flex items-center justify-center px-4 z-30 shrink-0">
-                <div className="flex items-center gap-2 md:gap-3 flex-wrap justify-center">
+            <footer className="min-h-[64px] md:h-20 bg-black/80 backdrop-blur-2xl border-t border-white/5 flex items-center justify-center px-2 sm:px-4 py-1.5 md:py-0 z-30 shrink-0">
+                <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3 flex-wrap justify-center max-w-full">
                     <DeviceControl
                         onMainClick={toggleMute}
                         active={!isMuted}
@@ -1121,6 +1139,7 @@ const AdeebMeet = () => {
                         accent={handRaised}
                         label={handRaised ? 'Lower hand' : 'Raise hand'}
                     />
+                    <div className="w-px h-8 bg-white/10 mx-1 hidden sm:block" />
                     {screenSharerId && (
                         <ControlBtn
                             onClick={() => setScreenFocusOn((v) => !v)}
@@ -1129,12 +1148,6 @@ const AdeebMeet = () => {
                             label={screenFocusOn ? 'Grid view' : 'Focus screen'}
                         />
                     )}
-                    <div className="w-px h-8 bg-white/10 mx-1 hidden sm:block" />
-                    <ControlBtn
-                        onClick={() => setLayout(layout === 'grid' ? 'full' : 'grid')}
-                        icon={layout === 'grid' ? LayoutGrid : SidebarIcon}
-                        label={layout === 'grid' ? 'Grid' : 'Full width'}
-                    />
                     <div className="relative">
                         <ControlBtn
                             onClick={() => {
@@ -1531,7 +1544,7 @@ const DeviceControl = ({
                 type="button"
                 onClick={onMainClick}
                 whileTap={{ scale: 0.92 }}
-                className={`w-11 h-11 md:w-12 md:h-12 rounded-l-xl md:rounded-l-2xl flex items-center justify-center transition-colors ${
+                className={`w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12 rounded-l-xl md:rounded-l-2xl flex items-center justify-center transition-colors ${
                     danger
                         ? 'bg-rose-500 text-white'
                         : active
@@ -1539,7 +1552,7 @@ const DeviceControl = ({
                           : 'bg-white/5 text-white/70 hover:bg-white/10 border border-white/5'
                 }`}
             >
-                <Icon className="w-5 h-5" />
+                <Icon className="w-4 h-4 sm:w-5 sm:h-5" />
             </motion.button>
             <motion.button
                 type="button"
@@ -1549,7 +1562,7 @@ const DeviceControl = ({
                 }}
                 disabled={disabled}
                 whileTap={{ scale: 0.92 }}
-                className={`w-6 h-11 md:h-12 rounded-r-xl md:rounded-r-2xl flex items-center justify-center border-l border-white/10 transition-colors ${
+                className={`w-5 h-10 sm:w-6 sm:h-11 md:h-12 rounded-r-xl md:rounded-r-2xl flex items-center justify-center border-l border-white/10 transition-colors ${
                     disabled
                         ? 'opacity-40 cursor-not-allowed bg-white/5'
                         : menuOpen
@@ -1602,7 +1615,7 @@ const ControlBtn = ({ onClick, active, icon: Icon, danger, accent, label }) => (
             type="button"
             onClick={onClick}
             whileTap={{ scale: 0.92 }}
-            className={`w-11 h-11 md:w-12 md:h-12 rounded-xl md:rounded-2xl flex items-center justify-center transition-colors ${
+            className={`w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12 rounded-xl md:rounded-2xl flex items-center justify-center transition-colors ${
                 danger
                     ? 'bg-rose-500 text-white'
                     : accent
@@ -1612,7 +1625,7 @@ const ControlBtn = ({ onClick, active, icon: Icon, danger, accent, label }) => (
                         : 'bg-white/5 text-white/70 hover:bg-white/10 border border-white/5'
             }`}
         >
-            <Icon className="w-5 h-5" />
+            <Icon className="w-4 h-4 sm:w-5 sm:h-5" />
         </motion.button>
         <span className="text-[7px] md:text-[8px] font-bold uppercase text-white/30 hidden sm:block">
             {label}

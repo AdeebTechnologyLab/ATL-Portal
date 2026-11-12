@@ -1,9 +1,9 @@
 import {
     ICE_SERVERS,
-    VIDEO_CONSTRAINTS,
     acquireCameraTrack,
     acquireDisplayStream,
     acquireMicrophoneTrack,
+    createDummyVideoTrack,
     getScreenShareUnsupportedReason,
     isDisplayMediaSupported,
 } from './webrtcConfig';
@@ -50,7 +50,11 @@ export class WebRTCMeetingManager {
         this.peers = new Map();
         this.cameraVideoTrack = localStream?.getVideoTracks()[0] ?? null;
         this.cameraAudioTrack = localStream?.getAudioTracks()[0] ?? null;
+        this.cameraOn = Boolean(
+            this.cameraVideoTrack?.enabled && !this.cameraVideoTrack?._isDummy
+        );
         this.screenTrack = null;
+        this._stoppingScreen = false;
         this.destroyed = false;
 
         this._bindSocket();
@@ -396,15 +400,36 @@ export class WebRTCMeetingManager {
         }
     }
 
+    async _replaceVideoSenderTracks(track) {
+        for (const [, { pc }] of this.peers) {
+            const sender = pc.getSenders().find((s) => s.track?.kind === 'video');
+            if (sender) {
+                try {
+                    await sender.replaceTrack(track || null);
+                } catch {
+                    /* ignore */
+                }
+            } else if (track) {
+                try {
+                    pc.addTrack(track, this.localStream);
+                } catch {
+                    /* ignore */
+                }
+            }
+            await applyVideoSenderBitrate(pc);
+        }
+    }
+
     async setVideoEnabled(enabled) {
         if (this.screenTrack) return;
-        let track = this.localStream?.getVideoTracks()[0];
+        const track = this.localStream?.getVideoTracks()[0];
         if (enabled) {
             if (!track || track.readyState === 'ended' || track._isDummy) {
                 try {
                     const cam = await acquireCameraTrack();
                     if (cam) {
                         cam.enabled = true;
+                        this.cameraOn = true;
                         await this._replaceLocalVideoTrack(cam);
                         return;
                     }
@@ -413,8 +438,33 @@ export class WebRTCMeetingManager {
                 }
             }
             if (track && track.readyState === 'live') track.enabled = true;
-        } else if (track) {
-            track.enabled = false;
+            this.cameraOn = true;
+        } else {
+            // Camera ko sirf mute na karo — track.stop() se hardware (camera light) bhi band hota hai
+            if (track) {
+                track.enabled = false;
+                try {
+                    track.stop();
+                } catch {
+                    /* ignore */
+                }
+                if (this.localStream?.getVideoTracks().includes(track)) {
+                    this.localStream.removeTrack(track);
+                }
+            }
+            this.cameraOn = false;
+            // Peer connection stable rakhne ke liye black (dummy) video track bhejo
+            const dummy = createDummyVideoTrack();
+            if (dummy) {
+                dummy.enabled = true;
+                if (this.localStream && !this.localStream.getVideoTracks().includes(dummy)) {
+                    this.localStream.addTrack(dummy);
+                }
+                this.cameraVideoTrack = dummy;
+            } else {
+                this.cameraVideoTrack = null;
+            }
+            await this._replaceVideoSenderTracks(this.cameraVideoTrack);
         }
     }
 
@@ -431,9 +481,10 @@ export class WebRTCMeetingManager {
         if (this.screenTrack) throw new Error('Stop screen sharing before switching camera');
         const fresh = await acquireCameraTrack(deviceId);
         if (!fresh) throw new Error('Could not access selected camera');
-        const wasOff = !this.localStream?.getVideoTracks()[0]?.enabled;
+        const wasOff = !this.cameraOn;
         await this._replaceLocalVideoTrack(fresh);
         fresh.enabled = !wasOff;
+        this.cameraOn = !wasOff;
         return fresh;
     }
 
@@ -453,7 +504,7 @@ export class WebRTCMeetingManager {
         if (!this.cameraVideoTrack) {
             this.cameraVideoTrack = this.localStream?.getVideoTracks()[0] ?? null;
         }
-        this.cameraWasEnabledBeforeShare = Boolean(this.cameraVideoTrack?.enabled);
+        this.cameraWasEnabledBeforeShare = this.cameraOn;
 
         try {
             await screenTrack.applyConstraints({
@@ -498,57 +549,94 @@ export class WebRTCMeetingManager {
     }
 
     async stopScreenShare() {
+        if (this._stoppingScreen) return;
+        this._stoppingScreen = true;
+
         const screenTrack = this.screenTrack;
         this.screenTrack = null;
-
-        let cameraTrack = this.cameraVideoTrack;
-        if (!cameraTrack || cameraTrack.readyState === 'ended') {
-            if (this.cameraWasEnabledBeforeShare) {
-                try {
-                    const cam = await navigator.mediaDevices.getUserMedia({
-                        video: VIDEO_CONSTRAINTS,
-                    });
-                    cameraTrack = cam.getVideoTracks()[0];
-                    this.cameraVideoTrack = cameraTrack;
-                } catch {
-                    cameraTrack = null;
-                }
-            } else {
-                cameraTrack = null;
-            }
-        }
-        if (cameraTrack) cameraTrack.enabled = Boolean(this.cameraWasEnabledBeforeShare);
-
-        for (const [peerId, { pc }] of this.peers) {
-            const sender = pc.getSenders().find((s) => s.track?.kind === 'video');
-            if (sender && cameraTrack) await sender.replaceTrack(cameraTrack);
-            const entry = this.peers.get(peerId);
-            if (entry) entry.isScreenSharing = false;
-            await applyVideoSenderBitrate(pc);
-        }
-
+        // Browser ke "Stop sharing" button se aane wale double-call ko roko
         if (screenTrack) {
             try {
-                screenTrack.stop();
+                screenTrack.onended = null;
             } catch {
                 /* ignore */
             }
-            if (this.localStream?.getVideoTracks().includes(screenTrack)) {
-                this.localStream.removeTrack(screenTrack);
+        }
+
+        let cameraTrack = null;
+        try {
+            if (this.cameraWasEnabledBeforeShare) {
+                cameraTrack = this.cameraVideoTrack;
+                if (!cameraTrack || cameraTrack.readyState === 'ended' || cameraTrack._isDummy) {
+                    try {
+                        cameraTrack = await acquireCameraTrack();
+                        this.cameraVideoTrack = cameraTrack;
+                    } catch {
+                        cameraTrack = null;
+                    }
+                }
+                if (cameraTrack) cameraTrack.enabled = true;
+                this.cameraOn = Boolean(cameraTrack);
+            } else {
+                this.cameraOn = false;
+                const dummy = createDummyVideoTrack();
+                if (dummy) {
+                    dummy.enabled = true;
+                    this.cameraVideoTrack = dummy;
+                    cameraTrack = dummy;
+                } else {
+                    this.cameraVideoTrack = null;
+                    cameraTrack = null;
+                }
             }
-        }
 
-        if (cameraTrack && this.localStream && !this.localStream.getVideoTracks().includes(cameraTrack)) {
-            this.localStream.addTrack(cameraTrack);
-        }
+            for (const [peerId, { pc }] of this.peers) {
+                const sender = pc.getSenders().find((s) => s.track?.kind === 'video');
+                if (sender) {
+                    try {
+                        await sender.replaceTrack(cameraTrack);
+                    } catch {
+                        /* ignore */
+                    }
+                } else if (cameraTrack) {
+                    try {
+                        pc.addTrack(cameraTrack, this.localStream);
+                    } catch {
+                        /* ignore */
+                    }
+                }
+                const entry = this.peers.get(peerId);
+                if (entry) entry.isScreenSharing = false;
+                await applyVideoSenderBitrate(pc);
+            }
 
-        this.socket.emit('classroom_screen_share', {
-            roomId: this.roomId,
-            active: false,
-        });
-        this.onScreenShareChange?.({ socketId: this.mySocketId, active: false });
-        this._scheduleEmitPeers();
-        await this._renegotiateAllPeers();
+            if (screenTrack) {
+                try {
+                    screenTrack.stop();
+                } catch {
+                    /* ignore */
+                }
+                if (this.localStream?.getVideoTracks().includes(screenTrack)) {
+                    this.localStream.removeTrack(screenTrack);
+                }
+            }
+
+            if (cameraTrack && this.localStream && !this.localStream.getVideoTracks().includes(cameraTrack)) {
+                this.localStream.addTrack(cameraTrack);
+            }
+
+            this.socket.emit('classroom_screen_share', {
+                roomId: this.roomId,
+                active: false,
+            });
+            this.onScreenShareChange?.({ socketId: this.mySocketId, active: false });
+            this._scheduleEmitPeers();
+            await this._renegotiateAllPeers();
+        } catch (err) {
+            console.error('stopScreenShare failed:', err);
+        } finally {
+            this._stoppingScreen = false;
+        }
     }
 
     kickUser(targetSocketId) {
