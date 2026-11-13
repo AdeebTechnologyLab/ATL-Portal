@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useLoadingGifUrl } from '../../services/loadingGif';
 import { useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
@@ -42,6 +43,7 @@ const SOCKET_URL = getSocketURL();
 
 
 const StudentDashboard = () => {
+    const loadingGifUrl = useLoadingGifUrl();
     const { t } = useTranslation();
     const navigate = useNavigate();
     const { role, user } = useSelector((state) => state.auth);
@@ -437,7 +439,7 @@ const StudentDashboard = () => {
     if (isLoading) {
         return (
             <div className="flex flex-col items-center justify-center h-64 gap-3">
-                <img src="/loading.gif" alt="Loading" className="w-32 h-32 sm:w-40 sm:h-40 object-contain" />
+                <img src={loadingGifUrl} alt="Loading" className="w-32 h-32 sm:w-40 sm:h-40 object-contain" />
             </div>
         );
     }

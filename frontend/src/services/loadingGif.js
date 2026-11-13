@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import api from './api';
 
 const STORAGE_KEY = 'activeLoadingGif';
@@ -11,6 +12,26 @@ try {
 }
 
 export const getLoadingGifUrl = () => cachedUrl || '/loading.gif';
+
+export const useLoadingGifUrl = () => {
+    const [url, setUrl] = useState(getLoadingGifUrl());
+    useEffect(() => {
+        let mounted = true;
+        const sync = () => {
+            refreshLoadingGifUrl().then((resolved) => {
+                if (mounted) setUrl(resolved || getLoadingGifUrl());
+            });
+        };
+        sync();
+        const onUpdated = () => sync();
+        window.addEventListener('loading-gif-updated', onUpdated);
+        return () => {
+            mounted = false;
+            window.removeEventListener('loading-gif-updated', onUpdated);
+        };
+    }, []);
+    return url;
+};
 
 export const refreshLoadingGifUrl = () => {
     if (inflight) return inflight;

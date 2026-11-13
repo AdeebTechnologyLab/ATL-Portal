@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useLoadingGifUrl } from '../../services/loadingGif';
 import { useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CalendarDays, Eye, ReceiptText, Wallet, X } from 'lucide-react';
@@ -7,6 +8,7 @@ import { formatDate } from '../../utils/dateFormatter';
 import PageHeader from '../../components/shared/PageHeader';
 
 const PaymentHistory = () => {
+    const loadingGifUrl = useLoadingGifUrl();
     const { user } = useSelector((state) => state.auth);
     const [tasks, setTasks] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -49,7 +51,7 @@ const PaymentHistory = () => {
     if (loading) {
         return (
             <div className="flex min-h-[420px] flex-col items-center justify-center gap-3">
-                <img src="/loading.gif" alt="Loading payments" className="w-32 h-32 sm:w-40 sm:h-40 object-contain" />
+                <img src={loadingGifUrl} alt="Loading payments" className="w-32 h-32 sm:w-40 sm:h-40 object-contain" />
             </div>
         );
     }

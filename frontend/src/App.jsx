@@ -116,8 +116,20 @@ const AppRoutes = () => {
 
   // Keep the selected loading gif + custom cursor in sync for every user
   useEffect(() => {
-    refreshLoadingGifUrl();
-    refreshCustomCursor();
+    const sync = () => {
+      refreshLoadingGifUrl();
+      refreshCustomCursor();
+    };
+    sync();
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') sync();
+    };
+    document.addEventListener('visibilitychange', onVisible);
+    window.addEventListener('focus', sync);
+    return () => {
+      document.removeEventListener('visibilitychange', onVisible);
+      window.removeEventListener('focus', sync);
+    };
   }, []);
 
   const getDefaultPage = () => {

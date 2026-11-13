@@ -263,7 +263,8 @@ const LmsUpdate = () => {
         try {
             await lmsUpdateAPI.setActiveGif(name);
             setActiveName(name);
-            refreshLoadingGifUrl();
+            await refreshLoadingGifUrl();
+            window.dispatchEvent(new Event('loading-gif-updated'));
             showToast.success('Selected!', 'Ye GIF ab sab users ko loading me dikhegi.');
         } catch (error) {
             showToast.error('Select Failed', error.response?.data?.message || 'GIF select nahi ho saki.');

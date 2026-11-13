@@ -14,10 +14,18 @@ const Loader = ({ message = 'Loading...', size = 'md' }) => {
 
     useEffect(() => {
         let mounted = true;
-        refreshLoadingGifUrl().then(url => {
-            if (mounted) setSrc(url);
-        });
-        return () => { mounted = false; };
+        const sync = () => {
+            refreshLoadingGifUrl().then(url => {
+                if (mounted) setSrc(url);
+            });
+        };
+        sync();
+        const onUpdated = () => sync();
+        window.addEventListener('loading-gif-updated', onUpdated);
+        return () => {
+            mounted = false;
+            window.removeEventListener('loading-gif-updated', onUpdated);
+        };
     }, []);
 
     return (

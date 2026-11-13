@@ -93,9 +93,15 @@ const upload = multer({
     fileFilter: (req, file, cb) => cb(null, ALLOWED_EXT.has(path.extname(file.originalname || '').toLowerCase()))
 });
 
-const toPublicFile = (name, baseUrl) => ({
+const getOrigin = (req) => {
+    const proto = String(req.get('x-forwarded-proto') || req.protocol || 'http').split(',')[0].trim();
+    const host = String(req.get('x-forwarded-host') || req.get('host') || '').split(',')[0].trim();
+    return `${proto}://${host}`;
+};
+
+const toPublicFile = (name, req) => ({
     name,
-    url: `${baseUrl}/files/${encodeURIComponent(name)}`
+    url: `${getOrigin(req)}${req.baseUrl}/files/${encodeURIComponent(name)}`
 });
 
 // Public: serve uploaded files (used as <img> src, no auth header possible)
@@ -219,7 +225,7 @@ router.get('/active', async (req, res) => {
         const setting = await SystemSetting.findOne({ key: ACTIVE_GIF_KEY });
         const name = setting?.value;
         if (typeof name === 'string' && name && fs.existsSync(path.join(LOADING_DIR, path.basename(name)))) {
-            return res.json({ success: true, data: toPublicFile(path.basename(name), req.baseUrl) });
+            return res.json({ success: true, data: toPublicFile(path.basename(name), req) });
         }
         res.json({ success: true, data: null });
     } catch (err) {
@@ -238,8 +244,8 @@ router.get('/loading-gifs', protect, authorize('admin'), async (req, res) => {
             const full = path.join(LOADING_DIR, name);
             const stat = await fs.promises.stat(full);
             if (!stat.isFile() || !ALLOWED_EXT.has(path.extname(name).toLowerCase())) continue;
-            files.push({
-                ...toPublicFile(name, req.baseUrl),
+                files.push({
+                    ...toPublicFile(name, req),
                 size: stat.size,
                 modifiedAt: stat.mtime,
                 isActive: name === activeName
@@ -264,7 +270,9 @@ router.post('/loading-gifs/active', protect, authorize('admin'), async (req, res
             { value: name, updatedBy: req.user.id },
             { new: true, upsert: true, setDefaultsOnInsert: true }
         );
-        res.json({ success: true, data: toPublicFile(name, req.baseUrl) });
+        const io = req.app.get('io');
+        if (io) io.emit('loading_gif_updated', toPublicFile(name, req));
+        res.json({ success: true, data: toPublicFile(name, req) });
     } catch (err) {
         res.status(500).json({ success: false, message: err.message });
     }
@@ -275,7 +283,7 @@ router.post('/loading-gifs', protect, authorize('admin'), (req, res) => {
     upload.single('file')(req, res, (err) => {
         if (err) return res.status(400).json({ success: false, message: err.message });
         if (!req.file) return res.status(400).json({ success: false, message: 'Sirf GIF ya image file upload ho sakti hai.' });
-        res.status(201).json({ success: true, data: toPublicFile(req.file.filename, req.baseUrl) });
+        res.status(201).json({ success: true, data: toPublicFile(req.file.filename, req) });
     });
 });
 

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useLoadingGifUrl } from '../../services/loadingGif';
 import { motion } from 'framer-motion';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -12,6 +13,7 @@ import { getSocketURL } from '../../config/apiBaseUrl';
 import ProfileCompletionBanner from '../../components/shared/ProfileCompletionBanner';
 
 const JobDashboard = () => {
+    const loadingGifUrl = useLoadingGifUrl();
     const { user } = useSelector((state) => state.auth);
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(true);
@@ -68,7 +70,7 @@ const JobDashboard = () => {
     if (isLoading) {
         return (
             <div className="flex flex-col items-center justify-center h-64 gap-3">
-                <img src="/loading.gif" alt="Loading" className="w-32 h-32 sm:w-40 sm:h-40 object-contain" />
+                <img src={loadingGifUrl} alt="Loading" className="w-32 h-32 sm:w-40 sm:h-40 object-contain" />
             </div>
         );
     }

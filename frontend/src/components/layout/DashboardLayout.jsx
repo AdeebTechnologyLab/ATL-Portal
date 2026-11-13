@@ -242,6 +242,9 @@ const DashboardLayout = () => {
         socket.on('fee_updated', handleRefresh);
         socket.on('class_time_reminder', playClassReminderRing);
         socket.on('new_daily_task', handleRefresh);
+        socket.on('loading_gif_updated', () => {
+            window.dispatchEvent(new Event('loading-gif-updated'));
+        });
 
         // Generic real-time sync: whenever someone else changes data anywhere,
         // let the current screen refresh its data in place. We dispatch an event
