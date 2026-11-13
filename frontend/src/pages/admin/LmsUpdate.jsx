@@ -448,7 +448,7 @@ const LmsUpdate = () => {
 
                         <div className="flex items-start gap-2 rounded-xl border border-amber-200 bg-amber-50 p-3 text-[11px] font-bold text-amber-700 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-300">
                             <AlertCircle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-                            Files seedhe <span className="font-black">frontend/public/loading gif</span> folder me save hoti hain aur
+                            Files seedhe <span className="font-black">backend/public/loading gif</span> folder me save hoti hain aur
                             <span className="font-black"> /api/lms-update/files/</span> URL se serve hoti hain.
                         </div>
                     </div>

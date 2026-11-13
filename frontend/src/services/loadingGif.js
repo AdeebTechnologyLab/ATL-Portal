@@ -11,7 +11,7 @@ try {
     cachedUrl = '';
 }
 
-export const getLoadingGifUrl = () => cachedUrl || '/loading.gif';
+export const getLoadingGifUrl = () => cachedUrl || 'https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJueXp4YnlpNXJueXp4YnlpNXJueXp4YnlpNXJueXp4YnlpNXJueSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o7bu3XilJ5BOiSGic/giphy.gif';
 
 export const useLoadingGifUrl = () => {
     const [url, setUrl] = useState(getLoadingGifUrl());

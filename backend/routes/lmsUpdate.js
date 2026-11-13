@@ -7,7 +7,7 @@ const SystemSetting = require('../models/SystemSetting');
 
 const router = express.Router();
 
-const LOADING_DIR = path.join(__dirname, '..', '..', 'frontend', 'public', 'loading gif');
+const LOADING_DIR = path.join(__dirname, '..', 'public', 'loading gif');
 fs.mkdirSync(LOADING_DIR, { recursive: true });
 
 const ACTIVE_GIF_KEY = 'loading_gif';
