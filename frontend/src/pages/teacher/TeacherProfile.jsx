@@ -10,6 +10,7 @@ import { updateUser } from '../../features/auth/authSlice';
 import { getCourseIcon } from '../../utils/courseIcons';
 import ProfileAvatar from '../../components/ui/ProfileAvatar';
 import Loader, { ButtonLoader } from '../../components/ui/Loader';
+import ImageCropper from '../../components/ui/ImageCropper';
 import { formatDate } from '../../utils/dateFormatter';
 import { COUNTRIES } from '../../utils/locations';
 
@@ -124,6 +125,9 @@ const TeacherProfile = () => {
     });
 
     const [editForm, setEditForm] = useState({ ...profileData });
+    const [photoFile, setPhotoFile] = useState(null);
+    const [photoPreview, setPhotoPreview] = useState(null);
+    const [cropperSrc, setCropperSrc] = useState(null);
 
     useEffect(() => {
         const init = async () => {
@@ -170,38 +174,54 @@ const TeacherProfile = () => {
 
     const handleEdit = () => {
         setEditForm({ ...profileData });
+        setPhotoFile(null);
+        setPhotoPreview(null);
+        setCropperSrc(null);
         setIsEditing(true);
     };
 
     const handleCancel = () => {
         setEditForm({ ...profileData });
+        setPhotoFile(null);
+        setPhotoPreview(null);
+        setCropperSrc(null);
         setIsEditing(false);
+    };
+
+    const handlePhotoCrop = (croppedFile, dataUrl) => {
+        setPhotoFile(croppedFile);
+        setPhotoPreview(dataUrl || URL.createObjectURL(croppedFile));
+        setCropperSrc(null);
     };
 
     const handleSave = async () => {
         setIsSaving(true);
         try {
-            const response = await authAPI.updateProfile({
-                email: editForm.email,
-                name: editForm.fullName,
-                phone: editForm.phone,
-                cnic: editForm.cnic,
-                fatherName: editForm.fatherName,
-                dob: editForm.dob,
-                age: editForm.age,
-                gender: editForm.gender,
-                qualification: editForm.qualification,
-                specialization: editForm.specialization,
-                experience: editForm.experience,
-                address: editForm.address,
-                city: editForm.city,
-                country: editForm.country,
-                location: editForm.campusCity,
-                attendType: editForm.attendType,
-                heardAbout: editForm.heardAbout
-            });
+            const formData = new FormData();
+            formData.append('email', editForm.email || '');
+            formData.append('name', editForm.fullName || '');
+            formData.append('phone', editForm.phone || '');
+            formData.append('cnic', editForm.cnic || '');
+            formData.append('fatherName', editForm.fatherName || '');
+            formData.append('dob', editForm.dob || '');
+            formData.append('age', editForm.age || '');
+            formData.append('gender', editForm.gender || '');
+            formData.append('qualification', editForm.qualification || '');
+            formData.append('specialization', editForm.specialization || '');
+            formData.append('experience', editForm.experience || '');
+            formData.append('address', editForm.address || '');
+            formData.append('city', editForm.city || '');
+            formData.append('country', editForm.country || '');
+            formData.append('location', editForm.campusCity || '');
+            formData.append('attendType', editForm.attendType || '');
+            formData.append('heardAbout', editForm.heardAbout || '');
+            if (photoFile) formData.append('photo', photoFile);
+
+            const response = await authAPI.updateProfile(formData);
 
             setProfileData({ ...editForm });
+            setPhotoFile(null);
+            setPhotoPreview(null);
             setIsEditing(false);
 
             if (response.data.user) {
@@ -248,14 +268,34 @@ const TeacherProfile = () => {
 
                 <div className="flex flex-col md:flex-row items-center gap-4 sm:gap-6 relative z-10">
                     {/* Profile Picture */}
-                    <div className="relative">
-                        <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center border-2 sm:border-4 border-white/30 overflow-hidden">
-                            <ProfileAvatar src={user?.photo} name={profileData.fullName || 'T'} size="2xl" shape="rounded-none" border="" fallbackColor="bg-white/20" />
+                    <div className="relative group">
+                        <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center border-2 sm:border-4 border-white/30 overflow-hidden relative">
+                            <ProfileAvatar src={photoPreview || user?.photo} name={profileData.fullName || 'T'} size="2xl" shape="rounded-none" border="" fallbackColor="bg-white/20" />
+                            {isEditing && (
+                                <label className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <Camera className="w-8 h-8 text-white mb-1" />
+                                    <span className="text-[10px] font-bold text-white uppercase tracking-widest">Change</span>
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        className="hidden"
+                                        onChange={(e) => {
+                                            const file = e.target.files?.[0];
+                                            if (file) {
+                                                const reader = new FileReader();
+                                                reader.onloadend = () => setCropperSrc(reader.result);
+                                                reader.readAsDataURL(file);
+                                                e.target.value = '';
+                                            }
+                                        }}
+                                    />
+                                </label>
+                            )}
                         </div>
-                        {allowBioEditing && (
-                            <button className="absolute -bottom-1.5 -right-1.5 w-9 h-9 sm:w-10 sm:h-10 bg-white rounded-xl flex items-center justify-center shadow-lg hover:bg-gray-50 transition-colors">
+                        {isEditing && (
+                            <div className="absolute -bottom-1.5 -right-1.5 w-9 h-9 sm:w-10 sm:h-10 bg-white rounded-xl flex items-center justify-center shadow-lg pointer-events-none">
                                 <Camera className="w-5 h-5 text-primary" />
-                            </button>
+                            </div>
                         )}
                     </div>
 
@@ -413,6 +453,13 @@ const TeacherProfile = () => {
                 </motion.div>
             </div>
             {/* Announcements Popup - Only on Main Profile Page */}
+            {cropperSrc && (
+                <ImageCropper
+                    imageSrc={cropperSrc}
+                    onCrop={handlePhotoCrop}
+                    onCancel={() => setCropperSrc(null)}
+                />
+            )}
         </div>
     );
 };

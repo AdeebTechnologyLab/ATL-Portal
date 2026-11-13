@@ -10,6 +10,7 @@ import LanguagePicker from '../../components/settings/LanguagePicker';
 import { googleDriveAPI, authAPI } from '../../services/api';
 import { updateUser, refreshToken } from '../../features/auth/authSlice';
 import { ButtonLoader } from '../../components/ui/Loader';
+import ImageCropper from '../../components/ui/ImageCropper';
 
 
 function ThemePreviewCard({ theme: themeData, isActive, onSelect }) {
@@ -105,6 +106,7 @@ const Settings = () => {
     });
     const [photoFile, setPhotoFile] = useState(null);
     const [photoPreview, setPhotoPreview] = useState(null);
+    const [cropperSrc, setCropperSrc] = useState(null);
     const photoInputRef = useRef(null);
 
     const [isChangingPassword, setIsChangingPassword] = useState(false);
@@ -189,6 +191,7 @@ const Settings = () => {
             });
             setPhotoFile(null);
             setPhotoPreview(null);
+            setCropperSrc(null);
             if (user.preferences?.customTheme) {
                 setCustomTheme(user.preferences.customTheme);
             }
@@ -209,6 +212,12 @@ const Settings = () => {
         }
     };
 
+    const handlePhotoCrop = (croppedFile, dataUrl) => {
+        setPhotoFile(croppedFile);
+        setPhotoPreview(dataUrl || URL.createObjectURL(croppedFile));
+        setCropperSrc(null);
+    };
+
     const handleSaveProfile = async () => {
         setIsSavingProfile(true);
         try {
@@ -223,6 +232,7 @@ const Settings = () => {
             }
             setPhotoFile(null);
             setPhotoPreview(null);
+            setCropperSrc(null);
             setIsEditingProfile(false);
             showSuccessMessage('Profile updated successfully!');
         } catch (error) {
@@ -374,8 +384,10 @@ const Settings = () => {
                                             onChange={(e) => {
                                                 const file = e.target.files?.[0];
                                                 if (file) {
-                                                    setPhotoFile(file);
-                                                    setPhotoPreview(URL.createObjectURL(file));
+                                                    const reader = new FileReader();
+                                                    reader.onloadend = () => setCropperSrc(reader.result);
+                                                    reader.readAsDataURL(file);
+                                                    e.target.value = '';
                                                 }
                                             }}
                                         />
@@ -430,7 +442,7 @@ const Settings = () => {
                                                 Save
                                             </button>
                                             <button
-                                                onClick={() => { setIsEditingProfile(false); setProfileForm({ name: user?.name || '', email: user?.email || '', phone: user?.phone || '' }); setPhotoFile(null); setPhotoPreview(null); }}
+                                                onClick={() => { setIsEditingProfile(false); setProfileForm({ name: user?.name || '', email: user?.email || '', phone: user?.phone || '' }); setPhotoFile(null); setPhotoPreview(null); setCropperSrc(null); }}
                                                 className="px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-[10px] font-black uppercase tracking-widest rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors flex items-center gap-2"
                                             >
                                                 <X className="w-3.5 h-3.5" />
@@ -943,6 +955,14 @@ const Settings = () => {
                     </div>
                 </section>
             </div>
+
+            {cropperSrc && (
+                <ImageCropper
+                    imageSrc={cropperSrc}
+                    onCrop={handlePhotoCrop}
+                    onCancel={() => setCropperSrc(null)}
+                />
+            )}
         </div>
     );
 };

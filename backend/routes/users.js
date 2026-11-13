@@ -78,6 +78,7 @@ router.get('/birthdays', protect, async (req, res) => {
                 $project: {
                     name: 1,
                     email: 1,
+                    phone: 1,
                     photo: 1,
                     dob: 1,
                     role: 1,
@@ -166,6 +167,12 @@ router.post('/:id/wish', protect, async (req, res) => {
             icon: '/logo.png',
             url: '/'
         });
+
+        // Real-time celebration for everyone online (confetti + sound)
+        try {
+            const io = req.app.get('io');
+            if (io) io.emit('birthday_wish_sent', { from: req.user.name, to: targetUser.name });
+        } catch (e) { /* ignore */ }
 
         res.json({ success: true, message: 'Wish sent successfully!' });
     } catch (error) {

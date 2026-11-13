@@ -324,7 +324,7 @@ const AdminDashboard = () => {
         <div className="flex-1 space-y-8 p-4 md:p-8 pt-6" ref={dashboardRef}>
 
 
-            <BirthdayWish />
+            <BirthdayWish showShareActions />
 
             {/* Management Pulse - NEW Essential Section */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">

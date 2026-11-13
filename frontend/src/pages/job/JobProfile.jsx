@@ -6,6 +6,7 @@ import {
     Edit2, Save, X, Camera, FileText, Award, Star
 } from 'lucide-react';
 import { ButtonLoader } from '../../components/ui/Loader';
+import ImageCropper from '../../components/ui/ImageCropper';
 import { authAPI, taskAPI, settingsAPI } from '../../services/api';
 import { updateUser } from '../../features/auth/authSlice';
 
