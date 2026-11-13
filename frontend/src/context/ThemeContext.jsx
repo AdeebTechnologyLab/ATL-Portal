@@ -18,11 +18,15 @@ export const ThemeProvider = ({ children }) => {
     });
 
     const [dateFormat, setDateFormat] = useState(() => {
-        return localStorage.getItem('date-format') || 'DD MMM YYYY';
+        const storedUser = localStorage.getItem('user') || sessionStorage.getItem('user');
+        const accountDateFormat = storedUser ? (JSON.parse(storedUser)?.preferences?.dateFormat) : '';
+        return accountDateFormat || localStorage.getItem('date-format') || 'DD MMM YYYY';
     });
 
     const [timeFormat, setTimeFormat] = useState(() => {
-        return localStorage.getItem('time-format') || '12-hour';
+        const storedUser = localStorage.getItem('user') || sessionStorage.getItem('user');
+        const accountTimeFormat = storedUser ? (JSON.parse(storedUser)?.preferences?.timeFormat) : '';
+        return accountTimeFormat || localStorage.getItem('time-format') || '12-hour';
     });
 
     useEffect(() => {
@@ -100,6 +104,16 @@ export const ThemeProvider = ({ children }) => {
             setTheme(accountTheme);
         }
     }, [user?.preferences?.colorTheme]);
+
+    useEffect(() => {
+        const accountDateFormat = user?.preferences?.dateFormat;
+        if (accountDateFormat) setDateFormat(accountDateFormat);
+    }, [user?.preferences?.dateFormat]);
+
+    useEffect(() => {
+        const accountTimeFormat = user?.preferences?.timeFormat;
+        if (accountTimeFormat) setTimeFormat(accountTimeFormat);
+    }, [user?.preferences?.timeFormat]);
 
     useEffect(() => {
         localStorage.setItem('date-format', dateFormat);

@@ -27,10 +27,12 @@ const Loader = ({ message = 'Loading...', size = 'md' }) => {
                 animate={{ opacity: 1, scale: 1 }}
                 className="relative"
             >
-                <img 
-                    src={src} 
-                    alt="Loading..." 
+                <img
+                    src={src}
+                    alt="Loading..."
+                    decoding="sync"
                     className={`${sizeClasses[size] || sizeClasses.md} object-contain`}
+                    style={{ imageRendering: 'auto' }}
                     onError={(e) => {
                         e.target.onerror = null;
                         e.target.src = 'https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJueXp4YnlpNXJueXp4YnlpNXJueXp4YnlpNXJueXp4YnlpNXJueSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o7bu3XilJ5BOiSGic/giphy.gif';

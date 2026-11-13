@@ -807,6 +807,38 @@ router.put('/preferences/notifications', protect, async (req, res) => {
     }
 });
 
+// Save account-level date/time format preferences across every role linked to this user.
+router.put('/preferences/format', protect, async (req, res) => {
+    try {
+        const currentUser = await User.findById(req.user.id);
+        if (!currentUser) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        const allowedDateFormats = ['DD MMM YYYY', 'MM/DD/YYYY', 'DD/MM/YYYY', 'YYYY-MM-DD'];
+        const allowedTimeFormats = ['12-hour', '24-hour'];
+
+        const update = {};
+        if (req.body.dateFormat && allowedDateFormats.includes(req.body.dateFormat)) {
+            update['preferences.dateFormat'] = req.body.dateFormat;
+        }
+        if (req.body.timeFormat && allowedTimeFormats.includes(req.body.timeFormat)) {
+            update['preferences.timeFormat'] = req.body.timeFormat;
+        }
+
+        if (Object.keys(update).length === 0) {
+            return res.status(400).json({ success: false, message: 'Nothing to update' });
+        }
+
+        await User.updateMany(getLinkedAccountQuery(currentUser), { $set: update });
+
+        res.json({ success: true, dateFormat: update['preferences.dateFormat'] || currentUser.preferences?.dateFormat || 'DD MMM YYYY', timeFormat: update['preferences.timeFormat'] || currentUser.preferences?.timeFormat || '12-hour' });
+    } catch (error) {
+        console.error('Format preference update error:', error);
+        res.status(500).json({ success: false, message: 'Could not save format preference' });
+    }
+});
+
 // @route   GET /api/auth/available-roles
 // @desc    Get all roles registered under the current user's email
 // @access  Private

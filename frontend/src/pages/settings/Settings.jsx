@@ -300,11 +300,31 @@ const Settings = () => {
             return;
         }
 
-        setNotifications(prev => ({ ...prev, [key]: nextValue }));
-        showSuccessMessage('Notification preference updated!');
-    };
+         setNotifications(prev => ({ ...prev, [key]: nextValue }));
+         showSuccessMessage('Notification preference updated!');
+     };
 
-    return (
+     const handleDateFormatChange = async (value) => {
+         setDateFormat(value);
+         dispatch(updateUser({ preferences: { ...(user?.preferences || {}), dateFormat: value } }));
+         try {
+             await authAPI.updateFormatPreference({ dateFormat: value });
+         } catch (error) {
+             console.error('Failed to save date format preference:', error);
+         }
+     };
+
+     const handleTimeFormatChange = async (value) => {
+         setTimeFormat(value);
+         dispatch(updateUser({ preferences: { ...(user?.preferences || {}), timeFormat: value } }));
+         try {
+             await authAPI.updateFormatPreference({ timeFormat: value });
+         } catch (error) {
+             console.error('Failed to save time format preference:', error);
+         }
+     };
+
+     return (
         <div className="max-w-5xl mx-auto px-3 sm:px-5 lg:px-8 py-6 sm:py-8 min-h-screen w-full min-w-0">
 
             <AnimatePresence>
@@ -704,7 +724,7 @@ const Settings = () => {
                                 </label>
                                 <select
                                     value={dateFormat}
-                                    onChange={(e) => setDateFormat(e.target.value)}
+                                    onChange={(e) => handleDateFormatChange(e.target.value)}
                                     className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white text-xs rounded-lg focus:ring-primary focus:border-primary block p-2.5 outline-none font-medium"
                                 >
                                     <option value="DD MMM YYYY">12 May 2026</option>
@@ -719,7 +739,7 @@ const Settings = () => {
                                 </label>
                                 <div className="grid grid-cols-2 gap-2">
                                     <button
-                                        onClick={() => setTimeFormat('12-hour')}
+                                        onClick={() => handleTimeFormatChange('12-hour')}
                                         className={`py-2 px-3 rounded-lg text-[10px] font-bold transition-all ${
                                             timeFormat === '12-hour'
                                                 ? 'bg-primary text-white shadow'
@@ -729,7 +749,7 @@ const Settings = () => {
                                         02:30 PM
                                     </button>
                                     <button
-                                        onClick={() => setTimeFormat('24-hour')}
+                                        onClick={() => handleTimeFormatChange('24-hour')}
                                         className={`py-2 px-3 rounded-lg text-[10px] font-bold transition-all ${
                                             timeFormat === '24-hour'
                                                 ? 'bg-primary text-white shadow'

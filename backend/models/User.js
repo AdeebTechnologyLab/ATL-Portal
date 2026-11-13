@@ -84,11 +84,13 @@ const userSchema = new mongoose.Schema({
             accent: { type: String, default: '#06B6D4' },
             sidebar: { type: String, default: '#1E1B4B' }
         },
-        notificationPopup: {
-            enabled: { type: Boolean, default: true },
-            snoozeUntil: { type: Date, default: null }
-        }
-    },
+         notificationPopup: {
+             enabled: { type: Boolean, default: true },
+             snoozeUntil: { type: Date, default: null }
+         },
+         dateFormat: { type: String, default: 'DD MMM YYYY' },
+         timeFormat: { type: String, default: '12-hour' }
+     },
     // Common fields
     cnic: String,
     fatherName: String, // Added for all user types
