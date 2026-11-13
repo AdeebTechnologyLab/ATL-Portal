@@ -6,6 +6,7 @@ import {
 import { registrationPageAPI } from '../../services/api';
 import { showToast } from '../../utils/customToast';
 import AssignScreenButton from '../../components/admin/AssignScreenButton';
+import PageHeader from '../../components/shared/PageHeader';
 
 
 const formTypes = [
@@ -168,18 +169,12 @@ const RegistrationPages = () => {
         <div className="space-y-4 sm:space-y-6">
 
             {/* Header */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                <div>
-                    <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                        <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
-                        Registration Forms
-                    </h1>
-                    <p className="text-xs sm:text-base text-gray-500 dark:text-gray-400 mt-1">
-                        Edit the left-side content shown on each registration page
-                    </p>
-                </div>
-                <AssignScreenButton screenId="registration_pages" />
-            </div>
+            <PageHeader
+                title="Registration Forms"
+                subtitle="Edit the left-side content shown on each registration page"
+                icon={FileText}
+                actions={<AssignScreenButton screenId="registration_pages" />}
+            />
 
             {/* Tabs */}
             <div className="grid w-full grid-cols-4 gap-1 sm:flex sm:w-fit sm:gap-2 p-1 bg-gray-100 dark:bg-gray-800 rounded-xl">

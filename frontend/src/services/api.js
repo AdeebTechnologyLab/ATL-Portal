@@ -398,4 +398,24 @@ export const teacherScreenAssignmentAPI = {
     remove: (screenId, teacherId) => api.delete('/teacher-screen-assignments', { data: { screenId, teacherId } }),
 };
 
+// LMS Update API (admin: loading gif library)
+export const lmsUpdateAPI = {
+    listGifs: () => api.get('/lms-update/loading-gifs'),
+    uploadGif: (formData, onUploadProgress) => api.post('/lms-update/loading-gifs', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+        timeout: 60000,
+        onUploadProgress
+    }),
+    deleteGif: (name) => api.delete(`/lms-update/loading-gifs/${encodeURIComponent(name)}`),
+    setActiveGif: (name) => api.post('/lms-update/loading-gifs/active', { name }),
+    getActiveGif: () => api.get('/lms-update/active'),
+    getSocialLinks: () => api.get('/lms-update/social-links'),
+    saveSocialLinks: (groups) => api.put('/lms-update/social-links', { groups }),
+    getCursor: () => api.get('/lms-update/cursor'),
+    saveCursor: (data) => api.put('/lms-update/cursor', data),
+    listCursors: () => api.get('/lms-update/cursors'),
+    addCursor: (data) => api.post('/lms-update/cursors', data),
+    removeCursor: (cssUrl) => api.delete('/lms-update/cursors', { params: { cssUrl } }),
+};
+
 export default api;

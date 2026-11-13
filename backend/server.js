@@ -63,6 +63,7 @@ const quizGameRoutes = require('./routes/quizGame');
 const helpSupportRoutes = require('./routes/helpSupport');
 const teacherScreenAssignmentRoutes = require('./routes/teacherScreenAssignments');
 const emailRoutes = require('./routes/email');
+const lmsUpdateRoutes = require('./routes/lmsUpdate');
 
 // Import attendance lock function
 const { lockTodayAttendance } = require('./controllers/attendanceController');
@@ -551,7 +552,8 @@ app.use('/api/quiz-game', quizGameRoutes);
 app.use('/api/payment-methods', paymentMethodRoutes);
 app.use('/api/help-support', helpSupportRoutes);
 app.use('/api/teacher-screen-assignments', teacherScreenAssignmentRoutes);
-app.use('/api/email', emailRoutes);
+    app.use('/api/email', emailRoutes);
+    app.use('/api/lms-update', lmsUpdateRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

@@ -4,11 +4,12 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { io } from 'socket.io-client';
 import {
-    CreditCard, Upload, Clock, CheckCircle, AlertCircle, FileText, FileImage, Trash2, X, Eye
+    CreditCard, Upload, Clock, CheckCircle, AlertCircle, FileText, FileImage, Trash2, X, Eye, Wallet
 } from 'lucide-react';
 import Badge from '../../components/ui/Badge';
 import Modal from '../../components/ui/Modal';
 import Loader, { ButtonLoader } from '../../components/ui/Loader';
+import PageHeader from '../../components/shared/PageHeader';
 import { feeAPI, enrollmentAPI, paymentMethodAPI } from '../../services/api';
 import { formatDate } from '../../utils/dateFormatter';
 import { getSocketURL, getBackendOrigin } from '../../config/apiBaseUrl';
@@ -268,11 +269,7 @@ const FeeManagement = () => {
     return (
         <div className="space-y-4 sm:space-y-6 flex flex-col">
             {/* Header */}
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Fee Management</h1>
-                </div>
-            </div>
+            <PageHeader title="Fee Management" icon={Wallet} />
 
             {/* Error */}
             {error && (

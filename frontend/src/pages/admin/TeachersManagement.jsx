@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import {
     Calendar, GraduationCap, CheckCircle, XCircle, Clock, Shield, Edit2, Save, Download,
     FileText, Users, PauseCircle, PlayCircle, BookOpen,
-    Search, UserCheck, UserX, Trash2, User, Mail, MapPin, Phone, Briefcase, Camera, Upload, Plus, MessageCircle
+    Search, UserCheck, UserX, Trash2, User, Mail, MapPin, Phone, Briefcase, Camera, Upload, Plus, MessageCircle, Presentation
 } from 'lucide-react';
 import Loader, { ButtonLoader } from '../../components/ui/Loader';
 import { jsPDF } from 'jspdf';
@@ -15,6 +15,7 @@ import ImageCropper from '../../components/ui/ImageCropper';
 import AssignScreenButton from '../../components/admin/AssignScreenButton';
 import { formatDate } from '../../utils/dateFormatter';
 import { showToast } from '../../utils/customToast';
+import PageHeader from '../../components/shared/PageHeader';
 
 
 const TeachersManagement = () => {
@@ -566,62 +567,63 @@ const TeachersManagement = () => {
         <div className="space-y-6">
 
             {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-                <div>
-                    <h1 className="text-2xl font-bold text-gray-900">Teachers Management</h1>
-                    <p className="text-gray-500 text-sm">Verify and manage teacher accounts</p>
-                </div>
-                <div className="flex items-center gap-2 w-full md:w-auto">
-                    <AssignScreenButton screenId="teacher_management" />
-                    <button
-                        onClick={toggleBioEditing}
-                        className={`flex-1 md:flex-none px-4 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all border flex items-center justify-center gap-2 ${allowBioEditing
-                                ? 'bg-amber-50 border-amber-200 text-amber-700'
-                                : 'bg-gray-50 border-gray-200 text-gray-500'
-                            }`}
-                    >
-                        <Shield className={`w-4 h-4 ${allowBioEditing ? 'animate-pulse' : ''}`} />
-                        {allowBioEditing ? 'EDITS ON' : 'EDITS OFF'}
-                    </button>
-
-                    <div className="relative flex-1 md:flex-none">
+            <PageHeader
+                title="Teachers Management"
+                subtitle="Verify and manage teacher accounts"
+                icon={Presentation}
+                actions={
+                    <>
+                        <AssignScreenButton screenId="teacher_management" />
                         <button
-                            onClick={() => setShowExportOptions(!showExportOptions)}
-                            className="w-full px-4 py-2.5 bg-white border border-primary/10 rounded-xl font-black text-[10px] uppercase tracking-widest text-primary hover:bg-primary/5 transition-all flex items-center justify-center gap-2 shadow-sm"
+                            onClick={toggleBioEditing}
+                            className={`flex-1 md:flex-none px-4 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all border flex items-center justify-center gap-2 ${allowBioEditing
+                                    ? 'bg-amber-50 border-amber-200 text-amber-700'
+                                    : 'bg-gray-50 border-gray-200 text-gray-500'
+                                }`}
                         >
-                            <Download className="w-4 h-4 text-primary" />
-                            EXPORT DATA
+                            <Shield className={`w-4 h-4 ${allowBioEditing ? 'animate-pulse' : ''}`} />
+                            {allowBioEditing ? 'EDITS ON' : 'EDITS OFF'}
                         </button>
 
-                        {showExportOptions && (
-                            <>
-                                <div className="fixed inset-0 z-10" onClick={() => setShowExportOptions(false)}></div>
-                                <div className="absolute right-0 mt-2 w-56 bg-white border border-gray-100 rounded-2xl shadow-2xl z-20 py-2 overflow-hidden animate-in fade-in zoom-in duration-200">
-                                    <div className="px-4 py-2 border-b border-gray-50 mb-1">
-                                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Select Format</p>
+                        <div className="relative flex-1 md:flex-none">
+                            <button
+                                onClick={() => setShowExportOptions(!showExportOptions)}
+                                className="w-full px-4 py-2.5 bg-white border border-primary/10 rounded-xl font-black text-[10px] uppercase tracking-widest text-primary hover:bg-primary/5 transition-all flex items-center justify-center gap-2 shadow-sm"
+                            >
+                                <Download className="w-4 h-4 text-primary" />
+                                EXPORT DATA
+                            </button>
+
+                            {showExportOptions && (
+                                <>
+                                    <div className="fixed inset-0 z-10" onClick={() => setShowExportOptions(false)}></div>
+                                    <div className="absolute right-0 mt-2 w-56 bg-white border border-gray-100 rounded-2xl shadow-2xl z-20 py-2 overflow-hidden animate-in fade-in zoom-in duration-200">
+                                        <div className="px-4 py-2 border-b border-gray-50 mb-1">
+                                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Select Format</p>
+                                        </div>
+                                        {[
+                                            { id: 'full', label: 'Complete Report', icon: FileText },
+                                            { id: 'phone', label: 'Phone Directory', icon: Phone },
+                                            { id: 'email', label: 'Email List', icon: Mail },
+                                            { id: 'academic', label: 'Academic Info', icon: GraduationCap },
+                                            { id: 'address', label: 'Address List', icon: MapPin }
+                                        ].map((opt) => (
+                                            <button
+                                                key={opt.id}
+                                                onClick={() => downloadPDF(opt.id)}
+                                                className="w-full px-4 py-2.5 text-left text-[11px] font-bold text-gray-700 hover:bg-primary/5 hover:text-primary flex items-center gap-3 transition-colors"
+                                            >
+                                                <opt.icon className="w-4 h-4" />
+                                                {opt.label}
+                                            </button>
+                                        ))}
                                     </div>
-                                    {[
-                                        { id: 'full', label: 'Complete Report', icon: FileText },
-                                        { id: 'phone', label: 'Phone Directory', icon: Phone },
-                                        { id: 'email', label: 'Email List', icon: Mail },
-                                        { id: 'academic', label: 'Academic Info', icon: GraduationCap },
-                                        { id: 'address', label: 'Address List', icon: MapPin }
-                                    ].map((opt) => (
-                                        <button
-                                            key={opt.id}
-                                            onClick={() => downloadPDF(opt.id)}
-                                            className="w-full px-4 py-2.5 text-left text-[11px] font-bold text-gray-700 hover:bg-primary/5 hover:text-primary flex items-center gap-3 transition-colors"
-                                        >
-                                            <opt.icon className="w-4 h-4" />
-                                            {opt.label}
-                                        </button>
-                                    ))}
-                                </div>
-                            </>
-                        )}
-                    </div>
-                </div>
-            </div>
+                                </>
+                            )}
+                        </div>
+                    </>
+                }
+            />
 
             {/* Search & Filter */}
             <div className="bg-white rounded-3xl p-4 sm:p-5 border border-gray-100 shadow-sm space-y-4">

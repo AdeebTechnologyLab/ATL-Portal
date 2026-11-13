@@ -19,6 +19,7 @@ import GamesCard from '../../components/dashboard/GamesCard';
 import QuizBattleCard from '../../components/dashboard/QuizBattleCard';
 import LiveClassBanner, { liveClassPrimaryButtonClass, liveClassGhostButtonClass } from '../../components/dashboard/LiveClassBanner';
 import ProfileCompletionBanner from '../../components/shared/ProfileCompletionBanner';
+import PageHeader from '../../components/shared/PageHeader';
 import DataLoadError from '../../components/shared/DataLoadError';
 import Loader, { ButtonLoader } from '../../components/ui/Loader';
 import { useTranslation } from 'react-i18next';
@@ -350,50 +351,51 @@ const TeacherCourses = ({ isDashboard = false, initialSearchMode = 'courses' }) 
         <>
             <div className="space-y-6">
                 {loadError && <DataLoadError error={loadError} onRetry={fetchMyCourses} />}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div>
-                        <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
-                            {isDashboard
-                                ? t('teacherDashboard.pendingTasksDashboard')
-                                : searchMode === 'students'
-                                    ? 'Students'
-                                    : t('teacherDashboard.courses')}
-                        </h1>
-                        <p className="text-gray-500 text-sm">
-                            {isDashboard 
-                                ? t('teacherDashboard.showingCoursesGrading') 
-                                : searchMode === 'students'
-                                    ? 'Active students from your assigned courses'
-                                    : 'Overview of all your assigned courses'}
-                        </p>
-                    </div>
-                    <div className="flex items-center gap-2 flex-wrap">
-                        <button
-                            onClick={() => {
-                                setLiveClassForm({ title: '', link: 'https://meet.google.com/ayf-xaxd-ixz', description: '', visibility: 'all', autoEndMinutes: '' });
-                                setLiveClassModalType('google');
-                                setShowLiveClassModal(true);
-                            }}
-                            className="px-4 sm:px-5 py-2 sm:py-2.5 bg-red-500 hover:bg-red-600 text-white rounded-xl font-medium transition-all duration-300 flex items-center gap-2 shadow-lg shadow-red-200 text-sm"
-                        >
-                            <Video className="w-4 h-4 sm:w-5 sm:h-5" />
-                            <span className="hidden sm:inline">{t('teacherDashboard.googleMeetLink')}</span>
-                            <span className="sm:hidden">Meet</span>
-                        </button>
-                        <button
-                            onClick={() => {
-                                setLiveClassForm({ title: '', link: 'https://meet.google.com/ayf-xaxd-ixz', description: '', visibility: 'all', autoEndMinutes: '' });
-                                setLiveClassModalType('adeeb');
-                                setShowLiveClassModal(true);
-                            }}
-                            className="px-4 sm:px-5 py-2 sm:py-2.5 bg-primary hover:bg-primary-dark text-white rounded-xl font-medium transition-all duration-300 flex items-center gap-2 shadow-lg shadow-primary/20 text-sm"
-                        >
-                            <Users className="w-4 h-4 sm:w-5 sm:h-5" />
-                            <span className="hidden sm:inline">{t('teacherDashboard.startAdeebMeet')}</span>
-                            <span className="sm:hidden">Adeeb</span>
-                        </button>
-                    </div>
-                </div>
+                <PageHeader
+                    title={
+                        isDashboard
+                            ? t('teacherDashboard.pendingTasksDashboard')
+                            : searchMode === 'students'
+                                ? 'Students'
+                                : t('teacherDashboard.courses')
+                    }
+                    subtitle={
+                        isDashboard
+                            ? t('teacherDashboard.showingCoursesGrading')
+                            : searchMode === 'students'
+                                ? 'Active students from your assigned courses'
+                                : 'Overview of all your assigned courses'
+                    }
+                    icon={BookOpen}
+                    actions={
+                        <div className="flex items-center gap-2 flex-wrap">
+                            <button
+                                onClick={() => {
+                                    setLiveClassForm({ title: '', link: 'https://meet.google.com/ayf-xaxd-ixz', description: '', visibility: 'all', autoEndMinutes: '' });
+                                    setLiveClassModalType('google');
+                                    setShowLiveClassModal(true);
+                                }}
+                                className="px-4 sm:px-5 py-2 sm:py-2.5 bg-red-500 hover:bg-red-600 text-white rounded-xl font-medium transition-all duration-300 flex items-center gap-2 shadow-lg shadow-red-200 text-sm"
+                            >
+                                <Video className="w-4 h-4 sm:w-5 sm:h-5" />
+                                <span className="hidden sm:inline">{t('teacherDashboard.googleMeetLink')}</span>
+                                <span className="sm:hidden">Meet</span>
+                            </button>
+                            <button
+                                onClick={() => {
+                                    setLiveClassForm({ title: '', link: 'https://meet.google.com/ayf-xaxd-ixz', description: '', visibility: 'all', autoEndMinutes: '' });
+                                    setLiveClassModalType('adeeb');
+                                    setShowLiveClassModal(true);
+                                }}
+                                className="px-4 sm:px-5 py-2 sm:py-2.5 bg-primary hover:bg-primary-dark text-white rounded-xl font-medium transition-all duration-300 flex items-center gap-2 shadow-lg shadow-primary/20 text-sm"
+                            >
+                                <Users className="w-4 h-4 sm:w-5 sm:h-5" />
+                                <span className="hidden sm:inline">{t('teacherDashboard.startAdeebMeet')}</span>
+                                <span className="sm:hidden">Adeeb</span>
+                            </button>
+                        </div>
+                    }
+                />
 
                 {/* Active Live Classes Banner */}
                 {activeLiveClasses.length > 0 && (

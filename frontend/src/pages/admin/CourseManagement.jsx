@@ -21,6 +21,7 @@ import { courseAPI, userAPI, enrollmentAPI } from '../../services/api';
 import { getCourseIcon, getCourseColor, getCourseStyle } from '../../utils/courseIcons';
 import Loader, { ButtonLoader } from '../../components/ui/Loader';
 import AssignScreenButton from '../../components/admin/AssignScreenButton';
+import PageHeader from '../../components/shared/PageHeader';
 
 
 const CourseManagement = () => {
@@ -248,29 +249,30 @@ const CourseManagement = () => {
         <div className="space-y-6">
 
             {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                <div>
-                    <h1 className="text-2xl font-bold text-gray-900">Course Management</h1>
-                    <p className="text-gray-500 text-sm">Create and manage all courses</p>
-                </div>
-                <div className="flex items-center gap-3">
-                    <AssignScreenButton screenId="course_management" />
-                    <button
-                        onClick={fetchData}
-                        className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 hover:bg-gray-100 rounded-xl text-gray-500 transition-all active:scale-95 border border-gray-200 bg-white"
-                    >
-                        <RefreshCw className={`w-4 h-4 ${isFetching ? 'animate-spin' : ''}`} />
-                        <span className="text-xs font-black uppercase tracking-wider">Refresh</span>
-                    </button>
-                    <button
-                        onClick={() => handleOpenModal()}
-                        className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-5 py-2.5 bg-primary-dark hover:bg-primary text-white rounded-xl transition-all duration-300 font-bold text-xs uppercase tracking-widest"
-                    >
-                        <BookOpen className="w-5 h-5" />
-                        Add Course
-                    </button>
-                </div>
-            </div>
+            <PageHeader
+                title="Course Management"
+                subtitle="Create and manage all courses"
+                icon={BookOpen}
+                actions={
+                    <div className="flex items-center gap-3">
+                        <AssignScreenButton screenId="course_management" />
+                        <button
+                            onClick={fetchData}
+                            className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 hover:bg-gray-100 rounded-xl text-gray-500 transition-all active:scale-95 border border-gray-200 bg-white"
+                        >
+                            <RefreshCw className={`w-4 h-4 ${isFetching ? 'animate-spin' : ''}`} />
+                            <span className="text-xs font-black uppercase tracking-wider">Refresh</span>
+                        </button>
+                        <button
+                            onClick={() => handleOpenModal()}
+                            className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-5 py-2.5 bg-primary-dark hover:bg-primary text-white rounded-xl transition-all duration-300 font-bold text-xs uppercase tracking-widest"
+                        >
+                            <BookOpen className="w-5 h-5" />
+                            Add Course
+                        </button>
+                    </div>
+                }
+            />
 
             {/* Error Message */}
             {error && (

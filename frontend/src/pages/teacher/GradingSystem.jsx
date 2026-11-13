@@ -7,10 +7,12 @@ import {
     Clock,
     ExternalLink,
     Save,
-    FileText
+    FileText,
+    ListChecks
 } from 'lucide-react';
 import Badge from '../../components/ui/Badge';
 import Loader, { ButtonLoader } from '../../components/ui/Loader';
+import PageHeader from '../../components/shared/PageHeader';
 import RichTextContent from '../../components/ui/RichTextContent';
 import { courseAPI, assignmentAPI } from '../../services/api';
 import { formatDate, formatDateTime } from '../../utils/dateFormatter';
@@ -159,12 +161,11 @@ const GradingSystem = () => {
     return (
         <div className="space-y-6">
             {/* Header */}
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-2xl font-bold text-gray-900">Grading System</h1>
-                    <p className="text-gray-500">Review submissions and assign grades</p>
-                </div>
-            </div>
+            <PageHeader
+                title="Grading System"
+                subtitle="Review submissions and assign grades"
+                icon={ListChecks}
+            />
 
             {/* Filters */}
             <div className="bg-white rounded-2xl p-4 border border-primary/20 shadow-sm">

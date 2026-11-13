@@ -2,6 +2,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { useSelector } from 'react-redux';
 import { useEffect, lazy, Suspense } from 'react';
 import { subscribeToPushNotifications } from './utils/pushNotifications';
+import { refreshLoadingGifUrl } from './services/loadingGif';
+import { refreshCustomCursor } from './services/customCursor';
 
 // Layout (keep eagerly loaded - used on every authenticated page)
 import DashboardLayout from './components/layout/DashboardLayout';
@@ -51,6 +53,7 @@ const ProjectManagement = lazy(() => import('./pages/admin/ProjectManagement'));
 const RegistrationPages = lazy(() => import('./pages/admin/RegistrationPages'));
 const AdminWorkLists = lazy(() => import('./pages/admin/AdminWorkLists'));
 const ManageScreens = lazy(() => import('./pages/admin/ManageScreens'));
+const LmsUpdate = lazy(() => import('./pages/admin/LmsUpdate'));
 
 // Shared Pages (lazy loaded)
 const JobChat = lazy(() => import('./pages/shared/JobChat'));
@@ -111,6 +114,12 @@ const AppRoutes = () => {
     }
   }, [isAuthenticated]);
 
+  // Keep the selected loading gif + custom cursor in sync for every user
+  useEffect(() => {
+    refreshLoadingGifUrl();
+    refreshCustomCursor();
+  }, []);
+
   const getDefaultPage = () => {
     switch (role) {
       case 'admin': return '/admin/dashboard';
@@ -169,7 +178,8 @@ const AppRoutes = () => {
         <Route path="projects" element={<ProjectManagement />} />
         <Route path="work-tasks" element={<AdminWorkLists />} />
         <Route path="registration-pages" element={<RegistrationPages />} />
-        <Route path="manage-assignments" element={<ManageScreens />} />
+            <Route path="manage-assignments" element={<ManageScreens />} />
+            <Route path="lms-update" element={<LmsUpdate />} />
         <Route path="discussion-room" element={<DiscussionRoom />} />
         <Route path="help-support" element={<HelpSupport />} />
         <Route path="quiz-game" element={<QuizGame />} />

@@ -12,6 +12,7 @@ import {
     Zap
 } from 'lucide-react';
 import Badge from '../../components/ui/Badge';
+import PageHeader from '../../components/shared/PageHeader';
 import { BarChart } from '../../components/charts/Charts';
 import { useSelector } from 'react-redux';
 import { assignmentAPI, dailyTaskAPI, enrollmentAPI, testAPI } from '../../services/api';
@@ -238,11 +239,7 @@ const MarksSheet = () => {
     return (
         <div className="space-y-4 sm:space-y-6">
             {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 sm:gap-4">
-                <div>
-                    <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Academic Marks Sheet</h1>
-                </div>
-            </div>
+            <PageHeader title="Academic Marks Sheet" icon={Award} />
 
             {/* Grade Scale Legend */}
             <div className="bg-white dark:bg-slate-900/50 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm px-3 sm:px-5 py-3 sm:py-4">

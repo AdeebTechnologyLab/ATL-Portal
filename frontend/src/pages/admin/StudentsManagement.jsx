@@ -16,6 +16,7 @@ import ImageCropper from '../../components/ui/ImageCropper';
 import { formatDate } from '../../utils/dateFormatter';
 import AssignScreenButton from '../../components/admin/AssignScreenButton';
 import { showToast } from '../../utils/customToast';
+import PageHeader from '../../components/shared/PageHeader';
 
 
 const StudentsManagement = () => {
@@ -955,35 +956,36 @@ const StudentsManagement = () => {
     return (
         <div className="space-y-4 sm:space-y-6">
 
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 sm:gap-6">
-                <div>
-                    <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Students Management</h1>
-                    <p className="text-gray-500 dark:text-slate-400 text-xs sm:text-sm">View and manage registered students</p>
-                </div>
-                <div className="flex items-center gap-2 w-full md:w-auto">
-                    <AssignScreenButton screenId="student_management" />
-                    <button
-                        onClick={toggleBioEditing}
-                        className={`flex-1 md:flex-none px-4 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all border flex items-center justify-center gap-2 ${allowBioEditing
-                                ? 'bg-primary/5 border-primary text-primary hover:bg-primary/10'
-                                : 'bg-red-50 border-red-200 text-red-700 hover:bg-red-100'
-                            }`}
-                        title={allowBioEditing ? "Bio Editing is Enabled for Users" : "Bio Editing is Disabled for Users"}
-                    >
-                        {allowBioEditing ? <Edit2 className="w-4 h-4" /> : <Shield className="w-4 h-4" />}
-                        {allowBioEditing ? 'EDITS ON' : 'EDITS OFF'}
-                    </button>
-                    <div className="relative flex-1 md:flex-none">
+            <PageHeader
+                title="Students Management"
+                subtitle="View and manage registered students"
+                icon={Users}
+                actions={
+                    <>
+                        <AssignScreenButton screenId="student_management" />
                         <button
-                            onClick={() => setIsExportModalOpen(true)}
-                            className="w-full px-4 py-2.5 bg-white border border-gray-200 hover:bg-gray-50 rounded-xl transition-all flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-widest text-gray-700 shadow-sm"
+                            onClick={toggleBioEditing}
+                            className={`flex-1 md:flex-none px-4 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all border flex items-center justify-center gap-2 ${allowBioEditing
+                                    ? 'bg-primary/5 border-primary text-primary hover:bg-primary/10'
+                                    : 'bg-red-50 border-red-200 text-red-700 hover:bg-red-100'
+                                }`}
+                            title={allowBioEditing ? "Bio Editing is Enabled for Users" : "Bio Editing is Disabled for Users"}
                         >
-                            <Download className="w-4 h-4 text-primary" />
-                            EXPORT DATA
+                            {allowBioEditing ? <Edit2 className="w-4 h-4" /> : <Shield className="w-4 h-4" />}
+                            {allowBioEditing ? 'EDITS ON' : 'EDITS OFF'}
                         </button>
-                    </div>
-                </div>
-            </div>
+                        <div className="relative flex-1 md:flex-none">
+                            <button
+                                onClick={() => setIsExportModalOpen(true)}
+                                className="w-full px-4 py-2.5 bg-white border border-gray-200 hover:bg-gray-50 rounded-xl transition-all flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-widest text-gray-700 shadow-sm"
+                            >
+                                <Download className="w-4 h-4 text-primary" />
+                                EXPORT DATA
+                            </button>
+                        </div>
+                    </>
+                }
+            />
 
             <div className="bg-white dark:bg-slate-900 rounded-xl sm:rounded-3xl p-3 sm:p-5 border border-gray-100 dark:border-slate-700 shadow-sm space-y-3 sm:space-y-4">
                 <div className="relative">

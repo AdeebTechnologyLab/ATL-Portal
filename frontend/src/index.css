@@ -60,7 +60,7 @@ html.lang-rtl textarea {
   scroll-snap-align: start;
 }
 
-/* Adeeb Meet — local camera mirror */
+/* Adeeb Meet â€” local camera mirror */
 .adeeb-meet video.mirror {
   transform: scaleX(-1);
 }
@@ -84,7 +84,7 @@ html.lang-rtl textarea {
   box-shadow: 0 0 0 2px rgba(74, 222, 128, 0.3), 0 0 24px rgba(74, 222, 128, 0.18);
 }
 
-/* Grid layout — responsive square cards, chhoti screen pe fit hote hain */
+/* Grid layout â€” responsive square cards, chhoti screen pe fit hote hain */
 .adeeb-meet .meet-tiles-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 20rem));
@@ -117,7 +117,7 @@ html.lang-rtl textarea {
   aspect-ratio: 1 / 1;
 }
 
-/* Full-width layout — each tile fills full width + shares available height */
+/* Full-width layout â€” each tile fills full width + shares available height */
 .adeeb-meet .meet-tiles-full {
   display: flex;
   flex-direction: column;
@@ -155,7 +155,7 @@ html.lang-rtl textarea {
   object-fit: cover;
 }
 
-/* Screen share stage — full width, height capped at 720px */
+/* Screen share stage â€” full width, height capped at 720px */
 .adeeb-meet .meet-screen-stage {
   width: 100%;
   max-width: 100%;
@@ -175,7 +175,7 @@ html.lang-rtl textarea {
   border-radius: inherit;
 }
 
-/* Glass name chip — tile ke andar label */
+/* Glass name chip â€” tile ke andar label */
 .adeeb-meet .meet-name-chip {
   background: rgba(0, 0, 0, 0.55);
   backdrop-filter: blur(10px);
@@ -196,7 +196,7 @@ html.lang-rtl textarea {
   }
 }
 
-/* Students sidebar — allow mouse text selection */
+/* Students sidebar â€” allow mouse text selection */
 .adeeb-meet .meet-students-panel,
 .adeeb-meet .meet-students-panel .student-row-text,
 .adeeb-meet .meet-students-panel .student-row-text * {
@@ -398,7 +398,7 @@ html.lang-rtl textarea {
   --primary-foreground: #ffffff;
 }
 
-/* Theme 2 — Luxury Gold */
+/* Theme 2 â€” Luxury Gold */
 .theme-gold {
   --primary: #f5d7a5;
   --primary-dark: #f5d7a5;
@@ -430,7 +430,7 @@ html.lang-rtl textarea {
   --brand-blue-700: #6b3d25;
 }
 
-/* Theme 3 — Olive Garden */
+/* Theme 3 â€” Olive Garden */
 .theme-olive {
   --primary: #678018;
   --primary-dark: #678018;
@@ -462,7 +462,7 @@ html.lang-rtl textarea {
   --brand-blue-700: #324321;
 }
 
-/* Theme 4 — Midnight Navy */
+/* Theme 4 â€” Midnight Navy */
 .theme-navy {
   --primary: #2D58B7;
   --primary-dark: #152E5C;
@@ -513,7 +513,7 @@ html.lang-rtl textarea {
   --text-light: #FFFFFF;
 }
 
-/* Theme 5 — Royal Lavender */
+/* Theme 5 â€” Royal Lavender */
 .theme-lavender {
   --primary: #fedef6;
   --primary-dark: #fedef6;
@@ -563,7 +563,7 @@ html.lang-rtl textarea {
   --text-light: #FFFFFF;
 }
 
-/* Theme 6 — Rose Petal */
+/* Theme 6 â€” Rose Petal */
 .theme-rose-pink {
   --primary: #f83c93;
   --primary-dark: #f83c93;
@@ -622,7 +622,7 @@ a.bg-primary.text-white,
 }
 
 /* ============================================================
-   BRAND BLUE — Global remap: emerald / green / teal utilities
+   BRAND BLUE â€” Global remap: emerald / green / teal utilities
    ============================================================ */
 .text-teal-50 {
   color: var(--brand-blue-50) !important;
@@ -669,7 +669,7 @@ a.bg-primary.text-white,
 }
 
 /* ============================================================
-   BRAND ORANGE — Global remap: orange utilities to theme primary
+   BRAND ORANGE â€” Global remap: orange utilities to theme primary
    ============================================================ */
 .text-orange-50 {
   color: var(--brand-blue-50) !important;
@@ -1230,7 +1230,7 @@ body {
   animation: avatar-glow 2s ease-in-out infinite;
 }
 
-/* Visual editor (WordPress-style) — Tiptap + rendered HTML */
+/* Visual editor (WordPress-style) â€” Tiptap + rendered HTML */
 .rich-text-editor .ProseMirror {
   min-height: 120px;
 }
@@ -1354,7 +1354,7 @@ body {
   color: #f3f4f6;
 }
 
-/* Theme 7 — Pakistan Green */
+/* Theme 7 â€” Pakistan Green */
 .theme-custom .hover\:bg-orange-500:hover,
 .theme-custom .hover\:bg-orange-600:hover,
 .theme-custom .hover\:bg-orange-700:hover,
@@ -1687,4 +1687,44 @@ body,
   h4 {
     overflow-wrap: anywhere;
   }
+}
+
+/* Global pointer cursor across the portal (disabled when a custom cursor set is active) */
+html:not(.custom-cursor) button,
+html:not(.custom-cursor) a,
+html:not(.custom-cursor) select,
+html:not(.custom-cursor) summary,
+html:not(.custom-cursor) label[for],
+html:not(.custom-cursor) input[type="checkbox"],
+html:not(.custom-cursor) input[type="radio"],
+html:not(.custom-cursor) input[type="range"],
+html:not(.custom-cursor) input[type="file"],
+html:not(.custom-cursor) [role="button"],
+html:not(.custom-cursor) [role="link"],
+html:not(.custom-cursor) [role="tab"],
+html:not(.custom-cursor) [role="menuitem"],
+html:not(.custom-cursor) [role="option"],
+html:not(.custom-cursor) [role="checkbox"],
+html:not(.custom-cursor) [role="switch"] {
+  cursor: pointer;
+}
+
+html:not(.custom-cursor) button:disabled,
+html:not(.custom-cursor) select:disabled,
+html:not(.custom-cursor) input:disabled,
+html:not(.custom-cursor) [aria-disabled="true"] {
+  cursor: not-allowed;
+}
+
+html:not(.custom-cursor) input[type="text"],
+html:not(.custom-cursor) input[type="email"],
+html:not(.custom-cursor) input[type="password"],
+html:not(.custom-cursor) input[type="search"],
+html:not(.custom-cursor) input[type="tel"],
+html:not(.custom-cursor) input[type="number"],
+html:not(.custom-cursor) input[type="date"],
+html:not(.custom-cursor) input[type="month"],
+html:not(.custom-cursor) input[type="time"],
+html:not(.custom-cursor) textarea {
+  cursor: text;
 }

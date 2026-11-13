@@ -8,6 +8,7 @@ import {
 import Badge from '../../components/ui/Badge';
 import Modal from '../../components/ui/Modal';
 import Loader, { ButtonLoader } from '../../components/ui/Loader';
+import PageHeader from '../../components/shared/PageHeader';
 import { courseAPI, enrollmentAPI, certificateAPI, assignmentAPI, dailyTaskAPI, testAPI } from '../../services/api';
 import { getCourseIcon, getCourseColor, getCourseStyle } from '../../utils/courseIcons';
 import { formatDate } from '../../utils/dateFormatter';
@@ -327,16 +328,11 @@ const BrowseCourses = () => {
     return (
         <div className="space-y-4 sm:space-y-6">
             {/* Header */}
-            <div className="flex items-center justify-between px-0.5">
-                <div>
-                    <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">{role === 'intern' ? 'Browse Skills' : 'Courses'}</h1>
-                    {role === 'intern' && (
-                        <p className="text-xs sm:text-base text-gray-500 dark:text-gray-400 mt-0.5">
-                            Browse internship skills
-                        </p>
-                    )}
-                </div>
-            </div>
+            <PageHeader
+                title={role === 'intern' ? 'Browse Skills' : 'Courses'}
+                subtitle={role === 'intern' ? 'Browse internship skills' : undefined}
+                icon={BookOpen}
+            />
 
             {/* Error */}
             {error && (

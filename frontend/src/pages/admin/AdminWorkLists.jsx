@@ -1,13 +1,14 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
-    Check, ChevronDown, ChevronRight, Circle, ListPlus, MoreVertical,
+    Check, ChevronDown, ChevronRight, Circle, ListChecks, ListPlus, MoreVertical,
     Pencil, Plus, Search, Trash2, X, UserPlus, UserMinus
 } from 'lucide-react';
 import { adminWorkTaskAPI, userAPI } from '../../services/api';
 import { showToast } from '../../utils/customToast';
 import Loader from '../../components/ui/Loader';
 import ProfileAvatar from '../../components/ui/ProfileAvatar';
+import PageHeader from '../../components/shared/PageHeader';
 
 
 const memberLabel = (person) => {
@@ -331,21 +332,44 @@ const AdminWorkLists = () => {
         <div className="min-h-full min-w-0 w-full">
             <div className="w-full min-w-0">
 
-                <div className="mb-5 flex flex-col gap-4 rounded-2xl border border-gray-200 bg-white p-4 dark:border-white/10 dark:bg-[#141418] sm:p-5 lg:flex-row lg:items-center lg:justify-between">
-                    <div>
-                        <h1 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-2xl">Work Tasks</h1>
-                        <p className="mt-1 text-xs sm:text-sm text-gray-500 dark:text-gray-400">Your lists, tasks and team progress.</p>
-                    </div>
-                    <div className="flex flex-col gap-2 sm:flex-row">
-                        <div className="relative">
-                            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-                            <input aria-label="Search work lists" value={search} onChange={event => setSearch(event.target.value)} placeholder="Search lists or tasks..." className="w-full rounded-xl border border-gray-200 bg-gray-50 py-3 pl-10 pr-4 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 dark:border-white/10 dark:bg-white/5 dark:text-white sm:w-64" />
-                        </div>
-                        {canCreate && <button onClick={() => { setListTitle(''); setShowCreateModal(true); }} className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-black text-white shadow-lg shadow-primary/20">
-                            <ListPlus className="h-5 w-5" /> Create List
-                        </button>}
-                    </div>
-                </div>
+                <PageHeader
+                    title="Work Tasks"
+                    subtitle="Your lists, tasks and team progress."
+                    icon={ListChecks}
+                    className="mb-5"
+                    actions={
+                        <>
+                            <div className="relative">
+                                <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                                <input
+                                    aria-label="Search work lists"
+                                    value={search}
+                                    onChange={event => setSearch(event.target.value)}
+                                    placeholder="Search lists or tasks..."
+                                    className="w-full rounded-xl border border-gray-200 bg-gray-50 py-2.5 pl-10 pr-9 text-sm text-gray-900 outline-none transition-all placeholder:text-gray-400 focus:border-orange-400 focus:bg-white focus:ring-2 focus:ring-orange-500/15 dark:border-white/10 dark:bg-white/5 dark:text-white dark:focus:border-orange-500/50 dark:focus:bg-white/10 sm:w-72"
+                                />
+                                {search && (
+                                    <button
+                                        type="button"
+                                        onClick={() => setSearch('')}
+                                        aria-label="Clear search"
+                                        className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-full p-1 text-gray-400 transition-colors hover:bg-gray-200 hover:text-gray-600 dark:hover:bg-white/10 dark:hover:text-white"
+                                    >
+                                        <X className="h-3.5 w-3.5" />
+                                    </button>
+                                )}
+                            </div>
+                            {canCreate && (
+                                <button
+                                    onClick={() => { setListTitle(''); setShowCreateModal(true); }}
+                                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 px-5 py-2.5 text-sm font-black text-white shadow-lg shadow-orange-500/25 transition-all hover:from-orange-600 hover:to-amber-600 hover:shadow-xl hover:shadow-orange-500/30 active:scale-95"
+                                >
+                                    <ListPlus className="h-4 w-4" strokeWidth={2.5} /> Create List
+                                </button>
+                            )}
+                        </>
+                    }
+                />
 
                 <div className="mb-5 grid grid-cols-3 gap-2 sm:gap-3">
                     {[

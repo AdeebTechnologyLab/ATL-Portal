@@ -33,7 +33,8 @@ import {
     Wallet,
     ListTodo,
     Search,
-    UserPlus
+    UserPlus,
+    RefreshCw
 } from 'lucide-react';
 import { logout, loginSuccess } from '../../features/auth/authSlice';
 import { userAPI, authAPI } from '../../services/api';
@@ -566,6 +567,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                 { id: 'time-table-settings', labelKey: 'nav.attendanceSettings', icon: Clock, path: '/admin/time-table-settings' },
                 { id: 'registration-pages', labelKey: 'Registration Forms', icon: FileText, path: '/admin/registration-pages' },
                 { id: 'manage-assignments', labelKey: 'Manage Screens', icon: UserPlus, path: '/admin/manage-assignments' },
+            { id: 'lms-update', labelKey: 'LMS Update', icon: RefreshCw, path: '/admin/lms-update' },
                 { id: 'job-section-label', type: 'section', label: 'Job' },
                 { id: 'paid-tasks', labelKey: 'nav.paidTasks', icon: Briefcase, path: '/admin/paid-tasks', counters: { assigned: jobPostingCounts.totalAssigned || 0, submitted: jobPostingCounts.totalSubmitted || 0 } },
                 ...(jobChatSummary.totalAssigned > 0 ? [{ id: 'job-chat', labelKey: 'Job Chats', icon: MessageSquare, path: '/admin/job-chat', badge: jobChatSummary.totalUnread }] : []),

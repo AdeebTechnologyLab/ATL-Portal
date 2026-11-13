@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import { BriefcaseBusiness, ChevronDown, ChevronUp, Users, CheckCircle2, Pencil, X, Trash2, UserRoundPlus } from 'lucide-react';
+import { BriefcaseBusiness, ChevronDown, ChevronUp, Users, CheckCircle2, Pencil, X, Trash2, UserRoundPlus, FolderKanban } from 'lucide-react';
 import { teacherFinanceAPI } from '../../services/api';
 import Loader from '../../components/ui/Loader';
+import PageHeader from '../../components/shared/PageHeader';
 import { showToast } from '../../utils/customToast';
 
 const money = value => `Rs ${Number(value || 0).toLocaleString()}`;
@@ -190,10 +191,11 @@ const TeacherProjects = () => {
 
     return (
         <div className="p-4 md:p-6 space-y-6">
-            <div>
-                <h1 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white">My Projects</h1>
-                <p className="text-sm text-gray-500 dark:text-slate-400">Projects assigned to you. You can edit all project details.</p>
-            </div>
+            <PageHeader
+                title="My Projects"
+                subtitle="Projects assigned to you. You can edit all project details."
+                icon={FolderKanban}
+            />
 
             {error && (
                 <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-center">

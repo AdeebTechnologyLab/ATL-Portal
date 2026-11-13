@@ -10,6 +10,7 @@ import Modal from '../../components/ui/Modal';
 import { taskAPI, googleDriveAPI } from '../../services/api';
 import { getCategoryIcon, getCategoryColor, getCategoryBg } from '../../utils/taskCategoryIcons';
 import Loader, { ButtonLoader } from '../../components/ui/Loader';
+import PageHeader from '../../components/shared/PageHeader';
 import BirthdayWish from '../../components/dashboard/BirthdayWish';
 import { formatDate } from '../../utils/dateFormatter';
 
@@ -372,12 +373,11 @@ const BrowseTasks = () => {
         <div className="space-y-4 sm:space-y-6">
             <BirthdayWish />
             {/* Header */}
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Job Posting</h1>
-                    <p className="text-xs sm:text-base text-gray-500 dark:text-slate-400">Browse, apply, and complete job postings</p>
-                </div>
-            </div>
+            <PageHeader
+                title="Job Posting"
+                subtitle="Browse, apply, and complete job postings"
+                icon={Briefcase}
+            />
 
             {/* Error */}
             {error && (

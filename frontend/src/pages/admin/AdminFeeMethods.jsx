@@ -7,6 +7,7 @@ import {
 import { paymentMethodAPI } from '../../services/api';
 import Loader from '../../components/ui/Loader';
 import { showToast } from '../../utils/customToast';
+import PageHeader from '../../components/shared/PageHeader';
 
 const PRESET_COLORS = [
     '#10b981', '#3b82f6', '#8b5cf6', '#f59e0b', '#ef4444',
@@ -118,26 +119,21 @@ const AdminFeeMethods = ({ embedded = false }) => {
     return (
         <div className={embedded ? '' : 'min-h-screen bg-gray-50 dark:bg-slate-900 p-4 sm:p-6 lg:p-8'}>
             {/* Header */}
-            {!embedded && <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
-                <div>
-                    <h1 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white flex items-center gap-3">
-                        <div className="p-2.5 bg-emerald-100 dark:bg-emerald-900/50 rounded-xl">
-                            <CreditCard className="w-6 h-6 text-emerald-600 dark:text-emerald-300" />
-                        </div>
-                        Payment Methods
-                    </h1>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 ml-12">
-                        Manage bank accounts and mobile wallets for fee payments
-                    </p>
-                </div>
-                <button
-                    onClick={() => { setForm(emptyForm); setEditingId(null); setShowForm(true); }}
-                    className="flex items-center gap-2 px-5 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-sm transition-colors shadow-lg shadow-emerald-600/20"
-                >
-                    <Plus className="w-4 h-4" />
-                    Add New Payment Method
-                </button>
-            </div>}
+            {!embedded && <PageHeader
+                title="Payment Methods"
+                subtitle="Manage bank accounts and mobile wallets for fee payments"
+                icon={CreditCard}
+                className="mb-8"
+                actions={
+                    <button
+                        onClick={() => { setForm(emptyForm); setEditingId(null); setShowForm(true); }}
+                        className="flex items-center gap-2 px-5 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-sm transition-colors shadow-lg shadow-emerald-600/20"
+                    >
+                        <Plus className="w-4 h-4" />
+                        Add New Payment Method
+                    </button>
+                }
+            />}
 
             {/* Payment Method Cards */}
             {embedded && <div className="flex justify-end mb-4">

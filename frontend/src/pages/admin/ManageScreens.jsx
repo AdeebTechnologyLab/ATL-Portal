@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
-import { ChevronLeft, Trash2, UserPlus, Monitor, Users } from 'lucide-react';
+import { Trash2, UserPlus, Monitor, Users, LayoutGrid } from 'lucide-react';
 import { teacherScreenAssignmentAPI } from '../../services/api';
 import Loader from '../../components/ui/Loader';
 import AssignScreenModal from '../../components/admin/AssignScreenModal';
 import { formatDate } from '../../utils/dateFormatter';
 import { showToast } from '../../utils/customToast';
+import PageHeader from '../../components/shared/PageHeader';
 
 const SCREEN_LABELS = {
     student_directory: 'Directory', teacher_directory: 'Teacher Directory',
@@ -20,7 +20,6 @@ const SCREEN_LABELS = {
 };
 
 const ManageScreens = () => {
-    const navigate = useNavigate();
     const [assignments, setAssignments] = useState([]);
     const [loading, setLoading] = useState(true);
     const [modalOpen, setModalOpen] = useState(false);
@@ -65,15 +64,11 @@ const ManageScreens = () => {
 
     return (
         <div className="space-y-6 min-h-screen p-4 sm:p-6 lg:p-8">
-            <div className="flex items-center gap-4">
-                <button onClick={() => navigate('/admin/dashboard')} className="p-2 hover:bg-gray-100 rounded-xl transition-colors">
-                    <ChevronLeft className="w-5 h-5 text-gray-500" />
-                </button>
-                <div>
-                    <h1 className="text-2xl font-black text-gray-900 uppercase tracking-tight">Manage Screens</h1>
-                    <p className="text-gray-500 text-sm">View and manage all screen assignments to teachers</p>
-                </div>
-            </div>
+            <PageHeader
+                title="Manage Screens"
+                subtitle="View and manage all screen assignments to teachers"
+                icon={LayoutGrid}
+            />
 
             {Object.keys(grouped).length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-64 bg-white rounded-2xl border border-gray-100">

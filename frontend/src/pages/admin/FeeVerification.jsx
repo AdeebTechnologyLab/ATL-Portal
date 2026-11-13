@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
     Search, Eye, CheckCircle, XCircle, Clock, AlertCircle,
-    Plus, Trash2, Calendar, DollarSign, FileText, ArrowLeft, MapPin, Users, CheckCircle2, Mail, Download, Table
+    Plus, Trash2, Calendar, DollarSign, FileText, ArrowLeft, MapPin, Users, CheckCircle2, Mail, Download
 } from 'lucide-react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -18,6 +18,7 @@ import { io } from 'socket.io-client';
 
 import { getSocketURL, getBackendOrigin } from '../../config/apiBaseUrl';
 import AssignScreenButton from '../../components/admin/AssignScreenButton';
+import PageHeader from '../../components/shared/PageHeader';
 
 const FeeVerification = () => {
     const [activeTab, setActiveTab] = useState('pending');
@@ -29,9 +30,6 @@ const FeeVerification = () => {
     const [selectedCourse, setSelectedCourse] = useState(null); // For Course Grouping
     const [studentStatusFilter, setStudentStatusFilter] = useState('all'); // 'all', 'active', 'completed'
     const [allEnrollments, setAllEnrollments] = useState([]);
-
-    // Table mode toggle
-    const [tableMode, setTableMode] = useState(false);
 
     // Filters State
     const [selectedRoles, setSelectedRoles] = useState([]); // 'students', 'interns'
@@ -357,11 +355,11 @@ const FeeVerification = () => {
             const res = await feeAPI.deleteInstallment(feeId, installmentId);
 
             if (res.data.fullyDeleted) {
-                // Entire fee record was deleted (student never paid) — remove from local state
+                // Entire fee record was deleted (student never paid) Ã¢â‚¬â€ remove from local state
                 setFees(prev => prev.filter(f => f._id !== feeId));
                 setAllFees(prev => prev.filter(f => f._id !== feeId));
             } else {
-                // Only the installment was removed — refresh list
+                // Only the installment was removed Ã¢â‚¬â€ refresh list
                 if (activeTab === 'pending') fetchPendingFees();
                 else fetchAllFees();
             }
@@ -453,11 +451,15 @@ const FeeVerification = () => {
     return (
         <div className="space-y-4 sm:space-y-6">
 
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
-                <div>
-                    <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Fee Management</h1>
-                    <p className="text-xs sm:text-sm text-gray-500 dark:text-slate-400">Verify payments and manage monthly fee plans</p>
-                </div>
+            <PageHeader
+                title="Fee Management"
+                subtitle="Verify payments and manage monthly fee plans"
+                icon={DollarSign}
+                actions={<AssignScreenButton screenId="fee_verification" />}
+            />
+
+            {/* Tabs */}
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <div className="grid grid-cols-3 sm:flex bg-gray-100 dark:bg-slate-800 p-1 rounded-xl w-full sm:w-auto">
                     <button
                         onClick={() => setActiveTab('pending')}
@@ -480,21 +482,6 @@ const FeeVerification = () => {
                         Payment Methods
                     </button>
                 </div>
-                <div className="flex items-center gap-2">
-                    <button
-                        onClick={() => setTableMode(!tableMode)}
-                        className={`px-3 py-2 rounded-lg text-[11px] sm:text-xs font-bold transition-all border ${tableMode ? 'bg-primary/10 text-primary border-primary/30' : 'bg-gray-100 text-gray-500 border-gray-200 hover:bg-gray-200/60'}
-                            `}
-                        title={tableMode ? 'Switch to card view' : 'Switch to table view'}
-                    >
-                        <span className="flex items-center gap-2">
-                            <Table className="w-4 h-4" />
-                            <span className="hidden sm:inline">{tableMode ? 'Card View' : 'Table View'}</span>
-                            <span className="sm:hidden">{tableMode ? 'Card' : 'Table'}</span>
-                        </span>
-                    </button>
-                </div>
-                <AssignScreenButton screenId="fee_verification" />
             </div>
 
             {/* Filters and Search */}
@@ -601,96 +588,8 @@ const FeeVerification = () => {
                             </div>
                         ) : (
                             <>
-                              {/* Table Mode */}
-                              {tableMode && (
-                                <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900">
-                                  <table className="w-full min-w-[1000px]">
-                                    <thead className="bg-gray-50 dark:bg-slate-800/50 sticky top-0 z-10">
-                                      <tr className="text-left text-xs font-black uppercase tracking-wider text-gray-500 dark:text-slate-400">
-                                        <th className="px-4 py-3">Student</th>
-                                        <th className="px-4 py-3 hidden md:table-cell">Course</th>
-                                        <th className="px-4 py-3 hidden lg:table-cell">Audience</th>
-                                        <th className="px-4 py-3">Slip ID</th>
-                                        <th className="px-4 py-3">Submitted</th>
-                                        <th className="px-4 py-3 text-right">Amount</th>
-                                        <th className="px-4 py-3">Status</th>
-                                        <th className="px-4 py-3 text-right">Actions</th>
-                                      </tr>
-                                    </thead>
-                                    <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
-                                      {getFilteredFees(fees).map(fee =>
-                                        (fee.installments || []).filter(i => i.status === 'submitted').map(inst => (
-                                          <tr key={`${fee._id}-${inst._id}`} className="hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors">
-                                            <td className="px-4 py-3">
-                                              <div className="flex items-center gap-3">
-                                                {fee.user?.photo ? (
-                                                  <img src={fee.user.photo} alt={fee.user.name} className="w-8 h-8 rounded-full object-cover border" />
-                                                ) : (
-                                                  <div className="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center text-amber-600 font-bold text-sm">
-                                                    {fee.user?.name?.charAt(0)}
-                                                  </div>
-                                                )}
-                                                <div className="min-w-0">
-                                                  <p className="font-medium text-gray-900 dark:text-white truncate max-w-[200px]">{fee.user?.name || 'Unknown'}</p>
-                                                  <p className="text-xs text-gray-500 flex items-center gap-2">
-                                                    {fee.user?.rollNo && <span className="bg-primary/10 text-primary px-1.5 py-0.5 rounded text-[9px] font-black">Roll# {fee.user.rollNo}</span>}
-                                                    {fee.user?.phone && <span className="hidden sm:inline">📞 {fee.user.phone}</span>}
-                                                  </p>
-                                                </div>
-                                              </div>
-                                            </td>
-                                            <td className="px-4 py-3 hidden md:table-cell">
-                                              <p className="font-medium text-gray-900 dark:text-white truncate max-w-[180px]">{fee.course?.title || 'N/A'}</p>
-                                              <p className="text-xs text-gray-500 flex items-center gap-1.5">
-                                                <MapPin className="w-3 h-3" /> {fee.course?.city || 'N/A'}
-                                              </p>
-                                            </td>
-                                            <td className="px-4 py-3 hidden lg:table-cell">
-                                              <span className={`px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-widest ${fee.course?.targetAudience === 'students' ? 'bg-primary/10 text-primary border border-primary/20' : 'bg-indigo-100 text-indigo-700 border border-indigo-200'}`}>
-                                                {fee.course?.targetAudience}
-                                              </span>
-                                            </td>
-                                            <td className="px-4 py-3 font-mono text-sm text-gray-700 dark:text-gray-300">{inst.slipId || 'N/A'}</td>
-                                            <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">{formatDate(inst.paidAt)}</td>
-                                            <td className="px-4 py-3 text-right font-bold text-gray-900 dark:text-white">Rs {(inst.amount || 0).toLocaleString()}</td>
-                                            <td className="px-4 py-3">
-                                              <span className="inline-flex items-center px-2 py-1 rounded-full text-[10px] font-bold bg-amber-100 text-amber-700 border border-amber-200">
-                                                Submitted
-                                              </span>
-                                            </td>
-                                            <td className="px-4 py-3 text-right">
-                                              <div className="flex items-center justify-end gap-2">
-                                                <button
-                                                  onClick={() => handleViewScreenshot({ ...inst, feeId: fee._id, student: fee.user?.name, course: fee.course?.title })}
-                                                  className="p-2 text-primary hover:bg-primary/10 rounded-lg transition-colors"
-                                                  title="View Receipt"
-                                                >
-                                                  <Eye className="w-4 h-4" />
-                                                </button>
-                                                <button
-                                                  onClick={() => handleVerify(fee._id, inst._id)}
-                                                  className="px-3 py-1.5 bg-primary hover:bg-primary text-white rounded-lg text-xs font-bold flex items-center gap-1.5"
-                                                >
-                                                  <CheckCircle className="w-3.5 h-3.5" /> Verify
-                                                </button>
-                                                <button
-                                                  onClick={() => handleReject(fee._id, inst._id)}
-                                                  className="px-3 py-1.5 bg-rose-100 hover:bg-rose-200 text-rose-700 rounded-lg text-xs font-bold flex items-center gap-1.5"
-                                                >
-                                                  <XCircle className="w-3.5 h-3.5" /> Reject
-                                                </button>
-                                              </div>
-                                            </td>
-                                          </tr>
-                                        ))
-                                      )}
-                                    </tbody>
-                                  </table>
-                                </div>
-                              )}
 
                               {/* Card Mode (Default) */}
-                              {!tableMode && (
                                 <div className="grid gap-4">
                                   {getFilteredFees(fees).map(fee => (
                                     (fee.installments || []).filter(i => i.status === 'submitted').map(inst => (
@@ -717,7 +616,7 @@ const FeeVerification = () => {
                                                         )}
                                                         {fee.user?.phone && (
                                                             <span className="hidden sm:inline-flex text-[10px] font-bold text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">
-                                                                📞 {fee.user.phone}
+                                                                Ã°Å¸â€œÅ¾ {fee.user.phone}
                                                             </span>
                                                         )}
                                                     </h3>
@@ -825,7 +724,6 @@ const FeeVerification = () => {
                                     ))
                                 ))}
                             </div>
-                          )}
                         </>
                         )}
                       </div>
@@ -843,99 +741,8 @@ const FeeVerification = () => {
                             </div>
                         ) : (
                             <>
-                              {/* Table Mode */}
-                              {tableMode && (
-                                <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900">
-                                  <table className="w-full min-w-[1000px]">
-                                    <thead className="bg-gray-50 dark:bg-slate-800/50 sticky top-0 z-10">
-                                      <tr className="text-left text-xs font-black uppercase tracking-wider text-gray-500 dark:text-slate-400">
-                                        <th className="px-4 py-3">Student</th>
-                                        <th className="px-4 py-3 hidden md:table-cell">Course</th>
-                                        <th className="px-4 py-3 hidden lg:table-cell">Audience</th>
-                                        <th className="px-4 py-3">Due Date</th>
-                                        <th className="px-4 py-3 text-right">Amount</th>
-                                        <th className="px-4 py-3">Status</th>
-                                        <th className="px-4 py-3 text-right">Actions</th>
-                                      </tr>
-                                    </thead>
-                                    <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
-                                      {getFilteredFees(fees).map(fee =>
-                                        (fee.installments || []).filter(i => i.status === 'pending' || i.status === 'rejected' || i.status === 'overdue').map(inst => (
-                                          <tr key={`${fee._id}-${inst._id}`} className="hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors">
-                                            <td className="px-4 py-3">
-                                              <div className="flex items-center gap-3">
-                                                {fee.user?.photo ? (
-                                                  <img src={fee.user.photo} alt={fee.user.name} className="w-8 h-8 rounded-full object-cover border" />
-                                                ) : (
-                                                  <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center text-red-600 font-bold text-sm">
-                                                    {fee.user?.name?.charAt(0)}
-                                                  </div>
-                                                )}
-                                                <div className="min-w-0">
-                                                  <p className="font-medium text-gray-900 dark:text-white truncate max-w-[200px]">{fee.user?.name || 'Unknown'}</p>
-                                                  <p className="text-xs text-gray-500 flex items-center gap-2">
-                                                    {fee.user?.rollNo && <span className="bg-primary/10 text-primary px-1.5 py-0.5 rounded text-[9px] font-black">Roll# {fee.user.rollNo}</span>}
-                                                    {fee.user?.phone && <span className="hidden sm:inline">📞 {fee.user.phone}</span>}
-                                                  </p>
-                                                </div>
-                                              </div>
-                                            </td>
-                                            <td className="px-4 py-3 hidden md:table-cell">
-                                              <p className="font-medium text-gray-900 dark:text-white truncate max-w-[180px]">{fee.course?.title || 'N/A'}</p>
-                                              <p className="text-xs text-gray-500 flex items-center gap-1.5">
-                                                <MapPin className="w-3 h-3" /> {fee.course?.city || 'N/A'}
-                                              </p>
-                                            </td>
-                                            <td className="px-4 py-3 hidden lg:table-cell">
-                                              <span className={`px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-widest ${fee.course?.targetAudience === 'students' ? 'bg-primary/10 text-primary border border-primary/20' : 'bg-indigo-100 text-indigo-700 border border-indigo-200'}`}>
-                                                {fee.course?.targetAudience}
-                                              </span>
-                                            </td>
-                                            <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">{formatDate(inst.dueDate)}</td>
-                                            <td className="px-4 py-3 text-right font-bold text-gray-900 dark:text-white">Rs {(inst.amount || 0).toLocaleString()}</td>
-                                            <td className="px-4 py-3">
-                                              <span className="inline-flex items-center px-2 py-1 rounded-full text-[10px] font-bold bg-red-100 text-red-700 border border-red-200 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800">
-                                                {inst.status === 'rejected' ? 'Rejected' : inst.status === 'overdue' ? 'Overdue' : 'Pending'}
-                                              </span>
-                                            </td>
-                                            <td className="px-4 py-3 text-right">
-                                              <div className="flex items-center justify-end gap-2">
-                                                <button
-                                                  onClick={() => {
-                                                    const phone = (fee.user?.phone || '').replace(/[^0-9]/g, '');
-                                                    const formattedPhone = phone.startsWith('0') ? '92' + phone.substring(1) : phone;
-                                                    const portalLink = "https://adeebtechhub.online/";
-                                                    const userLoc = fee.course?.city || fee.user?.location;
-                                                    const locString = userLoc ? ` ${userLoc.charAt(0).toUpperCase() + userLoc.slice(1)}` : '';
-                                                    const msg = `Assalam-o-Alaikum ${fee.user.name},\n\nThis is a reminder from *LMS Adeeb Technology Lab${locString}* regarding your course fee for *${fee.course?.title}*.\n\n*Status:* ${inst.status}\n*Amount:* Rs ${inst.amount?.toLocaleString()}\n*Due Date:* ${formatDate(inst.dueDate)}\n\nPlease submit your fee and upload the receipt on the portal: ${portalLink}\n\nThank you!`;
-                                                    window.open(`https://wa.me/${formattedPhone}?text=${encodeURIComponent(msg)}`, '_blank');
-                                                  }}
-                                                  className="p-2 text-green-600 hover:bg-green-100 rounded-lg transition-colors"
-                                                  title="Send WhatsApp Reminder"
-                                                >
-                                                  <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                                                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
-                                                  </svg>
-                                                </button>
-                                                <button
-                                                  onClick={() => handleDeleteInstallment(fee._id, inst._id)}
-                                                  className="p-2 text-red-400 hover:text-red-600 hover:bg-red-100 rounded-lg transition-all"
-                                                  title="Delete this fee challan only"
-                                                >
-                                                  <Trash2 className="w-4 h-4" />
-                                                </button>
-                                              </div>
-                                            </td>
-                                          </tr>
-                                        ))
-                                      )}
-                                    </tbody>
-                                  </table>
-                                </div>
-                              )}
 
                               {/* Card Mode (Default) */}
-                              {!tableMode && (
                                 <div className="grid gap-3">
                                     {getFilteredFees(fees).map(fee => (
                                         (fee.installments || []).filter(i => i.status === 'pending' || i.status === 'rejected' || i.status === 'overdue').map(inst => (
@@ -967,13 +774,13 @@ const FeeVerification = () => {
                                                         )}
                                                         {fee.user?.phone && (
                                                             <span className="hidden sm:inline-flex text-[9px] font-bold text-gray-500 bg-white/50 px-1.5 py-0.5 rounded-full">
-                                                                📞 {fee.user.phone}
+                                                                Ã°Å¸â€œÅ¾ {fee.user.phone}
                                                             </span>
                                                         )}
                                                     </h3>
                                                     {fee.user?.phone && <p className="mt-0.5 truncate text-[10px] font-semibold text-gray-400 sm:hidden">Phone: {fee.user.phone}</p>}
                                                     <p className="text-[10px] sm:text-[11px] text-gray-500 dark:text-gray-400 truncate">
-                                                        {fee.course?.title} ({fee.course?.city}) • Due: {formatDate(inst.dueDate)}
+                                                        {fee.course?.title} ({fee.course?.city}) Ã¢â‚¬Â¢ Due: {formatDate(inst.dueDate)}
                                                     </p>
                                                 </div>
                                             </div>
@@ -1013,7 +820,7 @@ const FeeVerification = () => {
                                                             const studentDigits = (fee.user.phone || '').replace(/[^0-9]/g, '');
                                                             const guardianDigits = (fee.user.guardianPhone || '').replace(/[^0-9]/g, '');
                                                             if (!fee.user.guardianPhone) {
-                                                                if (!window.confirm('Is student ka guardian number save nahi hai — reminder student ke number par jayega. Continue?')) return;
+                                                                if (!window.confirm('Is student ka guardian number save nahi hai Ã¢â‚¬â€ reminder student ke number par jayega. Continue?')) return;
                                                             } else if (studentDigits && guardianDigits && studentDigits === guardianDigits) {
                                                                 if (!window.confirm('Guardian number student ke number jaisa hi saved hai. Phir bhi yehi number par bhejna hai?')) return;
                                                             }
@@ -1026,7 +833,7 @@ const FeeVerification = () => {
                                                             window.open(`https://wa.me/${formattedPhone}?text=${encodeURIComponent(msg)}`, '_blank');
                                                         }}
                                                         className="flex-1 sm:flex-none min-w-0 h-9 px-2.5 sm:px-3.5 bg-rose-500 hover:bg-rose-600 text-white rounded-lg text-[10px] sm:text-xs font-bold uppercase tracking-wide flex items-center justify-center gap-1.5 transition-all shadow-sm hover:shadow-md"
-                                                        title={`Guardian number: ${fee.user.guardianPhone || fee.user.phone || 'N/A'}${!fee.user.guardianPhone ? ' (guardian nahi — student ka number)' : ''}`}
+                                                        title={`Guardian number: ${fee.user.guardianPhone || fee.user.phone || 'N/A'}${!fee.user.guardianPhone ? ' (guardian nahi Ã¢â‚¬â€ student ka number)' : ''}`}
                                                     >
                                                         <svg className="w-3.5 h-3.5 shrink-0 fill-current" viewBox="0 0 24 24">
                                                             <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
@@ -1067,7 +874,6 @@ const FeeVerification = () => {
                                     ))
                                 ))}
                             </div>
-                          )}
                         </>
                     )}
                 </div>
@@ -1084,65 +890,8 @@ const FeeVerification = () => {
                                 <h2 className="text-lg font-bold text-gray-900">All Courses</h2>
                             </div>
 
-                            {/* Table Mode - Level 1: Courses */}
-                            {tableMode && (
-                              <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900">
-                                <table className="w-full min-w-[900px]">
-                                  <thead className="bg-gray-50 dark:bg-slate-800/50 sticky top-0 z-10">
-                                    <tr className="text-left text-xs font-black uppercase tracking-wider text-gray-500 dark:text-slate-400">
-                                      <th className="px-4 py-3">Course</th>
-                                      <th className="px-4 py-3">Location</th>
-                                      <th className="px-4 py-3">Audience</th>
-                                      <th className="px-4 py-3">Course Fee</th>
-                                      <th className="px-4 py-3">Students</th>
-                                      <th className="px-4 py-3">Active</th>
-                                      <th className="px-4 py-3">Completed</th>
-                                    </tr>
-                                  </thead>
-                                  <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
-                                    {Object.values(getFilteredFees(allFees).reduce((acc, fee) => {
-                                        if (fee.course) {
-                                            if (!acc[fee.course._id]) {
-                                                acc[fee.course._id] = {
-                                                    id: fee.course._id,
-                                                    title: fee.course.title,
-                                                    fee: fee.course.fee,
-                                                    location: fee.course.city || fee.course.location,
-                                                    targetAudience: fee.course.targetAudience,
-                                                    students: 0
-                                                };
-                                            }
-                                            acc[fee.course._id].students++;
-                                        }
-                                        return acc;
-                                    }, {})).map(course => {
-                                      const activeCount = allEnrollments.filter(e => String(e.course?._id || e.course) === String(course.id) && (e.status === 'enrolled' || e.status === 'pending')).length;
-                                      const completedCount = allEnrollments.filter(e => String(e.course?._id || e.course) === String(course.id) && e.status === 'completed').length;
-                                      return (
-                                        <tr key={course.id} className="hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer" onClick={() => setSelectedCourse(course.id)}>
-                                          <td className="px-4 py-3 font-medium text-gray-900 dark:text-white truncate max-w-[250px]">{course.title}</td>
-                                          <td className="px-4 py-3 flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-400">
-                                            <MapPin className="w-3.5 h-3.5" /> {course.location}
-                                          </td>
-                                          <td className="px-4 py-3">
-                                            <span className={`px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-widest ${course.targetAudience === 'students' ? 'bg-primary/10 text-primary border border-primary/20' : 'bg-indigo-100 text-indigo-700 border border-indigo-200'}`}>
-                                              {course.targetAudience}
-                                            </span>
-                                          </td>
-                                          <td className="px-4 py-3 font-bold text-gray-900 dark:text-white">Rs {course.fee?.toLocaleString()}</td>
-                                          <td className="px-4 py-3 text-center font-medium">{course.students}</td>
-                                          <td className="px-4 py-3 text-center text-primary font-medium">{activeCount}</td>
-                                          <td className="px-4 py-3 text-center text-green-600 font-medium">{completedCount}</td>
-                                        </tr>
-                                      );
-                                    })}
-                                  </tbody>
-                                </table>
-                              </div>
-                            )}
 
                             {/* Card Mode (Default) - Level 1 */}
-                            {!tableMode && (
                               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {Object.values(getFilteredFees(allFees).reduce((acc, fee) => {
                                     if (fee.course) {
@@ -1211,7 +960,6 @@ const FeeVerification = () => {
                                     </div>
                                 )}
                             </div>
-                          )}
                         </>
                     ) : (
                         /* Level 2: Student List for Selected Course */
@@ -1286,92 +1034,8 @@ const FeeVerification = () => {
                                 </div>
                             </div>
 
-                            {/* Table Mode - Level 2: Student List */}
-                            {tableMode && (
-                              <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900">
-                                <table className="w-full min-w-[1000px]">
-                                  <thead className="bg-gray-50 dark:bg-slate-800/50 sticky top-0 z-10">
-                                    <tr className="text-left text-xs font-black uppercase tracking-wider text-gray-500 dark:text-slate-400">
-                                      <th className="px-4 py-3">Student</th>
-                                      <th className="px-4 py-3">Roll No</th>
-                                      <th className="px-4 py-3">Phone</th>
-                                      <th className="px-4 py-3">Course</th>
-                                      <th className="px-4 py-3">Audience</th>
-                                      <th className="px-4 py-3">Total Fee</th>
-                                      <th className="px-4 py-3">Paid</th>
-                                      <th className="px-4 py-3">Balance</th>
-                                      <th className="px-4 py-3">Status</th>
-                                      <th className="px-4 py-3 text-right">Actions</th>
-                                    </tr>
-                                  </thead>
-                                  <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
-                                    {getFilteredFees(allFees)
-                                      .filter(fee => String(fee.course?._id) === String(selectedCourse))
-                                      .filter(fee => {
-                                          if (studentStatusFilter === 'all') return true;
-                                          const enrollment = allEnrollments.find(e =>
-                                              String(e.user?._id || e.user) === String(fee.user?._id) &&
-                                              String(e.course?._id || e.course) === String(selectedCourse)
-                                          );
-                                          if (!enrollment) return studentStatusFilter === 'active';
-                                          if (studentStatusFilter === 'completed') return enrollment.status === 'completed';
-                                          if (studentStatusFilter === 'active') return enrollment.status !== 'completed';
-                                          return true;
-                                      })
-                                      .map(fee => (
-                                        <tr key={fee._id} className="hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors">
-                                          <td className="px-4 py-3">
-                                            <div className="flex items-center gap-3">
-                                              {fee.user?.photo ? (
-                                                <img src={fee.user.photo} alt={fee.user.name} className="w-8 h-8 rounded-full object-cover border" />
-                                              ) : (
-                                                <div className="w-8 h-8 bg-indigo-50 rounded-full flex items-center justify-center text-indigo-600 font-bold text-sm">
-                                                  {fee.user?.name?.charAt(0)}
-                                                </div>
-                                              )}
-                                              <span className="font-medium text-gray-900 dark:text-white truncate max-w-[180px]">{fee.user?.name || 'Unknown'}</span>
-                                            </div>
-                                          </td>
-                                          <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">{fee.user?.rollNo || 'N/A'}</td>
-                                          <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">{fee.user?.phone || 'N/A'}</td>
-                                          <td className="px-4 py-3 font-medium text-gray-900 dark:text-white truncate max-w-[150px]">{fee.course?.title || 'N/A'}</td>
-                                          <td className="px-4 py-3">
-                                            <span className={`px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-widest ${fee.course?.targetAudience === 'students' ? 'bg-primary/10 text-primary border border-primary/20' : 'bg-indigo-100 text-indigo-700 border border-indigo-200'}`}>
-                                              {fee.course?.targetAudience}
-                                            </span>
-                                          </td>
-                                          <td className="px-4 py-3 font-medium text-gray-900 dark:text-white">Rs {(fee.totalFee || 0).toLocaleString()}</td>
-                                          <td className="px-4 py-3 font-medium text-green-600">Rs {(fee.paidAmount || 0).toLocaleString()}</td>
-                                          <td className="px-4 py-3 font-bold text-red-600">Rs {((fee.totalFee || 0) - (fee.paidAmount || 0)).toLocaleString()}</td>
-                                          <td className="px-4 py-3">
-                                            <Badge variant={fee.status === 'verified' ? 'success' : 'warning'} className="text-[10px]">{fee.status}</Badge>
-                                          </td>
-                                          <td className="px-4 py-3 text-right">
-                                            <div className="flex items-center justify-end gap-2">
-                                              <button
-                                                onClick={() => handleManageInstallments(fee)}
-                                                className="px-3 py-1.5 bg-primary hover:bg-primary text-white rounded-lg text-xs font-bold flex items-center gap-1.5"
-                                              >
-                                                <FileText className="w-3.5 h-3.5" /> Manage
-                                              </button>
-                                              <button
-                                                onClick={() => handleDeleteClick(fee._id)}
-                                                className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors border border-gray-200"
-                                                title="Permanently remove fee & enrollment"
-                                              >
-                                                <Trash2 className="w-4 h-4" />
-                                              </button>
-                                            </div>
-                                          </td>
-                                        </tr>
-                                      ))}
-                                  </tbody>
-                                </table>
-                              </div>
-                            )}
 
                             {/* Card Mode (Default) - Level 2 */}
-                            {!tableMode && (
                               <div className="grid gap-4">
                                 {getFilteredFees(allFees)
                                     .filter(fee => String(fee.course?._id) === String(selectedCourse))
@@ -1411,7 +1075,7 @@ const FeeVerification = () => {
                                                         )}
                                                         {fee.user?.phone && (
                                                             <span className="text-xs font-normal text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full inline-flex items-center gap-1">
-                                                                📞 {fee.user.phone}
+                                                                Ã°Å¸â€œÅ¾ {fee.user.phone}
                                                             </span>
                                                         )}
                                                     </h3>
@@ -1450,7 +1114,6 @@ const FeeVerification = () => {
                                         </div>
                                     ))}
                             </div>
-                          )}
                         </div>
                     )}
                 </div>
@@ -1545,7 +1208,7 @@ const FeeVerification = () => {
                                     <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1 block">Status</label>
                                     <div className="flex items-center gap-2">
                                         <Badge variant={inst.status === 'verified' ? 'success' : inst.status === 'submitted' ? 'info' : inst.status === 'rejected' ? 'error' : 'warning'}>
-                                            {inst.status === 'verified' ? 'PAID ✓' : (inst.status?.toUpperCase() || 'PENDING')}
+                                            {inst.status === 'verified' ? 'PAID Ã¢Å“â€œ' : (inst.status?.toUpperCase() || 'PENDING')}
                                         </Badge>
                                     </div>
                                 </div>
@@ -1594,7 +1257,7 @@ const FeeVerification = () => {
             <Modal
                 isOpen={confirmDeleteModal.open}
                 onClose={() => setConfirmDeleteModal({ open: false, feeId: null })}
-                title="⚠ Risk Warning: Permanently Delete Fee"
+                title="Ã¢Å¡Â  Risk Warning: Permanently Delete Fee"
                 size="sm"
             >
                 <div className="space-y-4">

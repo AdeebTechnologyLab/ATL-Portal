@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import Badge from '../../components/ui/Badge';
 import Loader from '../../components/ui/Loader';
+import PageHeader from '../../components/shared/PageHeader';
 import { courseAPI, enrollmentAPI, chatAPI, assignmentAPI, testAPI } from '../../services/api';
 import { getSocketURL } from '../../config/apiBaseUrl';
 import { getCourseIcon, getCourseStyle } from '../../utils/courseIcons';
@@ -448,35 +449,36 @@ const AttendanceSheet = () => {
         // Course Selection List
         return (
             <div className="space-y-6">
-                <div className="flex items-center justify-between">
-                    <div>
-                        <h1 className="text-2xl font-bold text-gray-900">Course Attendance</h1>
-                        <p className="text-gray-500">Manage your students, assignments and daily tasks</p>
-                    </div>
-                    {/* Mode Toggle */}
-                    <div className="flex items-center gap-2 bg-gray-100 p-1 rounded-xl border border-gray-200">
-                        <button
-                            onClick={() => { setSearchMode('courses'); setStudentSearchQuery(''); setFilteredStudents([]); }}
-                            className={`px-5 py-2 rounded-lg font-bold text-sm transition-all flex items-center gap-2 ${searchMode === 'courses'
-                                    ? 'bg-white text-primary shadow-sm border border-primary/10'
-                                    : 'text-gray-500 hover:text-gray-700'
-                                }`}
-                        >
-                            <BookOpen className="w-4 h-4" />
-                            Courses
-                        </button>
-                        <button
-                            onClick={() => { setSearchMode('students'); setSearchQuery(''); }}
-                            className={`px-5 py-2 rounded-lg font-bold text-sm transition-all flex items-center gap-2 ${searchMode === 'students'
-                                    ? 'bg-white text-primary shadow-sm border border-primary/10'
-                                    : 'text-gray-500 hover:text-gray-700'
-                                }`}
-                        >
-                            <User className="w-4 h-4" />
-                            Search Student
-                        </button>
-                    </div>
-                </div>
+                <PageHeader
+                    title="Course Attendance"
+                    subtitle="Manage your students, assignments and daily tasks"
+                    icon={Calendar}
+                    actions={
+                        /* Mode Toggle */
+                        <div className="flex items-center gap-2 bg-gray-100 p-1 rounded-xl border border-gray-200">
+                            <button
+                                onClick={() => { setSearchMode('courses'); setStudentSearchQuery(''); setFilteredStudents([]); }}
+                                className={`px-5 py-2 rounded-lg font-bold text-sm transition-all flex items-center gap-2 ${searchMode === 'courses'
+                                        ? 'bg-white text-primary shadow-sm border border-primary/10'
+                                        : 'text-gray-500 hover:text-gray-700'
+                                    }`}
+                            >
+                                <BookOpen className="w-4 h-4" />
+                                Courses
+                            </button>
+                            <button
+                                onClick={() => { setSearchMode('students'); setSearchQuery(''); }}
+                                className={`px-5 py-2 rounded-lg font-bold text-sm transition-all flex items-center gap-2 ${searchMode === 'students'
+                                        ? 'bg-white text-primary shadow-sm border border-primary/10'
+                                        : 'text-gray-500 hover:text-gray-700'
+                                    }`}
+                            >
+                                <User className="w-4 h-4" />
+                                Search Student
+                            </button>
+                        </div>
+                    }
+                />
 
                 {/* Filters and Search */}
                 {searchMode === 'courses' ? (

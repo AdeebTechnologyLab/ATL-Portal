@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Calendar, Search, Clock, MapPin, CheckCircle, Trash2, Edit3, Save, X, ExternalLink, Activity } from 'lucide-react';
+import { Calendar, Search, Clock, MapPin, CheckCircle, Trash2, Edit3, Save, X, ExternalLink, Activity, ClipboardList } from 'lucide-react';
 import Loader, { ButtonLoader } from '../../components/ui/Loader';
 import Badge from '../../components/ui/Badge';
 import { courseAPI, dailyTaskAPI } from '../../services/api';
+import PageHeader from '../../components/shared/PageHeader';
 
 const AdminDailyTasks = () => {
     const [courses, setCourses] = useState([]);
@@ -107,22 +108,23 @@ const AdminDailyTasks = () => {
 
     return (
         <div className="space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                    <h1 className="text-2xl font-bold text-gray-900">Student Daily Tasks</h1>
-                    <p className="text-gray-500">Monitor, edit, and manage daily submissions</p>
-                </div>
-                <div className="flex items-center gap-2">
-                    <button
-                        onClick={() => selectedCourse && fetchTasks(selectedCourse)}
-                        className="flex items-center gap-2 px-3 py-1.5 hover:bg-gray-100 rounded-lg text-gray-500 transition-all active:scale-95"
-                    >
-                        <ButtonLoader isLoading={isLoading} icon={<Activity className="w-4 h-4" />}>
-                            Refresh
-                        </ButtonLoader>
-                    </button>
-                </div>
-            </div>
+            <PageHeader
+                title="Student Daily Tasks"
+                subtitle="Monitor, edit, and manage daily submissions"
+                icon={ClipboardList}
+                actions={
+                    <div className="flex items-center gap-2">
+                        <button
+                            onClick={() => selectedCourse && fetchTasks(selectedCourse)}
+                            className="flex items-center gap-2 px-3 py-1.5 hover:bg-gray-100 rounded-lg text-gray-500 transition-all active:scale-95"
+                        >
+                            <ButtonLoader isLoading={isLoading} icon={<Activity className="w-4 h-4" />}>
+                                Refresh
+                            </ButtonLoader>
+                        </button>
+                    </div>
+                }
+            />
 
             <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col md:flex-row gap-4">
                 <div className="flex-1">

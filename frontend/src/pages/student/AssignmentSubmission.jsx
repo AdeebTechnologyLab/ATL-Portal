@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import Badge from '../../components/ui/Badge';
 import Loader, { ButtonLoader } from '../../components/ui/Loader';
+import PageHeader from '../../components/shared/PageHeader';
 import { assignmentAPI, courseAPI, dailyTaskAPI, enrollmentAPI, chatAPI, feeAPI, googleDriveAPI } from '../../services/api';
 import { formatDate, formatTime } from '../../utils/dateFormatter';
 import RichTextEditor from '../../components/ui/RichTextEditor';
@@ -501,9 +502,10 @@ const AssignmentSubmission = () => {
 
     return (
         <div className="space-y-4 sm:space-y-6">
-            <h1 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white uppercase tracking-tight">
-                {activeTab === 'assignments' && isInternCourse ? 'Projects' : PAGE_TITLES[activeTab] || 'Course Portal'}
-            </h1>
+            <PageHeader
+                title={activeTab === 'assignments' && isInternCourse ? 'Projects' : PAGE_TITLES[activeTab] || 'Course Portal'}
+                icon={ClipboardList}
+            />
             {!selectedCourseId ? (
                 /* COURSE SELECTION VIEW */
                 <div className="space-y-5 sm:space-y-8">

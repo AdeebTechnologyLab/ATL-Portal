@@ -13,6 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import { getCategoryIcon, getCategoryColor, getCategoryBg } from '../../utils/taskCategoryIcons';
 import AssignScreenButton from '../../components/admin/AssignScreenButton';
 import { formatDate } from '../../utils/dateFormatter';
+import PageHeader from '../../components/shared/PageHeader';
 
 const PaidTasksManagement = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -532,55 +533,56 @@ const PaidTasksManagement = () => {
     return (
         <div className="space-y-4 sm:space-y-6">
             {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 sm:gap-4">
-                <div>
-                    <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Job Posting</h1>
-                    <p className="text-gray-500 dark:text-slate-400 text-xs sm:text-sm mt-0.5 sm:mt-1">Create and manage freelance tasks</p>
-                </div>
-                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
-                    <AssignScreenButton screenId="paid_tasks" />
-                    <div className="grid grid-cols-3 items-center gap-1 sm:gap-1.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900 p-1 shadow-sm">
-                        <button
-                            type="button"
-                            onClick={() => setActiveTab('applicants')}
-                            className={`min-w-0 flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-2 px-1.5 sm:px-3 py-2 rounded-lg transition-all ${activeTab === 'applicants' ? 'bg-yellow-500 text-white shadow-sm' : 'bg-white dark:bg-slate-800 text-gray-600 dark:text-slate-300 hover:text-yellow-700 hover:bg-yellow-50'}`}
-                        >
-                            <span className="text-[10px] font-black uppercase tracking-wide">Applicants</span>
-                            <span className={`min-w-5 h-5 px-1.5 rounded-md flex items-center justify-center text-[10px] font-black ${activeTab === 'applicants' ? 'bg-white/25 text-white' : 'bg-yellow-100 text-yellow-700'}`}>{totalApplicantsCount}</span>
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => setActiveTab('assigned')}
-                            className={`min-w-0 flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-2 px-1.5 sm:px-3 py-2 rounded-lg transition-all ${activeTab === 'assigned' ? 'bg-green-600 text-white shadow-sm' : 'bg-white dark:bg-slate-800 text-gray-600 dark:text-slate-300 hover:text-green-700 hover:bg-green-50'}`}
-                        >
-                            <span className="text-[10px] font-black uppercase tracking-wide">Assigned</span>
-                            <span className={`min-w-5 h-5 px-1.5 rounded-md flex items-center justify-center text-[10px] font-black ${activeTab === 'assigned' ? 'bg-white/25 text-white' : 'bg-green-100 text-green-700'}`}>{totalAssignedCount}</span>
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => setActiveTab('submitted')}
-                            className={`min-w-0 flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-2 px-1.5 sm:px-3 py-2 rounded-lg transition-all ${activeTab === 'submitted' ? 'bg-blue-600 text-white shadow-sm' : 'bg-white dark:bg-slate-800 text-gray-600 dark:text-slate-300 hover:text-blue-700 hover:bg-blue-50'}`}
-                        >
-                            <span className="text-[10px] font-black uppercase tracking-wide">Submitted</span>
-                            <span className={`min-w-5 h-5 px-1.5 rounded-md flex items-center justify-center text-[10px] font-black ${activeTab === 'submitted' ? 'bg-white/25 text-white' : 'bg-blue-100 text-blue-700'}`}>{totalSubmittedCount}</span>
-                        </button>
-                    </div>
-                    {(user?.role !== 'teacher' || user?.isActive !== false) && (
-                        <button
-                            onClick={() => {
-                                setEditingTask(null);
-                                setFormData({ title: '', description: '', budget: '', deadline: '', skills: '', category: 'web', type: 'task', images: [], isLifetime: false, manualStatus: 'none', jobManagers: [] });
-                                setImagePreviews([]);
-                                setIsModalOpen(true);
-                            }}
-                            className="w-full sm:w-auto self-stretch flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-orange-600 text-white rounded-xl transition-all duration-300 font-bold text-xs uppercase tracking-widest shadow-md shadow-primary/20"
-                        >
-                            <Briefcase className="w-5 h-5" />
-                            Create Task
-                        </button>
-                    )}
-                </div>
-            </div>
+            <PageHeader
+                title="Job Posting"
+                subtitle="Create and manage freelance tasks"
+                icon={Briefcase}
+                actions={
+                    <>
+                        <AssignScreenButton screenId="paid_tasks" />
+                        <div className="grid grid-cols-3 items-center gap-1 sm:gap-1.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900 p-1 shadow-sm">
+                            <button
+                                type="button"
+                                onClick={() => setActiveTab('applicants')}
+                                className={`min-w-0 flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-2 px-1.5 sm:px-3 py-2 rounded-lg transition-all ${activeTab === 'applicants' ? 'bg-yellow-500 text-white shadow-sm' : 'bg-white dark:bg-slate-800 text-gray-600 dark:text-slate-300 hover:text-yellow-700 hover:bg-yellow-50'}`}
+                            >
+                                <span className="text-[10px] font-black uppercase tracking-wide">Applicants</span>
+                                <span className={`min-w-5 h-5 px-1.5 rounded-md flex items-center justify-center text-[10px] font-black ${activeTab === 'applicants' ? 'bg-white/25 text-white' : 'bg-yellow-100 text-yellow-700'}`}>{totalApplicantsCount}</span>
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setActiveTab('assigned')}
+                                className={`min-w-0 flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-2 px-1.5 sm:px-3 py-2 rounded-lg transition-all ${activeTab === 'assigned' ? 'bg-green-600 text-white shadow-sm' : 'bg-white dark:bg-slate-800 text-gray-600 dark:text-slate-300 hover:text-green-700 hover:bg-green-50'}`}
+                            >
+                                <span className="text-[10px] font-black uppercase tracking-wide">Assigned</span>
+                                <span className={`min-w-5 h-5 px-1.5 rounded-md flex items-center justify-center text-[10px] font-black ${activeTab === 'assigned' ? 'bg-white/25 text-white' : 'bg-green-100 text-green-700'}`}>{totalAssignedCount}</span>
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setActiveTab('submitted')}
+                                className={`min-w-0 flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-2 px-1.5 sm:px-3 py-2 rounded-lg transition-all ${activeTab === 'submitted' ? 'bg-blue-600 text-white shadow-sm' : 'bg-white dark:bg-slate-800 text-gray-600 dark:text-slate-300 hover:text-blue-700 hover:bg-blue-50'}`}
+                            >
+                                <span className="text-[10px] font-black uppercase tracking-wide">Submitted</span>
+                                <span className={`min-w-5 h-5 px-1.5 rounded-md flex items-center justify-center text-[10px] font-black ${activeTab === 'submitted' ? 'bg-white/25 text-white' : 'bg-blue-100 text-blue-700'}`}>{totalSubmittedCount}</span>
+                            </button>
+                        </div>
+                        {(user?.role !== 'teacher' || user?.isActive !== false) && (
+                            <button
+                                onClick={() => {
+                                    setEditingTask(null);
+                                    setFormData({ title: '', description: '', budget: '', deadline: '', skills: '', category: 'web', type: 'task', images: [], isLifetime: false, manualStatus: 'none', jobManagers: [] });
+                                    setImagePreviews([]);
+                                    setIsModalOpen(true);
+                                }}
+                                className="w-full sm:w-auto self-stretch flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-orange-600 text-white rounded-xl transition-all duration-300 font-bold text-xs uppercase tracking-widest shadow-md shadow-primary/20"
+                            >
+                                <Briefcase className="w-5 h-5" />
+                                Create Task
+                            </button>
+                        )}
+                    </>
+                }
+            />
 
             {/* Error */}
             {error && (

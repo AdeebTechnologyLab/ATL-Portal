@@ -10,6 +10,7 @@ import Modal from '../../components/ui/Modal';
 import { courseAPI, enrollmentAPI, certificateAPI } from '../../services/api';
 import { formatDate } from '../../utils/dateFormatter';
 import AssignScreenButton from '../../components/admin/AssignScreenButton';
+import PageHeader from '../../components/shared/PageHeader';
 
 
 const CertificateManagement = () => {
@@ -479,42 +480,34 @@ const CertificateManagement = () => {
         <div className="space-y-6">
 
             {/* Header */}
-            <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 p-6 sm:p-8 text-white shadow-2xl shadow-slate-900/10">
-                <div className="absolute -right-16 -top-20 h-56 w-56 rounded-full bg-primary/20 blur-3xl" />
-                <div className="absolute -bottom-24 left-1/3 h-56 w-56 rounded-full bg-blue-500/10 blur-3xl" />
-                <div className="relative z-10 flex flex-col xl:flex-row xl:items-end xl:justify-between gap-8">
-                    <div className="max-w-2xl">
-                        <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.25em] text-white/70 mb-4">
-                            <Award className="w-3.5 h-3.5 text-primary" />
-                            Certificate Center
-                        </div>
-                        <h1 className="text-3xl sm:text-4xl font-black tracking-tight">Certificate Management</h1>
-                        <p className="mt-2 text-sm sm:text-base text-white/60 font-medium">Issue, edit, verify and filter student, intern and teacher certificates from one clean dashboard.</p>
-                        <div className="mt-4"><AssignScreenButton screenId="certificate_management" /></div>
-                    </div>
+            <PageHeader
+                title="Certificate Management"
+                subtitle="Issue, edit, verify and filter student, intern and teacher certificates from one clean dashboard."
+                icon={Award}
+                actions={<AssignScreenButton screenId="certificate_management" />}
+            />
 
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 w-full xl:w-auto">
-                        {[
-                            { label: 'Student Assigned', value: studentsCertifiedCount, sub: `${studentsPendingCount} pending`, icon: CheckCircle, tone: 'text-primary' },
-                            { label: 'Teacher Assigned', value: teachersCertifiedCount, sub: `${teachersPendingCount} pending`, icon: Users, tone: 'text-blue-300' },
-                            { label: 'Requests', value: requests.length, sub: 'pending approval', icon: ClipboardList, tone: 'text-amber-300' },
-                            { label: 'Total People', value: uniqueStudents.size + teachers.length, sub: 'in certificate pool', icon: User, tone: 'text-emerald-300' },
-                        ].map((stat) => (
-                            <div key={stat.label} className="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur-md shadow-lg">
-                                <div className="flex items-center justify-between gap-3">
-                                    <div>
-                                        <p className="text-[9px] font-black uppercase tracking-widest text-white/45">{stat.label}</p>
-                                        <p className="mt-2 text-2xl font-black leading-none">{stat.value}</p>
-                                    </div>
-                                    <div className={`h-10 w-10 rounded-2xl bg-white/10 flex items-center justify-center ${stat.tone}`}>
-                                        <stat.icon className="w-5 h-5" />
-                                    </div>
-                                </div>
-                                <p className="mt-2 text-[10px] font-bold uppercase tracking-widest text-white/45">{stat.sub}</p>
+            {/* Stats */}
+            <div className="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-4">
+                {[
+                    { label: 'Student Assigned', value: studentsCertifiedCount, sub: `${studentsPendingCount} pending`, icon: CheckCircle, color: 'text-primary', bg: 'bg-primary/10' },
+                    { label: 'Teacher Assigned', value: teachersCertifiedCount, sub: `${teachersPendingCount} pending`, icon: Users, color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-50 dark:bg-blue-500/10' },
+                    { label: 'Requests', value: requests.length, sub: 'pending approval', icon: ClipboardList, color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-50 dark:bg-amber-500/10' },
+                    { label: 'Total People', value: uniqueStudents.size + teachers.length, sub: 'in certificate pool', icon: User, color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-500/10' },
+                ].map((stat) => (
+                    <div key={stat.label} className="rounded-xl border border-gray-200 bg-white px-3 py-3 dark:border-white/10 dark:bg-[#141418] sm:px-4">
+                        <div className="flex items-center justify-between gap-2">
+                            <div className="min-w-0">
+                                <p className="truncate text-[11px] font-black uppercase tracking-wider text-gray-500 dark:text-gray-400">{stat.label}</p>
+                                <p className="mt-1 text-xl font-black tabular-nums text-gray-900 dark:text-white sm:text-2xl">{stat.value}</p>
                             </div>
-                        ))}
+                            <div className={`hidden h-10 w-10 shrink-0 items-center justify-center rounded-xl sm:flex ${stat.bg}`}>
+                                <stat.icon className={`w-5 h-5 ${stat.color}`} />
+                            </div>
+                        </div>
+                        <p className="mt-1.5 text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-500">{stat.sub}</p>
                     </div>
-                </div>
+                ))}
             </div>
 
             {/* Section Toggle */}

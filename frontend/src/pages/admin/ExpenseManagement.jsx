@@ -11,6 +11,7 @@ import { userAPI } from '../../services/api';
 import ProfileAvatar from '../../components/ui/ProfileAvatar';
 import Loader from '../../components/ui/Loader';
 import AssignScreenButton from '../../components/admin/AssignScreenButton';
+import PageHeader from '../../components/shared/PageHeader';
 import { formatDate } from '../../utils/dateFormatter';
 
 
@@ -467,21 +468,27 @@ const ExpenseManagement = ({ showProjectSections = true, projectsOnly = false })
     return (
         <div className="p-4 md:p-6 space-y-6">
 
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                <div className="min-w-0"><h1 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white">{projectsOnly ? 'Projects' : 'Income, Expense & Projects'}</h1><p className="hidden sm:block text-sm text-gray-500 dark:text-slate-400">{projectsOnly ? 'Active work, collections and completed project tracking.' : 'Cash flow, project profitability and pending clearances in one place.'}</p></div>
-                <div className="flex flex-wrap gap-2">
-                    <AssignScreenButton screenId="expense_management" />
-                    {!projectsOnly && <button onClick={downloadFinanceReport} className="flex items-center justify-center gap-1.5 whitespace-nowrap rounded-xl border border-primary/25 bg-primary/10 px-3 py-2.5 text-xs font-bold text-primary transition-colors hover:bg-primary hover:text-white sm:gap-2 sm:px-4 sm:py-3 sm:text-sm"><Download className="h-4 w-4" /><span className="hidden md:inline">Download </span>Report</button>}
-                    {showProjectSections && <button onClick={openNewProject} className="px-3 sm:px-4 py-2.5 sm:py-3 bg-slate-900 dark:bg-white dark:text-slate-900 text-white rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 sm:gap-2 whitespace-nowrap"><BriefcaseBusiness className="w-4 h-4" /> <span className="hidden sm:inline">Create </span>Project</button>}
-                    {!projectsOnly && <button onClick={openNew} className="px-3 sm:px-4 py-2.5 sm:py-3 bg-primary text-white rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 sm:gap-2 whitespace-nowrap"><Plus className="w-4 h-4" /> <span className="hidden sm:inline">Add </span>Record</button>}
-                </div>
-            </div>
+            <PageHeader
+                title={projectsOnly ? 'Projects' : 'Income, Expense & Projects'}
+                subtitle={projectsOnly ? 'Active work, collections and completed project tracking.' : 'Cash flow, project profitability and pending clearances in one place.'}
+                icon={Wallet}
+                actions={
+                    <div className="flex flex-wrap gap-2">
+                        <AssignScreenButton screenId="expense_management" />
+                        {showProjectSections && <button onClick={openNewProject} className="px-3 sm:px-4 py-2.5 sm:py-3 bg-slate-900 dark:bg-white dark:text-slate-900 text-white rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 sm:gap-2 whitespace-nowrap"><BriefcaseBusiness className="w-4 h-4" /> <span className="hidden sm:inline">Create </span>Project</button>}
+                    </div>
+                }
+            />
 
             <div className="rounded-xl border border-gray-100 bg-white p-3 shadow-sm dark:border-slate-700 dark:bg-slate-900">
                 <div className="flex flex-col gap-3 md:flex-row md:items-end">
                     <div className="md:w-44"><label className="mb-1.5 block text-[9px] font-black uppercase tracking-wider text-gray-400">View Data By</label><select value={periodMode} onChange={event => setPeriodMode(event.target.value)} className={`${fieldClass} py-2.5 text-sm font-bold`}><option value="month">Month</option><option value="custom">Date Range</option><option value="all">All Time</option></select></div>
                     {periodMode === 'month' && <div className="md:w-52"><label className="mb-1.5 block text-[9px] font-black uppercase tracking-wider text-gray-400">Select Month</label><input type="month" value={selectedMonth} max={freshCurrentMonth()} onChange={event => setSelectedMonth(event.target.value)} className={`${fieldClass} py-2.5 text-sm font-bold`} /></div>}
                     {periodMode === 'custom' && <><div className="md:w-48"><label className="mb-1.5 block text-[9px] font-black uppercase tracking-wider text-gray-400">Start Date</label><input type="date" value={startDate} max={endDate || freshToday()} onChange={event => setStartDate(event.target.value)} className={`${fieldClass} py-2.5 text-sm font-bold`} /></div><div className="md:w-48"><label className="mb-1.5 block text-[9px] font-black uppercase tracking-wider text-gray-400">End Date</label><input type="date" value={endDate} min={startDate} max={freshToday()} onChange={event => setEndDate(event.target.value)} className={`${fieldClass} py-2.5 text-sm font-bold`} /></div></>}
+                    {!projectsOnly && <div className="flex flex-wrap items-end gap-2 md:ml-auto">
+                        <button onClick={downloadFinanceReport} className="flex items-center justify-center gap-1.5 whitespace-nowrap rounded-xl border border-primary/25 bg-primary/10 px-3 py-2.5 text-xs font-bold text-primary transition-colors hover:bg-primary hover:text-white sm:gap-2 sm:px-4 sm:py-3 sm:text-sm"><Download className="h-4 w-4" /><span className="hidden md:inline">Download </span>Report</button>
+                        <button onClick={openNew} className="px-3 sm:px-4 py-2.5 sm:py-3 bg-primary text-white rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 sm:gap-2 whitespace-nowrap"><Plus className="w-4 h-4" /> <span className="hidden sm:inline">Add </span>Record</button>
+                    </div>}
                 </div>
             </div>
 

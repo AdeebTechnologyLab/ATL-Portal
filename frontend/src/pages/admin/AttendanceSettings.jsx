@@ -6,6 +6,7 @@ import { showToast } from "../../utils/customToast";
 import { to12Hour } from "../../utils/dateFormatter";
 import Loader from "../../components/ui/Loader";
 import AssignScreenButton from '../../components/admin/AssignScreenButton';
+import PageHeader from '../../components/shared/PageHeader';
 
 
 const STUDENT_SLOTS_KEY = "student_class_slots";
@@ -342,39 +343,13 @@ const AttendanceSettings = () => {
             <div className="w-full">
 
 
-                <div className="mb-4 sm:mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                    <div>
-                        <h1 className="text-xl sm:text-3xl font-black text-gray-900 dark:text-white uppercase tracking-tight">Time Table</h1>
-                        <p className="text-xs sm:text-sm text-gray-400 mt-1">Manage class schedules and weekly off days.</p>
-                    </div>
-                    <AssignScreenButton screenId="attendance_settings" />
-                </div>
-
-                {/* ── WhatsApp Notifications ── */}
-                <div className="mb-3 sm:mb-5">
-                    <SectionCard icon={MessageSquare} accent="bg-green-50 text-green-600" label="Notifications" sublabel="WhatsApp Alerts">
-                        <div className="flex items-center justify-between gap-3">
-                            <div className="min-w-0">
-                                <p className="text-xs sm:text-sm font-bold text-gray-700 dark:text-gray-200">Time Table WhatsApp Message</p>
-                                <p className="text-[10px] sm:text-[11px] text-gray-400 mt-1">Jab teacher attendance lagaye toh guardian ko WhatsApp par report bhejega.</p>
-                            </div>
-                            <button
-                                onClick={toggleWhatsApp}
-                                disabled={isSavingWA}
-                                className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors duration-300 focus:outline-none disabled:opacity-50 ${whatsappEnabled ? 'bg-green-500' : 'bg-gray-300 dark:bg-gray-600'}`}
-                            >
-                                <span className={`inline-block h-6 w-6 transform rounded-full bg-white shadow-lg transition-transform duration-300 ${whatsappEnabled ? 'translate-x-7' : 'translate-x-1'}`} />
-                            </button>
-                        </div>
-                        <div className={`mt-3 sm:mt-4 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl border text-[10px] sm:text-[11px] font-bold flex items-center gap-2 ${whatsappEnabled
-                            ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 text-green-700 dark:text-green-400'
-                            : 'bg-gray-50 dark:bg-gray-700/40 border-gray-200 dark:border-gray-600 text-gray-400'
-                            }`}>
-                            <div className={`w-2 h-2 rounded-full ${whatsappEnabled ? 'bg-green-500 animate-pulse' : 'bg-gray-300'}`} />
-                            {whatsappEnabled ? 'Active — Guardian ko WhatsApp jayega' : 'Inactive — WhatsApp disabled hai'}
-                        </div>
-                    </SectionCard>
-                </div>
+                <PageHeader
+                    title="Time Table"
+                    subtitle="Manage class schedules and weekly off days."
+                    icon={Clock}
+                    className="mb-4 sm:mb-6"
+                    actions={<AssignScreenButton screenId="attendance_settings" />}
+                />
 
                 <div className="grid grid-cols-1 xl:grid-cols-2 gap-3 sm:gap-5 items-start">
 
@@ -464,6 +439,32 @@ const AttendanceSettings = () => {
                         </>
                     )}
 
+                </div>
+
+                {/* ── WhatsApp Notifications ── */}
+                <div className="mt-3 sm:mt-5 mb-3 sm:mb-5">
+                    <SectionCard icon={MessageSquare} accent="bg-green-50 text-green-600" label="Notifications" sublabel="WhatsApp Alerts">
+                        <div className="flex items-center justify-between gap-3">
+                            <div className="min-w-0">
+                                <p className="text-xs sm:text-sm font-bold text-gray-700 dark:text-gray-200">Time Table WhatsApp Message</p>
+                                <p className="text-[10px] sm:text-[11px] text-gray-400 mt-1">Jab teacher attendance lagaye toh guardian ko WhatsApp par report bhejega.</p>
+                            </div>
+                            <button
+                                onClick={toggleWhatsApp}
+                                disabled={isSavingWA}
+                                className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors duration-300 focus:outline-none disabled:opacity-50 ${whatsappEnabled ? 'bg-green-500' : 'bg-gray-300 dark:bg-gray-600'}`}
+                            >
+                                <span className={`inline-block h-6 w-6 transform rounded-full bg-white shadow-lg transition-transform duration-300 ${whatsappEnabled ? 'translate-x-7' : 'translate-x-1'}`} />
+                            </button>
+                        </div>
+                        <div className={`mt-3 sm:mt-4 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl border text-[10px] sm:text-[11px] font-bold flex items-center gap-2 ${whatsappEnabled
+                            ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 text-green-700 dark:text-green-400'
+                            : 'bg-gray-50 dark:bg-gray-700/40 border-gray-200 dark:border-gray-600 text-gray-400'
+                            }`}>
+                            <div className={`w-2 h-2 rounded-full ${whatsappEnabled ? 'bg-green-500 animate-pulse' : 'bg-gray-300'}`} />
+                            {whatsappEnabled ? 'Active — Guardian ko WhatsApp jayega' : 'Inactive — WhatsApp disabled hai'}
+                        </div>
+                    </SectionCard>
                 </div>
             </div>
         </div>

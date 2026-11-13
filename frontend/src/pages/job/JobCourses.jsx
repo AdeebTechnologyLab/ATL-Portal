@@ -5,6 +5,7 @@ import {
     FileText, ClipboardList, CheckCircle, Clock, Upload, Award, Star
 } from 'lucide-react';
 import Badge from '../../components/ui/Badge';
+import PageHeader from '../../components/shared/PageHeader';
 import { formatDate } from '../../utils/dateFormatter';
 
 const JobCourses = () => {
@@ -167,10 +168,11 @@ const JobCourses = () => {
         // Course Selection
         return (
             <div className="space-y-6">
-                <div>
-                    <h1 className="text-2xl font-bold text-gray-900">My Courses</h1>
-                    <p className="text-gray-500">Select a course to manage assignments and daily work</p>
-                </div>
+                <PageHeader
+                    title="My Courses"
+                    subtitle="Select a course to manage assignments and daily work"
+                    icon={BookOpen}
+                />
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {myCourses.map((course, index) => (

@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CalendarDays, Eye, ReceiptText, X } from 'lucide-react';
+import { CalendarDays, Eye, ReceiptText, Wallet, X } from 'lucide-react';
 import { taskAPI } from '../../services/api';
 import { formatDate } from '../../utils/dateFormatter';
+import PageHeader from '../../components/shared/PageHeader';
 
 const PaymentHistory = () => {
     const { user } = useSelector((state) => state.auth);
@@ -55,24 +56,18 @@ const PaymentHistory = () => {
 
     return (
         <div className="space-y-5 sm:space-y-6">
-            <motion.section
-                initial={{ opacity: 0, y: -12 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 p-5 text-white shadow-lg sm:p-8"
-            >
-                <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-                    <div>
-                        <p className="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-emerald-100">Payment record</p>
-                        <h1 className="text-2xl font-black sm:text-3xl">My Payments</h1>
-                        <p className="mt-2 text-sm text-emerald-50 sm:text-base">Completed projects and payment screenshots in one place.</p>
-                    </div>
+            <PageHeader
+                title="My Payments"
+                subtitle="Completed projects and payment screenshots in one place."
+                icon={Wallet}
+                actions={
                     <div className="min-w-[190px] rounded-2xl border border-white/20 bg-white/15 p-4 backdrop-blur-sm">
                         <p className="text-xs font-semibold uppercase tracking-wider text-emerald-100">Total received</p>
                         <p className="mt-1 text-2xl font-black">Rs {totalPaid.toLocaleString()}</p>
                         <p className="mt-1 text-xs text-emerald-100">{payments.length} payment{payments.length === 1 ? '' : 's'}</p>
                     </div>
-                </div>
-            </motion.section>
+                }
+            />
 
             {error && <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm font-medium text-red-700">{error}</div>}
 

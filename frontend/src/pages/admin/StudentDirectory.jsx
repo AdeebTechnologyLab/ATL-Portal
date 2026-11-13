@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import {
-    Users, Search, ChevronLeft,
+    Users, User, Search,
     Award, BookOpen, Phone, CreditCard, Mail, GraduationCap,
     CheckCircle, XCircle, Clock
 } from 'lucide-react';
@@ -10,6 +10,7 @@ import { directoryAPI } from '../../services/api';
 import Loader from '../../components/ui/Loader';
 import AssignScreenButton from '../../components/admin/AssignScreenButton';
 import { formatDate, formatTime } from '../../utils/dateFormatter';
+import PageHeader from '../../components/shared/PageHeader';
 
 
 const FILTER_OPTIONS = [
@@ -21,7 +22,6 @@ const FILTER_OPTIONS = [
 ];
 
 const StudentDirectory = () => {
-    const navigate = useNavigate();
     const location = useLocation();
 
     // Get filter from URL query param if exists
@@ -115,23 +115,12 @@ const StudentDirectory = () => {
         <div className="space-y-6 min-h-screen">
 
             {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div className="flex items-center gap-4">
-                    <button
-                        onClick={() => navigate('/admin/dashboard')}
-                        className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
-                    >
-                        <ChevronLeft className="w-5 h-5 text-gray-500" />
-                    </button>
-                    <div>
-                        <h1 className="text-2xl font-black text-gray-900 uppercase tracking-tight">
-                            Directory ({filteredUsers.length})
-                        </h1>
-                        <p className="text-gray-500 text-sm">All students, interns and teachers - sorted by roll number</p>
-                    </div>
-                </div>
-                <AssignScreenButton screenId="student_directory" />
-            </div>
+            <PageHeader
+                title={`Directory (${filteredUsers.length})`}
+                subtitle="All students, interns and teachers - sorted by roll number"
+                icon={User}
+                actions={<AssignScreenButton screenId="student_directory" />}
+            />
 
             {/* Filters & Search */}
             <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm">

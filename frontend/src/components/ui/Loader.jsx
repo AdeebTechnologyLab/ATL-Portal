@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import { getLoadingGifUrl, refreshLoadingGifUrl } from '../../services/loadingGif';
 
 const Loader = ({ message = 'Loading...', size = 'md' }) => {
     const sizeClasses = {
@@ -9,6 +10,16 @@ const Loader = ({ message = 'Loading...', size = 'md' }) => {
         xl: 'w-44 h-44 sm:w-48 sm:h-48'
     };
 
+    const [src, setSrc] = useState(getLoadingGifUrl());
+
+    useEffect(() => {
+        let mounted = true;
+        refreshLoadingGifUrl().then(url => {
+            if (mounted) setSrc(url);
+        });
+        return () => { mounted = false; };
+    }, []);
+
     return (
         <div role="status" aria-label={message || 'Loading'} className="flex flex-col items-center justify-center p-8 min-h-[60vh] w-full h-full flex-1">
             <motion.div
@@ -17,7 +28,7 @@ const Loader = ({ message = 'Loading...', size = 'md' }) => {
                 className="relative"
             >
                 <img 
-                    src="/loading.gif" 
+                    src={src} 
                     alt="Loading..." 
                     className={`${sizeClasses[size] || sizeClasses.md} object-contain`}
                     onError={(e) => {

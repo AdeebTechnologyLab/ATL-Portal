@@ -4,6 +4,7 @@ import { Award, ExternalLink, BookOpen, Calendar, Clock, User, CheckCircle } fro
 import { useSelector } from 'react-redux';
 import { certificateAPI } from '../../services/api';
 import Loader, { ButtonLoader } from '../../components/ui/Loader';
+import PageHeader from '../../components/shared/PageHeader';
 import { formatDate } from '../../utils/dateFormatter';
 import { getBackendOrigin } from '../../config/apiBaseUrl';
 
@@ -65,19 +66,11 @@ const TeacherCertificates = () => {
     return (
         <div className="max-w-3xl mx-auto space-y-6 pb-10">
             {/* Page Header */}
-            <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="flex items-center gap-3"
-            >
-                <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-primary rounded-xl flex items-center justify-center shadow-lg shadow-orange-200">
-                    <Award className="w-5 h-5 text-white" />
-                </div>
-                <div>
-                    <h1 className="text-xl font-bold text-gray-900">My Certificate</h1>
-                    <p className="text-sm text-gray-400">Issued by Adeeb Technology Lab</p>
-                </div>
-            </motion.div>
+            <PageHeader
+                title="My Certificate"
+                subtitle="Issued by Adeeb Technology Lab"
+                icon={Award}
+            />
 
             {/* Certificate Card */}
             <motion.div

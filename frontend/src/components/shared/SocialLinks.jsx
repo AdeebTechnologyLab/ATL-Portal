@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Share2, ChevronUp, ChevronDown } from 'lucide-react';
-import { SOCIAL_LINK_GROUPS, PLATFORM_HOVER } from '../../constants/socialLinks';
+import { PLATFORM_HOVER } from '../../constants/socialLinks';
+import { getSocialLinkGroups, refreshSocialLinkGroups } from '../../services/socialLinks';
 import SocialIcon from './SocialIcon';
 import { useTranslation } from 'react-i18next';
 
@@ -9,7 +10,23 @@ const SocialLinks = ({ className = '' }) => {
     const { t } = useTranslation();
     const [isOpen, setIsOpen] = useState(false);
     const [activeGroup, setActiveGroup] = useState(null);
+    const [groups, setGroups] = useState(getSocialLinkGroups);
     const containerRef = useRef(null);
+
+    useEffect(() => {
+        let mounted = true;
+        refreshSocialLinkGroups().then(list => {
+            if (mounted) setGroups(list);
+        });
+        return () => { mounted = false; };
+    }, []);
+
+    // Live refresh when admin saves changes from the LMS Update screen
+    useEffect(() => {
+        const onUpdate = () => setGroups(getSocialLinkGroups());
+        window.addEventListener('social-links-updated', onUpdate);
+        return () => window.removeEventListener('social-links-updated', onUpdate);
+    }, []);
 
     useEffect(() => {
         const handleClickOutside = (e) => {
@@ -70,7 +87,7 @@ const SocialLinks = ({ className = '' }) => {
                         className="overflow-hidden"
                     >
                         <div className="rounded-xl border border-white/10 bg-black/20 backdrop-blur-sm overflow-hidden">
-                            {SOCIAL_LINK_GROUPS.map((group, index) => {
+                            {groups.map((group, index) => {
                                 const isActive = activeGroup === group.id;
 
                                 return (
