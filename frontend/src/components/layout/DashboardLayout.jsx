@@ -60,7 +60,10 @@ import {
     Lock,
     Eye,
     EyeOff,
-    Clock
+    Clock,
+    Download,
+    Monitor,
+    Smartphone
 } from 'lucide-react';
 import { useDispatch } from 'react-redux';
 import { logout, updateUser, refreshToken } from '../../features/auth/authSlice';
@@ -84,6 +87,7 @@ const DashboardLayout = () => {
 
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const [showNotifications, setShowNotifications] = useState(false);
+    const [showDownloadMenu, setShowDownloadMenu] = useState(false);
     const [showUserMenu, setShowUserMenu] = useState(false);
     const [showResetPasswordModal, setShowResetPasswordModal] = useState(false);
     const [resetPasswordForm, setResetPasswordForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
@@ -546,6 +550,36 @@ const DashboardLayout = () => {
                                     <RefreshCw className="w-5 h-5 shrink-0" />
                                 </button>
 
+                                {/* Download Menu */}
+                                <div className="relative">
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowDownloadMenu(v => !v)}
+                                        className="rounded-xl transition-all duration-200 bg-[var(--bg-sidebar-dark)] hover:bg-[var(--bg-sidebar)] text-white shadow-sm p-2.5 flex items-center justify-center"
+                                        title="Download"
+                                    >
+                                        <Download className="w-5 h-5 shrink-0" />
+                                    </button>
+                                    {showDownloadMenu && (
+                                        <div className={`absolute right-0 mt-2 w-48 rounded-xl shadow-2xl border overflow-hidden z-[100] ${isDark ? 'bg-[var(--bg-sidebar)] border-white/10' : 'bg-white border-gray-100'}`}>
+                                            <a
+                                                href="https://apps.microsoft.com/detail/9PFXF5830L2R?hl=en-us&gl=PK&ocid=pdpshare"
+                                                onClick={() => setShowDownloadMenu(false)}
+                                                className={`flex items-center gap-2 px-3 py-2.5 text-sm font-bold ${isDark ? 'text-white hover:bg-white/10' : 'text-gray-700 hover:bg-gray-50'}`}
+                                            >
+                                                <Monitor className="w-4 h-4" /> Software Download
+                                            </a>
+                                            <a
+                                                href="#"
+                                                onClick={() => setShowDownloadMenu(false)}
+                                                className={`flex items-center gap-2 px-3 py-2.5 text-sm font-bold ${isDark ? 'text-white hover:bg-white/10' : 'text-gray-700 hover:bg-gray-50'}`}
+                                            >
+                                                <Smartphone className="w-4 h-4" /> App Download
+                                            </a>
+                                        </div>
+                                    )}
+                                </div>
+
                                 {/* Dark / Light Mode Toggle */}
                                 <button
                                     type="button"
@@ -682,6 +716,36 @@ const DashboardLayout = () => {
                             >
                                 <RefreshCw className="w-5 h-5 shrink-0" />
                             </button>
+
+                            {/* Download Menu */}
+                            <div className="relative">
+                                <button
+                                    type="button"
+                                    onClick={() => setShowDownloadMenu(v => !v)}
+                                    className="rounded-full transition-all duration-200 bg-[var(--bg-sidebar)] hover:bg-[var(--bg-sidebar-dark)] text-white shadow-md hover:shadow-lg flex items-center justify-center p-2.5 sm:w-10 sm:h-10"
+                                    title="Download"
+                                >
+                                    <Download className="w-5 h-5 shrink-0" />
+                                </button>
+                                {showDownloadMenu && (
+                                    <div className={`absolute right-0 mt-2 w-48 rounded-xl shadow-2xl border overflow-hidden z-[100] ${isDark ? 'bg-[var(--bg-sidebar)] border-white/10' : 'bg-white border-gray-100'}`}>
+                                        <a
+                                            href="https://apps.microsoft.com/detail/9PFXF5830L2R?hl=en-us&gl=PK&ocid=pdpshare"
+                                            onClick={() => setShowDownloadMenu(false)}
+                                            className={`flex items-center gap-2 px-3 py-2.5 text-sm font-bold ${isDark ? 'text-white hover:bg-white/10' : 'text-gray-700 hover:bg-gray-50'}`}
+                                        >
+                                            <Monitor className="w-4 h-4" /> Software Download
+                                        </a>
+                                        <a
+                                            href="#"
+                                            onClick={() => setShowDownloadMenu(false)}
+                                            className={`flex items-center gap-2 px-3 py-2.5 text-sm font-bold ${isDark ? 'text-white hover:bg-white/10' : 'text-gray-700 hover:bg-gray-50'}`}
+                                        >
+                                            <Smartphone className="w-4 h-4" /> App Download
+                                        </a>
+                                    </div>
+                                )}
+                            </div>
 
                             {/* Dark / Light Mode Toggle */}
                             <button
