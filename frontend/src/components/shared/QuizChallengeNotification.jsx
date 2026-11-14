@@ -175,7 +175,7 @@ const QuizChallengeNotification = () => {
             finally { polling = false; }
         };
         poll();
-        const interval = setInterval(poll, 30000);
+        const interval = setInterval(poll, 60000);
         window.addEventListener('online', poll);
         document.addEventListener('visibilitychange', poll);
         return () => {

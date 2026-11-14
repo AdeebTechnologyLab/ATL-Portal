@@ -79,7 +79,7 @@ const FeeManagement = () => {
             // Still keeping polling as a fallback, but sockets are primary
             interval = setInterval(() => {
                 fetchFees();
-            }, 15000); // Increased interval since sockets are active
+            }, 30000); // Increased interval since sockets are active
         }
         return () => clearInterval(interval);
     }, [fees]);

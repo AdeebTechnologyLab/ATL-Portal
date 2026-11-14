@@ -84,9 +84,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
             document.removeEventListener('visibilitychange', onVisibility);
         };
     }, []);
-    useEffect(() => {
-        setDataRefreshTick(tick => tick + 1);
-    }, [location.pathname]);
+    // Avoid refetching every sidebar count on each navigation; intervals/visibility handle refreshes.
     const dispatch = useDispatch();
     const { user, role } = useSelector((state) => state.auth);
     const [pendingCount, setPendingCount] = useState(0);
@@ -148,7 +146,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         // Realtime: jab job user message bheje, sidebar badge foran update ho
         const socket = io(getSocketURL(), { withCredentials: true });
         socket.on('new_global_message', () => loadJobSummary());
-        const timer = setInterval(loadJobSummary, 30000);
+        const timer = setInterval(loadJobSummary, 60000);
         return () => {
             clearInterval(timer);
             socket.disconnect();
@@ -210,7 +208,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         };
 
         loadApplicationCount();
-        const timer = window.setInterval(loadApplicationCount, 15000);
+        const timer = window.setInterval(loadApplicationCount, 30000);
         window.addEventListener('job-applications-updated', loadApplicationCount);
         return () => {
             window.clearInterval(timer);
@@ -238,7 +236,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         };
 
         refreshDiscussionUnread();
-        const timer = setInterval(refreshDiscussionUnread, 30000);
+        const timer = setInterval(refreshDiscussionUnread, 60000);
         const socket = io(getSocketURL(), { withCredentials: true });
         const myId = user?._id || user?.id;
         const myEmail = (user?.email || '').toLowerCase();
@@ -300,7 +298,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
             }
         };
         loadTeacherProjects();
-        const timer = setInterval(loadTeacherProjects, 30000);
+        const timer = setInterval(loadTeacherProjects, 60000);
         return () => clearInterval(timer);
     }, [role, dataRefreshTick]);
 
@@ -316,7 +314,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
             }
         };
         loadAdminProjects();
-        const timer = setInterval(loadAdminProjects, 30000);
+        const timer = setInterval(loadAdminProjects, 60000);
         return () => clearInterval(timer);
     }, [role, dataRefreshTick]);
 
@@ -324,8 +322,8 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         if (role === 'student' || role === 'intern') {
             fetchPendingCount();
             if (role === 'student') fetchStudentNavCounts();
-            const interval = setInterval(fetchPendingCount, 60 * 1000);
-            const navInterval = role === 'student' ? setInterval(fetchStudentNavCounts, 60 * 1000) : null;
+            const interval = setInterval(fetchPendingCount, 120 * 1000);
+            const navInterval = role === 'student' ? setInterval(fetchStudentNavCounts, 120 * 1000) : null;
             return () => {
                 clearInterval(interval);
                 if (navInterval) clearInterval(navInterval);
@@ -333,14 +331,14 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         } else if (role === 'admin') {
             fetchAdminPendingCounts();
             window.addEventListener('admin-pending-counts-changed', fetchAdminPendingCounts);
-            const interval = setInterval(fetchAdminPendingCounts, 60 * 1000);
+            const interval = setInterval(fetchAdminPendingCounts, 120 * 1000);
             return () => {
                 clearInterval(interval);
                 window.removeEventListener('admin-pending-counts-changed', fetchAdminPendingCounts);
             };
         } else if (role === 'teacher') {
             fetchTeacherSubmissionCount();
-            const interval = setInterval(fetchTeacherSubmissionCount, 60 * 1000);
+            const interval = setInterval(fetchTeacherSubmissionCount, 120 * 1000);
             return () => clearInterval(interval);
         }
     }, [role, user, dataRefreshTick]);

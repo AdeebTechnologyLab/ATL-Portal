@@ -25,7 +25,7 @@ const QuizBattleCard = () => {
             if (results[1].status === 'fulfilled') setLeaders((results[1].value.data.data || []).slice(0, 10));
         };
         refresh();
-        const interval = setInterval(refresh, 30000);
+        const interval = setInterval(refresh, 60000);
         window.addEventListener('online', refresh);
         document.addEventListener('visibilitychange', refresh);
         return () => {

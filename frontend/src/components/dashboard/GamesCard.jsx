@@ -305,7 +305,7 @@ const GamesCard = () => {
 
     useEffect(() => {
         fetchLeaders();
-        const interval = setInterval(fetchLeaders, 30000);
+        const interval = setInterval(fetchLeaders, 60000);
         window.addEventListener('online', fetchLeaders);
         document.addEventListener('visibilitychange', fetchLeaders);
         return () => {

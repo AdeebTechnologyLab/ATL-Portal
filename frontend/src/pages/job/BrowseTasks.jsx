@@ -89,7 +89,7 @@ const BrowseTasks = () => {
     useEffect(() => {
         fetchTasks();
         const refreshTasksSilently = () => fetchTasks(true);
-        const refreshTimer = window.setInterval(refreshTasksSilently, 15000);
+        const refreshTimer = window.setInterval(refreshTasksSilently, 30000);
         window.addEventListener('job-applications-updated', refreshTasksSilently);
         return () => {
             window.clearInterval(refreshTimer);

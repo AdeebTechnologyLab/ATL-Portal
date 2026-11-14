@@ -148,7 +148,7 @@ const StudentDashboard = () => {
         });
 
         // Scheduled meetings ke liye: start time aane par bhi update mile
-        const livePoll = setInterval(fetchActiveLiveClasses, 30000);
+        const livePoll = setInterval(fetchActiveLiveClasses, 60000);
 
         return () => {
             clearInterval(livePoll);

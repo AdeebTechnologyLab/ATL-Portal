@@ -217,7 +217,7 @@ const DashboardLayout = () => {
         const interval = setInterval(() => {
             fetchNotifications();
             fetchPendingTasks();
-        }, 60000); // Relaxed poll to 1 min since we have sockets
+        }, 120000); // Relaxed poll to 2 min since we have sockets
 
         if (!user) return () => clearInterval(interval);
 
