@@ -389,7 +389,7 @@ const StudentTestsTab = ({ courseId, isRestricted }) => {
                 <div className="flex-1 min-h-0 overflow-hidden flex flex-col sm:flex-row">
 
                     {/* Question Numbers: above progress bar on phone, sidebar on desktop */}
-                    <div className="w-full sm:w-24 shrink-0 overflow-y-auto no-scrollbar bg-slate-50 dark:bg-[#1a1f2e] border-b-2 sm:border-b-0 sm:border-r-2 border-slate-200 dark:border-white/5 py-2 sm:py-3 px-2 flex flex-col items-center gap-2">
+                    <div className="w-full sm:w-24 shrink-0 overflow-y-auto no-scrollbar bg-slate-50 dark:bg-[#1a1f2e] border-b-2 sm:border-b-0 sm:border-r-2 border-slate-200 dark:border-white/5 py-2 sm:py-3 px-2 flex flex-col items-center gap-2 max-h-[22vh] sm:max-h-none">
                         <span className="text-[8px] font-black text-slate-500 uppercase tracking-widest mb-1 sm:mb-1">Q#</span>
                         <div className="grid grid-cols-10 sm:grid-cols-3 gap-1.5 w-full content-start justify-items-center">
                             {shuffledQuestions.map((_, i) => (
@@ -442,7 +442,7 @@ const StudentTestsTab = ({ courseId, isRestricted }) => {
                                     x: { type: "spring", stiffness: 100, damping: 20 },
                                     opacity: { duration: 0.5 }
                                 }}
-                                className="bg-white dark:bg-[#1a1f2e] p-6 sm:p-10 rounded-[2.5rem] border-2 border-primary/10 dark:border-white/5 shadow-xl shadow-primary/10/20 space-y-8 relative overflow-hidden"
+                                className="bg-white dark:bg-[#1a1f2e] p-6 sm:p-10 rounded-[2.5rem] border-2 border-primary/10 dark:border-white/5 shadow-xl shadow-primary/10/20 space-y-8 relative overflow-y-auto no-scrollbar max-h-[65vh] sm:max-h-none"
                             >
                                 {/* Background Accent */}
                                 <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 dark:bg-primary/10 rounded-bl-[5rem] -mr-10 -mt-10" />
