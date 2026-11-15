@@ -38,8 +38,15 @@ const StudentTestsTab = ({ courseId, isRestricted }) => {
     const [direction, setDirection] = useState(0); // 1 for next, -1 for previous
     const [termsTest, setTermsTest] = useState(null);
 
+    useEffect(() => {
+        if (questionScrollRef.current) {
+            questionScrollRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }, [currentQuestionIndex]);
+
     const submitTestRef = useRef();
     const isPromptActiveRef = useRef(false);
+    const questionScrollRef = useRef(null);
 
     const enterFullscreen = () => {
         const element = document.documentElement;
@@ -379,7 +386,7 @@ const StudentTestsTab = ({ courseId, isRestricted }) => {
                     </div>
                 </div>
 
-                <div className="flex-1 overflow-hidden flex flex-col sm:flex-row">
+                <div className="flex-1 min-h-0 overflow-hidden flex flex-col sm:flex-row">
 
                     {/* Question Numbers: above progress bar on phone, sidebar on desktop */}
                     <div className="w-full sm:w-24 shrink-0 overflow-y-auto no-scrollbar bg-slate-50 dark:bg-[#1a1f2e] border-b-2 sm:border-b-0 sm:border-r-2 border-slate-200 dark:border-white/5 py-2 sm:py-3 px-2 flex flex-col items-center gap-2">
@@ -407,7 +414,7 @@ const StudentTestsTab = ({ courseId, isRestricted }) => {
                     </div>
 
                     {/* Right: Progress + Question Content */}
-                    <div className="flex-1 overflow-y-auto p-4 sm:p-6 flex flex-col no-scrollbar">
+                    <div ref={questionScrollRef} className="flex-1 min-h-0 overflow-y-auto p-4 sm:p-6 flex flex-col no-scrollbar">
 
                         {/* Progress Bar - Full Width */}
                         <div className="flex flex-col space-y-1.5 mb-6 w-full">
@@ -456,8 +463,8 @@ const StudentTestsTab = ({ courseId, isRestricted }) => {
                                             onClick={() => handleSelectAnswer(currentQuestion._id, opt.originalIndex)}
                                             className={`group p-5 rounded-2xl text-left border-2 transition-all flex items-center gap-6 ${
                                                 answers[currentQuestion._id] === opt.originalIndex
-                                                ? 'border-primary bg-primary/5 dark:bg-slate-800 shadow-xl shadow-primary/20 translate-x-2'
-                                                : 'border-slate-200 dark:border-white/5 bg-white dark:bg-white/5 hover:border-primary/40 hover:bg-primary/5 dark:hover:bg-slate-800 hover:translate-x-1 hover:shadow-md'
+                                                ? 'border-primary bg-primary/5 dark:bg-slate-800 shadow-xl shadow-primary/20 sm:translate-x-2'
+                                                : 'border-slate-200 dark:border-white/5 bg-white dark:bg-white/5 hover:border-primary/40 hover:bg-primary/5 dark:hover:bg-slate-800 sm:hover:translate-x-1 hover:shadow-md'
                                             }`}
                                         >
                                             <div className={`w-10 h-10 shrink-0 rounded-xl border-2 flex items-center justify-center font-black text-base transition-all ${
