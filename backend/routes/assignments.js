@@ -669,6 +669,8 @@ router.put('/:id', protect, authorize('teacher', 'admin'), async (req, res) => {
             return res.status(404).json({ success: false, message: 'Assignment not found' });
         }
 
+        const oldDueDate = assignment.dueDate ? new Date(assignment.dueDate).toISOString() : null;
+
         // If assignTo is updated to 'all', we need to update assignedUsers list
         if (updateData.assignTo === 'all') {
             const enrollments = await Enrollment.find({ course: assignment.course });
@@ -680,6 +682,25 @@ router.put('/:id', protect, authorize('teacher', 'admin'), async (req, res) => {
             updateData,
             { new: true, runValidators: true }
         );
+
+        const newDueDate = updatedAssignment.dueDate ? new Date(updatedAssignment.dueDate).toISOString() : null;
+        if (updateData.dueDate && oldDueDate !== newDueDate) {
+            const targetUsers = updatedAssignment.assignedUsers && updatedAssignment.assignedUsers.length
+                ? updatedAssignment.assignedUsers
+                : (await Enrollment.find({ course: updatedAssignment.course })).map(e => e.user);
+
+            const io = req.app.get('io');
+            const notificationTitle = 'Assignment Updated 📝';
+            const notificationMessage = `The assignment "${updatedAssignment.title}" has been updated. New due date: ${new Date(updatedAssignment.dueDate).toLocaleDateString()}.`;
+            targetUsers.forEach(async (userId) => {
+                const userIdStr = userId.toString();
+                try {
+                    await UserNotification.create({ user: userIdStr, title: notificationTitle, message: notificationMessage, type: 'assignment_updated' });
+                } catch (err) { console.error('Error creating assignment update notification:', err); }
+                sendPushNotification(userIdStr, { title: notificationTitle, body: notificationMessage, icon: '/logo.png', image: '/logo.png', badge: '/logo.png', url: '/student/assignments' });
+                if (io) io.to(userIdStr).emit('new_browser_notification', { title: notificationTitle, message: notificationMessage, url: '/student/assignments', type: 'assignment_updated' });
+            });
+        }
 
         res.json({ success: true, assignment: updatedAssignment });
     } catch (error) {

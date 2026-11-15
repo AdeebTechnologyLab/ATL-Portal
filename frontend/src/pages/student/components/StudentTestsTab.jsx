@@ -340,25 +340,25 @@ const StudentTestsTab = ({ courseId, isRestricted }) => {
         return (
             <div className="fixed inset-0 z-[3000] bg-[#f8fafc] dark:bg-[#0f1117] flex flex-col h-[100dvh] w-screen overflow-hidden font-sans select-none overscroll-none">
                 {/* Header with Title and Timer */}
-                <div className="shrink-0 p-4 sm:p-5 bg-white/80 dark:bg-[#1a1f2e]/80 backdrop-blur-md border-b border-primary/5 dark:border-white/5 flex items-center justify-between sticky top-0 z-[100] shadow-sm">
-                    <div className="flex items-center gap-5">
-                        <div className="relative group">
+                <div className="shrink-0 p-3 sm:p-5 bg-white/80 dark:bg-[#1a1f2e]/80 backdrop-blur-md border-b border-primary/5 dark:border-white/5 flex items-center justify-between gap-2 sticky top-0 z-[100] shadow-sm overflow-hidden">
+                    <div className="flex items-center gap-2 sm:gap-5 min-w-0">
+                        <div className="relative group shrink-0">
                             <div className="absolute inset-0 bg-primary rounded-2xl blur-lg opacity-10" />
-                            <div className="relative p-2.5 rounded-2xl bg-gradient-to-br from-primary to-[#ffa534] shadow-md">
-                                <Zap className="w-5 h-5 text-white" />
+                            <div className="relative p-2 sm:p-2.5 rounded-2xl bg-gradient-to-br from-primary to-[#ffa534] shadow-md">
+                                <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                             </div>
                         </div>
-                        <div className="flex flex-col">
-                            <h3 className="text-base font-black text-slate-900 dark:text-white uppercase tracking-tighter leading-none mb-1">{selectedTest.title}</h3>
+                        <div className="flex flex-col min-w-0">
+                            <h3 className="text-sm sm:text-base font-black text-slate-900 dark:text-white uppercase tracking-tighter leading-none mb-1 truncate">{selectedTest.title}</h3>
                             <div className="flex items-center gap-2">
                                 <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Active Session</span>
+                                <span className="text-[9px] sm:text-[10px] font-black text-slate-400 uppercase tracking-widest">Active Session</span>
                             </div>
                         </div>
                     </div>
 
                     {/* Centered Premium Timer (No Card) */}
-                    <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+                    <div className="relative sm:absolute sm:left-1/2 sm:top-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 order-last sm:order-none">
                         <div className={`flex flex-col items-center transition-all duration-500 text-red-600`}>
                             <span className={`text-[8px] font-black uppercase tracking-[0.2em] mb-0.5 text-red-400 dark:text-red-400/80`}>Time Left</span>
                             <div className="flex items-center gap-2">
@@ -373,7 +373,7 @@ const StudentTestsTab = ({ courseId, isRestricted }) => {
                         <button
                             onClick={handleSubmitTest}
                             disabled={isSubmitting || Object.keys(answers).length < shuffledQuestions.length}
-                            className={`px-5 py-2 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all flex items-center gap-2 ${
+                            className={`px-3 sm:px-5 py-2 rounded-xl font-black text-[9px] sm:text-[10px] uppercase tracking-widest transition-all flex items-center gap-2 shrink-0 ${
                                 Object.keys(answers).length < shuffledQuestions.length
                                 ? 'bg-slate-200 text-slate-400 cursor-not-allowed'
                                 : 'bg-primary text-white hover:bg-primary/90 shadow-lg shadow-primary/20'

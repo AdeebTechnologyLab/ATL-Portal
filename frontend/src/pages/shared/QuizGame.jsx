@@ -719,7 +719,7 @@ const QuizGame = ({ inline = false, onExit = null }) => {
                                         <div className="min-w-0">
                                             <p className="truncate text-xs font-bold text-white/80">{idx + 1}. {q.question}</p>
                                             <p className="text-[11px] text-white/45">
-                                                Correct: <span className="font-bold text-emerald-300">{OPTION_LETTERS[q.correctOption]}. {q.options[q.correctOption]}</span>
+                                                Correct: <span className="font-bold text-emerald-300">{OPTION_LETTERS[game.correctOptions?.[idx]]}. {q.options[game.correctOptions?.[idx]]}</span>
                                             </p>
                                         </div>
                                     </div>

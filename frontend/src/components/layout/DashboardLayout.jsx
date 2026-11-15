@@ -519,7 +519,7 @@ const DashboardLayout = () => {
             <div className="flex-1 flex flex-col h-screen overflow-hidden">
                 {/* Header */}
                 <header className={`border-b sticky top-0 z-40 transition-colors duration-300 ${isDark ? 'bg-[var(--bg-sidebar)] border-white/10' : 'bg-[var(--bg-card)] border-gray-100'}`}>
-                    <div className="px-4 sm:px-6 py-3 sm:py-4 w-full min-w-0 flex flex-col lg:flex-row lg:items-center gap-3 sm:gap-4">
+                    <div className="px-3 sm:px-6 py-2 sm:py-4 w-full min-w-0 flex flex-col lg:flex-row lg:items-center gap-2 sm:gap-4">
                         {/* Top row for mobile: Menu + Title + Actions */}
                         <div className="flex items-center justify-between w-full lg:w-auto gap-4">
                             {/* Left: menu + title */}
@@ -533,9 +533,9 @@ const DashboardLayout = () => {
                                 </button>
 
                                 <div className="min-w-0">
-                                    <h1 className={`text-lg sm:text-2xl font-bold tabular-nums transition-colors duration-300 truncate ${isDark ? 'text-white' : 'text-gray-900'}`}>{headerTime}</h1>
-                                    <div className={`mt-0.5 flex items-center gap-1.5 text-[9px] sm:text-[10px] font-bold tracking-wide min-w-0 ${isDark ? 'text-white/60' : 'text-gray-500'}`}>
-                                        <Clock className="w-3 h-3 text-primary shrink-0" />
+                                    <h1 className={`text-base sm:text-2xl font-bold tabular-nums transition-colors duration-300 truncate ${isDark ? 'text-white' : 'text-gray-900'}`}>{headerTime}</h1>
+                                    <div className={`mt-0.5 flex items-center gap-1 text-[8px] sm:text-[10px] font-bold tracking-wide min-w-0 ${isDark ? 'text-white/60' : 'text-gray-500'}`}>
+                                        <Clock className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-primary shrink-0" />
                                         <span className="truncate">{headerDate}</span>
                                     </div>
                                 </div>
@@ -546,9 +546,9 @@ const DashboardLayout = () => {
                                 {/* Refresh Button */}
                                 <button
                                     type="button"
-                                    onClick={() => window.location.reload()}
-                                    className="rounded-xl transition-all duration-200 bg-[var(--bg-sidebar-dark)] hover:bg-[var(--bg-sidebar)] text-white shadow-sm p-2.5"
-                                    title={t('layout.refreshPage')}
+                                onClick={() => window.location.reload()}
+                                className="rounded-xl transition-all duration-200 bg-[var(--bg-sidebar-dark)] hover:bg-[var(--bg-sidebar)] text-white shadow-sm p-2 sm:p-2.5"
+                                title={t('layout.refreshPage')}
                                 >
                                     <RefreshCw className="w-5 h-5 shrink-0" />
                                 </button>
@@ -558,8 +558,8 @@ const DashboardLayout = () => {
                                     <button
                                         type="button"
                                         onClick={() => setShowDownloadMenu(v => !v)}
-                                        className="rounded-xl transition-all duration-200 bg-[var(--bg-sidebar-dark)] hover:bg-[var(--bg-sidebar)] text-white shadow-sm p-2.5 flex items-center justify-center"
-                                        title="Download"
+                                className="rounded-xl transition-all duration-200 bg-[var(--bg-sidebar-dark)] hover:bg-[var(--bg-sidebar)] text-white shadow-sm p-2 sm:p-2.5 flex items-center justify-center"
+                                title="Download"
                                     >
                                         <Download className="w-5 h-5 shrink-0" />
                                     </button>
@@ -587,7 +587,7 @@ const DashboardLayout = () => {
                                 <button
                                     type="button"
                                     onClick={toggleTheme}
-                                    className={`relative rounded-xl transition-all duration-300 shadow-sm flex items-center justify-center overflow-hidden p-2.5 ${isDark
+                                    className={`relative rounded-xl transition-all duration-300 shadow-sm flex items-center justify-center overflow-hidden p-2 sm:p-2.5 ${isDark
                                         ? 'bg-primary'
                                         : 'bg-[var(--bg-sidebar)] text-white'
                                         }`}
@@ -599,7 +599,7 @@ const DashboardLayout = () => {
                                 <div className="relative">
                                     <button
                                         onClick={() => setShowNotifications(!showNotifications)}
-                                        className={`relative p-2.5 rounded-xl transition-all flex items-center ${isDark ? 'hover:bg-white/10 text-white/70' : 'hover:bg-gray-100 text-gray-600'}`}
+                                        className={`relative p-2 sm:p-2.5 rounded-xl transition-all flex items-center ${isDark ? 'hover:bg-white/10 text-white/70' : 'hover:bg-gray-100 text-gray-600'}`}
                                     >
                                         <Bell className="w-5 h-5" />
                                         {notifications.length + pendingTasks.length > 0 && (

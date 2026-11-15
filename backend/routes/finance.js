@@ -3,6 +3,8 @@ const router = express.Router();
 const FinanceEntry = require('../models/FinanceEntry');
 const FinanceProject = require('../models/FinanceProject');
 const Fee = require('../models/Fee');
+const UserNotification = require('../models/UserNotification');
+const { sendPushNotification } = require('../utils/pushHelper');
 const { protect, authorize } = require('../middleware/auth');
 const { requireScreenAccess } = require('../middleware/screenAccess');
 
@@ -184,12 +186,35 @@ router.post('/projects', async (req, res) => {
 
 router.put('/projects/:id', async (req, res) => {
     try {
+        const existingProject = await FinanceProject.findById(req.params.id);
+        if (!existingProject) return res.status(404).json({ success: false, message: 'Project not found' });
+
+        const payload = normalizeProjectPayload(req.body);
         const project = await FinanceProject.findByIdAndUpdate(
             req.params.id,
-            normalizeProjectPayload(req.body),
+            payload,
             { new: true, runValidators: true }
         );
         if (!project) return res.status(404).json({ success: false, message: 'Project not found' });
+
+        const oldStart = existingProject.startDate ? new Date(existingProject.startDate).toISOString() : null;
+        const newStart = project.startDate ? new Date(project.startDate).toISOString() : null;
+        const oldCompletion = existingProject.completionDate ? new Date(existingProject.completionDate).toISOString() : null;
+        const newCompletion = project.completionDate ? new Date(project.completionDate).toISOString() : null;
+        if (oldStart !== newStart || oldCompletion !== newCompletion) {
+            const io = req.app.get('io');
+            const title = 'Project Updated 📁';
+            const message = `The project "${project.name}" has been updated. Start: ${project.startDate ? new Date(project.startDate).toLocaleDateString() : 'N/A'}, Completion: ${project.completionDate ? new Date(project.completionDate).toLocaleDateString() : 'N/A'}.`;
+            (project.assignedTeachers || []).forEach(async (teacherId) => {
+                const userIdStr = teacherId.toString();
+                try {
+                    await UserNotification.create({ user: userIdStr, title, message, type: 'project_updated' });
+                } catch (err) { console.error('Error creating project update notification:', err); }
+                sendPushNotification(userIdStr, { title, body: message, icon: '/logo.png', image: '/logo.png', badge: '/logo.png', url: '/teacher/projects' });
+                if (io) io.to(userIdStr).emit('new_browser_notification', { title, message, url: '/teacher/projects', type: 'project_updated' });
+            });
+        }
+
         res.json({ success: true, data: projectData(project) });
     } catch (error) {
         res.status(400).json({ success: false, message: error.message });

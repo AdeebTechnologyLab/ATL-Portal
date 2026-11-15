@@ -186,6 +186,8 @@ router.post('/', protect, authorize('teacher', 'admin'), async (req, res) => {
             ? (await Enrollment.find({ course: courseId })).map(e => e.user)
             : assignedUsers;
 
+        const io = req.app.get('io');
+
         targetUsers.forEach(async (userId) => {
             const userIdStr = userId.toString();
             const notificationTitle = 'New Test Assigned 📝';
@@ -211,6 +213,16 @@ router.post('/', protect, authorize('teacher', 'admin'), async (req, res) => {
                 });
             } catch (err) {
                 console.error('Error creating test notification:', err);
+            }
+
+            // In-app toast via socket
+            if (io) {
+                io.to(userIdStr).emit('new_browser_notification', {
+                    title: notificationTitle,
+                    message: notificationMessage,
+                    url: '/student/tests',
+                    type: 'test_assigned'
+                });
             }
         });
 
@@ -322,6 +334,11 @@ router.put('/:id', protect, authorize('teacher', 'admin'), async (req, res) => {
     try {
         const { title, description, questions, duration, dueDate, scheduledAt, assignTo, assignedUsers } = req.body;
 
+        const existingTest = await Test.findById(req.params.id);
+        if (!existingTest) {
+            return res.status(404).json({ success: false, message: 'Test not found' });
+        }
+
         const sanitizedQuestions = sanitizeQuestions(questions);
         const totalMarks = calculateTotalMarks(sanitizedQuestions);
 
@@ -341,6 +358,25 @@ router.put('/:id', protect, authorize('teacher', 'admin'), async (req, res) => {
 
         if (!test) {
             return res.status(404).json({ success: false, message: 'Test not found' });
+        }
+
+        const dateChanged = String(existingTest.dueDate || '') !== String(test.dueDate || '');
+        if (dateChanged) {
+            const targetUsers = test.assignTo === 'all'
+                ? (await Enrollment.find({ course: test.course })).map(e => e.user)
+                : (test.assignedUsers || []);
+
+            const io = req.app.get('io');
+            const notificationTitle = 'Test Updated 📝';
+            const notificationMessage = `The test "${test.title}" has been updated. New due date: ${test.dueDate ? new Date(test.dueDate).toLocaleDateString() : 'N/A'}.`;
+            targetUsers.forEach(async (userId) => {
+                const userIdStr = userId.toString();
+                try {
+                    await UserNotification.create({ user: userIdStr, title: notificationTitle, message: notificationMessage, type: 'test_updated' });
+                } catch (err) { console.error('Error creating test update notification:', err); }
+                sendPushNotification(userIdStr, { title: notificationTitle, body: notificationMessage, icon: '/logo.png', image: '/logo.png', badge: '/logo.png', url: '/student/tests' });
+                if (io) io.to(userIdStr).emit('new_browser_notification', { title: notificationTitle, message: notificationMessage, url: '/student/tests', type: 'test_updated' });
+            });
         }
 
         res.json({ success: true, test });
@@ -381,7 +417,24 @@ router.delete('/:id', protect, authorize('teacher', 'admin'), async (req, res) =
         const test = await Test.findById(req.params.id);
         if (!test) return res.status(404).json({ success: false, message: 'Test not found' });
 
+        const targetUsers = test.assignTo === 'all'
+            ? (await Enrollment.find({ course: test.course })).map(e => e.user)
+            : (test.assignedUsers || []);
+
         await test.deleteOne();
+
+        const io = req.app.get('io');
+        const title = 'Test Removed';
+        const message = `The test "${test.title}" has been removed.`;
+        targetUsers.forEach(async (userId) => {
+            const userIdStr = userId.toString();
+            try {
+                await UserNotification.create({ user: userIdStr, title, message, type: 'test_deleted' });
+            } catch (err) { console.error('Error creating test deletion notification:', err); }
+            sendPushNotification(userIdStr, { title, body: message, icon: '/logo.png', image: '/logo.png', badge: '/logo.png', url: '/student/tests' });
+            if (io) io.to(userIdStr).emit('new_browser_notification', { title, message, url: '/student/tests', type: 'test_deleted' });
+        });
+
         res.json({ success: true, message: 'Test deleted' });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });

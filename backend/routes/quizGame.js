@@ -46,8 +46,8 @@ const presentGame = (game, viewerUserId) => {
         _id: p._id,
         user: p.user?._id || p.user,
         role: p.role,
-        name: p.name,
-        photo: p.photo,
+        name: p.user?.name || p.name,
+        photo: p.user?.photo || p.photo,
         joinedAt: p.joinedAt,
         score: p.score,
         finished: p.finished,
@@ -287,7 +287,7 @@ router.post('/:id/answer', async (req, res) => {
 
 const finishGame = async (req, res) => {
     try {
-        const game = await QuizGame.findById(req.params.id);
+        const game = await QuizGame.findById(req.params.id).populate('players.user', 'name photo role');
         if (!game) return res.status(404).json({ success: false, message: 'Game not found' });
         if (game.status === 'ended') {
             return res.json({ success: true, data: presentGame(game, req.user.id) });
@@ -439,7 +439,7 @@ router.get('/open', async (req, res) => {
 // @desc    Poll game state (fallback if socket misses)
 router.get('/:id', async (req, res) => {
     try {
-        const game = await QuizGame.findById(req.params.id);
+        const game = await QuizGame.findById(req.params.id).populate('players.user', 'name photo role');
         if (!game) return res.status(404).json({ success: false, message: 'Game not found' });
         res.json({ success: true, data: presentGame(game, req.user.id) });
     } catch (error) {
