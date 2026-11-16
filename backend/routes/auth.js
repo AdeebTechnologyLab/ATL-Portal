@@ -13,19 +13,50 @@ const getLinkedAccountQuery = (user) => {
     return { email: user.email?.toString().trim().toLowerCase() };
 };
 
-// Keep the profile photo identical across every portal linked to the same person.
-// Returns the best (most recently updated non-empty) photo for the linked group.
-const syncLinkedPhoto = async (user) => {
+// Sync missing profile data + preferences across all portals linked to the same person.
+const SYNC_LINKED_FIELDS = ['name', 'phone', 'location', 'skills', 'experience', 'portfolio', 'teachingExperience', 'experienceDetails', 'preferredCity', 'preferredMode', 'cvUrl', 'requirements', 'reason'];
+const syncLinkedProfile = async (user) => {
     if (!user) return null;
-    const linked = await User.find(getLinkedAccountQuery(user)).select('photo updatedAt');
-    const candidates = linked.filter((account) => account.photo);
-    candidates.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
-    const bestPhoto = candidates.length ? candidates[0].photo : null;
+    // photo sync
+    const linkedPhoto = await User.find(getLinkedAccountQuery(user)).select('photo updatedAt');
+    const candidatesPhoto = linkedPhoto.filter((account) => account.photo);
+    candidatesPhoto.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+    const bestPhoto = candidatesPhoto.length ? candidatesPhoto[0].photo : null;
     if (bestPhoto && user.photo !== bestPhoto) {
         await User.updateMany(getLinkedAccountQuery(user), { $set: { photo: bestPhoto } });
         user.photo = bestPhoto;
     }
-    return user.photo || bestPhoto || null;
+    const linked = await User.find(getLinkedAccountQuery(user));
+    if (!linked || linked.length === 0) return user;
+
+    const update = {};
+    for (const field of SYNC_LINKED_FIELDS) {
+        const best = linked.map((account) => account[field]).find((value) => value !== undefined && value !== null && String(value).trim() !== '');
+        if (best !== undefined) update[field] = best;
+    }
+
+    const themeCandidate = linked.map((account) => account.preferences?.colorTheme).find(Boolean);
+    if (themeCandidate) update['preferences.colorTheme'] = themeCandidate;
+    const customThemeCandidate = linked.map((account) => account.preferences?.customTheme).find((value) => value && value.primary);
+    if (customThemeCandidate) update['preferences.customTheme'] = customThemeCandidate;
+    const dateFormatCandidate = linked.map((account) => account.preferences?.dateFormat).find(Boolean);
+    if (dateFormatCandidate) update['preferences.dateFormat'] = dateFormatCandidate;
+    const timeFormatCandidate = linked.map((account) => account.preferences?.timeFormat).find(Boolean);
+    if (timeFormatCandidate) update['preferences.timeFormat'] = timeFormatCandidate;
+
+    if (Object.keys(update).length > 0) {
+        await User.updateMany(getLinkedAccountQuery(user), { $set: update });
+        Object.keys(update).forEach((key) => {
+            if (key.startsWith('preferences.')) {
+                const prefKey = key.replace('preferences.', '');
+                user.preferences = user.preferences || {};
+                user.preferences[prefKey] = update[key];
+            } else {
+                user[key] = update[key];
+            }
+        });
+    }
+    return user;
 };
 
 // Shape returned to the client after any successful login (password or Google).
@@ -459,7 +490,7 @@ router.post('/login', async (req, res) => {
         }
 
         // Keep profile photo consistent across all linked portals
-        await syncLinkedPhoto(user);
+        await syncLinkedProfile(user);
 
         // Check if account has been revoked by admin
         if (user.role !== 'admin' && !user.isVerified) {
@@ -554,7 +585,7 @@ router.post('/google', async (req, res) => {
             user.photo = googleProfile.picture;
         }
 
-        await syncLinkedPhoto(user);
+        await syncLinkedProfile(user);
 
         user.lastSeen = new Date();
         await user.save({ validateBeforeSave: false });
@@ -635,7 +666,7 @@ router.post('/google/register', async (req, res) => {
                 user.photo = googleProfile.picture;
             }
 
-            await syncLinkedPhoto(user);
+            await syncLinkedProfile(user);
 
             user.lastSeen = new Date();
             await user.save({ validateBeforeSave: false });
@@ -720,7 +751,7 @@ router.post('/google/register', async (req, res) => {
 router.get('/me', protect, async (req, res) => {
     try {
         const user = await User.findById(req.user.id);
-        if (user) await syncLinkedPhoto(user);
+        if (user) await syncLinkedProfile(user);
         res.json({ success: true, user });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
@@ -898,7 +929,7 @@ router.post('/switch-role', protect, async (req, res) => {
         }
 
         // Keep profile photo consistent across all linked portals
-        await syncLinkedPhoto(targetUser);
+        await syncLinkedProfile(targetUser);
 
         // Generate a new token for the target user (same session duration logic as login)
         const { rememberMe } = req.body;
