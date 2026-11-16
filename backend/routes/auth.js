@@ -14,7 +14,7 @@ const getLinkedAccountQuery = (user) => {
 };
 
 // Sync missing profile data + preferences across all portals linked to the same person.
-const SYNC_LINKED_FIELDS = ['name', 'phone', 'location', 'skills', 'experience', 'portfolio', 'teachingExperience', 'experienceDetails', 'preferredCity', 'preferredMode', 'cvUrl', 'requirements', 'reason'];
+const SYNC_LINKED_FIELDS = ['name', 'phone', 'location', 'skills', 'experience', 'portfolio', 'teachingExperience', 'experienceDetails', 'preferredCity', 'preferredMode', 'cvUrl', 'requirements', 'reason', 'cnic', 'dob', 'age', 'gender', 'address', 'city', 'country', 'fatherName', 'photo', 'education', 'guardianName', 'guardianRelation', 'guardianPhone', 'guardianOccupation', 'degree', 'university', 'department', 'semester', 'rollNumber', 'cgpa', 'majorSubjects', 'specialization', 'qualification', 'attendType', 'classTime', 'heardAbout', 'resumeUrl'];
 const syncLinkedProfile = async (user) => {
     if (!user) return null;
     // photo sync
@@ -1053,8 +1053,15 @@ router.put('/profile', protect, uploadPhoto.single('photo'), async (req, res) =>
 
         // Fields to synchronize across all roles for the same email
         const syncFields = [
-            'name', 'phone', 'cnic', 'dob', 'age', 'gender', 
-            'address', 'city', 'country', 'fatherName', 'photo'
+            'name', 'phone', 'cnic', 'dob', 'age', 'gender',
+            'address', 'city', 'country', 'fatherName', 'photo',
+            'education', 'guardianName', 'guardianRelation', 'guardianPhone',
+            'guardianOccupation', 'degree', 'university', 'department',
+            'semester', 'rollNumber', 'cgpa', 'majorSubjects', 'specialization',
+            'qualification', 'skills', 'experience', 'portfolio', 'teachingExperience',
+            'experienceDetails', 'preferredCity', 'preferredMode', 'cvUrl',
+            'requirements', 'reason', 'location', 'attendType', 'classTime',
+            'heardAbout', 'resumeUrl'
         ];
 
         const syncData = {};
