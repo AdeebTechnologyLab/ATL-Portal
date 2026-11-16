@@ -620,8 +620,9 @@ router.post('/google/register', async (req, res) => {
             .read('primary')
             .maxTimeMS(10000);
 
-        if (users && users.length > 0) {
-            const user = pickUserByRolePriority(users);
+        const existingForRole = (users || []).find(u => u.role === requestedRole);
+        if (existingForRole) {
+            const user = existingForRole;
             if (user.role !== 'admin' && !user.isVerified) {
                 return res.status(403).json({
                     success: false,
@@ -653,17 +654,27 @@ router.post('/google/register', async (req, res) => {
         const assignedRollNo = await Counter.getNextRollNo();
         const generatedPassword = crypto.randomBytes(32).toString('hex');
 
+        // Reuse profile data from an existing linked portal so the new one is
+        // not empty; the user can fill in the rest later.
+        const sourceUser = users && users.length > 0 ? users[0] : null;
+
         const userData = {
-            name: String(googleProfile.name || '').trim() || email.split('@')[0],
+            name: (sourceUser && sourceUser.name) || String(googleProfile.name || '').trim() || email.split('@')[0],
             email,
             password: generatedPassword,
             role: requestedRole,
             isVerified: true,
-            rollNo: assignedRollNo
+            rollNo: (sourceUser && sourceUser.rollNo) || assignedRollNo
         };
 
         if (googleProfile.picture) {
             userData.photo = googleProfile.picture;
+        } else if (sourceUser && sourceUser.photo) {
+            userData.photo = sourceUser.photo;
+        }
+
+        if (sourceUser && sourceUser.preferences) {
+            userData.preferences = sourceUser.preferences;
         }
 
         let user;
