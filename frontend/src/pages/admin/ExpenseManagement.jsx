@@ -108,6 +108,12 @@ const ExpenseManagement = ({ showProjectSections = true, projectsOnly = false })
 
     useEffect(() => { loadData(); }, [periodMode, selectedMonth, startDate, endDate]);
 
+    useEffect(() => {
+        const handleDataChanged = () => loadData();
+        window.addEventListener('app-data-changed', handleDataChanged);
+        return () => window.removeEventListener('app-data-changed', handleDataChanged);
+    }, []);
+
     const selectedRange = useMemo(() => {
         if (periodMode === 'all') return null;
         return periodMode === 'month' ? monthRange(selectedMonth) : { startDate, endDate };

@@ -129,6 +129,17 @@ const AssignmentSubmission = () => {
     }, [selectedCourseId]);
 
     useEffect(() => {
+        const socket = socketRef.current;
+        if (!socket) return;
+        const handleNewAssignment = (data) => {
+            if (selectedCourseId && data?.courseId && data.courseId !== selectedCourseId) return;
+            if (selectedCourseId) fetchCourseData();
+        };
+        socket.on('new_assignment', handleNewAssignment);
+        return () => socket.off('new_assignment', handleNewAssignment);
+    }, [selectedCourseId]);
+
+    useEffect(() => {
         setActiveTab(tabFromPath(location.pathname) || location.state?.tab || 'daily_tasks');
         if (location.state?.courseId) {
             setSelectedCourseId(location.state.courseId);
