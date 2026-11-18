@@ -774,11 +774,13 @@ const AssignmentSubmission = () => {
                                                                 {/* Graded Summary */}
                                                                 {submissionStatus === 'graded' && submissionMarks !== undefined && (
                                                                     <>
-                                                                        {submissionLink && (
-                                                                            <a href={submissionLink} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-[10px] font-black text-blue-600 hover:text-blue-700 bg-blue-50 dark:bg-blue-900/20 px-3 py-2 rounded-xl border border-blue-100 dark:border-blue-800/30 transition-colors uppercase">
-                                                                                <LinkIcon className="w-3.5 h-3.5" /> My Work
-                                                                            </a>
-                                                                        )}
+                                                                        <button
+                                                                            type="button"
+                                                                            onClick={() => handleOpenSubmission(assignment, mySubmission)}
+                                                                            className="flex items-center gap-1.5 text-[10px] font-black text-blue-600 hover:text-blue-700 bg-white/50 dark:bg-white/5 px-3 py-2 rounded-xl border border-blue-100/50 transition-colors uppercase"
+                                                                        >
+                                                                            <FileText className="w-3.5 h-3.5" /> My Submission
+                                                                        </button>
                                                                         {submissionFeedback && (
                                                                             <div className="flex items-start gap-2 px-3 py-2 bg-gray-50 dark:bg-slate-800/50 rounded-xl border border-gray-100 dark:border-slate-700 max-w-[600px]">
                                                                                 <span className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest shrink-0 mt-0.5">Teacher Feedback:</span>
@@ -792,16 +794,18 @@ const AssignmentSubmission = () => {
                                                                 {submissionStatus === 'submitted' && (
                                                                     <div className="flex items-center gap-2 px-3 py-2 bg-blue-50 dark:bg-blue-900/10 rounded-xl border border-blue-100 dark:border-blue-800/30">
                                                                         <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest">Submitted</span>
-                                                                        {submissionLink && (
-                                                                            <a href={submissionLink} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-[10px] font-black text-blue-600 hover:text-blue-700 bg-white/50 dark:bg-white/5 px-2 py-1 rounded-lg border border-blue-100/50 transition-colors ml-1 uppercase">
-                                                                                <LinkIcon className="w-3 h-3" /> View Link
-                                                                            </a>
-                                                                        )}
-                                                                    </div>
-                                                                )}
-                                                            </div>
+                                                                        <button
+                                                                            type="button"
+                                                                            onClick={() => handleOpenSubmission(assignment, mySubmission)}
+                                                                            className="flex items-center gap-1.5 text-[10px] font-black text-blue-600 hover:text-blue-700 bg-white/50 dark:bg-white/5 px-2 py-1 rounded-lg border border-blue-100/50 transition-colors ml-1 uppercase"
+                                                                        >
+                                                                            <FileText className="w-3 h-3" /> My Submission
+                                                                        </button>
+</div>
+                                                                 )}
+                                                             </div>
 
-                                                            {/* Action Button / Graded Score on Right */}
+                                                             {/* Action Button / Graded Score on Right */}
                                                             <div className="flex items-center gap-3 sm:gap-4 w-full sm:w-auto sm:shrink-0 sm:ml-auto">
                                                                 {(canSubmit || canResubmit) && selectedAssignment?._id !== assignment._id && (
                                                                 <button
@@ -831,7 +835,7 @@ const AssignmentSubmission = () => {
                                                     <div className="pr-14">
                                                         <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/70 mb-1">Student Workspace</p>
                                                         <h3 className="text-xl sm:text-2xl font-black uppercase tracking-tight leading-none mb-2">Submit Assignment</h3>
-                                                        <p className="text-white/80 text-[11px] sm:text-xs font-semibold">Upload your work to Drive, add notes, then submit.</p>
+                                                        <p className="text-white/80 text-[11px] sm:text-xs font-semibold">{isDeadlinePassed(selectedAssignment?.dueDate) ? 'View your submitted work, links and notes.' : 'Upload your work to Drive, add notes, then submit.'}</p>
                                                     </div>
                                                     <button onClick={() => setSelectedAssignment(null)} className="absolute top-1/2 -translate-y-1/2 right-3 sm:right-5 w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-black/10 hover:bg-black/20 border border-white/15 flex items-center justify-center text-white transition-colors"><X className="w-5 h-5" /></button>
                                                 </div>
@@ -856,7 +860,7 @@ const AssignmentSubmission = () => {
                                                                     </div>
                                                                 </div>
 
-                                                                {driveStatus.connected ? (
+                                                                {!isDeadlinePassed(selectedAssignment?.dueDate) && (driveStatus.connected ? (
                                                                     <label className={`min-h-12 px-5 sm:px-6 py-3 rounded-xl bg-primary hover:bg-orange-600 text-white text-[10px] sm:text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2.5 cursor-pointer shadow-lg shadow-primary/25 transition-all hover:-translate-y-0.5 active:translate-y-0 ${isDriveUploading ? 'opacity-60 pointer-events-none' : ''}`}>
                                                                         <Upload className="w-4 h-4 sm:w-5 sm:h-5" />
                                                                         {isDriveUploading
@@ -881,7 +885,7 @@ const AssignmentSubmission = () => {
                                                                     >
                                                                         {driveError ? 'Reconnect & Allow Access' : 'Connect Google Drive'}
                                                                     </button>
-                                                                )}
+                                                                ))}
                                                             </div>
 
                                                             {isDriveFilesLoading && (
@@ -901,14 +905,14 @@ const AssignmentSubmission = () => {
                                                                         </p>
                                                                         <p className="text-[10px] text-gray-400">Saved together in one Drive folder • Teacher access enabled</p>
                                                                     </div>
-                                                                    <div className="flex items-center gap-2 shrink-0">
-                                                                        {driveFile.webViewLink && (
-                                                                            <a href={driveFile.webViewLink} target="_blank" rel="noopener noreferrer" title="Open Drive folder" className="w-8 h-8 rounded-lg border border-primary/20 text-primary hover:bg-primary/10 flex items-center justify-center">
-                                                                                <ExternalLink className="w-4 h-4" />
-                                                                            </a>
-                                                                        )}
-                                                                        <CheckCircle className="w-5 h-5 text-emerald-500" />
-                                                                    </div>
+                                                                     <div className="flex items-center gap-2 shrink-0">
+                                                                         {driveFile.webViewLink && (
+                                                                             <a href={driveFile.webViewLink} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg text-xs font-bold hover:bg-blue-100 border border-blue-100 transition-colors">
+                                                                                 <ExternalLink className="w-3.5 h-3.5" /> VIEW SUBMISSION FOLDER
+                                                                             </a>
+                                                                         )}
+                                                                         <CheckCircle className="w-5 h-5 text-emerald-500" />
+                                                                     </div>
                                                                 </div>
                                                             )}
                                                             {driveUploadItems.length > 0 && (
@@ -955,6 +959,7 @@ const AssignmentSubmission = () => {
                                                                                                 <Eye className="w-4 h-4" />
                                                                                             </button>
                                                                                         )}
+                                                                                        {!isDeadlinePassed(selectedAssignment?.dueDate) && (
                                                                                         <button
                                                                                             type="button"
                                                                                             onClick={() => handleRemoveDriveFile(item)}
@@ -964,6 +969,7 @@ const AssignmentSubmission = () => {
                                                                                         >
                                                                                             {isDeleting ? <ButtonLoader size="sm" /> : <Trash2 className="w-4 h-4" />}
                                                                                         </button>
+                                                                                    )}
                                                                                     </div>
                                                                                 </div>
                                                                                 <div className="mt-2 h-1.5 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
@@ -978,28 +984,28 @@ const AssignmentSubmission = () => {
                                                                 </div>
                                                             )}
 
-                                                            {!driveStatus.configured && (
-                                                                <p className="mt-3 text-[11px] font-semibold text-amber-600 dark:text-amber-400">
-                                                                    Google Drive setup is awaiting administrator configuration.
-                                                                </p>
-                                                            )}
-                                                            {driveError && (
-                                                                <div className="mt-3 rounded-xl border border-red-200 dark:border-red-900/70 bg-red-50 dark:bg-red-950/20 px-3 py-2.5">
-                                                                    <p className="text-[11px] font-semibold text-red-600 dark:text-red-400">{driveError}</p>
-                                                                    {!driveStatus.connected && driveStatus.configured && (
-                                                                        <p className="mt-1 text-[10px] text-red-500 dark:text-red-300">
-                                                                            Google consent screen par Drive files create/edit wali permission lazmi select karein.
-                                                                        </p>
-                                                                    )}
-                                                                </div>
-                                                            )}
+{!isDeadlinePassed(selectedAssignment?.dueDate) && !driveStatus.configured && (
+                                                                 <p className="mt-3 text-[11px] font-semibold text-amber-600 dark:text-amber-400">
+                                                                     Google Drive setup is awaiting administrator configuration.
+                                                                 </p>
+                                                             )}
+                                                             {!isDeadlinePassed(selectedAssignment?.dueDate) && driveError && (
+                                                                 <div className="mt-3 rounded-xl border border-red-200 dark:border-red-900/70 bg-red-50 dark:bg-red-950/20 px-3 py-2.5">
+                                                                     <p className="text-[11px] font-semibold text-red-600 dark:text-red-400">{driveError}</p>
+                                                                     {!driveStatus.connected && driveStatus.configured && (
+                                                                         <p className="mt-1 text-[10px] text-red-500 dark:text-red-300">
+                                                                             Google consent screen par Drive files create/edit wali permission lazmi select karein.
+                                                                         </p>
+                                                                     )}
+                                                                 </div>
+                                                             )}
                                                         </div>
                                                         {!driveFile && (
                                                         <div>
                                                             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Work Link <span className="font-semibold normal-case tracking-normal">(Optional alternative)</span></label>
                                                             <div className="relative">
                                                                 <LinkIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                                                                <input type="text" placeholder="GitHub, portfolio, or another link" value={submissionUrl} onChange={(e) => setSubmissionUrl(e.target.value)} className="w-full pl-11 pr-4 py-3.5 bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-700 rounded-xl outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 font-semibold transition-all text-sm" />
+                                                                <input type="text" placeholder="GitHub, portfolio, or another link" value={submissionUrl} onChange={(e) => setSubmissionUrl(e.target.value)} disabled={isDeadlinePassed(selectedAssignment?.dueDate)} className="w-full pl-11 pr-4 py-3.5 bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-700 rounded-xl outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 font-semibold transition-all text-sm disabled:opacity-60 disabled:cursor-not-allowed" />
                                                             </div>
                                                         </div>
                                                         )}
@@ -1011,12 +1017,19 @@ const AssignmentSubmission = () => {
                                                                 placeholder="Any additional notes for the teacher..."
                                                                 minHeight="120px"
                                                                 className="border-primary/30"
+                                                                disabled={isDeadlinePassed(selectedAssignment?.dueDate)}
                                                             />
                                                         </div>
                                                     </div>
-                                                    <button onClick={() => handleSubmit(selectedAssignment._id)} disabled={isSubmitting || isDriveUploading} className="w-full py-4 bg-primary hover:bg-orange-600 text-white font-black uppercase tracking-widest text-xs rounded-xl shadow-lg shadow-primary/20 transition-all active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-3">
-                                                        <ButtonLoader isLoading={isSubmitting}>CONFIRM SUBMISSION</ButtonLoader>
-                                                    </button>
+                                                    {!isDeadlinePassed(selectedAssignment?.dueDate) ? (
+                                                        <button onClick={() => handleSubmit(selectedAssignment._id)} disabled={isSubmitting || isDriveUploading || isDeadlinePassed(selectedAssignment?.dueDate)} className="w-full py-4 bg-primary hover:bg-orange-600 text-white font-black uppercase tracking-widest text-xs rounded-xl shadow-lg shadow-primary/20 transition-all active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-3">
+                                                            <ButtonLoader isLoading={isSubmitting}>CONFIRM SUBMISSION</ButtonLoader>
+                                                        </button>
+                                                    ) : (
+                                                        <button onClick={() => setSelectedAssignment(null)} className="w-full py-4 bg-slate-700 hover:bg-slate-800 text-white font-black uppercase tracking-widest text-xs rounded-xl shadow-lg transition-all active:scale-[0.98] flex items-center justify-center gap-3">
+                                                            CLOSE
+                                                        </button>
+                                                    )}
                                                 </div>
                                             </motion.div>
                                         </div>

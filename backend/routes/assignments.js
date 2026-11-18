@@ -285,6 +285,10 @@ router.post('/:id/submit', protect, uploadSubmission.single('file'), async (req,
             return res.status(404).json({ success: false, message: 'Assignment not found' });
         }
 
+        if (assignment.dueDate && new Date() > new Date(assignment.dueDate)) {
+            return res.status(403).json({ success: false, message: 'Submission deadline has passed. You can only view your submission.', code: 'DEADLINE_PASSED' });
+        }
+
         // Check for overdue fee payment (more than 7 days past due)
         const isOverdue = await hasOverdueFee(req.user.id, assignment.course);
         if (isOverdue) {
