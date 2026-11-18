@@ -111,7 +111,24 @@ const DashboardLayout = () => {
     const [isWeeklyOff, setIsWeeklyOff] = useState(false);
     const [weeklyOffDayName, setWeeklyOffDayName] = useState('');
     const [feeAccessStatus, setFeeAccessStatus] = useState({ loading: true, hasOverdue: false, overdueInstallment: null });
+    const [installPrompt, setInstallPrompt] = useState(null);
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        const handler = (e) => {
+            e.preventDefault();
+            setInstallPrompt(e);
+        };
+        window.addEventListener('beforeinstallprompt', handler);
+        return () => window.removeEventListener('beforeinstallprompt', handler);
+    }, []);
+
+    const handleInstall = async () => {
+        if (!installPrompt) return;
+        installPrompt.prompt();
+        try { await installPrompt.userChoice; } catch { /* ignore */ }
+        setInstallPrompt(null);
+    };
 
     const isLearner = role === 'student' || role === 'intern';
     // Quiz Battle fee ke baghair bhi khelna allowed hai
@@ -565,13 +582,13 @@ const DashboardLayout = () => {
                                     </button>
                                     {showDownloadMenu && (
                                         <div className={`absolute right-0 mt-2 w-48 rounded-xl shadow-2xl border overflow-hidden z-[100] ${isDark ? 'bg-[var(--bg-sidebar)] border-white/10' : 'bg-white border-gray-100'}`}>
-                                            <a
-                                                href="https://apps.microsoft.com/detail/9PFXF5830L2R?hl=en-us&gl=PK&ocid=pdpshare"
-                                                onClick={() => setShowDownloadMenu(false)}
-                                                className={`flex items-center gap-2 px-3 py-2.5 text-sm font-bold ${isDark ? 'text-white hover:bg-white/10' : 'text-gray-700 hover:bg-gray-50'}`}
+                                            <button
+                                                type="button"
+                                                onClick={() => { setShowDownloadMenu(false); if (installPrompt) handleInstall(); else window.open('https://apps.microsoft.com/detail/9PFXF5830L2R?hl=en-us&gl=PK&ocid=pdpshare', '_blank'); }}
+                                                className={`flex w-full items-center gap-2 px-3 py-2.5 text-sm font-bold ${isDark ? 'text-white hover:bg-white/10' : 'text-gray-700 hover:bg-gray-50'}`}
                                             >
-                                                <Monitor className="w-4 h-4" /> Software Download
-                                            </a>
+                                                <Monitor className="w-4 h-4" /> {installPrompt ? 'Install App' : 'Software Download'}
+                                            </button>
                                             <a
                                                 href="#"
                                                 onClick={() => setShowDownloadMenu(false)}

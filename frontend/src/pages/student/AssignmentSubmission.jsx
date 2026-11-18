@@ -1084,7 +1084,7 @@ const AssignmentSubmission = () => {
                                         </div>
                                         <button type="submit" disabled={isSubmitting || isRichTextEmpty(newTaskContent) || isRestricted || isCompleted} className="w-full py-3.5 sm:py-6 bg-primary text-white rounded-xl sm:rounded-[1.5rem] font-black text-xs sm:text-lg tracking-widest uppercase shadow-lg sm:shadow-2xl transition-all active:scale-[0.98] flex items-center justify-center gap-3 disabled:grayscale disabled:opacity-50">
                                             <ButtonLoader isLoading={isSubmitting} icon={<Send className="w-6 h-6" />}>
-                                                {isCompleted ? 'CLASS ARCHIVED' : (isRestricted ? 'PORTAL LOCKED' : (resubmittingTaskId ? 'UPDATE CLASS ENTRY' : 'COMMIT DAILY CLASS'))}
+                                                {isCompleted ? 'CLASS ARCHIVED' : (isRestricted ? 'PORTAL LOCKED' : (resubmittingTaskId ? 'UPDATE CLASS ENTRY' : 'Submit daily class'))}
                                             </ButtonLoader>
                                         </button>
                                     </form>

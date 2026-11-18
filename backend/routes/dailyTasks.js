@@ -233,6 +233,16 @@ router.put('/:id/grade', protect, authorize('teacher', 'admin'), async (req, res
             console.error('Error creating daily task notification:', err);
         }
 
+        const io = req.app.get('io');
+        if (io) {
+            io.to(studentId).emit('new_browser_notification', {
+                title: notificationTitle,
+                message: notificationMessage,
+                url: '/student/notebook',
+                type: 'graded'
+            });
+        }
+
         res.json({
             success: true,
             data: task

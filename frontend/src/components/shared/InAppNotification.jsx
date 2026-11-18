@@ -96,6 +96,19 @@ const InAppNotification = () => {
         return url;
     };
 
+    const inferUrl = (title = '', message = '', type = '') => {
+        const text = `${title} ${message} ${type}`.toLowerCase();
+        if (/(assignment|work log|daily task)/.test(text)) return `/${role}/assignments`;
+        if (/(test|quiz)/.test(text)) return `/${role}/tests`;
+        if (/(fee|payment|installment|challan)/.test(text)) return `/${role}/fees`;
+        if (/(task|job|application)/.test(text)) return `/${role}/paid-tasks`;
+        if (/(attendance)/.test(text)) return `/${role}/attendance`;
+        if (/(certificate)/.test(text)) return `/${role}/courses`;
+        if (/(project)/.test(text)) return `/${role}/projects`;
+        if (/(chat|message)/.test(text)) return `/${role}/discussion-room`;
+        return '';
+    };
+
     const showToast = ({ title, message, url, type }) => {
         if (!title && !message) return;
         playNotificationSound();
@@ -103,7 +116,7 @@ const InAppNotification = () => {
         const visual = getVisual(title, message, type);
         const { Icon } = visual;
         const toastId = `inapp-${title || ''}-${message || ''}`.slice(0, 80);
-        const target = resolveUrl(url);
+        const target = resolveUrl(url || inferUrl(title, message, type));
 
         toast(
             () => (
