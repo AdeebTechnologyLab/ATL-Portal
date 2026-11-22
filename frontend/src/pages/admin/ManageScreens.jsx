@@ -15,7 +15,7 @@ const SCREEN_LABELS = {
     intern_management: 'Intern Management', fee_verification: 'Fee Verification',
     certificate_management: 'Certificate Management', notification_management: 'Notification Management',
     expense_management: 'Expense Management', project_management: 'Project Management',
-    paid_tasks: 'Paid Tasks',
+    paid_tasks: 'Paid Tasks', job_management: 'Job Management', job_chat: 'Job Chat',
     registration_pages: 'Registration Pages'
 };
 

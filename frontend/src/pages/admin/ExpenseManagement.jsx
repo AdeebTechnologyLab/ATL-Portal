@@ -485,7 +485,7 @@ const ExpenseManagement = ({ showProjectSections = true, projectsOnly = false })
                 icon={Wallet}
                 actions={
                     <div className="flex flex-wrap gap-2">
-                        <AssignScreenButton screenId="expense_management" />
+                        <AssignScreenButton screenId={projectsOnly ? 'project_management' : 'expense_management'} />
                         {showProjectSections && <button onClick={openNewProject} className="px-3 sm:px-4 py-2.5 sm:py-3 bg-slate-900 dark:bg-white dark:text-slate-900 text-white rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 sm:gap-2 whitespace-nowrap"><BriefcaseBusiness className="w-4 h-4" /> <span className="hidden sm:inline">Create </span>Project</button>}
                     </div>
                 }

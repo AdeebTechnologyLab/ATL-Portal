@@ -25,6 +25,7 @@ const JobChat = () => {
     const [sending, setSending] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [pendingMedia, setPendingMedia] = useState([]);
+    const [driveStatus, setDriveStatus] = useState(null);
     const endRef = useRef(null);
 
     const loadJobs = async (quiet = false) => {
