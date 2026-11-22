@@ -138,7 +138,8 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                 });
                 setJobPostingCounts({
                     totalAssigned: countsRes.data.data?.totalAssigned || 0,
-                    totalSubmitted: countsRes.data.data?.totalSubmitted || 0
+                    totalSubmitted: countsRes.data.data?.totalSubmitted || 0,
+                    totalJobs: countsRes.data.data?.totalJobs || 0
                 });
             } catch (_) { /* no job chats yet */ }
         };
@@ -581,10 +582,6 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                 { id: 'attendance', labelKey: 'nav.attendance', icon: Calendar, path: '/teacher/quick-attendance' },
                 { id: 'certificates', labelKey: 'nav.certificates', icon: Award, path: '/teacher/certificates' },
                 { id: 'discussion-room', labelKey: 'Discussion Room', icon: MessageSquare, path: '/teacher/discussion-room', badge: discussionUnread },
-                { id: 'projects-section-label', type: 'section', label: 'Projects & Jobs' },
-                { id: 'jobs', labelKey: 'Job Posting', icon: Briefcase, path: '/teacher/jobs', badge: (jobPostingCounts.totalAssigned || 0) + (jobPostingCounts.totalSubmitted || 0) },
-                ...(teacherProjectCount > 0 ? [{ id: 'my-projects', labelKey: 'My Projects', icon: BriefcaseBusiness, path: '/teacher/projects', badge: teacherProjectCount }] : []),
-                ...(jobChatSummary.totalAssigned > 0 ? [{ id: 'job-chat', labelKey: 'Applicant Chats', icon: MessageSquare, path: '/teacher/job-chat', badge: jobChatSummary.totalUnread }] : []),
             ],
             student: [
                 { id: 'dashboard', labelKey: 'nav.dashboard', icon: LayoutDashboard, path: '/student/dashboard', badge: studentNavCounts.dashboard },

@@ -45,13 +45,50 @@ router.get('/counts', protect, async (req, res) => {
             { $count: 'total' }
         ]);
 
+        const [totalJobs] = req.user.role === 'teacher'
+            ? await PaidTask.countDocuments({ $or: matchQuery.$or })
+            : [0];
+
         res.json({
             success: true,
             data: {
                 totalAssigned: totalAssigned?.total || 0,
-                totalSubmitted: totalSubmitted?.total || 0
+                totalSubmitted: totalSubmitted?.total || 0,
+                totalJobs
             }
         });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+});
+
+// @route   GET /api/tasks/assigned-workers
+// @desc    List unique users assigned to jobs (for project team member picker)
+// @access  Private (Admin/Teacher)
+router.get('/assigned-workers', protect, authorize('admin', 'teacher'), async (req, res) => {
+    try {
+        let matchQuery = {};
+        if (req.user.role === 'teacher') {
+            matchQuery.$or = [
+                { jobManagers: req.user._id },
+                { jobManager: req.user._id },
+                { createdBy: req.user._id }
+            ];
+        }
+        const tasks = await PaidTask.find({ ...matchQuery, assignedTo: { $exists: true, $ne: [] } })
+            .populate('assignedTo', 'name photo role')
+            .select('title assignedTo')
+            .lean();
+        const byUser = new Map();
+        (tasks || []).forEach(task => {
+            (task.assignedTo || []).forEach(u => {
+                if (!u || !u._id) return;
+                const id = String(u._id);
+                if (!byUser.has(id)) byUser.set(id, { _id: id, name: u.name, photo: u.photo, role: u.role, jobs: [] });
+                byUser.get(id).jobs.push(task.title);
+            });
+        });
+        res.json({ success: true, data: [...byUser.values()] });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
@@ -368,56 +405,6 @@ router.put('/:id/assign', protect, authorize('admin', 'teacher'), requireActiveT
 
         await task.save();
 
-        // Keep the admin Project Portfolio in sync with assigned job work.
-        // The first assignment creates the project; later assignments only add
-        // the new person to the same project team.
-        const assignedUser = await User.findById(userId).select('name role');
-        if (assignedUser) {
-            const userDesignation = assignedUser.role ? assignedUser.role.charAt(0).toUpperCase() + assignedUser.role.slice(1) : 'Job User';
-            const budgetNumbers = String(task.budget || '').match(/[\d,]+/g) || [];
-            const clientTotal = budgetNumbers.length
-                ? Number(budgetNumbers[budgetNumbers.length - 1].replace(/,/g, '')) || 0
-                : 0;
-            let financeProject = await FinanceProject.findOne({ sourceTask: task._id });
-
-            if (!financeProject) {
-                financeProject = await FinanceProject.create({
-                    sourceTask: task._id,
-                    name: task.title,
-                    clientName: 'Job Posting Client',
-                    clientTotal,
-                    developers: [{
-                        name: assignedUser.name,
-                        designation: userDesignation,
-                        percentage: 0,
-                        totalPayable: 0,
-                        paidAmount: 0
-                    }],
-                    companies: [],
-                    status: 'processing',
-                    startDate: task.assignedAt || new Date(),
-                    description: `Automatically created from Job Posting: ${task.title}`,
-                    createdBy: req.user.id,
-                    assignedTeachers: [req.user.id]
-                });
-            } else {
-                const assignedTeacherIds = (financeProject.assignedTeachers || []).map(id => id.toString());
-                if (!assignedTeacherIds.includes(req.user.id.toString())) {
-                    financeProject.assignedTeachers.push(req.user.id);
-                }
-                if (!(financeProject.developers || []).some(member => member.name === assignedUser.name)) {
-                    financeProject.developers.push({
-                        name: assignedUser.name,
-                        designation: userDesignation,
-                        percentage: 0,
-                        totalPayable: 0,
-                        paidAmount: 0
-                    });
-                }
-                await financeProject.save();
-            }
-        }
-
         // Notify the assigned user
         const UserNotificationModel = require('../models/UserNotification');
         await UserNotificationModel.create({
@@ -511,23 +498,6 @@ router.put('/:id/unassign', protect, authorize('admin', 'teacher'), requireActiv
         }
 
         await task.save();
-
-        // Remove the unassigned user from the auto-created FinanceProject
-        const unassignedUser = await User.findById(userId).select('name');
-        if (unassignedUser) {
-            const financeProject = await FinanceProject.findOne({ sourceTask: task._id });
-            if (financeProject) {
-                financeProject.developers = (financeProject.developers || []).filter(
-                    dev => dev.name !== unassignedUser.name
-                );
-                // If no developers left, delete the entire project
-                if (financeProject.developers.length === 0) {
-                    await FinanceProject.findByIdAndDelete(financeProject._id);
-                } else {
-                    await financeProject.save();
-                }
-            }
-        }
 
         await UserNotification.create({
             user: userId,

@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { financeAPI } from '../../services/api';
+import { financeAPI, taskAPI } from '../../services/api';
 import { userAPI } from '../../services/api';
 import ProfileAvatar from '../../components/ui/ProfileAvatar';
 import Loader from '../../components/ui/Loader';
@@ -90,6 +90,7 @@ const ExpenseManagement = ({ showProjectSections = true, projectsOnly = false })
     const [form, setForm] = useState(() => ({ type: 'expense', title: '', amount: '', category: 'Project', customCategory: '', project: '', paymentTarget: '', description: '', transactionDate: freshToday() }));
     const [projectForm, setProjectForm] = useState(() => ({ name: '', clientName: '', clientPhone: '', clientTotal: '', clientReceived: '', developers: [emptyDeveloper()], companies: [emptyCompany()], status: 'processing', startDate: freshToday(), completionDate: '', description: '', assignedTeachers: [] }));
     const [activeTeachers, setActiveTeachers] = useState([]);
+    const [jobWorkers, setJobWorkers] = useState([]);
 
     const loadData = async () => {
         try {
@@ -101,6 +102,7 @@ const ExpenseManagement = ({ showProjectSections = true, projectsOnly = false })
             setSummary(financeRes.data.summary || {});
             setProjects(projectsRes.data.data || []);
             setActiveTeachers(teachersRes.data.data || []);
+            try { const w = await taskAPI.getAssignedWorkers(); setJobWorkers(w.data.data || []); } catch (e) { console.error(e); }
         } catch (error) {
             alert(error.response?.data?.message || 'Finance data load nahi ho saka.');
         } finally { setLoading(false); }

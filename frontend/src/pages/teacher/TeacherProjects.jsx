@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { BriefcaseBusiness, ChevronDown, ChevronUp, Users, CheckCircle2, Pencil, X, Trash2, UserRoundPlus, FolderKanban } from 'lucide-react';
 import { teacherFinanceAPI } from '../../services/api';
+import { taskAPI } from '../../services/api';
 import Loader from '../../components/ui/Loader';
 import PageHeader from '../../components/shared/PageHeader';
 import { showToast } from '../../utils/customToast';
@@ -35,6 +36,8 @@ const TeacherProjects = () => {
     const [editForm, setEditForm] = useState({});
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState(null);
+    const [jobWorkers, setJobWorkers] = useState([]);
+    const [loadingWorkers, setLoadingWorkers] = useState(false);
 
     const loadProjects = async () => {
         try {
@@ -50,6 +53,19 @@ const TeacherProjects = () => {
     };
 
     useEffect(() => { loadProjects(); }, []);
+    useEffect(() => {
+        (async () => {
+            setLoadingWorkers(true);
+            try {
+                const res = await taskAPI.getAssignedWorkers();
+                setJobWorkers(res.data.data || []);
+            } catch (e) {
+                console.error('Failed to load job workers:', e);
+            } finally {
+                setLoadingWorkers(false);
+            }
+        })();
+    }, []);
 
     const toggleExpand = projectId => {
         setExpandedProjects(prev => prev.includes(projectId) ? prev.filter(id => id !== projectId) : [...prev, projectId]);
@@ -356,6 +372,48 @@ const TeacherProjects = () => {
                                     <UserRoundPlus className="w-4 h-4" /> Add Team Member
                                 </button>
                             </div>
+                            {loadingWorkers ? (
+                                <p className="text-xs text-gray-400 mb-2">Loading assigned job workers...</p>
+                            ) : jobWorkers.length > 0 && (
+                                <div className="mb-3">
+                                    <p className="text-[10px] font-black uppercase text-gray-400 mb-2">Assigned Job Workers (click to add)</p>
+                                    <div className="flex flex-wrap gap-2">
+                                        {jobWorkers.map(worker => (
+                                            <button
+                                                key={worker._id}
+                                                type="button"
+                                                onClick={() => {
+                                                    setEditForm(prev => {
+                                                        const exists = (prev.developers || []).some(d => d.name === worker.name);
+                                                        if (exists) return prev;
+                                                        return {
+                                                            ...prev,
+                                                            developers: [...(prev.developers || []), {
+                                                                name: worker.name || '',
+                                                                designation: (worker.jobs || []).join(', ') || 'Job Worker',
+                                                                percentage: '',
+                                                                totalPayable: '',
+                                                                paidAmount: ''
+                                                            }]
+                                                        };
+                                                    });
+                                                }}
+                                                className="flex items-center gap-2 px-3 py-2 rounded-xl bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-600 hover:border-primary text-left"
+                                            >
+                                                {worker.photo ? (
+                                                    <img src={worker.photo} alt={worker.name} className="w-8 h-8 rounded-full object-cover" />
+                                                ) : (
+                                                    <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-black">{(worker.name || '?').charAt(0)}</div>
+                                                )}
+                                                <div>
+                                                    <p className="text-xs font-bold dark:text-white">{worker.name}</p>
+                                                    <p className="text-[10px] text-gray-400 truncate max-w-[140px]">{(worker.jobs || []).join(', ') || 'Job Worker'}</p>
+                                                </div>
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
                             <div className="space-y-2">
                                 {editForm.developers?.map((developer, index) => (
                                     <div key={index} className="grid grid-cols-1 sm:grid-cols-[1fr_1fr_.7fr_1fr_auto] gap-2">

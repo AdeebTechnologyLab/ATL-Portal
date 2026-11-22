@@ -422,6 +422,13 @@ const JobsManagement = () => {
                                 EXPORT DATA
                             </button>
 
+                            <button
+                                type="button"
+                                className="w-full px-4 py-2.5 bg-primary text-white rounded-xl font-black text-[10px] uppercase tracking-widest hover:opacity-90 transition-all flex items-center justify-center gap-2 shadow-sm"
+                            >
+                                Assign to Teacher
+                            </button>
+
                             {showExportOptions && (
                                 <>
                                     <div className="fixed inset-0 z-10" onClick={() => setShowExportOptions(false)}></div>
