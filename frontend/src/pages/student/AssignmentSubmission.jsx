@@ -1205,8 +1205,7 @@ const AssignmentSubmission = () => {
                                                         ) : (
                                                         <RichTextContent
                                                             html={task.content}
-                                                            className="bg-gray-50/50 dark:bg-black/20 p-3 sm:p-5 rounded-xl sm:rounded-2xl border border-gray-100 dark:border-slate-800 mb-3 sm:mb-4"
-                                                            clampLines={3}
+                                                            className="bg-gray-50/50 dark:bg-black/20 p-3 sm:p-5 rounded-xl sm:rounded-2xl border border-gray-100 dark:border-slate-800 mb-3 sm:mb-4 select-text"
                                                         />
                                                         )}
                                                         
