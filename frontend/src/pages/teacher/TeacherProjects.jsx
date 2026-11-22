@@ -15,7 +15,7 @@ const formatAmountInput = value => {
 };
 const fieldClass = 'w-full px-3 py-3 rounded-xl bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-600 text-gray-900 dark:text-white outline-none focus:border-primary';
 const emptyDeveloper = () => ({ name: '', designation: '', percentage: '', totalPayable: '', paidAmount: '' });
-const emptyCompany = () => ({ name: '', designation: '', percentage: '', totalPayable: '', paidAmount: '' });
+const emptyCompany = () => ({ name: 'Adeeb Tech Lab', designation: 'Salman Adeeb', percentage: '', totalPayable: '', paidAmount: '' });
 const freshToday = () => {
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
@@ -73,26 +73,29 @@ const TeacherProjects = () => {
 
     const openEdit = project => {
         setEditingProject(project);
+        const developers = (project.developers || []).length ? project.developers.map(d => ({
+            name: d.name || '',
+            designation: d.designation || '',
+            percentage: `${d.percentage || 0}%`,
+            totalPayable: formatAmountInput(d.totalPayable),
+            paidAmount: formatAmountInput(d.paidAmount)
+        })) : [emptyDeveloper()];
+        const teamTotal = developers.reduce((sum, d) => sum + parseAmount(d.totalPayable), 0);
+        const remaining = Math.max(0, parseAmount(project.clientTotal) - teamTotal);
         setEditForm({
             name: project.name || '',
             clientName: project.clientName || '',
             clientPhone: project.clientPhone || '',
             clientTotal: formatAmountInput(project.clientTotal),
             clientReceived: formatAmountInput(project.clientReceived),
-            developers: (project.developers || []).length ? project.developers.map(d => ({
-                name: d.name || '',
-                designation: d.designation || '',
-                percentage: `${d.percentage || 0}%`,
-                totalPayable: formatAmountInput(d.totalPayable),
-                paidAmount: formatAmountInput(d.paidAmount)
-            })) : [emptyDeveloper()],
+            developers,
             companies: (project.companies || []).length ? project.companies.map(c => ({
                 name: c.name || '',
                 designation: c.designation || '',
                 percentage: `${c.percentage || 0}%`,
                 totalPayable: formatAmountInput(c.totalPayable),
                 paidAmount: formatAmountInput(c.paidAmount)
-            })) : [emptyCompany()],
+            })) : [{ ...emptyCompany(), totalPayable: remaining ? formatAmountInput(remaining) : '' }],
             status: project.status || 'processing',
             startDate: new Date(project.startDate).toISOString().slice(0, 10),
             completionDate: project.completionDate ? new Date(project.completionDate).toISOString().slice(0, 10) : '',
@@ -434,7 +437,13 @@ const TeacherProjects = () => {
                                     <h3 className="font-black dark:text-white">Companies</h3>
                                     <p className="text-[10px] text-gray-400">Add companies with the same percentage or Rs calculation.</p>
                                 </div>
-                                <button type="button" onClick={() => setEditForm(prev => ({ ...prev, companies: [...prev.companies, emptyCompany()] }))} className="px-3 py-2 rounded-xl bg-primary/10 text-primary text-xs font-black flex items-center gap-2">
+                                <button type="button" onClick={() => setEditForm(prev => {
+                                    const clientTotal = parseAmount(prev.clientTotal);
+                                    const teamTotal = (prev.developers || []).reduce((sum, d) => sum + parseAmount(d.totalPayable), 0);
+                                    const compTotal = (prev.companies || []).reduce((sum, c) => sum + parseAmount(c.totalPayable), 0);
+                                    const remaining = Math.max(0, clientTotal - teamTotal - compTotal);
+                                    return { ...prev, companies: [...prev.companies, { ...emptyCompany(), totalPayable: remaining ? formatAmountInput(remaining) : '' }] };
+                                })} className="px-3 py-2 rounded-xl bg-primary/10 text-primary text-xs font-black flex items-center gap-2">
                                     <UserRoundPlus className="w-4 h-4" /> Add Company
                                 </button>
                             </div>

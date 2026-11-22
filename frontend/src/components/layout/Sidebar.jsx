@@ -635,7 +635,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
             if (assignedIds.has('paid_tasks')) {
                 jobSectionItems.push({ id: 'assigned-paid-tasks', labelKey: 'nav.paidTasks', icon: Briefcase, path: '/teacher/assigned/paid_tasks', counters: { assigned: jobPostingCounts.totalAssigned || 0, submitted: jobPostingCounts.totalSubmitted || 0 }, isAssigned: true });
             }
-            if (assignedIds.has('job_chat') && jobChatSummary.totalAssigned > 0) {
+            if (assignedIds.has('job_chat')) {
                 jobSectionItems.push({ id: 'assigned-job-chat', labelKey: 'Job Chats', icon: MessageSquare, path: '/teacher/assigned/job_chat', badge: jobChatSummary.totalUnread, isAssigned: true });
             }
             if (assignedIds.has('job_management')) {
