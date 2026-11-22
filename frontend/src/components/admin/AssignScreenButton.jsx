@@ -17,6 +17,8 @@ const ASSIGNABLE_SCREENS = {
     'expense_management': 'Expense Management',
     'project_management': 'Project Management',
     'paid_tasks': 'Paid Tasks',
+    'job_management': 'Job Management',
+    'job_chat': 'Job Chat',
     'registration_pages': 'Registration Pages'
 };
 

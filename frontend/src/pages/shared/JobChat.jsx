@@ -3,13 +3,14 @@ import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import { ArrowLeft, Briefcase, MessageCircle, Search, Send, ShieldCheck, Trash2 } from 'lucide-react';
-import { chatAPI, googleDriveAPI, taskAPI, userAPI } from '../../services/api';
+import { chatAPI, googleDriveAPI } from '../../services/api';
 import { getSocketURL } from '../../config/apiBaseUrl';
 import ChatMediaButton from '../../components/shared/ChatMediaButton';
 import VoiceRecorder from '../../components/shared/VoiceRecorder';
 import ChatMediaDisplay from '../../components/shared/ChatMediaDisplay';
 import Loader from '../../components/ui/Loader';
 import ProfileAvatar from '../../components/ui/ProfileAvatar';
+import AssignScreenButton from '../../components/admin/AssignScreenButton';
 import { formatTime } from '../../utils/dateFormatter';
 
 const JobChat = () => {
@@ -24,10 +25,6 @@ const JobChat = () => {
     const [sending, setSending] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [pendingMedia, setPendingMedia] = useState([]);
-    const [assignModalOpen, setAssignModalOpen] = useState(false);
-    const [teachers, setTeachers] = useState([]);
-    const [selectedTeacher, setSelectedTeacher] = useState('');
-    const [assigning, setAssigning] = useState(false);
     const endRef = useRef(null);
 
     const loadJobs = async (quiet = false) => {
@@ -136,21 +133,7 @@ const JobChat = () => {
                         <p className="text-xs text-gray-500 dark:text-gray-400 sm:text-sm">Private conversations about assigned work</p>
                     </div>
                 </div>
-                {user?.role === 'admin' && (
-                    <button
-                        type="button"
-                        onClick={async () => {
-                            setAssignModalOpen(true);
-                            try {
-                                const res = await userAPI.getVerifiedByRole('teacher');
-                                setTeachers(res.data.data || []);
-                            } catch (e) { console.error(e); }
-                        }}
-                        className="px-4 py-2 rounded-xl bg-primary text-white text-sm font-bold hover:opacity-90"
-                    >
-                        Assign to Teacher
-                    </button>
-                )}
+                <AssignScreenButton screenId="job_chat" />
             </div>
             <div className={`grid min-h-0 flex-1 grid-cols-1 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl shadow-gray-200/40 dark:border-slate-700 dark:bg-slate-900 dark:shadow-black/20 ${user?.role === 'job' ? '' : 'lg:grid-cols-[330px_1fr]'}`}>
                 {user?.role !== 'job' && <aside className={`${activeContact ? 'hidden lg:flex' : 'flex'} h-full min-h-0 flex-col border-r border-gray-200 bg-gray-50/60 dark:border-slate-700 dark:bg-slate-900`}>
@@ -261,42 +244,6 @@ const JobChat = () => {
                     </>}
                 </section>
             </div>
-            {assignModalOpen && (
-                <div className="fixed inset-0 z-[120] flex items-center justify-center bg-black/60 p-4">
-                    <div className="w-full max-w-md rounded-2xl bg-white p-5 dark:bg-slate-900">
-                        <h2 className="text-lg font-black dark:text-white">Assign to Teacher</h2>
-                        <p className="text-xs text-gray-400 mt-1">Select a teacher for this job.</p>
-                        <select value={selectedTeacher} onChange={e => setSelectedTeacher(e.target.value)} className="mt-4 w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 dark:border-slate-600 dark:bg-slate-800 dark:text-white">
-                            <option value="">Select teacher</option>
-                            {teachers.map(t => <option key={t._id} value={t._id}>{t.name}</option>)}
-                        </select>
-                        <div className="mt-4 flex gap-3">
-                            <button onClick={() => setAssignModalOpen(false)} className="flex-1 rounded-xl bg-gray-100 py-2 text-sm font-bold dark:bg-slate-700 dark:text-gray-300">Cancel</button>
-                            <button
-                                disabled={!selectedTeacher || assigning}
-                                onClick={async () => {
-                                    if (!activeJob || !selectedTeacher) return;
-                                    setAssigning(true);
-                                    try {
-                                        const current = activeJob.jobManagers || [];
-                                        const ids = [...new Set([...current.map(m => (typeof m === 'string' ? m : m._id)), selectedTeacher])];
-                                        await taskAPI.update(activeJob._id, { jobManagers: ids });
-                                        setAssignModalOpen(false);
-                                        setSelectedTeacher('');
-                                        loadJobs(true);
-                                    } catch (e) {
-                                        console.error(e);
-                                        alert(e.response?.data?.message || 'Failed to assign');
-                                    } finally { setAssigning(false); }
-                                }}
-                                className="flex-1 rounded-xl bg-primary py-2 text-sm font-bold text-white disabled:opacity-50"
-                            >
-                                {assigning ? 'Assigning...' : 'Assign'}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
         </div>
     );
 };

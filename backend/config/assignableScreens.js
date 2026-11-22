@@ -12,6 +12,8 @@ const ASSIGNABLE_SCREENS = [
     { id: 'expense_management', name: 'Expense Management', route: '/admin/expense', icon: 'DollarSign' },
     { id: 'project_management', name: 'Project Management', route: '/admin/projects', icon: 'FolderOpen' },
     { id: 'paid_tasks', name: 'Paid Tasks', route: '/admin/paid-tasks', icon: 'Briefcase' },
+    { id: 'job_management', name: 'Job Management', route: '/admin/jobs', icon: 'Users' },
+    { id: 'job_chat', name: 'Job Chat', route: '/admin/job-chat', icon: 'MessageSquare' },
     { id: 'registration_pages', name: 'Registration Pages', route: '/admin/registration-pages', icon: 'FileText' },
 ];
 

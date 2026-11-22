@@ -235,6 +235,8 @@ const AppRoutes = () => {
         <Route path="assigned/expense_management" element={<ExpenseManagement />} />
         <Route path="assigned/project_management" element={<ProjectManagement />} />
         <Route path="assigned/paid_tasks" element={<PaidTasksManagement />} />
+        <Route path="assigned/job_management" element={<JobsManagement />} />
+        <Route path="assigned/job_chat" element={<JobChat />} />
         <Route path="assigned/registration_pages" element={<RegistrationPages />} />
       </Route>
 

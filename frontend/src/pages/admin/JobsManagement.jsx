@@ -13,6 +13,7 @@ import { userAPI, settingsAPI, taskAPI } from '../../services/api';
 import ImageCropper from '../../components/ui/ImageCropper';
 import { formatDate } from '../../utils/dateFormatter';
 import PageHeader from '../../components/shared/PageHeader';
+import AssignScreenButton from '../../components/admin/AssignScreenButton';
 
 const JobsManagement = () => {
     const [searchQuery, setSearchQuery] = useState('');
@@ -413,6 +414,8 @@ const JobsManagement = () => {
                             {allowBioEditing ? 'EDITS ON' : 'EDITS OFF'}
                         </button>
 
+                        <AssignScreenButton screenId="job_management" />
+
                         <div className="relative flex-1 md:flex-none">
                             <button
                                 onClick={() => setShowExportOptions(!showExportOptions)}
@@ -420,13 +423,6 @@ const JobsManagement = () => {
                             >
                                 <Download className="w-4 h-4 text-primary" />
                                 EXPORT DATA
-                            </button>
-
-                            <button
-                                type="button"
-                                className="w-full px-4 py-2.5 bg-primary text-white rounded-xl font-black text-[10px] uppercase tracking-widest hover:opacity-90 transition-all flex items-center justify-center gap-2 shadow-sm"
-                            >
-                                Assign to Teacher
                             </button>
 
                             {showExportOptions && (
