@@ -339,7 +339,11 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
             };
         } else if (role === 'teacher') {
             fetchTeacherSubmissionCount();
-            const interval = setInterval(fetchTeacherSubmissionCount, 120 * 1000);
+            fetchAdminPendingCounts();
+            const interval = setInterval(() => {
+                fetchTeacherSubmissionCount();
+                fetchAdminPendingCounts();
+            }, 120 * 1000);
             return () => clearInterval(interval);
         }
     }, [role, user, dataRefreshTick]);
@@ -644,6 +648,11 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
             if (assignedIds.has('project_management')) {
                 jobSectionItems.push({ id: 'assigned-projects', labelKey: 'Projects', icon: FolderOpen, path: '/teacher/assigned/project_management', badge: teacherProjectCount, isAssigned: true });
             }
+            const assignedBadges = {
+                student_management: { badge: adminPendingCounts.studentRegisteredNew || 0 },
+                intern_management: { badge: adminPendingCounts.internRegisteredNew || 0 },
+                fee_verification: { badge: adminPendingCounts.fees || 0, secondaryBadge: adminPendingCounts.feesAwaiting || 0 }
+            };
             const assignedItems = assignedScreens
                 .filter(screen => !JOB_SCREEN_IDS.includes(screen.id))
                 .map(screen => ({
@@ -651,7 +660,8 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                     labelKey: screen.name,
                     icon: SCREEN_ICON_MAP[screen.icon] || FolderOpen,
                     path: `/teacher/assigned/${screen.id}`,
-                    isAssigned: true
+                    isAssigned: true,
+                    ...(assignedBadges[screen.id] || {})
                 }));
             if (jobSectionItems.length > 0) {
                 baseItems.teacher = [

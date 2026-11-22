@@ -647,11 +647,19 @@ const PaidTask = require('../models/PaidTask');
 router.get('/job/tasks', protect, authorize('admin', 'teacher', 'job'), async (req, res) => {
     try {
         const userId = req.user.id;
-        const query = req.user.role === 'admin'
-            ? { 'assignedTo.0': { $exists: true } }
-            : req.user.role === 'teacher'
-                ? { $or: [{ jobManagers: userId }, { jobManager: userId }, { jobManagers: { $size: 0 }, jobManager: null, createdBy: userId }], 'assignedTo.0': { $exists: true } }
-                : { assignedTo: userId };
+        let query;
+        if (req.user.role === 'admin') {
+            query = { 'assignedTo.0': { $exists: true } };
+        } else if (req.user.role === 'teacher') {
+            // Teacher with Job Chat / Job Management screen access sees all job chats (like admin)
+            const TeacherScreenAssignment = require('../models/TeacherScreenAssignment');
+            const hasJobAccess = await TeacherScreenAssignment.exists({ teacher: req.user._id, screenId: { $in: ['job_chat', 'job_management'] } });
+            query = hasJobAccess
+                ? { 'assignedTo.0': { $exists: true } }
+                : { $or: [{ jobManagers: userId }, { jobManager: userId }, { jobManagers: { $size: 0 }, jobManager: null, createdBy: userId }], 'assignedTo.0': { $exists: true } };
+        } else {
+            query = { assignedTo: userId };
+        }
 
         const tasks = await PaidTask.find(query)
             .populate('createdBy', 'name photo role')

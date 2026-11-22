@@ -12,7 +12,7 @@ const requireManagementAccess = async (req, res, next) => {
         const TeacherScreenAssignment = require('../models/TeacherScreenAssignment');
         const hasAccess = await TeacherScreenAssignment.exists({
             teacher: req.user._id,
-            screenId: { $in: ['student_management', 'teacher_management', 'intern_management'] }
+            screenId: { $in: ['student_management', 'teacher_management', 'intern_management', 'fee_verification'] }
         });
         if (!hasAccess) {
             return res.status(403).json({ success: false, message: 'You do not have access to this action. Contact admin.' });
@@ -190,7 +190,7 @@ router.get('/', protect, async (req, res) => {
         const TeacherScreenAssignment = require('../models/TeacherScreenAssignment');
         const hasAccess = await TeacherScreenAssignment.exists({
             teacher: req.user._id,
-            screenId: { $in: ['student_management', 'teacher_management', 'intern_management'] }
+            screenId: { $in: ['student_management', 'teacher_management', 'intern_management', 'fee_verification'] }
         });
         if (!hasAccess) {
             return res.status(403).json({ success: false, message: 'Access denied.' });
@@ -216,7 +216,7 @@ router.get('/pending-counts', protect, async (req, res) => {
         const TeacherScreenAssignment = require('../models/TeacherScreenAssignment');
         const hasAccess = await TeacherScreenAssignment.exists({
             teacher: req.user._id,
-            screenId: { $in: ['student_management', 'teacher_management', 'intern_management'] }
+            screenId: { $in: ['student_management', 'teacher_management', 'intern_management', 'fee_verification'] }
         });
         if (!hasAccess) {
             return res.status(403).json({ success: false, message: 'Access denied.' });
@@ -352,11 +352,12 @@ router.get('/role/:role', protect, async (req, res) => {
     if (req.user.role === 'admin') {
         // Admin access
     } else if (req.user.role === 'teacher') {
-        const screenMap = { student: 'student_management', teacher: 'teacher_management', intern: 'intern_management', job: 'job_portal' };
+        const screenMap = { student: 'student_management', teacher: 'teacher_management', intern: 'intern_management', job: 'job_management' };
         const screenId = screenMap[role];
         if (screenId) {
             const TeacherScreenAssignment = require('../models/TeacherScreenAssignment');
-            const hasAccess = await TeacherScreenAssignment.exists({ teacher: req.user._id, screenId });
+            const screenIds = screenId === 'job_management' ? ['job_management', 'job_portal'] : [screenId];
+            const hasAccess = await TeacherScreenAssignment.exists({ teacher: req.user._id, screenId: { $in: screenIds } });
             if (!hasAccess) return res.status(403).json({ success: false, message: 'Access denied.' });
         } else {
             return res.status(403).json({ success: false, message: 'Access denied.' });
@@ -572,7 +573,7 @@ router.get('/:id', protect, async (req, res) => {
         const TeacherScreenAssignment = require('../models/TeacherScreenAssignment');
         const hasAccess = await TeacherScreenAssignment.exists({
             teacher: req.user._id,
-            screenId: { $in: ['student_management', 'teacher_management', 'intern_management', 'job_portal'] }
+            screenId: { $in: ['student_management', 'teacher_management', 'intern_management', 'job_management', 'job_portal'] }
         });
         if (!hasAccess) return res.status(403).json({ success: false, message: 'Access denied.' });
     } else {

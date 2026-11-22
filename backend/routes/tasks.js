@@ -23,14 +23,8 @@ const { sendPushNotification } = require('../utils/pushHelper');
 // @access  Private/Admin, Teacher
 router.get('/counts', protect, async (req, res) => {
     try {
-        let matchQuery = { status: { $in: ['assigned', 'submitted'] } };
-        if (req.user.role === 'teacher') {
-            matchQuery.$or = [
-                { jobManagers: req.user._id },
-                { jobManager: req.user._id },
-                { createdBy: req.user._id }
-            ];
-        }
+        // Same global counts for admin & teacher (Job Posting page shows all jobs)
+        const matchQuery = { status: { $in: ['assigned', 'submitted'] } };
 
         const [totalAssigned] = await PaidTask.aggregate([
             { $match: matchQuery },
@@ -39,15 +33,13 @@ router.get('/counts', protect, async (req, res) => {
         ]);
 
         const [totalSubmitted] = await PaidTask.aggregate([
-            { $match: { status: { $in: ['assigned', 'submitted'] }, ...(req.user.role === 'teacher' ? { $or: matchQuery.$or } : {}) } },
+            { $match: matchQuery },
             { $unwind: { path: '$submissions', preserveNullAndEmptyArrays: false } },
             { $group: { _id: '$submissions.user' } },
             { $count: 'total' }
         ]);
 
-        const [totalJobs] = req.user.role === 'teacher'
-            ? await PaidTask.countDocuments({ $or: matchQuery.$or })
-            : [0];
+        const totalJobs = await PaidTask.countDocuments();
 
         res.json({
             success: true,
@@ -69,11 +61,15 @@ router.get('/assigned-workers', protect, authorize('admin', 'teacher'), async (r
     try {
         let matchQuery = {};
         if (req.user.role === 'teacher') {
-            matchQuery.$or = [
-                { jobManagers: req.user._id },
-                { jobManager: req.user._id },
-                { createdBy: req.user._id }
-            ];
+            const TeacherScreenAssignment = require('../models/TeacherScreenAssignment');
+            const hasJobAccess = await TeacherScreenAssignment.exists({ teacher: req.user._id, screenId: { $in: ['paid_tasks', 'job_management'] } });
+            if (!hasJobAccess) {
+                matchQuery.$or = [
+                    { jobManagers: req.user._id },
+                    { jobManager: req.user._id },
+                    { createdBy: req.user._id }
+                ];
+            }
         }
         const tasks = await PaidTask.find({ ...matchQuery, assignedTo: { $exists: true, $ne: [] } })
             .populate('assignedTo', 'name photo role')
