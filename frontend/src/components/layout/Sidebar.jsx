@@ -629,18 +629,44 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         // Add assigned admin screens for teachers (appended at the end,
         // so conditional items like 'Job Posting' stay in their own section)
         if (role === 'teacher' && assignedScreens.length > 0) {
-            const assignedItems = assignedScreens.map(screen => ({
-                id: `assigned-${screen.id}`,
-                labelKey: screen.name,
-                icon: SCREEN_ICON_MAP[screen.icon] || FolderOpen,
-                path: `/teacher/assigned/${screen.id}`,
-                isAssigned: true
-            }));
-            baseItems.teacher = [
-                ...baseItems.teacher,
-                { id: 'assigned-section-label', type: 'section', label: 'Assigned Screens' },
-                ...assignedItems
-            ];
+            const JOB_SCREEN_IDS = ['paid_tasks', 'job_chat', 'job_management', 'project_management'];
+            const assignedIds = new Set(assignedScreens.map(screen => screen.id));
+            const jobSectionItems = [];
+            if (assignedIds.has('paid_tasks')) {
+                jobSectionItems.push({ id: 'assigned-paid-tasks', labelKey: 'nav.paidTasks', icon: Briefcase, path: '/teacher/assigned/paid_tasks', counters: { assigned: jobPostingCounts.totalAssigned || 0, submitted: jobPostingCounts.totalSubmitted || 0 }, isAssigned: true });
+            }
+            if (assignedIds.has('job_chat') && jobChatSummary.totalAssigned > 0) {
+                jobSectionItems.push({ id: 'assigned-job-chat', labelKey: 'Job Chats', icon: MessageSquare, path: '/teacher/assigned/job_chat', badge: jobChatSummary.totalUnread, isAssigned: true });
+            }
+            if (assignedIds.has('job_management')) {
+                jobSectionItems.push({ id: 'assigned-jobs', labelKey: 'nav.freelancers', icon: Briefcase, path: '/teacher/assigned/job_management', isAssigned: true });
+            }
+            if (assignedIds.has('project_management')) {
+                jobSectionItems.push({ id: 'assigned-projects', labelKey: 'Projects', icon: FolderOpen, path: '/teacher/assigned/project_management', badge: teacherProjectCount, isAssigned: true });
+            }
+            const assignedItems = assignedScreens
+                .filter(screen => !JOB_SCREEN_IDS.includes(screen.id))
+                .map(screen => ({
+                    id: `assigned-${screen.id}`,
+                    labelKey: screen.name,
+                    icon: SCREEN_ICON_MAP[screen.icon] || FolderOpen,
+                    path: `/teacher/assigned/${screen.id}`,
+                    isAssigned: true
+                }));
+            if (jobSectionItems.length > 0) {
+                baseItems.teacher = [
+                    ...baseItems.teacher,
+                    { id: 'job-section-label', type: 'section', label: 'Job' },
+                    ...jobSectionItems
+                ];
+            }
+            if (assignedItems.length > 0) {
+                baseItems.teacher = [
+                    ...baseItems.teacher,
+                    { id: 'assigned-section-label', type: 'section', label: 'Assigned Screens' },
+                    ...assignedItems
+                ];
+            }
         }
 
         return baseItems[role] || baseItems.student;
