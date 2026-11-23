@@ -1,6 +1,7 @@
 const TeacherScreenAssignment = require('../models/TeacherScreenAssignment');
 
 const requireScreenAccess = (screenId) => {
+    const screenIds = Array.isArray(screenId) ? screenId : [screenId];
     return async (req, res, next) => {
         if (req.user.role === 'admin') return next();
         if (req.user.role !== 'teacher') {
@@ -9,7 +10,7 @@ const requireScreenAccess = (screenId) => {
         try {
             const assignment = await TeacherScreenAssignment.findOne({
                 teacher: req.user._id,
-                screenId
+                screenId: { $in: screenIds }
             });
             if (!assignment) {
                 return res.status(403).json({ success: false, message: 'You do not have access to this screen. Contact admin.' });

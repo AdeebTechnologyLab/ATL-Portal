@@ -15,7 +15,7 @@ import AssignScreenButton from '../../components/admin/AssignScreenButton';
 import { formatDate } from '../../utils/dateFormatter';
 import PageHeader from '../../components/shared/PageHeader';
 
-const PaidTasksManagement = () => {
+const PaidTasksManagement = ({ assigned = false }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [activeTab, setActiveTab] = useState('all');
@@ -134,7 +134,7 @@ const PaidTasksManagement = () => {
     // Fetch tasks on component mount
     useEffect(() => {
         fetchTasks();
-        if (user?.role === 'admin') {
+        if (user?.role === 'admin' || assigned) {
             userAPI.getVerifiedByRole('teacher')
                 .then(res => setTeachers(res.data.data || []))
                 .catch(() => setTeachers([]));
@@ -150,7 +150,7 @@ const PaidTasksManagement = () => {
                 taskAPI.getCompletedShowcase()
             ]);
             const loadedTasks = allRes.data.data || [];
-            setTasks(user?.role === 'teacher' ? loadedTasks.filter(task => {
+            setTasks((user?.role === 'teacher' && !assigned) ? loadedTasks.filter(task => {
                 const managerIds = task.jobManagers?.length ? task.jobManagers.map(manager => manager?._id || manager) : [task.jobManager?._id || task.jobManager || task.createdBy?._id || task.createdBy];
                 return managerIds.some(id => String(id) === String(user?.id || user?._id));
             }) : loadedTasks);

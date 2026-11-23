@@ -8,7 +8,7 @@ const { sendPushNotification } = require('../utils/pushHelper');
 const { protect, authorize } = require('../middleware/auth');
 const { requireScreenAccess } = require('../middleware/screenAccess');
 
-router.use(protect, requireScreenAccess('expense_management'));
+router.use(protect, requireScreenAccess(['expense_management', 'project_management']));
 
 const projectData = (project, linkedTotals = {}) => {
     const plain = project.toObject ? project.toObject() : project;
