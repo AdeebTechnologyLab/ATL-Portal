@@ -101,14 +101,29 @@ const BrowseTasks = () => {
         if (!silent) setIsFetching(true);
         setError('');
         try {
-            const [allTasksRes, myTasksRes, showcaseRes] = await Promise.all([
+            const [allTasksRes, myTasksRes, showcaseRes] = await Promise.allSettled([
                 taskAPI.getAll({}), // Fetch all statuses
                 taskAPI.getMy(),
                 taskAPI.getCompletedShowcase()
             ]);
-            setTasks(allTasksRes.data.data || []);
-            setMyTasks(myTasksRes.data.data || []);
-            setCompletedShowcase(showcaseRes.data.data || []);
+            const extract = (res) => {
+                if (!res || res.status !== 'fulfilled' || !res.value) return [];
+                const payload = res.value.data;
+                if (Array.isArray(payload)) return payload;
+                if (Array.isArray(payload?.data)) return payload.data;
+                if (Array.isArray(payload?.tasks)) return payload.tasks;
+                return [];
+            };
+            setTasks(extract(allTasksRes));
+            setMyTasks(extract(myTasksRes));
+            setCompletedShowcase(extract(showcaseRes));
+            if (allTasksRes.status === 'rejected') {
+                console.error('Error fetching all tasks:', allTasksRes.reason);
+                const msg = allTasksRes.reason?.response?.data?.message || allTasksRes.reason?.message || 'Failed to load tasks. Please try again.';
+                setError(msg);
+            } else if (tasks.length === 0) {
+                // keep silent; data may genuinely be empty
+            }
         } catch (err) {
             console.error('Error fetching tasks:', err);
             setError('Failed to load tasks. Please try again.');
@@ -445,7 +460,7 @@ const BrowseTasks = () => {
                             <div className="flex items-start justify-between gap-2 sm:gap-3 mb-2.5 sm:mb-3">
                                 <h3 className="font-bold text-sm sm:text-base text-gray-900 dark:text-white leading-snug break-words">{task.title}</h3>
                                 <div className="flex items-center gap-2 shrink-0">
-                                    {expired && <Badge variant="danger">Deadline Over</Badge>}
+                                    {expired && <Badge variant="error">Deadline Over</Badge>}
                                     {hasApplied(task) && !assigned && <Badge variant="warning">Applied</Badge>}
                                     {assigned && !submitted && <Badge variant="info">Assigned</Badge>}
                                     {submitted && !isPaid && <Badge variant="warning">Pending Payment</Badge>}

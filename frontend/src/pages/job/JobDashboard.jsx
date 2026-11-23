@@ -32,13 +32,20 @@ const JobDashboard = () => {
     const fetchDashboardData = async () => {
         setIsLoading(true);
         try {
-            // Fetch available tasks
-            const tasksRes = await taskAPI.getAll();
-            setTasks(tasksRes.data.data || []);
-
-            // Fetch my assigned tasks
-            const myTasksRes = await taskAPI.getMy();
-            setAssignedTasks(myTasksRes.data.data || []);
+            const [tasksRes, myTasksRes] = await Promise.allSettled([
+                taskAPI.getAll(),
+                taskAPI.getMy()
+            ]);
+            const extract = (res) => {
+                if (!res || res.status !== 'fulfilled' || !res.value) return [];
+                const payload = res.value.data;
+                if (Array.isArray(payload)) return payload;
+                if (Array.isArray(payload?.data)) return payload.data;
+                if (Array.isArray(payload?.tasks)) return payload.tasks;
+                return [];
+            };
+            setTasks(extract(tasksRes));
+            setAssignedTasks(extract(myTasksRes));
         } catch (error) {
             console.error('Error fetching dashboard data:', error);
         } finally {

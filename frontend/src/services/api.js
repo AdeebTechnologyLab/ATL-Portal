@@ -176,6 +176,7 @@ export const certificateAPI = {
 // Paid Tasks APIs
 export const taskAPI = {
     getAll: (params) => api.get('/tasks', { params }),
+    getMy: () => api.get('/tasks/my'),
     getCounts: () => api.get('/tasks/counts'),
     getAssignedWorkers: () => api.get('/tasks/assigned-workers'),
     getCompletedShowcase: () => api.get('/tasks/completed-showcase'),
