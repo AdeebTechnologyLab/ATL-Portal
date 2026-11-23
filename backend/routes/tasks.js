@@ -459,7 +459,9 @@ router.put('/:id/unassign', protect, authorize('admin', 'teacher'), requireActiv
             return res.status(404).json({ success: false, message: 'Task not found' });
         }
 
-        if (req.user.role === 'teacher') {
+        const TeacherScreenAssignment = require('../models/TeacherScreenAssignment');
+        const isAssignedPaidTaskUnassign = req.user.role === 'teacher' && !!(await TeacherScreenAssignment.exists({ teacher: req.user._id, screenId: 'paid_tasks' }));
+        if (req.user.role === 'teacher' && !isAssignedPaidTaskUnassign) {
             const managerIds = (task.jobManagers?.length ? task.jobManagers : [task.jobManager || task.createdBy]).filter(Boolean).map(String);
             if (!managerIds.includes(String(req.user.id))) {
                 return res.status(403).json({ success: false, message: 'You can only assign users to jobs you manage' });
@@ -471,7 +473,7 @@ router.put('/:id/unassign', protect, authorize('admin', 'teacher'), requireActiv
             return res.status(400).json({ success: false, message: 'Only applicants can be assigned to this job' });
         }
 
-        if (req.user.role === 'teacher') {
+        if (req.user.role === 'teacher' && !isAssignedPaidTaskUnassign) {
             const managerIds = (task.jobManagers?.length ? task.jobManagers : [task.jobManager || task.createdBy]).filter(Boolean).map(String);
             if (!managerIds.includes(String(req.user.id))) {
                 return res.status(403).json({ success: false, message: 'You can only unassign users from jobs you manage' });
