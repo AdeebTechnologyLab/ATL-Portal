@@ -438,7 +438,10 @@ router.post('/login', async (req, res) => {
         // Find all users with this email (using select +password to verify)
         // Use primary read to ensure we get the latest data
         const normalizedEmail = email.trim().toLowerCase();
+        // Match case-insensitively so legacy accounts stored with mixed-case
+        // emails (e.g. seeded admins) still resolve to the correct user.
         const users = await User.find({ email: normalizedEmail })
+            .collation({ locale: 'en', strength: 2 })
             .select('+password')
             .read('primary')
             .maxTimeMS(10000);
@@ -487,6 +490,13 @@ router.post('/login', async (req, res) => {
 
         if (!user) {
             return res.status(401).json({ success: false, message: 'Invalid credentials' });
+        }
+
+        // Normalize legacy mixed-case emails to lowercase so future lookups and
+        // cross-portal linking work consistently.
+        if (user.email && user.email !== normalizedEmail) {
+            await User.updateOne({ _id: user._id }, { $set: { email: normalizedEmail } });
+            user.email = normalizedEmail;
         }
 
         // Keep profile photo consistent across all linked portals
@@ -558,6 +568,7 @@ router.post('/google', async (req, res) => {
         }
 
         const users = await User.find({ email })
+            .collation({ locale: 'en', strength: 2 })
             .select('+password')
             .read('primary')
             .maxTimeMS(10000);

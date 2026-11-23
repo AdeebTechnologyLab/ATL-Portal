@@ -27,7 +27,7 @@ const User = mongoose.model('User', userSchema);
 
 async function seedAdmin() {
     try {
-        const email = 'info.AdeebTechLab@gmail.com';
+        const email = 'info.adeebtechlab@gmail.com';
         const plainPassword = '123456';
 
         // Ensure admin exists with role=admin and plain-text password
