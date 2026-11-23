@@ -273,7 +273,7 @@ const PaidTasksManagement = ({ assigned = false }) => {
             submitData.append('budget', formData.budget);
             submitData.append('deadline', formData.deadline);
             submitData.append('skills', formData.skills);
-            if (user?.role === 'admin') formData.jobManagers.forEach(managerId => submitData.append('jobManagers', managerId));
+            if ((user?.role === 'admin' || assigned)) formData.jobManagers.forEach(managerId => submitData.append('jobManagers', managerId));
             submitData.append('type', formData.type);
             submitData.append('isLifetime', formData.isLifetime);
             submitData.append('manualStatus', formData.manualStatus);
@@ -403,7 +403,7 @@ const PaidTasksManagement = ({ assigned = false }) => {
     };
 
     const handleCompleteAndPayClick = (task) => {
-        if (user?.role !== 'admin') {
+        if (!(user?.role === 'admin' || assigned)) {
             alert('Only Admin can complete the task and make the payment.');
             return;
         }
@@ -757,14 +757,14 @@ const PaidTasksManagement = ({ assigned = false }) => {
                                                     <p className="text-sm text-indigo-800 dark:text-gray-300 italic mb-3">"{f.text}"</p>
                                                     <p className="text-xs font-bold text-emerald-600 dark:text-emerald-400 mb-2">Total Earnings: Rs {Number(f.user?.totalEarnings || 0).toLocaleString()}</p>
                                                     <div className="flex items-center gap-2 pt-2">
-                                                        {user?.role === 'admin' && <button
+                                                        {(user?.role === 'admin' || assigned) && <button
                                                             onClick={() => handleEditFeedback(task, f)}
                                                             className="flex items-center gap-1 px-3 py-1.5 text-xs font-bold text-indigo-600 bg-white hover:bg-indigo-100 rounded-lg border border-indigo-200 transition-all"
                                                         >
                                                             <PenSquare className="w-3 h-3" />
                                                             Edit
                                                         </button>}
-                                                        {user?.role === 'admin' && <button
+                                                        {(user?.role === 'admin' || assigned) && <button
                                                             onClick={() => handleDeleteFeedback(task._id, f._id)}
                                                             className="flex items-center gap-1 px-3 py-1.5 text-xs font-bold text-red-600 bg-white hover:bg-red-50 rounded-lg border border-red-200 transition-all"
                                                         >
@@ -799,7 +799,7 @@ const PaidTasksManagement = ({ assigned = false }) => {
                         >
                             <div className="flex items-start justify-end mb-2 sm:mb-4">
                                               <div className="flex flex-wrap items-center justify-end gap-2">
-                                    {user?.role === 'admin' && <button
+                                    {(user?.role === 'admin' || assigned) && <button
                                         onClick={() => handleDeleteTask(task._id)}
                                         disabled={isDeleting === task._id}
                                         className="px-3 py-1 bg-red-50 text-red-600 hover:bg-red-600 hover:text-white rounded-lg transition-all disabled:opacity-50 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider shadow-sm border border-red-100"
@@ -874,7 +874,7 @@ const PaidTasksManagement = ({ assigned = false }) => {
                             )}
 
                             {/* Keep the card compact; full payment details open in a dialog. */}
-                            {user?.role === 'admin' && task.paymentHistory && task.paymentHistory.length > 0 && (
+                            {(user?.role === 'admin' || assigned) && task.paymentHistory && task.paymentHistory.length > 0 && (
                                 <button
                                     type="button"
                                     onClick={() => setViewingPaymentHistoryTask(task)}
@@ -910,7 +910,7 @@ const PaidTasksManagement = ({ assigned = false }) => {
                                                 <span className="absolute top-0 right-0 -mr-1 -mt-1 w-3 h-3 bg-red-500 rounded-full animate-pulse border-2 border-white"></span>
                                             )}
                                         </button>
-                                        {user?.role === 'admin' && <button
+                                        {(user?.role === 'admin' || assigned) && <button
                                             onClick={() => openPaymentDialog(task)}
                                             className="px-4 py-2 text-sm font-medium text-primary bg-primary/5 hover:bg-primary/10 rounded-xl flex items-center justify-center gap-1"
                                             title="Complete & Pay Task"
@@ -937,7 +937,7 @@ const PaidTasksManagement = ({ assigned = false }) => {
                                             <Users className="w-4 h-4" />
                                             Applicants
                                         </button>
-                                        {user?.role === 'admin' && <button
+                                        {(user?.role === 'admin' || assigned) && <button
                                             onClick={() => openPaymentDialog(task)}
                                             className="px-4 py-2 text-sm font-medium text-primary bg-primary/5 hover:bg-primary/10 rounded-xl flex items-center justify-center gap-1"
                                             title="Complete & Pay Task"
@@ -1149,7 +1149,7 @@ const PaidTasksManagement = ({ assigned = false }) => {
                                     className="w-full px-4 py-3 border border-gray-200 rounded-xl"
                                 />
                             </div>
-                            {user?.role === 'admin' && <div>
+                            {(user?.role === 'admin' || assigned) && <div>
                                 <div className="flex flex-wrap items-center justify-between gap-3 mb-2">
                                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
                                         Assign Teacher <span className="text-red-500">*</span>
@@ -1276,7 +1276,7 @@ const PaidTasksManagement = ({ assigned = false }) => {
                         <button type="button" onClick={() => setIsModalOpen(false)} className="flex-1 py-3 text-gray-600 hover:bg-gray-100 rounded-xl font-medium">
                             Cancel
                         </button>
-                        <button type="submit" disabled={isLoading || (!editingTask && user?.role === 'admin' && formData.type !== 'product' && formData.jobManagers.length === 0)} className={`flex-1 py-3 text-white rounded-xl font-medium flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed ${formData.type === 'product' ? 'bg-primary hover:bg-primary' : 'bg-primary hover:bg-purple-700'}`}>
+                        <button type="submit" disabled={isLoading || (!editingTask && (user?.role === 'admin' || assigned) && formData.type !== 'product' && formData.jobManagers.length === 0)} className={`flex-1 py-3 text-white rounded-xl font-medium flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed ${formData.type === 'product' ? 'bg-primary hover:bg-primary' : 'bg-primary hover:bg-purple-700'}`}>
                             <ButtonLoader isLoading={isLoading}>
                                 {editingTask ? 'Update ' + (formData.type === 'product' ? 'Item' : 'Task') : 'Create ' + (formData.type === 'product' ? 'Item' : 'Task')}
                             </ButtonLoader>
@@ -1352,7 +1352,7 @@ const PaidTasksManagement = ({ assigned = false }) => {
                                                             <Trash2 className="w-4 h-4" />
                                                         </button>
                                                     )}
-                                                    {user?.role === 'admin' && <button
+                                                    {(user?.role === 'admin' || assigned) && <button
                                                         onClick={() => setViewingProfile(applicant.user)}
                                                         className="flex-1 sm:flex-none px-4 py-2 text-primary bg-purple-50 hover:bg-primary/10 text-xs rounded-xl font-black uppercase tracking-widest transition-all"
                                                     >

@@ -22,4 +22,17 @@ const requireScreenAccess = (screenId) => {
     };
 };
 
-module.exports = { requireScreenAccess };
+const requirePaidTaskAdmin = async (req, res, next) => {
+    if (req.user?.role === 'admin') return next();
+    if (req.user?.role === 'teacher') {
+        try {
+            const assignment = await TeacherScreenAssignment.findOne({ teacher: req.user._id, screenId: 'paid_tasks' });
+            if (assignment) return next();
+        } catch (error) {
+            return res.status(500).json({ success: false, message: error.message });
+        }
+    }
+    return res.status(403).json({ success: false, message: 'Access denied.' });
+};
+
+module.exports = { requireScreenAccess, requirePaidTaskAdmin };

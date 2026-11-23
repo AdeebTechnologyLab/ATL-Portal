@@ -11,6 +11,7 @@ const requireActiveTeacher = (req, res, next) => {
     next();
 };
 const { protect, authorize } = require('../middleware/auth');
+const { requirePaidTaskAdmin } = require('../middleware/screenAccess');
 const { uploadSubmission } = require('../config/cloudinary');
 const PaidTask = require('../models/PaidTask');
 const FinanceProject = require('../models/FinanceProject');
@@ -138,15 +139,18 @@ router.post('/', protect, authorize('admin', 'teacher'), requireActiveTeacher, u
         const requestedManagers = bodyData.jobManagers
             ? (Array.isArray(bodyData.jobManagers) ? bodyData.jobManagers : [bodyData.jobManagers])
             : (bodyData.jobManager ? [bodyData.jobManager] : []);
-        if (req.user.role === 'admin') {
+        const TeacherScreenAssignment = require('../models/TeacherScreenAssignment');
+        const isAssignedPaidTask = req.user.role === 'teacher' && !!(await TeacherScreenAssignment.exists({ teacher: req.user._id, screenId: 'paid_tasks' }));
+        const canManageManagers = req.user.role === 'admin' || isAssignedPaidTask;
+        if (canManageManagers) {
             const validTeacherCount = await User.countDocuments({ _id: { $in: requestedManagers }, role: 'teacher', isVerified: true, isActive: { $ne: false } });
             if (!requestedManagers.length || validTeacherCount !== requestedManagers.length) return res.status(400).json({ success: false, message: 'Please select valid teachers' });
         }
         const task = await PaidTask.create({
             ...bodyData,
             createdBy: req.user.id,
-            jobManager: req.user.role === 'teacher' ? req.user.id : (requestedManagers[0] || null),
-            jobManagers: req.user.role === 'teacher' ? [req.user.id] : requestedManagers
+            jobManager: canManageManagers ? (requestedManagers[0] || null) : req.user.id,
+            jobManagers: canManageManagers ? requestedManagers : [req.user.id]
         });
 
         res.status(201).json({ success: true, task });
@@ -167,16 +171,18 @@ router.put('/:id', protect, authorize('admin', 'teacher'), requireActiveTeacher,
         }
 
         const managerIds = (task.jobManagers?.length ? task.jobManagers : [task.jobManager || task.createdBy]).map(String);
-        if (req.user.role === 'teacher' && !managerIds.includes(String(req.user.id))) {
+        const TeacherScreenAssignment = require('../models/TeacherScreenAssignment');
+        const isAssignedPaidTask = req.user.role === 'teacher' && !!(await TeacherScreenAssignment.exists({ teacher: req.user._id, screenId: 'paid_tasks' }));
+        if (req.user.role === 'teacher' && !isAssignedPaidTask && !managerIds.includes(String(req.user.id))) {
             return res.status(403).json({ success: false, message: 'Teachers can only edit jobs they created' });
         }
 
         const bodyData = { ...req.body };
-        if (req.user.role === 'teacher') {
+        if (req.user.role === 'teacher' && !isAssignedPaidTask) {
             delete bodyData.jobManager;
             delete bodyData.jobManagers;
         }
-        if (req.user.role === 'admin' && bodyData.jobManagers) {
+        if ((req.user.role === 'admin' || isAssignedPaidTask) && bodyData.jobManagers) {
             const selectedManagers = Array.isArray(bodyData.jobManagers) ? bodyData.jobManagers : [bodyData.jobManagers];
             const validTeacherCount = await User.countDocuments({ _id: { $in: selectedManagers }, role: 'teacher', isVerified: true, isActive: { $ne: false } });
             if (!selectedManagers.length || validTeacherCount !== selectedManagers.length) return res.status(400).json({ success: false, message: 'Please select valid teachers' });
@@ -648,7 +654,7 @@ router.post('/:id/submit', protect, uploadSubmission.single('file'), async (req,
 // @route   PUT /api/tasks/:id/admin-complete
 // @desc    Admin directly completes & pays a task (the ONLY way to move to completed)
 // @access  Private (Admin)
-router.put('/:id/admin-complete', protect, authorize('admin'), async (req, res) => {
+router.put('/:id/admin-complete', protect, requirePaidTaskAdmin, async (req, res) => {
     try {
         const payments = Array.isArray(req.body.payments) ? req.body.payments : [];
         const paymentProof = typeof req.body.paymentProof === 'string' ? req.body.paymentProof : '';
@@ -893,7 +899,7 @@ router.post('/:id/feedback', protect, authorize('job'), async (req, res) => {
 // @route   PUT /api/tasks/:id/complete
 // @desc    Verify and mark payment sent (Closes task for everyone)
 // @access  Private (Admin)
-router.put('/:id/complete', protect, authorize('admin'), async (req, res) => {
+router.put('/:id/complete', protect, requirePaidTaskAdmin, async (req, res) => {
     try {
         const task = await PaidTask.findById(req.params.id);
 
@@ -968,7 +974,7 @@ router.get('/my', protect, authorize('job'), async (req, res) => {
 // @route   DELETE /api/tasks/:id
 // @desc    Permanently delete a task
 // @access  Private (Admin only)
-router.delete('/:id', protect, authorize('admin'), async (req, res) => {
+router.delete('/:id', protect, requirePaidTaskAdmin, async (req, res) => {
     try {
         const task = await PaidTask.findById(req.params.id);
 
@@ -987,7 +993,7 @@ router.delete('/:id', protect, authorize('admin'), async (req, res) => {
 // @route   PUT /api/tasks/:id/feedback/:feedbackId
 // @desc    Edit a feedback entry (Admin only)
 // @access  Private (Admin)
-router.put('/:id/feedback/:feedbackId', protect, authorize('admin'), async (req, res) => {
+router.put('/:id/feedback/:feedbackId', protect, requirePaidTaskAdmin, async (req, res) => {
     try {
         const { text, rating } = req.body;
         const task = await PaidTask.findById(req.params.id);
@@ -1015,7 +1021,7 @@ router.put('/:id/feedback/:feedbackId', protect, authorize('admin'), async (req,
 // @route   DELETE /api/tasks/:id/feedback/:feedbackId
 // @desc    Delete a feedback entry (Admin only)
 // @access  Private (Admin)
-router.delete('/:id/feedback/:feedbackId', protect, authorize('admin'), async (req, res) => {
+router.delete('/:id/feedback/:feedbackId', protect, requirePaidTaskAdmin, async (req, res) => {
     try {
         const task = await PaidTask.findById(req.params.id);
 
