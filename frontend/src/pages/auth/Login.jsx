@@ -268,6 +268,11 @@ const Login = () => {
                         <motion.img
                             src="/logo.png"
                             alt="Adeeb Technology Lab logo"
+                            width="256"
+                            height="256"
+                            fetchPriority="high"
+                            loading="eager"
+                            decoding="async"
                             animate={{ y: reduceMotion ? 0 : [0, -5, 0] }}
                             transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
                             className="h-36 min-w-0 flex-1 object-contain xl:h-40"
@@ -280,6 +285,11 @@ const Login = () => {
                         <motion.img
                             src="/courslogo.png"
                             alt="Collaboration partner logo"
+                            width="256"
+                            height="256"
+                            fetchPriority="high"
+                            loading="eager"
+                            decoding="async"
                             animate={{ y: reduceMotion ? 0 : [0, 5, 0] }}
                             transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
                             className="h-36 min-w-0 flex-1 object-contain xl:h-40"

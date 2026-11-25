@@ -22,16 +22,21 @@ export default defineConfig({
     cssCodeSplit: true,
     minify: 'esbuild',
     chunkSizeWarningLimit: 1000,
+    reportCompressedSize: false,
     rollupOptions: {
       output: {
         manualChunks: {
-          'vendor-react': ['react', 'react-dom', 'react-router-dom', 'react-redux', '@reduxjs/toolkit'],
+          'vendor-react': ['react', 'react-dom'],
+          'vendor-router': ['react-router-dom', 'react-router'],
+          'vendor-state': ['react-redux', '@reduxjs/toolkit'],
           'vendor-ui': ['framer-motion', 'lucide-react', 'react-hot-toast'],
           'vendor-charts': ['chart.js', 'react-chartjs-2'],
           'vendor-editor': ['@tiptap/react', '@tiptap/starter-kit', '@tiptap/extension-link', '@tiptap/extension-underline', '@tiptap/extension-text-align'],
           'vendor-pdf': ['jspdf', 'jspdf-autotable', 'html2canvas'],
+          'vendor-i18n': ['i18next', 'react-i18next'],
+          'vendor-socket': ['socket.io-client'],
         }
       }
-    },
+    }
   }
 })

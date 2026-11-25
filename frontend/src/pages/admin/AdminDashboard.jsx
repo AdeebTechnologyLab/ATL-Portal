@@ -26,8 +26,7 @@ import {
     UserPlus
 } from 'lucide-react';
 import Modal from '../../components/ui/Modal';
-import html2canvas from 'html2canvas';
-import { jsPDF } from 'jspdf';
+// html2canvas and jspdf are dynamically imported where needed
 import StatCard from '../../components/ui/StatCard';
 import DataTable from '../../components/ui/DataTable';
 import Badge from '../../components/ui/Badge';
@@ -152,6 +151,8 @@ const AdminDashboard = () => {
             const elementsToHide = dashboardRef.current.querySelectorAll('.no-pdf');
             elementsToHide.forEach(el => el.style.visibility = 'hidden');
 
+            const { default: html2canvas } = await import('html2canvas');
+            const { jsPDF } = await import('jspdf');
             const canvas = await html2canvas(dashboardRef.current, {
                 scale: 2,
                 useCORS: true,
