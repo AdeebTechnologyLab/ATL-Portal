@@ -111,8 +111,8 @@ const Settings = () => {
 
     const [isChangingPassword, setIsChangingPassword] = useState(false);
     const [isSavingPassword, setIsSavingPassword] = useState(false);
-    const [passwordForm, setPasswordForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
-    const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+    const [passwordForm, setPasswordForm] = useState({ newPassword: '', confirmPassword: '' });
+
     const [showNewPassword, setShowNewPassword] = useState(false);
     const [passwordError, setPasswordError] = useState('');
 
@@ -244,8 +244,8 @@ const Settings = () => {
 
     const handleChangePassword = async () => {
         setPasswordError('');
-        if (!passwordForm.currentPassword || !passwordForm.newPassword) {
-            setPasswordError('Please fill in all password fields.');
+        if (!passwordForm.newPassword) {
+            setPasswordError('Please enter a new password.');
             return;
         }
         if (passwordForm.newPassword !== passwordForm.confirmPassword) {
@@ -259,7 +259,6 @@ const Settings = () => {
         setIsSavingPassword(true);
         try {
             const response = await authAPI.changePassword({
-                currentPassword: passwordForm.currentPassword,
                 newPassword: passwordForm.newPassword,
             });
             // Password changed = old JWT invalidated. Store the fresh token so the
@@ -267,11 +266,11 @@ const Settings = () => {
             if (response.data.token) {
                 dispatch(refreshToken(response.data.token));
             }
-            setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
+            setPasswordForm({ newPassword: '', confirmPassword: '' });
             setIsChangingPassword(false);
             showSuccessMessage('Password changed successfully!');
         } catch (error) {
-            setPasswordError(error.response?.data?.message || 'Failed to change password. Check your current password.');
+            setPasswordError(error.response?.data?.message || 'Failed to change password. Please try again.');
         } finally {
             setIsSavingPassword(false);
         }
@@ -533,21 +532,6 @@ const Settings = () => {
                                 {passwordError && (
                                     <p className="text-xs font-semibold text-red-500 dark:text-red-400 bg-red-50 dark:bg-red-900/20 px-3 py-2 rounded-lg">{passwordError}</p>
                                 )}
-                                <div>
-                                    <label className="block text-[9px] font-black uppercase tracking-widest text-gray-400 mb-1.5">Current Password</label>
-                                    <div className="relative">
-                                        <input
-                                            type={showCurrentPassword ? 'text' : 'password'}
-                                            value={passwordForm.currentPassword}
-                                            onChange={(e) => setPasswordForm(prev => ({ ...prev, currentPassword: e.target.value }))}
-                                            className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-primary focus:border-primary p-2.5 pr-10 outline-none font-medium"
-                                            placeholder="Enter current password"
-                                        />
-                                        <button type="button" onClick={() => setShowCurrentPassword(!showCurrentPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
-                                            {showCurrentPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                                        </button>
-                                    </div>
-                                </div>
                                 <div>
                                     <label className="block text-[9px] font-black uppercase tracking-widest text-gray-400 mb-1.5">New Password</label>
                                     <div className="relative">

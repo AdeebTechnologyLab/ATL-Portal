@@ -1128,10 +1128,6 @@ router.put('/change-password', protect, async (req, res) => {
     try {
         const { currentPassword, newPassword } = req.body;
 
-        if (!currentPassword) {
-            return res.status(400).json({ success: false, message: 'Please enter your current password.' });
-        }
-
         if (typeof newPassword !== 'string' || newPassword.length < 4) {
             return res.status(400).json({ success: false, message: 'New password must be at least 4 characters' });
         }
@@ -1144,9 +1140,11 @@ router.put('/change-password', protect, async (req, res) => {
             return res.status(404).json({ success: false, message: 'User not found' });
         }
 
-        const isMatch = await user.matchPassword(currentPassword);
-        if (!isMatch) {
-            return res.status(401).json({ success: false, message: 'Current password is incorrect.' });
+        if (currentPassword) {
+            const isMatch = await user.matchPassword(currentPassword);
+            if (!isMatch) {
+                return res.status(401).json({ success: false, message: 'Current password is incorrect.' });
+            }
         }
 
         user.password = newPassword;
