@@ -50,6 +50,8 @@ const TeacherCourses = ({ isDashboard = false, initialSearchMode = 'courses' }) 
     const [searchMode, setSearchMode] = useState(initialSearchMode); // courses | students
     const [searchQuery, setSearchQuery] = useState('');
     const [studentSearchQuery, setStudentSearchQuery] = useState('');
+    const [selectedCourseFilter, setSelectedCourseFilter] = useState('');
+    const [selectedAudience, setSelectedAudience] = useState([]); // 'students', 'interns'
     const [allStudents, setAllStudents] = useState([]); 
     const [filteredStudents, setFilteredStudents] = useState([]);
     const [selectedCities, setSelectedCities] = useState([]);
@@ -205,21 +207,30 @@ const TeacherCourses = ({ isDashboard = false, initialSearchMode = 'courses' }) 
         setAllStudents(students);
     }, [myCourses]);
 
-    // Filter students when query changes
+    // Filter students when query or course filter changes
     useEffect(() => {
-        if (!studentSearchQuery.trim()) {
-            setFilteredStudents(allStudents);
-            return;
+        let result = allStudents;
+        if (selectedAudience.length > 0) {
+            result = result.filter(s => {
+                const role = (s.role || '').toLowerCase();
+                if (selectedAudience.includes('students') && role === 'student') return true;
+                if (selectedAudience.includes('interns') && role === 'intern') return true;
+                return false;
+            });
         }
-        const q = studentSearchQuery.toLowerCase();
-        setFilteredStudents(
-            allStudents.filter(s =>
+        if (selectedCourseFilter) {
+            result = result.filter(s => String(s.course?._id || s.course?.id) === String(selectedCourseFilter));
+        }
+        if (studentSearchQuery.trim()) {
+            const q = studentSearchQuery.toLowerCase();
+            result = result.filter(s =>
                 s.name.toLowerCase().includes(q) ||
                 (s.rollNo && s.rollNo.toLowerCase().includes(q)) ||
                 (s.email && s.email.toLowerCase().includes(q))
-            )
-        );
-    }, [studentSearchQuery, allStudents]);
+            );
+        }
+        setFilteredStudents(result);
+    }, [studentSearchQuery, allStudents, selectedCourseFilter, selectedAudience]);
 
     // Effect to apply filters whenever courses or filter states change
     useEffect(() => {
@@ -615,6 +626,32 @@ const TeacherCourses = ({ isDashboard = false, initialSearchMode = 'courses' }) 
                                     className="ml-2 text-gray-400 hover:text-gray-600 font-bold text-xs"
                                 >✕</button>
                             )}
+                        </div>
+                        <div className="mt-3">
+                            <select
+                                value={selectedCourseFilter}
+                                onChange={(e) => setSelectedCourseFilter(e.target.value)}
+                                className="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-900 dark:text-white text-sm rounded-2xl px-4 py-3 outline-none font-medium"
+                            >
+                                <option value="">All Courses</option>
+                                {myCourses.map(c => (
+                                    <option key={c._id} value={c._id}>{c.title || c.name}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className="mt-3 flex gap-2">
+                            <button
+                                onClick={() => setSelectedAudience(prev => prev.includes('students') ? prev.filter(v => v !== 'students') : [...prev, 'students'])}
+                                className={`flex-1 px-3 py-2 rounded-xl text-xs font-bold transition-all ${selectedAudience.includes('students') ? 'bg-primary text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                            >
+                                Students
+                            </button>
+                            <button
+                                onClick={() => setSelectedAudience(prev => prev.includes('interns') ? prev.filter(v => v !== 'interns') : [...prev, 'interns'])}
+                                className={`flex-1 px-3 py-2 rounded-xl text-xs font-bold transition-all ${selectedAudience.includes('interns') ? 'bg-primary text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                            >
+                                Interns
+                            </button>
                         </div>
                     </div>
                 )}

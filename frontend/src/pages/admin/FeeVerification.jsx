@@ -34,6 +34,7 @@ const FeeVerification = () => {
     // Filters State
     const [selectedRoles, setSelectedRoles] = useState([]); // 'students', 'interns'
     const [selectedCities, setSelectedCities] = useState([]); // 'Bahawalpur', 'Islamabad'
+    const [selectedCourseFilter, setSelectedCourseFilter] = useState(''); // course _id filter
 
     // Data states
     const [fees, setFees] = useState([]); // Pending fees
@@ -409,6 +410,7 @@ const FeeVerification = () => {
     const clearFilters = () => {
         setSelectedRoles([]);
         setSelectedCities([]);
+        setSelectedCourseFilter('');
         setSearchQuery('');
     };
 
@@ -420,8 +422,9 @@ const FeeVerification = () => {
 
             const matchesRole = selectedRoles.length === 0 || selectedRoles.includes(fee.course?.targetAudience);
             const matchesCity = selectedCities.length === 0 || selectedCities.includes(fee.course?.city);
+            const matchesCourse = !selectedCourseFilter || String(fee.course?._id) === String(selectedCourseFilter);
 
-            return matchesSearch && matchesRole && matchesCity;
+            return matchesSearch && matchesRole && matchesCity && matchesCourse;
         });
     };
 
@@ -500,7 +503,7 @@ const FeeVerification = () => {
                     </div>
 
                     {/* Clear Button */}
-                    {(selectedRoles.length > 0 || selectedCities.length > 0 || searchQuery) && (
+                    {(selectedRoles.length > 0 || selectedCities.length > 0 || selectedCourseFilter || searchQuery) && (
                         <button
                             onClick={clearFilters}
                             className="flex items-center justify-center gap-2 px-4 py-2 text-rose-500 hover:bg-rose-50 rounded-xl transition-all text-[10px] font-black uppercase tracking-widest"
@@ -561,6 +564,23 @@ const FeeVerification = () => {
                             </button>
                         </div>
                     </div>
+
+                    {/* Course Filter */}
+                    <div className="space-y-2">
+                        <span className="text-[9px] sm:text-[10px] font-black text-gray-400 uppercase tracking-[0.14em] sm:tracking-[0.2em] ml-1">Course:</span>
+                        <select
+                            value={selectedCourseFilter}
+                            onChange={(e) => setSelectedCourseFilter(e.target.value)}
+                            className="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-900 dark:text-white text-xs sm:text-sm rounded-xl px-3 py-2.5 outline-none font-medium"
+                        >
+                            <option value="">All Courses</option>
+                            {Array.from(new Map(([...(fees || []), ...(allFees || [])]).map(f => [String(f.course?._id), f.course])).values())
+                                .filter(c => c && c._id)
+                                .map(c => (
+                                    <option key={c._id} value={c._id}>{c.title} ({c.city})</option>
+                                ))}
+                        </select>
+                    </div>
                 </div>
             </div>}
 
@@ -616,7 +636,7 @@ const FeeVerification = () => {
                                                         )}
                                                         {fee.user?.phone && (
                                                             <span className="hidden sm:inline-flex text-[10px] font-bold text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">
-                                                                Ã°Å¸â€œÅ¾ {fee.user.phone}
+                                                                {fee.user.phone}
                                                             </span>
                                                         )}
                                                     </h3>
@@ -774,13 +794,13 @@ const FeeVerification = () => {
                                                         )}
                                                         {fee.user?.phone && (
                                                             <span className="hidden sm:inline-flex text-[9px] font-bold text-gray-500 bg-white/50 px-1.5 py-0.5 rounded-full">
-                                                                Ã°Å¸â€œÅ¾ {fee.user.phone}
+                                                                {fee.user.phone}
                                                             </span>
                                                         )}
                                                     </h3>
                                                     {fee.user?.phone && <p className="mt-0.5 truncate text-[10px] font-semibold text-gray-400 sm:hidden">Phone: {fee.user.phone}</p>}
                                                     <p className="text-[10px] sm:text-[11px] text-gray-500 dark:text-gray-400 truncate">
-                                                        {fee.course?.title} ({fee.course?.city}) Ã¢â‚¬Â¢ Due: {formatDate(inst.dueDate)}
+                                                        {fee.course?.title} ({fee.course?.city}) • Due: {formatDate(inst.dueDate)}
                                                     </p>
                                                 </div>
                                             </div>
@@ -1075,7 +1095,7 @@ const FeeVerification = () => {
                                                         )}
                                                         {fee.user?.phone && (
                                                             <span className="text-xs font-normal text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full inline-flex items-center gap-1">
-                                                                Ã°Å¸â€œÅ¾ {fee.user.phone}
+                                                                {fee.user.phone}
                                                             </span>
                                                         )}
                                                     </h3>
