@@ -209,7 +209,7 @@ router.put('/:id', protect, authorize('admin', 'teacher'), requireActiveTeacher,
 
         const previousManagerIds = (task.jobManagers?.length ? task.jobManagers : [task.jobManager]).filter(Boolean).map(String);
         task = await PaidTask.findByIdAndUpdate(req.params.id, bodyData, {
-            new: true,
+            returnDocument: 'after',
             runValidators: true
         });
 

@@ -37,7 +37,7 @@ async function syncCounter() {
         const counter = await Counter.findOneAndUpdate(
             { name: 'rollNo' },
             { $set: { value: maxVal } }, // Set to maxVal, so the next getNextRollNo() gives maxVal + 1
-            { new: true, upsert: true }
+            { returnDocument: 'after', upsert: true }
         );
 
         console.log(`🚀 Counter 'rollNo' has been synchronized to: ${counter.value}`);

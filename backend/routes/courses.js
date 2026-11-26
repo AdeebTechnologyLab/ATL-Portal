@@ -362,7 +362,7 @@ router.put('/:id', protect, requireScreenAccess('course_management'), uploadCour
         }
 
         const course = await Course.findByIdAndUpdate(req.params.id, bodyData, {
-            new: true,
+            returnDocument: 'after',
             runValidators: true
         });
 
@@ -476,7 +476,7 @@ router.post('/:id/view', async (req, res) => {
         const course = await Course.findByIdAndUpdate(
             req.params.id,
             { $inc: { views: 1 } },
-            { new: true }
+            { returnDocument: 'after' }
         );
         if (!course) return res.status(404).json({ success: false, message: 'Course not found' });
         res.json({ success: true, views: course.views });

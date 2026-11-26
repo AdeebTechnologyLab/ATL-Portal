@@ -38,7 +38,7 @@ router.post('/', protect, authorize('admin'), async (req, res) => {
 // Admin: Update payment method
 router.put('/:id', protect, authorize('admin'), async (req, res) => {
     try {
-        const method = await PaymentMethod.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+        const method = await PaymentMethod.findByIdAndUpdate(req.params.id, req.body, { returnDocument: 'after', runValidators: true });
         if (!method) return res.status(404).json({ success: false, message: 'Payment method not found' });
         res.json({ success: true, data: method });
     } catch (err) {

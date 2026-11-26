@@ -48,7 +48,7 @@ const protect = async (req, res, next) => {
                 Promise.resolve().then(() => User.findOneAndUpdate({
                     _id: req.user._id,
                     $or: [{ lastSeen: { $lt: cutoff } }, { lastSeen: null }],
-                }, { $set: { lastSeen: now } }, { new: true }).select('_id lastSeen'))
+                }, { $set: { lastSeen: now } }, { returnDocument: 'after' }).select('_id lastSeen'))
                     .then(updatedUser => {
                         const io = req.app.get('io');
                         if (io && updatedUser) {

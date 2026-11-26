@@ -684,7 +684,7 @@ router.put('/:id', protect, authorize('teacher', 'admin'), async (req, res) => {
         const updatedAssignment = await Assignment.findByIdAndUpdate(
             req.params.id,
             updateData,
-            { new: true, runValidators: true }
+            { returnDocument: 'after', runValidators: true }
         );
 
         const newDueDate = updatedAssignment.dueDate ? new Date(updatedAssignment.dueDate).toISOString() : null;

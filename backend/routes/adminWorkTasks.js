@@ -252,7 +252,7 @@ router.put('/:id', async (req, res) => {
         updates.updatedBy = req.user.id;
         if (updates.status === 'completed') updates.completedAt = new Date();
         if (updates.status && updates.status !== 'completed') updates.completedAt = null;
-        const task = await AdminWorkTask.findByIdAndUpdate(req.params.id, updates, { new: true, runValidators: true })
+        const task = await AdminWorkTask.findByIdAndUpdate(req.params.id, updates, { returnDocument: 'after', runValidators: true })
             .populate('sharedWith', 'name rollNo role photo')
             .populate('createdBy', 'name email rollNo role photo')
             .populate('items.createdBy', 'name rollNo photo');

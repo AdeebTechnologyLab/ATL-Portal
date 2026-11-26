@@ -337,7 +337,7 @@ const finishGame = async (req, res) => {
                     endedAt: game.endedAt
                 }
             },
-            { new: true }
+            { returnDocument: 'after' }
         );
 
         if (claimed) {

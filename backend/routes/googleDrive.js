@@ -119,7 +119,7 @@ router.get('/callback', async (req, res) => {
                 googleEmail: googleUser.data.email || '',
                 connectedAt: new Date()
             },
-            { upsert: true, new: true, runValidators: true }
+            { upsert: true, returnDocument: 'after', runValidators: true }
         );
 
         res.redirect(`${clientUrl}/${user.role}/assignments?googleDrive=connected`);

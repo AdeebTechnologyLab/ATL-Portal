@@ -30,7 +30,7 @@ mongoose.connect(process.env.MONGODB_URI || process.env.MONGO_URI || 'mongodb://
             const counter = await Counter.findOneAndUpdate(
                 { name: 'rollNo' },
                 { $inc: { value: 1 } },
-                { new: true, upsert: true }
+                { returnDocument: 'after', upsert: true }
             );
             const newRollNo = String(counter.value).padStart(4, '0');
             console.log(`Assigning new rollNo ${newRollNo} to ${emailToFix}`);

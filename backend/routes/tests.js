@@ -354,7 +354,7 @@ router.put('/:id', protect, authorize('teacher', 'admin'), async (req, res) => {
             assignedUsers: assignedUsers || []
         };
 
-        const test = await Test.findByIdAndUpdate(req.params.id, updatedData, { new: true });
+        const test = await Test.findByIdAndUpdate(req.params.id, updatedData, { returnDocument: 'after' });
 
         if (!test) {
             return res.status(404).json({ success: false, message: 'Test not found' });

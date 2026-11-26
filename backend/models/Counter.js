@@ -20,7 +20,7 @@ counterSchema.statics.getNextRollNo = async function () {
     const counter = await this.findOneAndUpdate(
         { name: 'rollNo' },
         { $inc: { value: 1 } },
-        { new: true, upsert: true }
+        { returnDocument: 'after', upsert: true }
     );
 
     return String(counter.value).padStart(4, '0');
@@ -31,7 +31,7 @@ counterSchema.statics.getNextTeacherId = async function () {
     const counter = await this.findOneAndUpdate(
         { name: 'teacherId' },
         { $inc: { value: 1 } },
-        { new: true, upsert: true }
+        { returnDocument: 'after', upsert: true }
     );
     return 't' + String(counter.value).padStart(4, '0');
 };

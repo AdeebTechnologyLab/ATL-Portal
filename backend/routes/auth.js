@@ -1060,7 +1060,7 @@ router.put('/profile', protect, uploadPhoto.single('photo'), async (req, res) =>
         }
 
         // Update current user
-        const user = await User.findByIdAndUpdate(req.user.id, updates, { new: true, runValidators: true });
+        const user = await User.findByIdAndUpdate(req.user.id, updates, { returnDocument: 'after', runValidators: true });
 
         // Fields to synchronize across all roles for the same email
         const syncFields = [

@@ -157,7 +157,7 @@ router.put('/:id', protect, authorize('teacher', 'admin'), async (req, res) => {
                 isActive,
                 ...(isActive === false ? { endTime: new Date() } : {})
             },
-            { new: true }
+            { returnDocument: 'after' }
         );
 
         // Notify if class ended

@@ -138,7 +138,7 @@ io.on('connection', (socket) => {
         // Update status in real-time
         try {
             const User = require('./models/User');
-            const user = await User.findByIdAndUpdate(userId, { lastSeen: new Date() }, { new: true });
+            const user = await User.findByIdAndUpdate(userId, { lastSeen: new Date() }, { returnDocument: 'after' });
             if (user) {
                 io.emit('user_status_update', {
                     userId: user._id.toString(),
@@ -160,7 +160,7 @@ io.on('connection', (socket) => {
     socket.on('heartbeat', async (userId) => {
         try {
             const User = require('./models/User');
-            const user = await User.findByIdAndUpdate(userId, { lastSeen: new Date() }, { new: true });
+            const user = await User.findByIdAndUpdate(userId, { lastSeen: new Date() }, { returnDocument: 'after' });
             if (user) {
                 io.emit('user_status_update', {
                     userId: user._id.toString(),

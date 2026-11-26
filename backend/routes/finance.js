@@ -193,7 +193,7 @@ router.put('/projects/:id', async (req, res) => {
         const project = await FinanceProject.findByIdAndUpdate(
             req.params.id,
             payload,
-            { new: true, runValidators: true }
+            { returnDocument: 'after', runValidators: true }
         );
         if (!project) return res.status(404).json({ success: false, message: 'Project not found' });
 
@@ -242,7 +242,7 @@ router.post('/', async (req, res) => {
 
 router.put('/:id', async (req, res) => {
     try {
-        const entry = await FinanceEntry.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+        const entry = await FinanceEntry.findByIdAndUpdate(req.params.id, req.body, { returnDocument: 'after', runValidators: true });
         if (!entry) return res.status(404).json({ success: false, message: 'Record not found' });
         res.json({ success: true, data: entry });
     } catch (error) {

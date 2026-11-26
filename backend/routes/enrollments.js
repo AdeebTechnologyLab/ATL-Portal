@@ -439,7 +439,7 @@ router.put('/:id/complete', protect, authorize('admin'), async (req, res) => {
                 percentage,
                 completedAt: new Date()
             },
-            { new: true }
+            { returnDocument: 'after' }
         );
 
         if (!enrollment) {

@@ -279,7 +279,7 @@ router.put('/global-holidays', protect, requireScreenAccess('attendance_settings
                 description: 'Weekly off days for attendance (0=Sunday, 5=Friday, 6=Saturday)',
                 updatedBy: req.user.id
             },
-            { new: true, upsert: true }
+            { returnDocument: 'after', upsert: true }
         );
 
         res.json({ success: true, holidayDays: setting.value });
@@ -312,7 +312,7 @@ router.put('/student-holidays', protect, requireScreenAccess('attendance_setting
         const setting = await SystemSetting.findOneAndUpdate(
             { key: 'studentHolidayDays' },
             { value: holidayDays, description: 'Student weekly off days (0=Sunday, 6=Saturday)', updatedBy: req.user.id },
-            { new: true, upsert: true }
+            { returnDocument: 'after', upsert: true }
         );
         res.json({ success: true, holidayDays: setting.value });
     } catch (error) {
@@ -344,7 +344,7 @@ router.put('/intern-holidays', protect, requireScreenAccess('attendance_settings
         const setting = await SystemSetting.findOneAndUpdate(
             { key: 'internHolidayDays' },
             { value: holidayDays, description: 'Intern weekly off days (0=Sunday, 6=Saturday)', updatedBy: req.user.id },
-            { new: true, upsert: true }
+            { returnDocument: 'after', upsert: true }
         );
         res.json({ success: true, holidayDays: setting.value });
     } catch (error) {

@@ -98,7 +98,7 @@ router.put('/projects/:id', async (req, res) => {
         if (startDate !== undefined) updates.startDate = startDate;
         if (completionDate !== undefined) updates.completionDate = completionDate;
         if (description !== undefined) updates.description = description;
-        const updated = await FinanceProject.findByIdAndUpdate(req.params.id, updates, { new: true, runValidators: true })
+        const updated = await FinanceProject.findByIdAndUpdate(req.params.id, updates, { returnDocument: 'after', runValidators: true })
             .populate('createdBy', 'name')
             .populate('assignedTeachers', 'name email');
         res.json({ success: true, data: updated });

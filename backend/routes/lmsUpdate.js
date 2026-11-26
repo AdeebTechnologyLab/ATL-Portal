@@ -145,7 +145,7 @@ router.post('/cursors', protect, authorize('admin'), async (req, res) => {
         await SystemSetting.findOneAndUpdate(
             { key: CURSORS_LIST_KEY },
             { value: next, updatedBy: req.user.id },
-            { new: true, upsert: true, setDefaultsOnInsert: true }
+            { returnDocument: 'after', upsert: true, setDefaultsOnInsert: true }
         );
         res.status(201).json({ success: true, data: next });
     } catch (err) {
@@ -163,14 +163,14 @@ router.delete('/cursors', protect, authorize('admin'), async (req, res) => {
         await SystemSetting.findOneAndUpdate(
             { key: CURSORS_LIST_KEY },
             { value: next, updatedBy: req.user.id },
-            { new: true, upsert: true, setDefaultsOnInsert: true }
+            { returnDocument: 'after', upsert: true, setDefaultsOnInsert: true }
         );
         const activeSetting = await SystemSetting.findOne({ key: CURSOR_KEY });
         if (normalizeCursorSize(activeSetting?.value?.cssUrl) === cssUrl) {
             await SystemSetting.findOneAndUpdate(
                 { key: CURSOR_KEY },
                 { value: { name: '', cssUrl: '' }, updatedBy: req.user.id },
-                { new: true, upsert: true, setDefaultsOnInsert: true }
+                { returnDocument: 'after', upsert: true, setDefaultsOnInsert: true }
             );
         }
         res.json({ success: true, data: next });
@@ -186,7 +186,7 @@ router.put('/cursor', protect, authorize('admin'), async (req, res) => {
         await SystemSetting.findOneAndUpdate(
             { key: CURSOR_KEY },
             { value: cursor, updatedBy: req.user.id },
-            { new: true, upsert: true, setDefaultsOnInsert: true }
+            { returnDocument: 'after', upsert: true, setDefaultsOnInsert: true }
         );
         res.json({ success: true, data: cursor.cssUrl ? cursor : null });
     } catch (err) {
@@ -211,7 +211,7 @@ router.put('/social-links', protect, authorize('admin'), async (req, res) => {
         await SystemSetting.findOneAndUpdate(
             { key: SOCIAL_LINKS_KEY },
             { value: groups, updatedBy: req.user.id },
-            { new: true, upsert: true, setDefaultsOnInsert: true }
+            { returnDocument: 'after', upsert: true, setDefaultsOnInsert: true }
         );
         res.json({ success: true, data: groups });
     } catch (err) {
@@ -268,7 +268,7 @@ router.post('/loading-gifs/active', protect, authorize('admin'), async (req, res
         await SystemSetting.findOneAndUpdate(
             { key: ACTIVE_GIF_KEY },
             { value: name, updatedBy: req.user.id },
-            { new: true, upsert: true, setDefaultsOnInsert: true }
+            { returnDocument: 'after', upsert: true, setDefaultsOnInsert: true }
         );
         const io = req.app.get('io');
         if (io) io.emit('loading_gif_updated', toPublicFile(name, req));

@@ -51,7 +51,7 @@ router.put('/:id/read', protect, async (req, res) => {
         const notification = await UserNotification.findOneAndUpdate(
             { _id: req.params.id, user: req.user.id },
             { isRead: true, readAt: new Date() },
-            { new: true }
+            { returnDocument: 'after' }
         );
 
         if (!notification) {

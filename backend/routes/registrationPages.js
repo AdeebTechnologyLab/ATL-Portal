@@ -179,7 +179,7 @@ router.put('/:formType', protect, requireScreenAccess('registration_pages'), asy
         const page = await RegistrationPage.findOneAndUpdate(
             { formType },
             { ...updateData, updatedBy: req.user.id },
-            { new: true, upsert: true, setDefaultsOnInsert: true }
+            { returnDocument: 'after', upsert: true, setDefaultsOnInsert: true }
         );
 
         res.json({ success: true, data: page });

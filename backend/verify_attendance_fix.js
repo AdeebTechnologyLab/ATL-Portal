@@ -26,7 +26,7 @@ async function verifyLock() {
                 startDate: new Date(Date.now() - 86400000), // yesterday
                 endDate: new Date(Date.now() + 86400000)   // tomorrow
             },
-            { upsert: true, new: true }
+            { upsert: true, returnDocument: 'after' }
         );
         console.log('Test course ID:', course._id);
 
@@ -34,7 +34,7 @@ async function verifyLock() {
         const student = await User.findOneAndUpdate(
             { email: 'test_student@example.com' },
             { name: 'Test Student', role: 'intern', isVerified: true },
-            { upsert: true, new: true }
+            { upsert: true, returnDocument: 'after' }
         );
         console.log('Student ID:', student._id);
 

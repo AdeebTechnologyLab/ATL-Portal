@@ -34,7 +34,7 @@ router.put('/:key', protect, authorize('admin'), async (req, res) => {
                 value,
                 updatedBy: req.user.id
             },
-            { new: true, upsert: true, setDefaultsOnInsert: true }
+            { returnDocument: 'after', upsert: true, setDefaultsOnInsert: true }
         );
 
         res.json({ success: true, data: setting });

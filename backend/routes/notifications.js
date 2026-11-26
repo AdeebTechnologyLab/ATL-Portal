@@ -262,7 +262,7 @@ router.put('/:id', protect, requireScreenAccess('notification_management'), asyn
         }
 
         notification = await Notification.findByIdAndUpdate(req.params.id, req.body, {
-            new: true,
+            returnDocument: 'after',
             runValidators: true
         });
 

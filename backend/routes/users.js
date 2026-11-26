@@ -654,7 +654,7 @@ router.put('/:id', protect, requireManagementAccess, uploadPhoto.single('photo')
 
         // Update current user
         const user = await User.findByIdAndUpdate(req.params.id, updateData, {
-            new: true,
+            returnDocument: 'after',
             runValidators: true
         }).select('-password');
 
@@ -736,7 +736,7 @@ router.put('/:id/verify', protect, requireManagementAccess, async (req, res) => 
                 verifiedAt: new Date(),
                 verifiedBy: req.user._id
             },
-            { new: true }
+            { returnDocument: 'after' }
         ).select('-password');
 
         if (!user) {
@@ -760,7 +760,7 @@ router.put('/:id/unverify', protect, requireManagementAccess, async (req, res) =
                 verifiedAt: null,
                 verifiedBy: null
             },
-            { new: true }
+            { returnDocument: 'after' }
         ).select('-password');
 
         if (!user) {
@@ -847,7 +847,7 @@ router.put('/:id/class-time', protect, authorize('admin', 'teacher'), async (req
         const user = await User.findByIdAndUpdate(
             req.params.id,
             { classTime: classTime || null },
-            { new: true, runValidators: true }
+            { returnDocument: 'after', runValidators: true }
         ).select('-password');
         
         if (!user) {
