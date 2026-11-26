@@ -386,8 +386,9 @@ const FeeVerification = () => {
 
         try {
             await emailAPI.send({ to, subject, heading: subject, message });
-            showToast.success('Email Sent', `Fee reminder emailed to ${to}. Click to open details.`, Mail, {
+            showToast.success('Email Sent', `Fee reminder emailed to ${fee.user?.name || to}. Click to open details.`, Mail, {
                 onClick: () => handleManageInstallments(fee),
+                duration: 5000,
             });
         } catch (err) {
             console.error('Error sending fee reminder email:', err);

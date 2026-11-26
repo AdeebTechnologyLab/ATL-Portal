@@ -98,7 +98,7 @@ const CustomToast = ({ t, title, message, type = 'info', icon: IconComponent, on
 };
 
 const createToast = (type) => (title, message, icon, options = {}) => {
-    const { onClick, duration = Infinity, sound = true } = options || {};
+    const { onClick, duration = 5000, sound = true } = options || {};
     if (sound) playToastSound();
     toast.custom(
         (t) => (

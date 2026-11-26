@@ -522,8 +522,9 @@ const TeachersManagement = () => {
         const body = (teacher.registeredOld ? getOldTeacherMessage(teacher) : getTeacherCompletionMessage(teacher)).replaceAll('*', '');
         try {
             await emailAPI.send({ to: teacher.email, subject, heading: subject, message: body });
-            showToast.success('Email Sent', `Email sent successfully to ${teacher.email}. Click to open details.`, Mail, {
+            showToast.success('Email Sent', `Email sent successfully to ${teacher.name || teacher.email}. Click to open details.`, Mail, {
                 onClick: () => handleEditClick(teacher),
+                duration: 5000,
             });
         } catch (error) {
             console.error('Email send failed:', error);

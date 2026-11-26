@@ -681,12 +681,13 @@ const InternsManagement = () => {
         }
     };
 
-    const sendBrandedEmail = async (emailWindow, to, subject, body, onOpen) => {
+    const sendBrandedEmail = async (emailWindow, to, subject, body, onOpen, recipientName) => {
         if (emailWindow && !emailWindow.closed) emailWindow.close();
         try {
             await emailAPI.send({ to, subject, heading: subject, message: body });
-            showToast.success('Email Sent', `Email sent successfully to ${to}. Click to open details.`, Mail, {
+            showToast.success('Email Sent', `Email sent successfully to ${recipientName || to}. Click to open details.`, Mail, {
                 onClick: onOpen,
+                duration: 5000,
             });
         } catch (error) {
             console.error('Email send failed:', error);
@@ -769,7 +770,7 @@ const InternsManagement = () => {
             const { reportUrl, enrollments } = await createInternReportLink(intern);
             const subject = 'Internship Strike Off Notice - Adeeb Technology Lab';
             const body = getInternStrikeOffMessage(intern, reportUrl, enrollments).replaceAll('*', '');
-            sendBrandedEmail(emailWindow, intern.email, subject, body, () => handleEditClick(intern));
+            sendBrandedEmail(emailWindow, intern.email, subject, body, () => handleEditClick(intern), intern.name);
         } catch (error) {
             if (emailWindow && !emailWindow.closed) emailWindow.close();
             alert(`Academic report link create nahi ho saka: ${error.response?.data?.message || error.message}`);
@@ -1294,14 +1295,14 @@ const InternsManagement = () => {
 
                                                         if (intern.registeredOld && (intern.totalEnrollments || 0) === 0) {
                                                             const body = getOldInternMessage(intern).replaceAll('*', '');
-                                                            sendBrandedEmail(null, intern.email, 'Admissions & Internships Are Open Again - Adeeb Technology Lab', body, () => handleEditClick(intern));
+                                                            sendBrandedEmail(null, intern.email, 'Admissions & Internships Are Open Again - Adeeb Technology Lab', body, () => handleEditClick(intern), intern.name);
                                                             return;
                                                         }
                                                         if (getInternStatus(intern) === 'Completed') {
                                                             const emailWindow = window.open('', '_blank');
                                                             try {
                                                                 const body = (await getCompletionMessage(intern)).replaceAll('*', '');
-                                                                sendBrandedEmail(emailWindow, intern.email, 'Congratulations on Completing Your Internship - Adeeb Technology Lab', body, () => handleEditClick(intern));
+                                                                sendBrandedEmail(emailWindow, intern.email, 'Congratulations on Completing Your Internship - Adeeb Technology Lab', body, () => handleEditClick(intern), intern.name);
                                                             } catch (error) {
                                                                 if (emailWindow && !emailWindow.closed) emailWindow.close();
                                                                 console.error(error);
@@ -1318,7 +1319,7 @@ const InternsManagement = () => {
                                                                 intern.enrolledCourseName = courseNames;
                                                             } catch (e) { console.error(e); }
                                                             const body = getFeeReminderMessage(intern).replaceAll('*', '');
-                                                            sendBrandedEmail(emailWindow, intern.email, 'Course Fee Reminder - Adeeb Technology Lab', body, () => handleEditClick(intern));
+                                                            sendBrandedEmail(emailWindow, intern.email, 'Course Fee Reminder - Adeeb Technology Lab', body, () => handleEditClick(intern), intern.name);
                                                             return;
                                                         }
                                                         if (getInternStatus(intern) === 'Active') {
