@@ -21,6 +21,8 @@ import PageHeader from '../../components/shared/PageHeader';
 
 const StudentsManagement = () => {
     const [searchQuery, setSearchQuery] = useState('');
+    const [selectedCourseFilter, setSelectedCourseFilter] = useState('');
+    const [studentCourseMap, setStudentCourseMap] = useState({});
     const [students, setStudents] = useState([]);
     const [allFees, setAllFees] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -57,7 +59,25 @@ const StudentsManagement = () => {
         fetchSettings();
         fetchCourses();
         fetchAllFees();
+        fetchStudentEnrollments();
     }, []);
+
+    const fetchStudentEnrollments = async () => {
+        try {
+            const res = await enrollmentAPI.getAll();
+            const enrollments = res.data.data || [];
+            const map = {};
+            enrollments.forEach(e => {
+                const uid = String(e.user?._id || e.user);
+                const cid = String(e.course?._id || e.course);
+                if (!map[uid]) map[uid] = [];
+                if (cid && !map[uid].includes(cid)) map[uid].push(cid);
+            });
+            setStudentCourseMap(map);
+        } catch (error) {
+            console.error('Error fetching student enrollments:', error);
+        }
+    };
 
     const fetchCourses = async () => {
         try {
@@ -902,6 +922,11 @@ const StudentsManagement = () => {
 
         if (!matchesSearch) return false;
 
+        if (selectedCourseFilter) {
+            const ids = studentCourseMap[String(s._id)] || [];
+            if (!ids.includes(String(selectedCourseFilter))) return false;
+        }
+
         // "Registered New" = No enrollments AND not marked as old
         if (filterStatus === 'registered') return (s.totalEnrollments || 0) === 0 && !s.registeredOld;
 
@@ -997,6 +1022,19 @@ const StudentsManagement = () => {
                         onChange={(e) => setSearchQuery(e.target.value)}
                         className="w-full pl-11 sm:pl-12 pr-4 py-2.5 sm:py-3.5 bg-gray-50 dark:bg-slate-800 dark:text-white border border-transparent focus:border-primary focus:bg-white dark:focus:bg-slate-800 rounded-xl sm:rounded-2xl transition-all outline-none text-xs sm:text-sm font-medium"
                     />
+                </div>
+
+                <div>
+                    <select
+                        value={selectedCourseFilter}
+                        onChange={(e) => setSelectedCourseFilter(e.target.value)}
+                        className="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-900 dark:text-white text-xs sm:text-sm rounded-xl px-3 py-2.5 outline-none font-medium"
+                    >
+                        <option value="">All Courses</option>
+                        {coursesList.map(c => (
+                            <option key={c._id} value={c._id}>{c.title} ({c.city})</option>
+                        ))}
+                    </select>
                 </div>
 
                 <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 sm:flex-wrap sm:overflow-visible sm:pb-0">
