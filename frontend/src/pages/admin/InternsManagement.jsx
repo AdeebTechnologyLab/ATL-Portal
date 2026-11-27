@@ -1293,9 +1293,9 @@ const InternsManagement = () => {
                                                         event.preventDefault();
                                                         if (!intern.email) { alert('Email address not found for this intern.'); return; }
 
-                                                        if (intern.registeredOld && (intern.totalEnrollments || 0) === 0) {
-                                                            const body = getOldInternMessage(intern).replaceAll('*', '');
-                                                            sendBrandedEmail(null, intern.email, 'Admissions & Internships Are Open Again - Adeeb Technology Lab', body, () => handleEditClick(intern), intern.name);
+                                                         if ((intern.totalEnrollments || 0) === 0) {
+                                                             const body = getOldInternMessage(intern).replaceAll('*', '');
+                                                             sendBrandedEmail(null, intern.email, 'Admissions & Internships Are Open Again - Adeeb Technology Lab', body, () => handleEditClick(intern), intern.name);
                                                             return;
                                                         }
                                                         if (getInternStatus(intern) === 'Completed') {

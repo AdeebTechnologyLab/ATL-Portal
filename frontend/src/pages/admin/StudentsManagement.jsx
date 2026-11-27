@@ -1231,11 +1231,11 @@ const StudentsManagement = () => {
                                                         event.preventDefault();
                                                         if (!student.email) { alert('Email address not found for this student.'); return; }
 
-                                                        if (student.registeredOld && (student.totalEnrollments || 0) === 0) {
-                                                            const body = getOldStudentMessage(student).replaceAll('*', '');
-                                                            sendBrandedEmail(null, student.email, 'Admissions Are Open Again - Adeeb Technology Lab', body, () => handleEditClick(student), student.name);
-                                                            return;
-                                                        }
+                                                         if ((student.totalEnrollments || 0) === 0) {
+                                                             const body = getOldStudentMessage(student).replaceAll('*', '');
+                                                             sendBrandedEmail(null, student.email, 'Admissions Are Open Again - Adeeb Technology Lab', body, () => handleEditClick(student), student.name);
+                                                             return;
+                                                         }
                                                         if (getStudentStatus(student) === 'Completed') {
                                                             const emailWindow = window.open('', '_blank');
                                                             try {
